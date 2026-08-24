@@ -18,10 +18,14 @@ const FRONTEND_URL = IS_DEV ? 'http://localhost:3000' : `file://${path.join(__di
 const BACKEND_PORT = 8000;
 
 // Dimensions for modes
-const COMPACT_WIDTH = 200;
-const COMPACT_HEIGHT = 225;
-const EXPANDED_WIDTH = 380;
-const EXPANDED_HEIGHT = 680;
+const PET_WIDTH = 200;
+const PET_HEIGHT = 225;
+const COMPACT_WIDTH = 380;
+const COMPACT_HEIGHT = 680;
+const DASHBOARD_WIDTH = 1100;
+const DASHBOARD_HEIGHT = 760;
+
+let lastPetPosition = { x: null, y: null };
 
 // ── Window Creation ──────────────────────────────────────────────
 
@@ -29,9 +33,9 @@ function createWindow() {
   const primaryDisplay = screen.getPrimaryDisplay();
   const { width: screenWidth, height: screenHeight } = primaryDisplay.workAreaSize;
 
-  // Start in compact mode by default
-  const startWidth = COMPACT_WIDTH;
-  const startHeight = COMPACT_HEIGHT;
+  // Start in Pet / Small mode by default
+  const startWidth = PET_WIDTH;
+  const startHeight = PET_HEIGHT;
 
   mainWindow = new BrowserWindow({
     width: startWidth,
@@ -44,7 +48,7 @@ function createWindow() {
     alwaysOnTop: true,
     resizable: true,
     minimizable: true,
-    maximizable: false,
+    maximizable: true,
     skipTaskbar: false,
     hasShadow: false,
     roundedCorners: true,
@@ -71,10 +75,6 @@ function createWindow() {
       mainWindow.hide();
     }
   });
-
-  if (IS_DEV) {
-    mainWindow.webContents.openDevTools({ mode: 'detach' });
-  }
 }
 
 // ── IPC Handlers ─────────────────────────────────────────────────
@@ -104,48 +104,78 @@ function setupIPC() {
   ipcMain.on('window:move-by', (event, { deltaX, deltaY }) => {
     if (!mainWindow) return;
     const [x, y] = mainWindow.getPosition();
-    mainWindow.setPosition(x + deltaX, y + deltaY);
+    mainWindow.setPosition(Math.round(x + deltaX), Math.round(y + deltaY));
   });
 
   ipcMain.on('window:start-drag', () => {
     // No-op acknowledgement — renderer uses this to signal drag start
   });
 
+  // 4 Window Modes: 'minimized' | 'pet' | 'compact' | 'fullscreen'
   ipcMain.on('window:set-mode', (event, mode) => {
     if (!mainWindow) return;
     const primaryDisplay = screen.getPrimaryDisplay();
     const { width: screenWidth, height: screenHeight } = primaryDisplay.workAreaSize;
     const currentBounds = mainWindow.getBounds();
 
-    if (mode === 'compact') {
-      // Preserve current dragged location within screen bounds
-      const targetX = Math.min(Math.max(10, currentBounds.x), screenWidth - COMPACT_WIDTH - 10);
-      const targetY = Math.min(Math.max(10, currentBounds.y), screenHeight - COMPACT_HEIGHT - 10);
+    if (mode === 'minimized') {
+      mainWindow.minimize();
+    } else if (mode === 'pet' || mode === 'small') {
+      // Save or restore position within screen bounds
+      let targetX = lastPetPosition.x ?? Math.min(Math.max(10, currentBounds.x), screenWidth - PET_WIDTH - 10);
+      let targetY = lastPetPosition.y ?? Math.min(Math.max(10, currentBounds.y), screenHeight - PET_HEIGHT - 10);
+      targetX = Math.min(Math.max(10, targetX), screenWidth - PET_WIDTH - 10);
+      targetY = Math.min(Math.max(10, targetY), screenHeight - PET_HEIGHT - 10);
+
+      mainWindow.setAlwaysOnTop(true);
+      mainWindow.setBounds({
+        x: targetX,
+        y: targetY,
+        width: PET_WIDTH,
+        height: PET_HEIGHT,
+      }, true);
+    } else if (mode === 'compact' || mode === 'sidebar') {
+      // Save current pet position before expanding
+      if (currentBounds.width === PET_WIDTH) {
+        lastPetPosition = { x: currentBounds.x, y: currentBounds.y };
+      }
+
+      let targetX = currentBounds.x;
+      let targetY = currentBounds.y;
+
+      if (targetX + COMPACT_WIDTH > screenWidth - 10) {
+        targetX = screenWidth - COMPACT_WIDTH - 10;
+      }
+      if (targetY + COMPACT_HEIGHT > screenHeight - 10) {
+        targetY = screenHeight - COMPACT_HEIGHT - 10;
+      }
+      targetX = Math.max(10, targetX);
+      targetY = Math.max(10, targetY);
+
+      mainWindow.setAlwaysOnTop(true);
       mainWindow.setBounds({
         x: targetX,
         y: targetY,
         width: COMPACT_WIDTH,
         height: COMPACT_HEIGHT,
       }, true);
-    } else {
-      // Expand anchored near the pet's current position
-      let targetX = currentBounds.x;
-      let targetY = currentBounds.y;
-
-      if (targetX + EXPANDED_WIDTH > screenWidth - 10) {
-        targetX = screenWidth - EXPANDED_WIDTH - 10;
+    } else if (mode === 'fullscreen' || mode === 'dashboard') {
+      // Save pet position before expanding
+      if (currentBounds.width === PET_WIDTH) {
+        lastPetPosition = { x: currentBounds.x, y: currentBounds.y };
       }
-      if (targetY + EXPANDED_HEIGHT > screenHeight - 10) {
-        targetY = screenHeight - EXPANDED_HEIGHT - 10;
-      }
-      targetX = Math.max(10, targetX);
-      targetY = Math.max(10, targetY);
 
+      const targetW = Math.min(DASHBOARD_WIDTH, screenWidth - 40);
+      const targetH = Math.min(DASHBOARD_HEIGHT, screenHeight - 60);
+      const targetX = Math.round((screenWidth - targetW) / 2);
+      const targetY = Math.round((screenHeight - targetH) / 2);
+
+      mainWindow.setAlwaysOnTop(false);
       mainWindow.setBounds({
         x: targetX,
         y: targetY,
-        width: EXPANDED_WIDTH,
-        height: EXPANDED_HEIGHT,
+        width: targetW,
+        height: targetH,
       }, true);
     }
   });
@@ -247,12 +277,46 @@ function stopBackend() {
 
 // ── App Lifecycle ────────────────────────────────────────────────
 
+function setupDock() {
+  if (process.platform === 'darwin' && app.dock) {
+    app.dock.show();
+    const dockMenu = Menu.buildFromTemplate([
+      {
+        label: 'Show Hammy 🐹',
+        click: () => {
+          if (mainWindow) {
+            if (mainWindow.isMinimized()) mainWindow.restore();
+            mainWindow.show();
+            mainWindow.focus();
+          }
+        },
+      },
+      {
+        label: 'Hide',
+        click: () => {
+          if (mainWindow) mainWindow.hide();
+        },
+      },
+      { type: 'separator' },
+      {
+        label: 'Quit Hammy',
+        click: () => {
+          app.isQuitting = true;
+          app.quit();
+        },
+      },
+    ]);
+    app.dock.setMenu(dockMenu);
+  }
+}
+
 app.whenReady().then(() => {
   if (IS_DEV) {
     console.log('🐹 Starting HamsterDesk in development mode...');
   }
 
   setupIPC();
+  setupDock();
   startBackend();
   createTray();
   createWindow();
@@ -261,7 +325,11 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();
     } else if (mainWindow) {
+      if (mainWindow.isMinimized()) {
+        mainWindow.restore();
+      }
       mainWindow.show();
+      mainWindow.focus();
     }
   });
 });

@@ -91,15 +91,24 @@ export default function HamsterSprite({
             <div className="fur-tuft tuft-right" />
           </div>
 
-          {/* Realistic Front Paws tucked against chest */}
-          <div className="hamster-front-paws">
-            <div className="hamster-front-paw paw-left">
-              <div className="paw-pad" />
-              <div className="paw-claws" />
+          {/* Realistic Fluffy Arms & Hands Connected to Torso */}
+          <div className="hamster-arm hamster-arm-left">
+            <div className="arm-fur" />
+            <div className="hamster-hand">
+              <span className="finger finger-1" />
+              <span className="finger finger-2" />
+              <span className="finger finger-3" />
+              <div className="palm-pad" />
             </div>
-            <div className="hamster-front-paw paw-right">
-              <div className="paw-pad" />
-              <div className="paw-claws" />
+          </div>
+
+          <div className="hamster-arm hamster-arm-right">
+            <div className="arm-fur" />
+            <div className="hamster-hand">
+              <span className="finger finger-1" />
+              <span className="finger finger-2" />
+              <span className="finger finger-3" />
+              <div className="palm-pad" />
             </div>
           </div>
 

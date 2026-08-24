@@ -207,16 +207,24 @@ export default function Home() {
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
       >
-        {/* Subtle Close Button Top Right */}
-        <div className="compact-top-bar">
-          <div className="compact-top-spacer" />
-          <button
-            className="compact-close-btn"
-            onClick={handleQuit}
-            title="Quit Hammy"
-          >
-            ✕
-          </button>
+        {/* Subtle Top Control Buttons: Hide & Quit */}
+        <div className="compact-top-bar" onPointerDown={(e) => e.stopPropagation()}>
+          <div className="compact-top-controls">
+            <button
+              className="compact-control-btn compact-hide-btn"
+              onClick={handleMinimize}
+              title="Minimize to Dock"
+            >
+              −
+            </button>
+            <button
+              className="compact-control-btn compact-close-btn"
+              onClick={handleQuit}
+              title="Quit Hammy"
+            >
+              ✕
+            </button>
+          </div>
         </div>
 
         {/* Floating Hammy with on-body drag badge & AI greeting speech bubble */}

@@ -238,51 +238,98 @@
   opacity: 0.9;
 }
 
-/* ── Realistic Front Paws ──────────────────────────────────────── */
-.hamster-front-paws {
+/* ── Realistic Connected Arms & Detailed Hands ─────────────────── */
+.hamster-arm {
   position: absolute;
-  bottom: 14px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  justify-content: space-between;
-  width: 36px;
+  bottom: 12px;
+  width: 22px;
+  height: 25px;
   z-index: 5;
+  transition: transform 0.25s ease;
 }
 
-.hamster-front-paw {
-  width: 11px;
-  height: 12px;
+.hamster-arm-left {
+  left: 24px;
+  transform-origin: top left;
+  transform: rotate(-18deg);
+}
+
+.hamster-arm-right {
+  right: 24px;
+  transform-origin: top right;
+  transform: rotate(18deg);
+}
+
+/* Fluffy upper arm connecting naturally to the body */
+.arm-fur {
+  width: 100%;
+  height: 18px;
   background: radial-gradient(
-    circle at 40% 30%,
+    ellipse at 40% 30%,
+    var(--hamster-color-light) 0%,
+    var(--hamster-color) 60%,
+    var(--hamster-color-dark) 100%
+  );
+  border-radius: 50% 50% 45% 45% / 60% 60% 40% 40%;
+  box-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.35),
+    0 2px 6px rgba(0, 0, 0, 0.22);
+}
+
+/* Cute little hands with individual fingers */
+.hamster-hand {
+  position: absolute;
+  bottom: 0;
+  width: 14px;
+  height: 11px;
+  background: radial-gradient(
+    circle at 50% 35%,
     var(--hamster-pink-inner) 0%,
     var(--hamster-pink-skin) 70%,
     #d88c7f 100%
   );
-  border-radius: 50% 50% 45% 45%;
+  border-radius: 40% 40% 50% 50%;
   box-shadow:
-    inset 0 1px 2px rgba(255, 255, 255, 0.5),
-    0 2px 4px rgba(0, 0, 0, 0.25);
-  position: relative;
-  transition: transform 0.2s ease;
+    inset 0 1px 2px rgba(255, 255, 255, 0.55),
+    0 2px 4px rgba(0, 0, 0, 0.28);
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 1.2px;
+  padding-bottom: 1px;
+  z-index: 6;
 }
 
-.paw-left {
-  transform: rotate(18deg);
+.hamster-arm-left .hamster-hand {
+  right: -3px;
+  transform: rotate(10deg);
 }
 
-.paw-right {
-  transform: rotate(-18deg);
+.hamster-arm-right .hamster-hand {
+  left: -3px;
+  transform: rotate(-10deg);
 }
 
-.paw-pad {
+.hamster-hand .finger {
+  width: 2.2px;
+  height: 4px;
+  background: #fde8e3;
+  border-radius: 2px;
+  box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.2);
+}
+
+.finger-1 { height: 3.2px; }
+.finger-2 { height: 4.2px; }
+.finger-3 { height: 3.5px; }
+
+.palm-pad {
   position: absolute;
-  top: 2px;
+  top: 1px;
   left: 50%;
   transform: translateX(-50%);
-  width: 5px;
+  width: 6px;
   height: 4px;
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.35);
   border-radius: 50%;
 }
 
@@ -680,9 +727,9 @@
 /* ── Glassmorphic Drag Grip Button (Directly on Hamster) ─────── */
 .hamster-drag-handle-badge {
   position: absolute;
-  top: -9px;
+  top: -18px;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(3px) scale(0.9);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -698,14 +745,28 @@
     inset 0 1px 1px rgba(255, 255, 255, 0.15);
   z-index: 15;
   cursor: grab;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              background 0.2s ease,
+              border-color 0.2s ease,
+              box-shadow 0.2s ease;
   user-select: none;
 }
 
-.hamster-container:hover .hamster-drag-handle-badge {
+.hamster-container:hover .hamster-drag-handle-badge,
+.hamster-container.being-dragged .hamster-drag-handle-badge,
+.hamster-drag-handle-badge:hover {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+
+.hamster-drag-handle-badge:hover {
   background: rgba(244, 164, 96, 0.25);
   border-color: var(--accent-primary);
-  transform: translateX(-50%) scale(1.1);
+  transform: translateX(-50%) translateY(0) scale(1.08);
   box-shadow: 
     0 0 14px var(--accent-glow),
     0 4px 14px rgba(0, 0, 0, 0.5),
@@ -714,7 +775,7 @@
 
 .hamster-drag-handle-badge:active {
   cursor: grabbing;
-  transform: translateX(-50%) scale(0.95);
+  transform: translateX(-50%) translateY(0) scale(0.95);
   background: rgba(244, 164, 96, 0.35);
 }
 
@@ -857,12 +918,12 @@
   transform: translateX(-50%) scale(0.96, 1.05);
 }
 
-.hamster-dragged .paw-left {
-  animation: pawDangleLeft 0.8s ease-in-out infinite alternate;
+.hamster-dragged .hamster-arm-left {
+  animation: armDangleLeft 0.8s ease-in-out infinite alternate;
 }
 
-.hamster-dragged .paw-right {
-  animation: pawDangleRight 0.8s ease-in-out infinite alternate;
+.hamster-dragged .hamster-arm-right {
+  animation: armDangleRight 0.8s ease-in-out infinite alternate;
 }
 
 .hamster-dragged .hamster-foot-left,
@@ -881,14 +942,14 @@
   border: 1.5px solid #b05c4d;
 }
 
-@keyframes pawDangleLeft {
-  0% { transform: rotate(10deg) translateY(2px); }
-  100% { transform: rotate(26deg) translateY(-1px); }
+@keyframes armDangleLeft {
+  0% { transform: rotate(-10deg) translateY(2px); }
+  100% { transform: rotate(-26deg) translateY(-1px); }
 }
 
-@keyframes pawDangleRight {
-  0% { transform: rotate(-26deg) translateY(-1px); }
-  100% { transform: rotate(-10deg) translateY(2px); }
+@keyframes armDangleRight {
+  0% { transform: rotate(26deg) translateY(-1px); }
+  100% { transform: rotate(10deg) translateY(2px); }
 }
 
 .drag-indicator-halo {
@@ -1026,8 +1087,8 @@
   animation: thinkPonder 3s ease-in-out infinite;
 }
 
-.hamster-thinking .paw-right {
-  transform: translate(-4px, -18px) rotate(-40deg);
+.hamster-thinking .hamster-arm-right {
+  transform: translate(-4px, -14px) rotate(-45deg);
   z-index: 12;
 }
 

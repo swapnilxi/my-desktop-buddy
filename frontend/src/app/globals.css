@@ -1168,56 +1168,23 @@ body {
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 2px;
+  justify-content: flex-end;
+  padding: 0 4px;
   height: 20px;
   z-index: 15;
 }
 
-/* Drag Grip Pill Header */
-.compact-drag-pill {
-  display: inline-flex;
+.compact-top-controls {
+  display: flex;
   align-items: center;
-  gap: 3px;
-  padding: 2px 7px;
-  background: rgba(18, 18, 30, 0.7);
-  border: 1px solid rgba(244, 164, 96, 0.25);
-  border-radius: var(--radius-full);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  cursor: grab;
-  opacity: 0.7;
-  transition: all var(--transition-fast);
+  gap: 5px;
 }
 
-.compact-drag-pill:hover,
-.compact-widget:hover .compact-drag-pill {
-  opacity: 1;
-  border-color: var(--accent-primary);
-  box-shadow: 0 0 10px var(--accent-glow);
-}
-
-.pill-dots {
-  color: var(--accent-primary);
-  font-size: 11px;
-  letter-spacing: -2px;
-  line-height: 1;
-}
-
-.pill-text {
-  font-family: var(--font-display);
-  font-size: 9px;
-  font-weight: 600;
-  color: var(--text-secondary);
-  letter-spacing: 0.3px;
-  text-transform: uppercase;
-}
-
-.compact-close-btn {
-  width: 16px;
-  height: 16px;
+.compact-control-btn {
+  width: 17px;
+  height: 17px;
   border-radius: 50%;
-  background: rgba(30, 30, 45, 0.75);
+  background: rgba(30, 30, 45, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.15);
   color: var(--text-secondary);
   font-size: 9px;
@@ -1227,10 +1194,21 @@ body {
   cursor: pointer;
   opacity: 0;
   transition: all var(--transition-fast);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
-.compact-widget:hover .compact-close-btn {
+.compact-widget:hover .compact-control-btn {
   opacity: 0.85;
+}
+
+.compact-hide-btn:hover {
+  background: rgba(244, 164, 96, 0.35);
+  border-color: var(--accent-primary);
+  color: #fff;
+  opacity: 1 !important;
+  transform: scale(1.15);
+  box-shadow: 0 0 8px var(--accent-glow);
 }
 
 .compact-close-btn:hover {
@@ -1239,6 +1217,7 @@ body {
   color: #fff;
   opacity: 1 !important;
   transform: scale(1.15);
+  box-shadow: 0 0 8px rgba(255, 107, 107, 0.5);
 }
 
 .compact-hamster-area {
