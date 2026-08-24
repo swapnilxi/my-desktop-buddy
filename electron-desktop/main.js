@@ -37,6 +37,8 @@ function createWindow() {
   const startWidth = PET_WIDTH;
   const startHeight = PET_HEIGHT;
 
+  const iconPath = path.join(__dirname, 'assets', 'icon.png');
+
   mainWindow = new BrowserWindow({
     width: startWidth,
     height: startHeight,
@@ -52,6 +54,7 @@ function createWindow() {
     skipTaskbar: false,
     hasShadow: false,
     roundedCorners: true,
+    icon: iconPath,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -181,22 +184,68 @@ function setupIPC() {
   });
 }
 
-// ── Tray Icon ────────────────────────────────────────────────────
+let trayAnimTimer = null;
+let dockAnimTimer = null;
+
+function loadIconFrames(size) {
+  const assetsDir = path.join(__dirname, 'assets');
+  const framePaths = [
+    path.join(assetsDir, 'frame_0.png'),
+    path.join(assetsDir, 'frame_1.png'),
+    path.join(assetsDir, 'frame_2.png'),
+    path.join(assetsDir, 'frame_3.png'),
+  ];
+
+  return framePaths.map((p) => {
+    let img = nativeImage.createFromPath(p);
+    if (!img.isEmpty() && size) {
+      img = img.resize({ width: size, height: size });
+    }
+    return img;
+  }).filter((img) => !img.isEmpty());
+}
 
 function createTray() {
-  const icon = nativeImage.createFromDataURL(
-    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAbwAAAG8B8aLcQwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAADOSURBVDiNpZMxDkIhEESHL2BhY6W9nb2NvYfwLPYexMrewkZLS9hYuAaLj/8T0cRJNjszO8MOi5lRj8vhXvENt8Bh+kcAYAPsA9fm/Rl4ArbAMfAInLbSGtcJGAlYOwuHuUgXwEcCJvESOAfuEjCM5/cRsOI9cJyBVbwDTqLpPZCLdAF0gWcbzFJq5fxZBE6B3TT+MgM7CT3oCriId8B5Kt/iD+DCfJzFFdoBu0nMTRD1zPaA63yAOz3Ac/G9Bh8G6YTJt4qv1wBnCfgEPmX/RcAn8cAAAAASUVORK5CYII='
-  );
-  icon.setTemplateImage(true);
+  const trayFrames = loadIconFrames(20);
+  const baseIcon = trayFrames[0] || nativeImage.createFromPath(path.join(__dirname, 'assets', 'icon.png')).resize({ width: 20, height: 20 });
 
-  tray = new Tray(icon);
+  tray = new Tray(baseIcon);
   tray.setToolTip('Hammy — HamsterDesk 🐹');
+
+  // Animated Menu Bar Tray Icon Loop (Realistic 3D breathing, blinking & ear flicks)
+  let step = 0;
+  if (trayAnimTimer) clearInterval(trayAnimTimer);
+  trayAnimTimer = setInterval(() => {
+    step++;
+    if (!tray || tray.isDestroyed() || trayFrames.length === 0) return;
+
+    if (step % 12 === 0) {
+      // Blink frame
+      tray.setImage(trayFrames[2] || baseIcon);
+      setTimeout(() => {
+        if (tray && !tray.isDestroyed()) tray.setImage(baseIcon);
+      }, 160);
+    } else if (step % 7 === 0) {
+      // Ear flick / sniff frame
+      tray.setImage(trayFrames[3] || baseIcon);
+      setTimeout(() => {
+        if (tray && !tray.isDestroyed()) tray.setImage(baseIcon);
+      }, 200);
+    } else if (step % 4 === 0) {
+      // Subtle breath frame
+      tray.setImage(trayFrames[1] || baseIcon);
+      setTimeout(() => {
+        if (tray && !tray.isDestroyed()) tray.setImage(baseIcon);
+      }, 300);
+    }
+  }, 800);
 
   const contextMenu = Menu.buildFromTemplate([
     {
-      label: 'Show Hammy',
+      label: 'Show Hammy 🐹',
       click: () => {
         if (mainWindow) {
+          if (mainWindow.isMinimized()) mainWindow.restore();
           mainWindow.show();
           mainWindow.focus();
         }
@@ -225,6 +274,7 @@ function createTray() {
       if (mainWindow.isVisible()) {
         mainWindow.hide();
       } else {
+        if (mainWindow.isMinimized()) mainWindow.restore();
         mainWindow.show();
         mainWindow.focus();
       }
@@ -280,6 +330,11 @@ function stopBackend() {
 function setupDock() {
   if (process.platform === 'darwin' && app.dock) {
     app.dock.show();
+    const iconPath = path.join(__dirname, 'assets', 'icon.png');
+    const dockIcon = nativeImage.createFromPath(iconPath);
+    if (!dockIcon.isEmpty()) {
+      app.dock.setIcon(dockIcon);
+    }
     const dockMenu = Menu.buildFromTemplate([
       {
         label: 'Show Hammy 🐹',

@@ -6,6 +6,9 @@ export const metadata: Metadata = {
   description:
     "Meet Hammy, your cute animated hamster desktop companion. AI chatbot, to-do manager, voice assistant, and more!",
   keywords: ["AI assistant", "desktop pet", "hamster", "productivity", "chatbot"],
+  icons: {
+    icon: "/icon.png",
+  },
 };
 
 export default function RootLayout({

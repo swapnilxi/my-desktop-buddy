@@ -4,7 +4,7 @@ export interface HamsterDeskAPI {
     close: () => void;
     quit: () => void;
     toggleAlwaysOnTop: () => void;
-    setMode: (mode: 'compact' | 'expanded') => void;
+    setMode: (mode: 'minimized' | 'pet' | 'compact' | 'fullscreen') => void;
     moveBy: (deltaX: number, deltaY: number) => void;
     startDrag: () => void;
   };

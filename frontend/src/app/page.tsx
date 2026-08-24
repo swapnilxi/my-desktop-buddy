@@ -9,6 +9,7 @@ import SpeechTrainingPanel from '@/components/SpeechTraining/SpeechTrainingPanel
 import { checkHealth, fetchGreeting } from '@/lib/api';
 import type { HamsterMood } from '@/lib/api';
 
+export type WindowMode = 'pet' | 'compact' | 'fullscreen';
 type TabId = 'chat' | 'todo' | 'config' | 'speech';
 
 interface Tab {
@@ -38,7 +39,7 @@ const LOCAL_GREETINGS = [
 ];
 
 export default function Home() {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [windowMode, setWindowModeState] = useState<WindowMode>('pet');
   const [activeTab, setActiveTab] = useState<TabId>('chat');
   const [hamsterMood, setHamsterMood] = useState<HamsterMood>('idle');
   const [hamsterColor, setHamsterColor] = useState('#F4A460');
@@ -70,7 +71,6 @@ export default function Home() {
         return;
       }
     } catch {}
-    // Fallback to random local greeting
     const randomG = LOCAL_GREETINGS[Math.floor(Math.random() * LOCAL_GREETINGS.length)];
     setHamsterGreeting(randomG);
   }, []);
@@ -87,11 +87,27 @@ export default function Home() {
   }, [checkBackend, refreshGreeting]);
 
   // Window control helpers
+  const setWindowMode = (mode: WindowMode, targetTab?: TabId) => {
+    if (targetTab) {
+      setActiveTab(targetTab);
+    }
+    setWindowModeState(mode);
+    if (typeof window !== 'undefined' && window.hamsterDesk?.window) {
+      window.hamsterDesk.window.setMode(mode);
+    }
+  };
+
+  const handleMinimize = () => {
+    if (typeof window !== 'undefined' && window.hamsterDesk?.window) {
+      window.hamsterDesk.window.minimize();
+    }
+  };
+
   const handleClose = () => {
     if (typeof window !== 'undefined' && window.hamsterDesk?.window) {
       window.hamsterDesk.window.close();
     } else {
-      setIsExpanded(false);
+      setWindowMode('pet');
     }
   };
 
@@ -99,25 +115,7 @@ export default function Home() {
     if (typeof window !== 'undefined' && window.hamsterDesk?.window) {
       window.hamsterDesk.window.quit();
     } else {
-      setIsExpanded(false);
-    }
-  };
-
-  const handleMinimize = () => {
-    if (typeof window !== 'undefined' && window.hamsterDesk?.window) {
-      window.hamsterDesk.window.minimize();
-    } else {
-      setIsExpanded(false);
-    }
-  };
-
-  const setWindowMode = (expanded: boolean, targetTab?: TabId) => {
-    if (targetTab) {
-      setActiveTab(targetTab);
-    }
-    setIsExpanded(expanded);
-    if (typeof window !== 'undefined' && window.hamsterDesk?.window) {
-      window.hamsterDesk.window.setMode(expanded ? 'expanded' : 'compact');
+      setWindowMode('pet');
     }
   };
 
@@ -129,16 +127,19 @@ export default function Home() {
     }, 2800);
   };
 
+  // Tap to Talk: STAYS in Pet mode without expanding window unexpectedly!
   const handleTapToTalk = () => {
     if (!isListening) {
       setIsListening(true);
       setHamsterMood('listening');
-      // Auto open chat after listening
       setTimeout(() => {
         setIsListening(false);
-        setWindowMode(true, 'chat');
         setHamsterMood('thinking');
-        setTimeout(() => setHamsterMood('idle'), 2500);
+        refreshGreeting();
+        setTimeout(() => {
+          setHamsterMood('speaking');
+          setTimeout(() => setHamsterMood('idle'), 2500);
+        }, 1200);
       }, 2000);
     } else {
       setIsListening(false);
@@ -193,13 +194,12 @@ export default function Home() {
     } catch {}
 
     if (!hasMoved.current) {
-      // Tap without dragging -> Pet Hammy!
       petHamster();
     }
   };
 
-  // ── Mode 1: Compact Floating Pet Widget ─────────────────────────
-  if (!isExpanded) {
+  // ── MODE 1: PET / SMALL MODE (Floating Desktop Pet Widget) ──────
+  if (windowMode === 'pet') {
     return (
       <div
         className={`compact-widget ${isDragging ? 'dragging-active' : ''}`}
@@ -207,7 +207,7 @@ export default function Home() {
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
       >
-        {/* Subtle Top Control Buttons: Hide & Quit */}
+        {/* Top Controls: Hide & Quit */}
         <div className="compact-top-bar" onPointerDown={(e) => e.stopPropagation()}>
           <div className="compact-top-controls">
             <button
@@ -244,34 +244,42 @@ export default function Home() {
 
         {/* Floating Quick Icon Toolbar */}
         <div className="floating-controls" onPointerDown={(e) => e.stopPropagation()}>
-          {/* Tap to Talk */}
+          {/* Tap to Talk — Stays in Pet Mode! */}
           <button
             className={`floating-btn btn-mic ${isListening ? 'listening' : ''}`}
             onClick={handleTapToTalk}
-            title={isListening ? 'Listening...' : 'Tap to Talk'}
+            title={isListening ? 'Listening...' : 'Tap to Talk (Stays in Pet Mode)'}
           >
             {isListening ? '🔴' : '🎙️'}
           </button>
-          {/* Open Chat Window */}
+          {/* Compact Sidebar Mode */}
           <button
             className="floating-btn"
-            onClick={() => setWindowMode(true, 'chat')}
-            title="Open Chat with Hammy"
+            onClick={() => setWindowMode('compact', 'chat')}
+            title="Sidebar Panel Mode"
           >
             💬
           </button>
-          {/* Open Tasks */}
+          {/* Tasks Panel */}
           <button
             className="floating-btn"
-            onClick={() => setWindowMode(true, 'todo')}
+            onClick={() => setWindowMode('compact', 'todo')}
             title="Tasks & Goals"
           >
             ✅
           </button>
+          {/* Fullscreen Dashboard Mode */}
+          <button
+            className="floating-btn"
+            onClick={() => setWindowMode('fullscreen')}
+            title="Full Screen Dashboard Mode"
+          >
+            🖥️
+          </button>
           {/* Settings */}
           <button
             className="floating-btn"
-            onClick={() => setWindowMode(true, 'config')}
+            onClick={() => setWindowMode('compact', 'config')}
             title="Appearance & Settings"
           >
             ⚙️
@@ -281,120 +289,263 @@ export default function Home() {
     );
   }
 
-  // ── Mode 2: Full Expanded Window ─────────────────────────────────
-  return (
-    <div className="app-container">
-      {/* Window Header with Drag Area & Controls */}
-      <header
-        className="app-header"
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-      >
-        <div className="app-title-area">
-          <span className="app-drag-dots">⋮⋮</span>
-          <span>🐹</span>
-          <span>{hamsterName}</span>
-          <span className={`status-dot ${backendOnline ? 'online' : 'offline'}`} />
-        </div>
-
-        <div className="window-controls" onPointerDown={(e) => e.stopPropagation()}>
-          <button
-            className="win-btn collapse"
-            onClick={() => setWindowMode(false)}
-            title="Collapse to pet widget"
-          >
-            ▾
-          </button>
-          <button
-            className="win-btn"
-            onClick={handleMinimize}
-            title="Minimize"
-          >
-            −
-          </button>
-          <button
-            className="win-btn close"
-            onClick={handleClose}
-            title="Close / Hide"
-          >
-            ✕
-          </button>
-          <button
-            className="win-btn"
-            onClick={handleQuit}
-            title="Quit Hammy completely"
-            style={{ fontSize: '10px' }}
-          >
-            ⏻
-          </button>
-        </div>
-      </header>
-
-      {/* Hamster Character (Click to pet) */}
-      <div className="hamster-section">
-        <HamsterSprite
-          mood={hamsterMood}
-          color={hamsterColor}
-          name={hamsterName}
-          greeting={hamsterGreeting}
-          onClick={petHamster}
-          onRefreshGreeting={refreshGreeting}
-        />
-      </div>
-
-      {/* Tab Navigation */}
-      <nav className="tab-nav">
-        {TABS.map((tab) => (
-          <button
-            key={tab.id}
-            className={`tab-btn ${activeTab === tab.id ? 'active' : ''}`}
-            onClick={() => setActiveTab(tab.id)}
-          >
-            <span className="tab-emoji">{tab.emoji}</span>
-            {tab.label}
-          </button>
-        ))}
-      </nav>
-
-      {/* Tab Content */}
-      <main className="tab-content">
-        {activeTab === 'chat' && (
-          <ChatPanel onMoodChange={handleMoodChange} />
-        )}
-        {activeTab === 'todo' && (
-          <TodoPanel onMoodChange={handleMoodChange} />
-        )}
-        {activeTab === 'config' && (
-          <ConfigPanel
-            onColorChange={setHamsterColor}
-            onNameChange={setHamsterName}
-          />
-        )}
-        {activeTab === 'speech' && (
-          <SpeechTrainingPanel />
-        )}
-      </main>
-
-      {/* Status Bar */}
-      <div className="status-bar">
-        <span>
-          <span className={`status-dot ${backendOnline ? 'online' : 'offline'}`} />
-          {backendOnline ? 'Backend connected' : 'Backend offline'}
-        </span>
-        <button
-          onClick={() => setWindowMode(false)}
-          style={{
-            background: 'none',
-            border: 'none',
-            color: 'var(--accent-primary)',
-            cursor: 'pointer',
-            fontSize: '11px',
-          }}
+  // ── MODE 2: COMPACT / SIDEBAR MODE (Floating Sidebar Panel) ──────
+  if (windowMode === 'compact') {
+    return (
+      <div className="app-container compact-sidebar-container">
+        {/* Window Header with Drag Area & Mode Switchers */}
+        <header
+          className="app-header"
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
         >
-          ▾ Collapse to Widget
-        </button>
+          <div className="app-title-area">
+            <span className="app-drag-dots">⋮⋮</span>
+            <span>🐹</span>
+            <span>{hamsterName}</span>
+            <span className={`status-dot ${backendOnline ? 'online' : 'offline'}`} />
+          </div>
+
+          <div className="window-controls" onPointerDown={(e) => e.stopPropagation()}>
+            {/* Mode Switchers */}
+            <button
+              className="win-btn collapse"
+              onClick={() => setWindowMode('pet')}
+              title="Switch to Pet / Small Mode"
+            >
+              🐹
+            </button>
+            <button
+              className="win-btn collapse"
+              onClick={() => setWindowMode('fullscreen')}
+              title="Expand to Full Screen Dashboard"
+            >
+              🖥️
+            </button>
+            <button
+              className="win-btn"
+              onClick={handleMinimize}
+              title="Minimize"
+            >
+              −
+            </button>
+            <button
+              className="win-btn close"
+              onClick={handleClose}
+              title="Close / Hide"
+            >
+              ✕
+            </button>
+          </div>
+        </header>
+
+        {/* Hamster Character (Clickable to pet or collapse to pet mode) */}
+        <div className="hamster-section">
+          <HamsterSprite
+            mood={hamsterMood}
+            color={hamsterColor}
+            name={hamsterName}
+            greeting={hamsterGreeting}
+            onClick={petHamster}
+            onRefreshGreeting={refreshGreeting}
+          />
+        </div>
+
+        {/* Tab Navigation */}
+        <nav className="tab-nav">
+          {TABS.map((tab) => (
+            <button
+              key={tab.id}
+              className={`tab-btn ${activeTab === tab.id ? 'active' : ''}`}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              <span className="tab-emoji">{tab.emoji}</span>
+              {tab.label}
+            </button>
+          ))}
+        </nav>
+
+        {/* Tab Content */}
+        <main className="tab-content">
+          {activeTab === 'chat' && (
+            <ChatPanel onMoodChange={handleMoodChange} />
+          )}
+          {activeTab === 'todo' && (
+            <TodoPanel onMoodChange={handleMoodChange} />
+          )}
+          {activeTab === 'config' && (
+            <ConfigPanel
+              onColorChange={setHamsterColor}
+              onNameChange={setHamsterName}
+            />
+          )}
+          {activeTab === 'speech' && (
+            <SpeechTrainingPanel />
+          )}
+        </main>
+
+        {/* Status Bar */}
+        <div className="status-bar">
+          <span>
+            <span className={`status-dot ${backendOnline ? 'online' : 'offline'}`} />
+            {backendOnline ? 'Backend connected' : 'Backend offline'}
+          </span>
+          <button
+            onClick={() => setWindowMode('pet')}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'var(--accent-primary)',
+              cursor: 'pointer',
+              fontSize: '11px',
+            }}
+          >
+            🐹 Switch to Pet Mode
+          </button>
+        </div>
       </div>
+    );
+  }
+
+  // ── MODE 3: FULL SCREEN / DASHBOARD MODE (Full Productivity App) ─
+  return (
+    <div className="dashboard-container">
+      {/* Co-Pilot Left Sidebar */}
+      <aside className="dashboard-copilot-sidebar">
+        <div className="copilot-header">
+          <span className="copilot-logo">🐹</span>
+          <span className="copilot-title">HamsterDesk</span>
+        </div>
+
+        {/* Animated Co-Pilot Character */}
+        <div className="copilot-pet-box">
+          <HamsterSprite
+            mood={hamsterMood}
+            color={hamsterColor}
+            name={hamsterName}
+            greeting={hamsterGreeting}
+            onClick={petHamster}
+            onRefreshGreeting={refreshGreeting}
+          />
+        </div>
+
+        {/* Voice Talk Action */}
+        <div className="copilot-actions">
+          <button
+            className={`copilot-talk-btn ${isListening ? 'listening' : ''}`}
+            onClick={handleTapToTalk}
+          >
+            {isListening ? '🔴 Listening...' : '🎙️ Tap to Talk'}
+          </button>
+        </div>
+
+        {/* Mode Switcher Navigation */}
+        <div className="copilot-mode-nav">
+          <div className="mode-nav-label">WINDOW MODE</div>
+          <button
+            className="mode-nav-btn"
+            onClick={() => setWindowMode('pet')}
+          >
+            <span>🐹</span> Pet / Small Mode
+          </button>
+          <button
+            className="mode-nav-btn"
+            onClick={() => setWindowMode('compact')}
+          >
+            <span>💬</span> Sidebar Mode
+          </button>
+          <button className="mode-nav-btn active">
+            <span>🖥️</span> Dashboard Mode
+          </button>
+        </div>
+
+        {/* Backend Health Status */}
+        <div className="copilot-footer">
+          <span className={`status-dot ${backendOnline ? 'online' : 'offline'}`} />
+          <span>{backendOnline ? 'FastAPI Connected' : 'Offline'}</span>
+        </div>
+      </aside>
+
+      {/* Main Workspace Dashboard */}
+      <main className="dashboard-main-content">
+        {/* Top Header Controls */}
+        <header
+          className="dashboard-header"
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+        >
+          <div className="dashboard-header-title">
+            <span className="app-drag-dots">⋮⋮</span>
+            <span>Productivity Dashboard & Workspace</span>
+          </div>
+
+          <div className="dashboard-header-controls" onPointerDown={(e) => e.stopPropagation()}>
+            <button
+              className="win-btn collapse"
+              onClick={() => setWindowMode('compact')}
+              title="Collapse to Sidebar Mode"
+            >
+              💬
+            </button>
+            <button
+              className="win-btn collapse"
+              onClick={() => setWindowMode('pet')}
+              title="Collapse to Pet Mode"
+            >
+              🐹
+            </button>
+            <button
+              className="win-btn"
+              onClick={handleMinimize}
+              title="Minimize"
+            >
+              −
+            </button>
+            <button
+              className="win-btn close"
+              onClick={handleClose}
+              title="Close"
+            >
+              ✕
+            </button>
+          </div>
+        </header>
+
+        {/* Workspace Tab Bar */}
+        <nav className="dashboard-tab-bar">
+          {TABS.map((tab) => (
+            <button
+              key={tab.id}
+              className={`tab-btn ${activeTab === tab.id ? 'active' : ''}`}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              <span className="tab-emoji">{tab.emoji}</span>
+              {tab.label}
+            </button>
+          ))}
+        </nav>
+
+        {/* Tab View */}
+        <div className="dashboard-workspace-body">
+          {activeTab === 'chat' && (
+            <ChatPanel onMoodChange={handleMoodChange} />
+          )}
+          {activeTab === 'todo' && (
+            <TodoPanel onMoodChange={handleMoodChange} />
+          )}
+          {activeTab === 'config' && (
+            <ConfigPanel
+              onColorChange={setHamsterColor}
+              onNameChange={setHamsterName}
+            />
+          )}
+          {activeTab === 'speech' && (
+            <SpeechTrainingPanel />
+          )}
+        </div>
+      </main>
     </div>
   );
 }
