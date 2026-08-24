@@ -1,0 +1,131 @@
+# ==========================================
+# HamsterDesk — Comprehensive .gitignore
+# ==========================================
+
+# ── Operating System Files ─────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+[Dd]esktop.ini
+
+# ── Environment & Secrets ──────────────────
+.env
+.env.*
+!.env.example
+!.env.sample
+*.env
+config.local.json
+secrets.json
+
+# ── Node / JavaScript / TypeScript ─────────
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.pnpm-debug.log*
+package-lock.json.bak
+yarn.lock.bak
+
+# ── Next.js / Frontend ─────────────────────
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/dist/
+.next/
+out/
+build/
+dist/
+.cache/
+.parcel-cache/
+.turbo/
+*.tsbuildinfo
+next-env.d.ts
+
+# ── Electron & Packaging ───────────────────
+electron-desktop/dist/
+electron-desktop/build/
+electron-desktop/out/
+electron-desktop/release/
+electron/dist/
+electron/build/
+*.dmg
+*.pkg
+*.app
+*.exe
+*.deb
+*.rpm
+*.snap
+*.AppImage
+*.asar
+
+# ── Python / Backend ───────────────────────
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+backend/build/
+backend/dist/
+backend/downloads/
+backend/eggs/
+backend/.eggs/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ── Python Virtual Environments ────────────
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+backend/venv/
+backend/.venv/
+backend/env/
+
+# ── Databases, Local Storage & Cache ───────
+*.db
+*.sqlite
+*.sqlite3
+backend/data/
+data/
+*.log
+logs/
+*.pid
+*.seed
+
+# ── Testing & Coverage ─────────────────────
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage/
+.nyc_output/
+
+# ── IDEs & Code Editors ────────────────────
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.sublime-workspace
+*.sublime-project
+*.swp
+*.swo
+*~
+*.bak
+
+# ── AI / IDE Workspaces & Artifacts ────────
+.gemini/
+.agents/scratch/

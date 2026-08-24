@@ -1,0 +1,30 @@
+{
+  "name": "hamsterdesk-electron",
+  "version": "0.1.0",
+  "description": "HamsterDesk — AI Desktop Pet & Productivity Assistant (Electron Shell)",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "ELECTRON_DEV=true electron ."
+  },
+  "dependencies": {
+    "electron": "^33.0.0"
+  },
+  "devDependencies": {
+    "electron-builder": "^25.0.0"
+  },
+  "build": {
+    "appId": "com.hamsterdesk.app",
+    "productName": "HamsterDesk",
+    "mac": {
+      "category": "public.app-category.productivity",
+      "icon": "assets/icon.icns",
+      "target": ["dmg"]
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "assets/**"
+    ]
+  }
+}
