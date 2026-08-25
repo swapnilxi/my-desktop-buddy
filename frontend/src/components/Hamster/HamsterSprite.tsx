@@ -126,7 +126,7 @@ export default function HamsterSprite({
             <span className="crown-lock crown-lock-front" />
           </div>
 
-          {/* Tiny Rounded Hamster Ears */}
+          {/* Large Rounded Hamster Ears */}
           <div className="hamster-ear ear-left">
             <div className="ear-outer">
               <div className="ear-inner" />
@@ -138,28 +138,49 @@ export default function HamsterSprite({
             </div>
           </div>
 
-          {/* Head Base Mass (Broad Temples, Fluffy Rounded Skull) */}
+          {/* Head Base Mass (Broad Golden-Orange Skull & Fur Shading) */}
           <div className="head-base-mass">
             <div className="head-top-glow" />
             <div className="head-fur-gradient-blend" />
           </div>
 
-          {/* Plump Volumetric Cheek Pouches (Widest Lateral Facial Volume) */}
-          <div className="hamster-cheeks-assembly">
-            <div className="cheek-flank-fur flank-left" />
-            <div className="cheek-flank-fur flank-right" />
-            <div className="cheek-pouch left-cheek" />
-            <div className="cheek-pouch right-cheek" />
-            <div className="cheek-bridge-cream" />
+          {/* ─── Unified Organic Cream Face Mask (Flowing Fur Contours) ─── */}
+          <div className="hamster-face-mask">
+            {/* Single Continuous Cream Fur Mantle Base */}
+            <div className="face-mask-mantle" />
+
+            {/* Gentle Under-Eye Cream Fur Rises (Left & Right Contour Arcs) */}
+            <div className="mask-under-eye-rise rise-left" />
+            <div className="mask-under-eye-rise rise-right" />
+
+            {/* Volumetric Cheek Lobes with Embedded Diffuse Pink Blush */}
+            <div className="mask-cheek-volume left-volume">
+              <div className="hamster-blush" />
+            </div>
+            <div className="mask-cheek-volume right-volume">
+              <div className="hamster-blush" />
+            </div>
+
+            {/* Central Muzzle Anchor Unit (Rises Higher around the Nose) */}
+            <div className="hamster-muzzle">
+              <div className="muzzle-soft-glow" />
+              <div className="hamster-nose">
+                <div className="nose-highlight" />
+              </div>
+              <div className="hamster-philtrum" />
+              <div className="hamster-mouth">
+                <span className="hamster-tongue" />
+              </div>
+            </div>
           </div>
 
-          {/* Facial Features */}
-          <div className="hamster-face">
+          {/* ─── Eyes, Brows & Whiskers Layer ─── */}
+          <div className="hamster-face-features">
             {/* Subtle Eyebrows */}
             <div className="hamster-eyebrow eyebrow-left" />
             <div className="hamster-eyebrow eyebrow-right" />
 
-            {/* Glossy Chocolate 3D Eyes */}
+            {/* Glossy Chocolate 3D Eyes with Double Catchlights */}
             <div className="hamster-eye-socket eye-socket-left">
               <div className="hamster-eye eye-left">
                 <div className="eye-iris-glow" />
@@ -178,11 +199,7 @@ export default function HamsterSprite({
               <div className="eyelid-upper" />
             </div>
 
-            {/* Diffuse Airbrushed Pink Cheek Blush */}
-            <div className="hamster-blush blush-left" />
-            <div className="hamster-blush blush-right" />
-
-            {/* Natural Fine Hair Whiskers */}
+            {/* Natural Fine Vibrissae Whiskers */}
             <div className="hamster-whiskers whiskers-left">
               <span className="whisker w-top" />
               <span className="whisker w-mid" />
@@ -201,19 +218,6 @@ export default function HamsterSprite({
                 <span className="w-dot dot-1" />
                 <span className="w-dot dot-2" />
                 <span className="w-dot dot-3" />
-              </div>
-            </div>
-
-            {/* Short Blunt Muzzle, Tiny Pink Nose & Cute Smile */}
-            <div className="hamster-muzzle">
-              <div className="muzzle-pad" />
-
-              <div className="hamster-nose">
-                <div className="nose-highlight" />
-              </div>
-
-              <div className="hamster-mouth">
-                <span className="hamster-tongue" />
               </div>
             </div>
           </div>
