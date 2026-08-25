@@ -1,7 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════
    HamsterDesk — 3D Soft Plush Syrian Hamster Render
-   Exact Silhouette Reference Reconstruction
-   Forehead Crown Fur • Broad Cheeks • Anatomical Feet Pads & Toes
+   Curved Crown Fur • Hand & Foot Paw Pad Anatomy • Soft 3D Lighting
    ═══════════════════════════════════════════════════════════════ */
 
 :root {
@@ -16,8 +15,8 @@
   --hamster-cream-mid: #F9EED9;
   --hamster-cream-shadow: #ECCFA8;
 
-  /* Soft Fleshy Skin & Inner Ear */
-  --hamster-pink-inner: #F2A89F;    /* Soft Muted Pink Inner Ear & Paw Pads */
+  /* Soft Fleshy Skin, Paw Pads & Inner Ear */
+  --hamster-pink-inner: #F2A89F;    /* Soft Muted Pink */
   --hamster-pink-blush: #F5A198;    /* Diffuse Blush */
   --hamster-nose-color: #E88880;     /* Tiny Pink Nose */
   --hamster-tongue-color: #F17F89;   /* Tongue */
@@ -153,16 +152,12 @@
   filter: blur(2px);
 }
 
-/* ── Anatomical Hind Feet with Main Pad & Distinct Toe Pads ────── */
+/* ── Anatomical Hind Feet with Main Pad & 3 Distinct Toe Pads ──── */
 .hamster-foot {
   position: absolute;
   bottom: 4px;
-  width: 34px;
-  height: 26px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
+  width: 32px;
+  height: 24px;
   z-index: 5;
   pointer-events: none;
 }
@@ -177,27 +172,44 @@
   transform: rotate(15deg);
 }
 
-.paw-pad {
-  display: block;
+.foot-sole {
+  position: relative;
+  width: 100%;
+  height: 100%;
   background: radial-gradient(
-    ellipse at 45% 35%,
+    ellipse at 50% 45%,
     #FFF0EE 0%,
-    var(--hamster-pink-inner) 60%,
+    var(--hamster-pink-inner) 55%,
     #D0786F 100%
   );
+  border-radius: 50% 50% 40% 40% / 60% 60% 40% 40%;
   box-shadow:
-    inset 0 1.5px 2px rgba(255, 255, 255, 0.7),
-    0 1.5px 3px rgba(80, 35, 10, 0.18);
+    inset 0 2px 4px rgba(255, 255, 255, 0.7),
+    inset 0 -2px 4px rgba(130, 45, 35, 0.25),
+    0 2px 5px rgba(80, 35, 10, 0.18);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 2px;
 }
 
-.paw-pad--main {
-  width: 24px;
-  height: 17px;
-  border-radius: 50% 50% 45% 45% / 60% 60% 40% 40%;
-  margin-bottom: 1px;
+.foot-main-pad {
+  position: absolute;
+  bottom: 2px;
+  width: 20px;
+  height: 14px;
+  background: radial-gradient(
+    ellipse at 50% 35%,
+    #FFF6F5 0%,
+    var(--hamster-pink-inner) 65%,
+    #D67C73 100%
+  );
+  border-radius: 50%;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.6);
 }
 
-.paw-toes-cluster {
+.foot-toes-row {
   position: absolute;
   top: 0px;
   left: 50%;
@@ -207,16 +219,26 @@
   z-index: 2;
 }
 
-.paw-pad--toe1, .paw-pad--toe2, .paw-pad--toe3 {
+.foot-toe {
+  display: block;
+  background: radial-gradient(
+    circle at 45% 35%,
+    #FFF6F5 0%,
+    var(--hamster-pink-inner) 65%,
+    #C86A61 100%
+  );
   border-radius: 50%;
+  box-shadow:
+    inset 0 1px 1.5px rgba(255, 255, 255, 0.75),
+    0 1px 2px rgba(100, 35, 25, 0.2);
 }
 
-.paw-pad--toe1 { width: 7.5px; height: 8px; }
-.paw-pad--toe2 { width: 8.5px; height: 9.5px; margin-top: -1.5px; }
-.paw-pad--toe3 { width: 7.5px; height: 8px; }
+.t-left { width: 7px; height: 7.5px; }
+.t-mid { width: 8.5px; height: 9px; margin-top: -1.5px; }
+.t-right { width: 7px; height: 7.5px; }
 
 /* ═══════════════════════════════════════════════════════════════
-   2. HEAD, BROAD CHEEKS & CROWN FUR LAYER (Z-INDEX: 4)
+   2. HEAD, BROAD CHEEKS & CURVED CROWN FUR (Z-INDEX: 4)
    ═══════════════════════════════════════════════════════════════ */
 
 .hamster-head-layer {
@@ -229,96 +251,145 @@
   z-index: 4;
 }
 
-/* ── Natural Upward-Swept Messy Crown Fur (7 Tapered Organic Tufts) ── */
+/* ── Soft Flowing 3D Plush Forelock Fur Crest ─────────────────── */
 .hamster-crown {
   position: absolute;
-  top: -16px;
+  top: -15px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   align-items: flex-end;
   justify-content: center;
+  width: 56px;
+  height: 26px;
   z-index: 6;
   pointer-events: none;
+  filter: drop-shadow(0 2px 4px rgba(120, 50, 15, 0.16));
 }
 
-.crown-tuft {
+/* Base Fluff Cushion bridging Skull Dome to Fur Crest */
+.crown-base-fluff {
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 44px;
+  height: 14px;
+  background: radial-gradient(
+    ellipse at 50% 60%,
+    var(--hamster-color-light) 0%,
+    var(--hamster-color) 65%,
+    var(--hamster-color-shadow) 100%
+  );
+  border-radius: 50% 50% 30% 30%;
+  box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.35);
+  z-index: 0;
+}
+
+.crown-lock {
   position: relative;
   display: block;
+  transform-origin: bottom center;
+}
+
+/* 1. Left Side Flank Lock (Soft Feathering) */
+.crown-lock-side {
+  width: 14px;
+  height: 14px;
+  transform: rotate(-19deg);
+  border-radius: 70% 30% 35% 35% / 75% 70% 30% 25%;
   background: radial-gradient(
     ellipse at 35% 25%,
     var(--hamster-color-light) 0%,
-    var(--hamster-color) 45%,
+    var(--hamster-color) 50%,
     var(--hamster-color-shadow) 85%,
     var(--hamster-color-deep) 100%
   );
   box-shadow:
     inset 0 1.5px 2px rgba(255, 255, 255, 0.45),
-    inset -1px -2px 3px rgba(140, 60, 15, 0.25),
-    0 2px 4px rgba(80, 35, 10, 0.12);
-  transform-origin: bottom center;
-}
-
-.crown-tuft--left-outer {
-  width: 8px;
-  height: 14px;
-  transform: rotate(-32deg);
-  border-radius: 80% 20% 30% 30% / 90% 80% 20% 10%;
-  margin-right: -4px;
+    inset 0 -2px 3px rgba(176, 95, 24, 0.3);
+  margin-right: -5px;
   z-index: 1;
 }
 
-.crown-tuft--left {
-  width: 10px;
-  height: 19px;
-  transform: rotate(-18deg);
-  border-radius: 70% 30% 25% 25% / 90% 85% 15% 15%;
-  margin-right: -3px;
-  z-index: 2;
-}
-
-.crown-tuft--center-left {
-  width: 12px;
-  height: 24px;
-  transform: rotate(-6deg);
-  border-radius: 60% 40% 20% 20% / 95% 90% 10% 10%;
-  margin-right: -2px;
+/* 2. Main Flowing Forelock (Primary Plush Curl with Specular Sheen) */
+.crown-lock-main {
+  width: 27px;
+  height: 25px;
+  transform: rotate(12deg) skewX(-3deg);
+  border-radius: 75% 25% 25% 25% / 85% 75% 25% 20%;
+  background: radial-gradient(
+    ellipse at 32% 22%,
+    #FFF4E5 0%,
+    var(--hamster-color-light) 25%,
+    var(--hamster-color) 58%,
+    var(--hamster-color-shadow) 85%,
+    var(--hamster-color-deep) 100%
+  );
+  box-shadow:
+    inset 0 2px 3.5px rgba(255, 255, 255, 0.6),
+    inset -1.5px -3px 4px rgba(160, 75, 18, 0.35),
+    0 2px 4px rgba(80, 35, 10, 0.14);
   z-index: 3;
 }
 
-.crown-tuft--center {
-  width: 14px;
-  height: 28px;
-  transform: rotate(1deg);
-  border-radius: 50% 50% 15% 15% / 95% 95% 10% 10%;
-  z-index: 4;
+.lock-highlight {
+  position: absolute;
+  top: 2.5px;
+  left: 4px;
+  width: 9px;
+  height: 12px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.65) 0%,
+    rgba(255, 255, 255, 0.1) 60%,
+    transparent 100%
+  );
+  border-radius: 50%;
+  transform: rotate(-15deg);
+  filter: blur(0.5px);
+  pointer-events: none;
 }
 
-.crown-tuft--center-right {
-  width: 12px;
-  height: 23px;
-  transform: rotate(10deg);
-  border-radius: 40% 60% 20% 20% / 90% 95% 10% 10%;
-  margin-left: -2px;
-  z-index: 3;
-}
-
-.crown-tuft--right {
-  width: 10px;
+/* 3. Secondary Flowing Lock (Nestled Curved Overlap) */
+.crown-lock-sub {
+  width: 20px;
   height: 18px;
-  transform: rotate(20deg);
-  border-radius: 30% 70% 25% 25% / 85% 90% 15% 15%;
-  margin-left: -3px;
+  transform: rotate(-10deg);
+  border-radius: 35% 65% 30% 30% / 75% 80% 20% 25%;
+  background: radial-gradient(
+    ellipse at 45% 25%,
+    var(--hamster-color-light) 0%,
+    var(--hamster-color) 52%,
+    var(--hamster-color-shadow) 85%,
+    var(--hamster-color-deep) 100%
+  );
+  box-shadow:
+    inset 0 1.5px 2px rgba(255, 255, 255, 0.45),
+    inset 0 -2.5px 3.5px rgba(176, 95, 24, 0.3);
+  margin-left: -7px;
   z-index: 2;
 }
 
-.crown-tuft--right-outer {
-  width: 8px;
-  height: 14px;
-  transform: rotate(34deg);
-  border-radius: 20% 80% 30% 30% / 80% 90% 10% 20%;
-  margin-left: -4px;
-  z-index: 1;
+/* 4. Foreground Fluff Wisp (Softens Base Junction) */
+.crown-lock-front {
+  position: absolute;
+  bottom: 0px;
+  left: 21px;
+  width: 15px;
+  height: 12px;
+  transform: rotate(4deg);
+  border-radius: 60% 40% 30% 30% / 75% 75% 25% 25%;
+  background: radial-gradient(
+    circle at 40% 30%,
+    #FFEED8 0%,
+    var(--hamster-color-light) 40%,
+    var(--hamster-color) 80%
+  );
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.6),
+    0 1px 2px rgba(90, 40, 10, 0.1);
+  z-index: 4;
 }
 
 /* Tiny Rounded Hamster Ears (26px x 28px) */
@@ -378,14 +449,14 @@
     inset 0 -1.5px 3px rgba(255, 255, 255, 0.25);
 }
 
-/* ── Head Base Mass (Wide Temples, Asymmetric Upper Forehead) ──── */
+/* ── Head Base Mass (Broad Temples, Fluffy Rounded Skull) ──────── */
 .head-base-mass {
   position: absolute;
   top: 4px;
   left: 50%;
   transform: translateX(-50%);
   width: 156px;
-  height: 108px;
+  height: 106px;
   background: radial-gradient(
     ellipse at 42% 24%,
     var(--hamster-color-light) 0%,
@@ -393,7 +464,7 @@
     var(--hamster-color-shadow) 85%,
     var(--hamster-color-deep) 100%
   );
-  border-radius: 46% 46% 50% 50% / 38% 38% 62% 62%;
+  border-radius: 48% 48% 50% 50% / 36% 36% 64% 64%;
   box-shadow:
     inset 0 4px 10px rgba(255, 255, 255, 0.38),
     inset 0 -5px 10px rgba(120, 45, 10, 0.2),
@@ -413,44 +484,87 @@
   pointer-events: none;
 }
 
-/* ── Plump Volumetric Cheek Pouches (Protruding Lateral Masses) ── */
+/* Soft Downward Facial Fur Color Transition Blend */
+.head-fur-gradient-blend {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 50% 75%,
+    rgba(255, 253, 247, 0.95) 0%,
+    rgba(249, 238, 217, 0.8) 42%,
+    rgba(223, 139, 52, 0.4) 70%,
+    transparent 92%
+  );
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* ── Plump Volumetric Cheek Pouches (Widest Lateral Facial Volume) ── */
 .hamster-cheeks-assembly {
   position: absolute;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 158px;
-  height: 66px;
+  width: 166px;
+  height: 70px;
   z-index: 5;
   pointer-events: none;
+}
+
+/* Lateral Fur Flanks (Soft Outer Cheek Silhouette) */
+.cheek-flank-fur {
+  position: absolute;
+  bottom: 4px;
+  width: 44px;
+  height: 48px;
+  background: radial-gradient(
+    ellipse at 40% 35%,
+    var(--hamster-color-light) 0%,
+    var(--hamster-color) 60%,
+    var(--hamster-color-shadow) 90%
+  );
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.4);
+  z-index: 1;
+}
+
+.flank-left {
+  left: -12px;
+  border-radius: 75% 25% 65% 35% / 70% 30% 65% 35%;
+}
+
+.flank-right {
+  right: -12px;
+  border-radius: 25% 75% 35% 65% / 30% 70% 35% 65%;
 }
 
 .cheek-pouch {
   position: absolute;
   bottom: 2px;
-  width: 56px;
-  height: 50px;
+  width: 60px;
+  height: 52px;
   background: radial-gradient(
-    ellipse at 45% 42%,
+    ellipse at 44% 40%,
     #FFFFFF 0%,
-    var(--hamster-cream-fur) 45%,
-    var(--hamster-cream-mid) 75%,
-    var(--hamster-cream-shadow) 100%
+    var(--hamster-cream-fur) 42%,
+    var(--hamster-cream-mid) 72%,
+    var(--hamster-cream-shadow) 95%,
+    #DEB88B 100%
   );
   box-shadow:
-    inset 0 2px 6px rgba(255, 255, 255, 0.7),
-    inset -3px -3px 8px rgba(120, 55, 15, 0.14),
-    0 3px 8px rgba(80, 35, 10, 0.12);
+    inset 0 2.5px 6px rgba(255, 255, 255, 0.8),
+    inset -3px -4px 8px rgba(135, 60, 18, 0.16),
+    0 3px 8px rgba(90, 40, 10, 0.13);
+  z-index: 2;
 }
 
 .left-cheek {
-  left: -9px;
-  border-radius: 65% 35% 55% 45% / 65% 35% 60% 40%;
+  left: -10px;
+  border-radius: 68% 32% 58% 42% / 68% 32% 62% 38%;
 }
 
 .right-cheek {
-  right: -9px;
-  border-radius: 35% 65% 45% 55% / 35% 65% 40% 60%;
+  right: -10px;
+  border-radius: 32% 68% 42% 58% / 32% 68% 38% 62%;
 }
 
 .cheek-bridge-cream {
@@ -458,17 +572,18 @@
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 140px;
-  height: 62px;
+  width: 148px;
+  height: 64px;
   background: radial-gradient(
     ellipse at 50% 55%,
     #FFFFFF 0%,
-    var(--hamster-cream-fur) 40%,
-    var(--hamster-cream-mid) 70%,
-    var(--hamster-cream-shadow) 95%,
+    var(--hamster-cream-fur) 42%,
+    var(--hamster-cream-mid) 68%,
+    var(--hamster-cream-shadow) 92%,
     transparent 100%
   );
-  border-radius: 50% 50% 46% 46% / 44% 44% 56% 56%;
+  border-radius: 50% 50% 46% 46% / 42% 42% 58% 58%;
+  z-index: 2;
 }
 
 /* ── Facial Features ──────────────────────────────────────────── */
@@ -590,7 +705,7 @@
 .blush-left { left: 14px; }
 .blush-right { right: 14px; }
 
-/* ── Natural Fine Hair Hamster Whiskers (Vibrissae) ────────────── */
+/* ── Natural Fine Hair Whiskers ─────────────────────────────────── */
 .hamster-whiskers {
   position: absolute;
   top: 50px;
@@ -891,41 +1006,79 @@
   box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.45);
 }
 
-/* Tiny Front Paws with Pink Pad Detail */
+/* ── Cute Front Hamster Paws with Embedded 3-Pad Pattern ────────── */
 .hamster-paw {
   position: absolute;
-  width: 13px;
-  height: 13px;
-  background: radial-gradient(circle at 40% 30%, #FFFFFF 0%, var(--hamster-cream-fur) 60%, var(--hamster-cream-mid) 100%);
-  border-radius: 50%;
-  box-shadow:
-    inset 0 1.5px 2px rgba(255, 255, 255, 0.7),
-    0 2px 4px rgba(70, 25, 10, 0.2);
+  width: 15px;
+  height: 15px;
   z-index: 4;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .arm-left .hamster-paw { right: 1px; }
 .arm-right .hamster-paw { left: 1px; }
 
-.hand-pad--main {
-  width: 6px;
-  height: 6px;
-  background: radial-gradient(circle at 35% 35%, #FFF0EE 0%, var(--hamster-pink-inner) 70%, #D0786F 100%);
+.paw-fur-rim {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle at 45% 35%,
+    #FFFFFF 0%,
+    var(--hamster-cream-fur) 55%,
+    var(--hamster-cream-mid) 100%
+  );
   border-radius: 50%;
-  display: block;
+  box-shadow:
+    inset 0 1.5px 2px rgba(255, 255, 255, 0.8),
+    0 2px 4px rgba(70, 25, 10, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.hand-pad--toe {
+.paw-pad-cluster {
+  position: relative;
+  width: 10px;
+  height: 9px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.paw-finger {
   position: absolute;
-  top: 1px;
-  width: 3.5px;
-  height: 3.5px;
-  background: var(--hamster-pink-inner);
-  border-radius: 50%;
+  top: 0px;
   display: block;
+  width: 3px;
+  height: 3.8px;
+  background: radial-gradient(
+    circle at 40% 35%,
+    #FFF6F5 0%,
+    var(--hamster-pink-inner) 70%,
+    #D0786F 100%
+  );
+  border-radius: 50%;
+  box-shadow: inset 0 0.5px 1px rgba(255, 255, 255, 0.7);
+}
+
+.f-left { left: 0.5px; transform: rotate(-10deg); }
+.f-mid { left: 3.5px; top: -0.5px; }
+.f-right { right: 0.5px; transform: rotate(10deg); }
+
+.paw-palm-pad {
+  position: absolute;
+  bottom: 0px;
+  width: 5.5px;
+  height: 4px;
+  background: radial-gradient(
+    ellipse at 50% 40%,
+    #FFF6F5 0%,
+    var(--hamster-pink-inner) 65%,
+    #D0786F 100%
+  );
+  border-radius: 50%;
+  box-shadow: inset 0 0.5px 1px rgba(255, 255, 255, 0.6);
 }
 
 /* Floating Heart */

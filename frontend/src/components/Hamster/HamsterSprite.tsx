@@ -78,36 +78,40 @@ export default function HamsterSprite({
             </div>
           </div>
 
-          {/* Anatomical Hind Feet with Main Pad & Distinct Toe Pads */}
+          {/* Anatomical Hind Feet with Main Pad & Distinct 3-Toe Structure */}
           <div className="hamster-foot hamster-foot--left">
-            <span className="paw-pad paw-pad--main" />
-            <div className="paw-toes-cluster">
-              <span className="paw-pad paw-pad--toe1" />
-              <span className="paw-pad paw-pad--toe2" />
-              <span className="paw-pad paw-pad--toe3" />
+            <div className="foot-sole">
+              <span className="foot-main-pad" />
+              <div className="foot-toes-row">
+                <span className="foot-toe t-left" />
+                <span className="foot-toe t-mid" />
+                <span className="foot-toe t-right" />
+              </div>
             </div>
           </div>
           <div className="hamster-foot hamster-foot--right">
-            <span className="paw-pad paw-pad--main" />
-            <div className="paw-toes-cluster">
-              <span className="paw-pad paw-pad--toe1" />
-              <span className="paw-pad paw-pad--toe2" />
-              <span className="paw-pad paw-pad--toe3" />
+            <div className="foot-sole">
+              <span className="foot-main-pad" />
+              <div className="foot-toes-row">
+                <span className="foot-toe t-left" />
+                <span className="foot-toe t-mid" />
+                <span className="foot-toe t-right" />
+              </div>
             </div>
           </div>
         </div>
 
-        {/* ══════════ 2. HEAD, CHEEKS & CROWN LAYER (Z-INDEX: 4) ══════════ */}
+        {/* ══════════ 2. HEAD, CHEEKS & CURVED CROWN LAYER (Z-INDEX: 4) ══════════ */}
         <div className="hamster-head-layer">
-          {/* Natural Messy Upward-Swept Crown Fur (7 Organic Tapered Tufts) */}
+          {/* Soft Flowing 3D Plush Forelock Fur Crest */}
           <div className="hamster-crown">
-            <span className="crown-tuft crown-tuft--left-outer" />
-            <span className="crown-tuft crown-tuft--left" />
-            <span className="crown-tuft crown-tuft--center-left" />
-            <span className="crown-tuft crown-tuft--center" />
-            <span className="crown-tuft crown-tuft--center-right" />
-            <span className="crown-tuft crown-tuft--right" />
-            <span className="crown-tuft crown-tuft--right-outer" />
+            <span className="crown-base-fluff" />
+            <span className="crown-lock crown-lock-side" />
+            <span className="crown-lock crown-lock-main">
+              <span className="lock-highlight" />
+            </span>
+            <span className="crown-lock crown-lock-sub" />
+            <span className="crown-lock crown-lock-front" />
           </div>
 
           {/* Tiny Rounded Hamster Ears */}
@@ -122,13 +126,16 @@ export default function HamsterSprite({
             </div>
           </div>
 
-          {/* Head Base Mass (Wide Temples, Asymmetric Upper Forehead) */}
+          {/* Head Base Mass (Broad Temples, Fluffy Rounded Skull) */}
           <div className="head-base-mass">
             <div className="head-top-glow" />
+            <div className="head-fur-gradient-blend" />
           </div>
 
-          {/* Plump Volumetric Cheek Pouches (Protruding Lateral Masses) */}
+          {/* Plump Volumetric Cheek Pouches (Widest Lateral Facial Volume) */}
           <div className="hamster-cheeks-assembly">
+            <div className="cheek-flank-fur flank-left" />
+            <div className="cheek-flank-fur flank-right" />
             <div className="cheek-pouch left-cheek" />
             <div className="cheek-pouch right-cheek" />
             <div className="cheek-bridge-cream" />
@@ -208,21 +215,33 @@ export default function HamsterSprite({
             <span className="seed-stripe stripe-center" />
           </div>
 
-          {/* Short Left Arm & Little Paws with Pink Pads */}
+          {/* Short Left Arm & Little Hamster Paw with 3 Tiny Pads */}
           <div className="hamster-arm arm-left">
             <div className="arm-volume" />
             <div className="hamster-paw">
-              <span className="hand-pad hand-pad--main" />
-              <span className="hand-pad hand-pad--toe" />
+              <div className="paw-fur-rim">
+                <div className="paw-pad-cluster">
+                  <span className="paw-finger f-left" />
+                  <span className="paw-finger f-mid" />
+                  <span className="paw-finger f-right" />
+                  <span className="paw-palm-pad" />
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Short Right Arm & Little Paws with Pink Pads */}
+          {/* Short Right Arm & Little Hamster Paw with 3 Tiny Pads */}
           <div className="hamster-arm arm-right">
             <div className="arm-volume" />
             <div className="hamster-paw">
-              <span className="hand-pad hand-pad--main" />
-              <span className="hand-pad hand-pad--toe" />
+              <div className="paw-fur-rim">
+                <div className="paw-pad-cluster">
+                  <span className="paw-finger f-left" />
+                  <span className="paw-finger f-mid" />
+                  <span className="paw-finger f-right" />
+                  <span className="paw-palm-pad" />
+                </div>
+              </div>
             </div>
           </div>
         </div>
