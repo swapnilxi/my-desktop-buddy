@@ -122,7 +122,7 @@
   z-index: 2;
 }
 
-/* ── Anatomical Hind Feet Emerging from Lower Torso (Z-INDEX: 5) ── */
+/* ── Anatomical Hind Feet Emerging from Lower Body (Z-INDEX: 5) ── */
 .hamster-foot {
   position: absolute;
   width: 34px;
@@ -133,7 +133,7 @@
 }
 
 .hamster-foot--left {
-  left: 20px;
+  left: 18px;
   bottom: 2px;
   transform-origin: 50% 20%;
   transform: translate(var(--left-foot-x), var(--left-foot-y)) rotate(var(--left-foot-rotate));
@@ -141,7 +141,7 @@
 
 .hamster-foot--right {
   right: 20px;
-  bottom: 2px;
+  bottom: 3px;
   transform-origin: 50% 20%;
   transform: translate(var(--right-foot-x), var(--right-foot-y)) rotate(var(--right-foot-rotate));
 }
@@ -153,39 +153,20 @@
   background: radial-gradient(
     ellipse at 48% 40%,
     #FFF0EE 0%,
-    #F5B0A7 38%,
-    var(--hamster-pink-inner) 72%,
+    #F5B0A7 40%,
+    var(--hamster-pink-inner) 75%,
     #C8655C 100%
   );
-  border-radius: 50% 50% 42% 42% / 58% 58% 42% 42%;
+  border-radius: 52% 52% 42% 42% / 62% 62% 38% 38%;
   box-shadow:
     inset 0 2px 4px rgba(255, 255, 255, 0.75),
-    inset 0 -2px 4px rgba(130, 45, 35, 0.25),
-    0 3px 7px rgba(70, 25, 10, 0.22);
+    inset 0 -2.5px 5px rgba(130, 45, 35, 0.26),
+    0 3px 6px rgba(80, 35, 10, 0.22);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
   padding-bottom: 2px;
-}
-
-/* Soft Upper Fur Cuff blending Foot into Torso */
-.foot-fur-cuff {
-  position: absolute;
-  top: -2px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 86%;
-  height: 7px;
-  background: radial-gradient(
-    ellipse at 50% 0%,
-    var(--hamster-color) 0%,
-    var(--hamster-color-shadow) 60%,
-    transparent 100%
-  );
-  border-radius: 50% 50% 0 0;
-  pointer-events: none;
-  z-index: 3;
 }
 
 .foot-main-pad {
@@ -201,7 +182,6 @@
   );
   border-radius: 50%;
   box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.65);
-  z-index: 2;
 }
 
 .foot-toes-row {
@@ -211,7 +191,7 @@
   transform: translateX(-50%);
   display: flex;
   gap: 1.2px;
-  z-index: 4;
+  z-index: 2;
   opacity: 0.92;
 }
 
@@ -227,36 +207,36 @@
   border-radius: 50%;
   box-shadow:
     inset 0 0.8px 1.2px rgba(255, 255, 255, 0.7),
-    0 0.5px 1px rgba(120, 45, 35, 0.12);
+    0 0.5px 1px rgba(120, 45, 35, 0.15);
 }
 
-.t-left { width: 5.5px; height: 6px; }
-.t-mid { width: 6.8px; height: 7px; margin-top: -0.8px; }
-.t-right { width: 5.5px; height: 6px; }
+.t-left { width: 6px; height: 6.5px; }
+.t-mid { width: 7.5px; height: 8px; margin-top: -1px; }
+.t-right { width: 6px; height: 6.5px; }
 
-/* ── Fleshy Lower Haunches (Rear/Hip Sitting Volume, Z-INDEX: 1) ── */
+/* ── Fleshy Lower Haunches (Rear/Hip Sitting Volume, Z-INDEX: 2) ── */
 .hamster-haunches {
   position: absolute;
   bottom: 6px;
   left: 50%;
   transform: translateX(-50%);
-  width: 142px;
-  height: 58px;
-  z-index: 1;
+  width: 146px;
+  height: 60px;
+  z-index: 2;
   pointer-events: none;
 }
 
 .haunch-lobe {
   position: absolute;
   bottom: 0px;
-  width: 48px;
-  height: 52px;
+  width: 50px;
+  height: 54px;
   pointer-events: none;
 }
 
 .haunch-left {
-  left: -4px;
-  border-radius: 65% 35% 55% 45% / 55% 45% 55% 45%;
+  left: -5px;
+  border-radius: 68% 32% 56% 44% / 58% 42% 56% 44%;
   background: radial-gradient(
     ellipse at 35% 40%,
     var(--hamster-color-light) 0%,
@@ -265,12 +245,12 @@
   );
   box-shadow:
     inset 0 2px 4px rgba(255, 255, 255, 0.35),
-    0 3px 8px rgba(80, 35, 10, 0.14);
+    0 4px 10px rgba(80, 35, 10, 0.16);
 }
 
 .haunch-right {
-  right: -4px;
-  border-radius: 35% 65% 45% 55% / 45% 55% 45% 55%;
+  right: -5px;
+  border-radius: 32% 68% 44% 56% / 42% 58% 44% 56%;
   background: radial-gradient(
     ellipse at 65% 40%,
     var(--hamster-color-light) 0%,
@@ -279,10 +259,10 @@
   );
   box-shadow:
     inset 0 2px 4px rgba(255, 255, 255, 0.35),
-    0 3px 8px rgba(80, 35, 10, 0.14);
+    0 4px 10px rgba(80, 35, 10, 0.16);
 }
 
-/* ── Pear-Shaped Torso Mass (Narrow Shoulders, Wide Lower Torso, Z-INDEX: 2) ── */
+/* ── Pear-Shaped Torso Mass (Narrow Shoulders, Wide Lower Torso, Z-INDEX: 3) ── */
 .hamster-torso {
   position: absolute;
   bottom: 8px;
@@ -302,7 +282,7 @@
     inset 0 5px 10px rgba(255, 255, 255, 0.38),
     inset 0 -8px 14px rgba(120, 50, 10, 0.22),
     0 6px 16px rgba(80, 35, 10, 0.14);
-  z-index: 2;
+  z-index: 3;
   overflow: hidden;
 }
 
