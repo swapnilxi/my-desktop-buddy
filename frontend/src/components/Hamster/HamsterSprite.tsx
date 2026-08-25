@@ -10,18 +10,22 @@ interface HamsterSpriteProps {
   name?: string;
   greeting?: string;
   isDragging?: boolean;
+  petStreak?: number;
   onClick?: () => void;
   onRefreshGreeting?: () => void;
+  onFeed?: () => void;
 }
 
 export default function HamsterSprite({
   mood,
-  color = '#D4893A',
+  color = '#F2A653',
   name = 'Hammy',
   greeting = "Squeak! Let's build together! 🚀",
   isDragging = false,
+  petStreak = 0,
   onClick,
   onRefreshGreeting,
+  onFeed,
 }: HamsterSpriteProps) {
   const [prevMood, setPrevMood] = useState(mood);
   const [transitioning, setTransitioning] = useState(false);
@@ -44,10 +48,10 @@ export default function HamsterSprite({
       className={`hamster-container ${isDragging ? 'being-dragged' : ''} ${onClick ? 'interactive' : ''}`}
       onClick={onClick}
     >
-      {/* Ambient shadow beneath Hammy */}
+      {/* Soft Ground Shadow */}
       <div className={`hamster-ground-shadow ${isDragging ? 'shadow-lifted' : ''}`} />
 
-      {/* Glassmorphic Drag Grip Button (Icon Only) */}
+      {/* Drag Grip Handle */}
       <div className="hamster-drag-handle-badge" title="Drag Hammy anywhere on screen!">
         <span className="drag-grip-icon">⠿</span>
       </div>
@@ -56,168 +60,192 @@ export default function HamsterSprite({
         className={`hamster hamster-${displayMood} ${transitioning ? 'transitioning' : ''}`}
         style={{
           '--hamster-color': color,
-          '--hamster-color-dark': darkenColor(color, 28),
-          '--hamster-color-light': lightenColor(color, 24),
-          '--hamster-color-shadow': darkenColor(color, 45),
+          '--hamster-color-light': '#FFC979',
+          '--hamster-color-dark': '#EE9947',
+          '--hamster-color-shadow': '#D77F35',
         } as React.CSSProperties}
       >
-        {/* Fluffy Body & Back Markings */}
-        <div className="hamster-body">
+        {/* Floating Heart */}
+        <div className="hamster-floating-heart">❤</div>
+
+        {/* ══════════ 1. BODY & TORSO LAYER (Z-INDEX: 2) ══════════ */}
+        <div className="hamster-body-layer">
           {/* Fluffy rounded tail */}
           <div className="hamster-tail" />
 
-          {/* Volumetric Torso with rich fur shading */}
+          {/* Body Flank Plush Fur Masses (3-4 Broad Soft Folds) */}
+          <div className="body-fur-layer">
+            <span className="fur-mass body-mass-l1" />
+            <span className="fur-mass body-mass-l2" />
+            <span className="fur-mass body-mass-r1" />
+            <span className="fur-mass body-mass-r2" />
+          </div>
+
+          {/* Volumetric Torso Mass */}
           <div className="hamster-torso">
-            {/* Subtle dorsal stripe / back fur contour */}
-            <div className="hamster-fur-spine" />
-            {/* Large Soft cream belly */}
+            {/* Soft Cream Belly */}
             <div className="hamster-belly">
-              <div className="hamster-chest-bib" />
-            </div>
-          </div>
-
-          {/* Small Cute Peachy Back Feet tucked under body */}
-          <div className="hamster-back-foot hamster-foot-left">
-            <div className="foot-pad-main" />
-            <div className="toes-group">
-              <span className="toe toe-1" />
-              <span className="toe toe-2" />
-              <span className="toe toe-3" />
-            </div>
-          </div>
-          <div className="hamster-back-foot hamster-foot-right">
-            <div className="foot-pad-main" />
-            <div className="toes-group">
-              <span className="toe toe-1" />
-              <span className="toe toe-2" />
-              <span className="toe toe-3" />
-            </div>
-          </div>
-
-          {/* Small Chubby Arms holding the sunflower seed in center */}
-          <div className="seed-holding-assembly">
-            {/* Glossy Striped Sunflower Seed */}
-            <div className="hamster-seed">
-              <span className="seed-stripe stripe-left" />
-              <span className="seed-stripe stripe-center" />
-              <span className="seed-stripe stripe-right" />
-            </div>
-
-            {/* Left Little Arm & Paw */}
-            <div className="hamster-arm hamster-arm-left">
-              <div className="arm-fur" />
-              <div className="hamster-hand">
-                <span className="finger finger-1" />
-                <span className="finger finger-2" />
-                <span className="finger finger-3" />
-              </div>
-            </div>
-
-            {/* Right Little Arm & Paw */}
-            <div className="hamster-arm hamster-arm-right">
-              <div className="arm-fur" />
-              <div className="hamster-hand">
-                <span className="finger finger-1" />
-                <span className="finger finger-2" />
-                <span className="finger finger-3" />
+              <div className="belly-glow" />
+              {/* Lower Belly Soft Fur Folds */}
+              <div className="belly-fur-layer">
+                <span className="fur-mass belly-mass-1" />
+                <span className="fur-mass belly-mass-2" />
+                <span className="fur-mass belly-mass-3" />
               </div>
             </div>
           </div>
 
-          {/* Volumetric Realistic Head */}
-          <div className="hamster-head">
-            {/* Soft Crown Fur Tuft / Hair Cowlick */}
-            <div className="head-fur-tuft">
-              <span className="tuft-strand strand-1" />
-              <span className="tuft-strand strand-2" />
-              <span className="tuft-strand strand-3" />
+          {/* Soft Pink Hind Feet */}
+          <div className="hamster-foot foot-left">
+            <div className="foot-pad">
+              <div className="toes-group">
+                <span className="toe toe-1" />
+                <span className="toe toe-2" />
+                <span className="toe toe-3" />
+              </div>
             </div>
-
-            {/* Ears with translucent inner pink & outer fur contour */}
-            <div className="hamster-ear hamster-ear-left">
-              <div className="ear-inner" />
-              <div className="ear-fuzz" />
-            </div>
-            <div className="hamster-ear hamster-ear-right">
-              <div className="ear-inner" />
-              <div className="ear-fuzz" />
-            </div>
-
-            {/* Persistent Floating Heart near left ear */}
-            <div className="hamster-floating-heart">❤</div>
-
-            {/* Forehead Fur Highlight */}
-            <div className="head-fur-highlight" />
-
-            {/* Cream Face Mask / Chubby Lower Cheeks */}
-            <div className="hamster-cream-mask" />
-
-            {/* Face Structure */}
-            <div className="hamster-face">
-              {/* Cute curved anime eyebrows */}
-              <div className="hamster-eyebrow eyebrow-left" />
-              <div className="hamster-eyebrow eyebrow-right" />
-
-              {/* Glassy 3D Eyes with Specular Highlights */}
-              <div className="hamster-eye-socket eye-socket-left">
-                <div className="hamster-eye eye-left">
-                  <div className="eye-iris" />
-                  <div className="eye-pupil" />
-                  <div className="eye-highlight-primary" />
-                  <div className="eye-highlight-secondary" />
-                  <div className="eye-rim-glow" />
-                </div>
-                <div className="eyelid eyelid-upper" />
-              </div>
-
-              <div className="hamster-eye-socket eye-socket-right">
-                <div className="hamster-eye eye-right">
-                  <div className="eye-iris" />
-                  <div className="eye-pupil" />
-                  <div className="eye-highlight-primary" />
-                  <div className="eye-highlight-secondary" />
-                  <div className="eye-rim-glow" />
-                </div>
-                <div className="eyelid eyelid-upper" />
-              </div>
-
-              {/* Chubby Blush Cheeks */}
-              <div className="hamster-cheek cheek-left" />
-              <div className="hamster-cheek cheek-right" />
-
-              {/* Fluffy Muzzle & Nose */}
-              <div className="hamster-muzzle">
-                <div className="muzzle-pad pad-left" />
-                <div className="muzzle-pad pad-right" />
-                <div className="hamster-nose">
-                  <div className="nostril nostril-left" />
-                  <div className="nostril nostril-right" />
-                  <div className="nose-highlight" />
-                </div>
-                <div className="hamster-philtrum" />
-                <div className="hamster-mouth">
-                  <div className="hamster-teeth-pair">
-                    <span className="hamster-tooth tooth-left" />
-                    <span className="hamster-tooth tooth-right" />
-                  </div>
-                  <span className="hamster-tongue" />
-                </div>
-              </div>
-
-              {/* Anime Hair Whiskers */}
-              <div className="hamster-whiskers whiskers-left">
-                <span className="whisker whisker-top" />
-                <span className="whisker whisker-bottom" />
-              </div>
-              <div className="hamster-whiskers whiskers-right">
-                <span className="whisker whisker-top" />
-                <span className="whisker whisker-bottom" />
+          </div>
+          <div className="hamster-foot foot-right">
+            <div className="foot-pad">
+              <div className="toes-group">
+                <span className="toe toe-1" />
+                <span className="toe toe-2" />
+                <span className="toe toe-3" />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Dynamic Mood Effects */}
+        {/* ══════════ 2. HEAD & FACE LAYER (Z-INDEX: 4) ══════════ */}
+        <div className="hamster-head-layer">
+          {/* Forehead Soft Fur Crest (3-4 Broad Rounded Locks) */}
+          <div className="head-fur-layer">
+            <span className="fur-mass head-mass-top1" />
+            <span className="fur-mass head-mass-top2" />
+            <span className="fur-mass head-mass-top3" />
+            <span className="fur-mass head-mass-l1" />
+            <span className="fur-mass head-mass-r1" />
+          </div>
+
+          {/* Large Plush Ears */}
+          <div className="hamster-ear ear-left">
+            <div className="ear-outer">
+              <div className="ear-inner" />
+            </div>
+          </div>
+          <div className="hamster-ear ear-right">
+            <div className="ear-outer">
+              <div className="ear-inner" />
+            </div>
+          </div>
+
+          {/* Main Orange Head Mass */}
+          <div className="head-main-mass">
+            <div className="head-top-glow" />
+          </div>
+
+          {/* Soft Cream Cheek Masses & Color Transition */}
+          <div className="hamster-cream-cheeks">
+            {/* Broad Soft Cream Edge Folds */}
+            <span className="fur-mass cheek-mass-l1" />
+            <span className="fur-mass cheek-mass-l2" />
+            <span className="fur-mass cheek-mass-r1" />
+            <span className="fur-mass cheek-mass-r2" />
+
+            <div className="cream-face-main" />
+          </div>
+
+          {/* Facial Features */}
+          <div className="hamster-face">
+            {/* Curved Eyebrows */}
+            <div className="hamster-eyebrow eyebrow-left" />
+            <div className="hamster-eyebrow eyebrow-right" />
+
+            {/* Oversized Glossy 3D Dark-Brown Eyes */}
+            <div className="hamster-eye-socket eye-socket-left">
+              <div className="hamster-eye eye-left">
+                <div className="eye-iris-glow" />
+                <div className="eye-highlight-primary" />
+                <div className="eye-highlight-secondary" />
+              </div>
+              <div className="eyelid-upper" />
+            </div>
+
+            <div className="hamster-eye-socket eye-socket-right">
+              <div className="hamster-eye eye-right">
+                <div className="eye-iris-glow" />
+                <div className="eye-highlight-primary" />
+                <div className="eye-highlight-secondary" />
+              </div>
+              <div className="eyelid-upper" />
+            </div>
+
+            {/* Diffuse Airbrushed Pink Cheek Blush */}
+            <div className="hamster-blush blush-left" />
+            <div className="hamster-blush blush-right" />
+
+            {/* Translucent Whiskers */}
+            <div className="hamster-whiskers whiskers-left">
+              <span className="whisker w-top" />
+              <span className="whisker w-mid" />
+              <span className="whisker w-bot" />
+            </div>
+            <div className="hamster-whiskers whiskers-right">
+              <span className="whisker w-top" />
+              <span className="whisker w-mid" />
+              <span className="whisker w-bot" />
+            </div>
+
+            {/* Cream Muzzle, Pink Button Nose & Open Mouth */}
+            <div className="hamster-muzzle">
+              <div className="muzzle-pad pad-left" />
+              <div className="muzzle-pad pad-right" />
+
+              <div className="hamster-nose">
+                <div className="nose-highlight" />
+              </div>
+
+              <div className="hamster-philtrum" />
+
+              <div className="hamster-mouth">
+                <span className="hamster-tongue" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ══════════ 3. FOREGROUND ARMS & SEED LAYER (Z-INDEX: 8) ══════════ */}
+        <div className="seed-holding-assembly">
+          {/* Sunflower Seed */}
+          <div className="hamster-seed">
+            <span className="seed-sheen" />
+            <span className="seed-stripe stripe-center" />
+            <span className="seed-stripe stripe-left" />
+            <span className="seed-stripe stripe-right" />
+          </div>
+
+          {/* Left Plush Arm & Paw */}
+          <div className="hamster-arm arm-left">
+            <div className="arm-volume" />
+            <div className="hamster-paw">
+              <span className="paw-toe ptoe-1" />
+              <span className="paw-toe ptoe-2" />
+              <span className="paw-toe ptoe-3" />
+            </div>
+          </div>
+
+          {/* Right Plush Arm & Paw */}
+          <div className="hamster-arm arm-right">
+            <div className="arm-volume" />
+            <div className="hamster-paw">
+              <span className="paw-toe ptoe-1" />
+              <span className="paw-toe ptoe-2" />
+              <span className="paw-toe ptoe-3" />
+            </div>
+          </div>
+        </div>
+
+        {/* ══════════ 4. MOOD EFFECTS ══════════ */}
         {mood === 'thinking' && (
           <div className="thought-bubbles">
             <span className="thought-bubble bubble-1">·</span>
@@ -228,28 +256,28 @@ export default function HamsterSprite({
 
         {mood === 'happy' && (
           <div className="happy-hearts">
-            <span className="heart heart-1">💖</span>
-            <span className="heart heart-2">✨</span>
-            <span className="heart heart-3">💖</span>
+            <span className="heart-particle hp-1">💖</span>
+            <span className="heart-particle hp-2">✨</span>
+            <span className="heart-particle hp-3">💖</span>
           </div>
         )}
 
         {mood === 'listening' && (
           <div className="listening-waves">
-            <span className="wave wave-1" />
-            <span className="wave wave-2" />
-            <span className="wave wave-3" />
+            <span className="sound-wave w-1" />
+            <span className="sound-wave w-2" />
+            <span className="sound-wave w-3" />
           </div>
         )}
 
         {isDragging && (
-          <div className="drag-indicator-halo">
+          <div className="drag-halo">
             <span className="drag-sparkle">✦</span>
           </div>
         )}
       </div>
 
-      {/* AI Greeting / Thought Speech Badge (2-6 words) */}
+      {/* AI Greeting / Thought Speech Badge */}
       <div
         className="hamster-greeting-bubble"
         onClick={(e) => {
