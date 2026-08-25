@@ -74,24 +74,26 @@ export default function HamsterSprite({
 
         {/* ══════════ 1. BODY & TORSO LAYER (PEAR-SHAPED TORSO, Z-INDEX: 2) ══════════ */}
         <div className="hamster-body-layer">
-          {/* Fleshy Lower Haunches (Rear/Hip Sitting Volume) */}
+          {/* Fleshy Lower Haunches (Rear/Hip Sitting Volume, Z-INDEX: 1) */}
           <div className="hamster-haunches">
             <span className="haunch-lobe haunch-left" />
             <span className="haunch-lobe haunch-right" />
           </div>
 
-          {/* Pear-Shaped Torso Mass with Shoulders and Cream Belly */}
+          {/* Pear-Shaped Torso Mass with Shoulders and Cream Belly (Z-INDEX: 2) */}
           <div className="hamster-torso">
             <div className="torso-neck-blend" />
             {/* Soft Cream Belly (Occupies 55% Torso Width with Wide Side Orange Fur) */}
             <div className="hamster-belly">
               <div className="belly-glow" />
             </div>
+            <div className="torso-lower-fur-shadow" />
           </div>
 
-          {/* Anatomical Hind Feet Emerging Underneath Lower Body (Independent Transform Origins) */}
+          {/* Clearly Visible Anatomical Hind Feet Emerging from Lower Torso (Z-INDEX: 5) */}
           <div className="hamster-foot hamster-foot--left">
             <div className="foot-sole">
+              <div className="foot-fur-cuff" />
               <span className="foot-main-pad" />
               <div className="foot-toes-row">
                 <span className="foot-toe t-left" />
@@ -102,6 +104,7 @@ export default function HamsterSprite({
           </div>
           <div className="hamster-foot hamster-foot--right">
             <div className="foot-sole">
+              <div className="foot-fur-cuff" />
               <span className="foot-main-pad" />
               <div className="foot-toes-row">
                 <span className="foot-toe t-left" />

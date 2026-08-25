@@ -122,7 +122,119 @@
   z-index: 2;
 }
 
-/* ── Fleshy Lower Haunches (Rear/Hip Sitting Volume) ──────────── */
+/* ── Anatomical Hind Feet Emerging from Lower Torso (Z-INDEX: 5) ── */
+.hamster-foot {
+  position: absolute;
+  width: 34px;
+  height: 26px;
+  z-index: 5;
+  pointer-events: none;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.hamster-foot--left {
+  left: 20px;
+  bottom: 2px;
+  transform-origin: 50% 20%;
+  transform: translate(var(--left-foot-x), var(--left-foot-y)) rotate(var(--left-foot-rotate));
+}
+
+.hamster-foot--right {
+  right: 20px;
+  bottom: 2px;
+  transform-origin: 50% 20%;
+  transform: translate(var(--right-foot-x), var(--right-foot-y)) rotate(var(--right-foot-rotate));
+}
+
+.foot-sole {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    ellipse at 48% 40%,
+    #FFF0EE 0%,
+    #F5B0A7 38%,
+    var(--hamster-pink-inner) 72%,
+    #C8655C 100%
+  );
+  border-radius: 50% 50% 42% 42% / 58% 58% 42% 42%;
+  box-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.75),
+    inset 0 -2px 4px rgba(130, 45, 35, 0.25),
+    0 3px 7px rgba(70, 25, 10, 0.22);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 2px;
+}
+
+/* Soft Upper Fur Cuff blending Foot into Torso */
+.foot-fur-cuff {
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 86%;
+  height: 7px;
+  background: radial-gradient(
+    ellipse at 50% 0%,
+    var(--hamster-color) 0%,
+    var(--hamster-color-shadow) 60%,
+    transparent 100%
+  );
+  border-radius: 50% 50% 0 0;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.foot-main-pad {
+  position: absolute;
+  bottom: 2px;
+  width: 22px;
+  height: 15px;
+  background: radial-gradient(
+    ellipse at 50% 35%,
+    #FFF6F5 0%,
+    var(--hamster-pink-inner) 65%,
+    #D67C73 100%
+  );
+  border-radius: 50%;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.65);
+  z-index: 2;
+}
+
+.foot-toes-row {
+  position: absolute;
+  top: 1px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 1.2px;
+  z-index: 4;
+  opacity: 0.92;
+}
+
+.foot-toe {
+  display: block;
+  background: radial-gradient(
+    circle at 45% 35%,
+    #FFF8F7 0%,
+    #F5B8B0 45%,
+    var(--hamster-pink-inner) 75%,
+    #D0786F 100%
+  );
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0.8px 1.2px rgba(255, 255, 255, 0.7),
+    0 0.5px 1px rgba(120, 45, 35, 0.12);
+}
+
+.t-left { width: 5.5px; height: 6px; }
+.t-mid { width: 6.8px; height: 7px; margin-top: -0.8px; }
+.t-right { width: 5.5px; height: 6px; }
+
+/* ── Fleshy Lower Haunches (Rear/Hip Sitting Volume, Z-INDEX: 1) ── */
 .hamster-haunches {
   position: absolute;
   bottom: 6px;
@@ -170,14 +282,14 @@
     0 3px 8px rgba(80, 35, 10, 0.14);
 }
 
-/* ── Pear-Shaped Torso Mass (Narrow Shoulders, Wide Lower Torso) ── */
+/* ── Pear-Shaped Torso Mass (Narrow Shoulders, Wide Lower Torso, Z-INDEX: 2) ── */
 .hamster-torso {
   position: absolute;
   bottom: 8px;
   left: 50%;
   transform: translateX(-50%);
-  width: 134px;
-  height: 98px;
+  width: 132px;
+  height: 96px;
   background: radial-gradient(
     ellipse at 44% 28%,
     var(--hamster-color-light) 0%,
@@ -185,7 +297,7 @@
     var(--hamster-color-shadow) 80%,
     var(--hamster-color-deep) 100%
   );
-  border-radius: 46% 46% 44% 44% / 54% 54% 46% 46%;
+  border-radius: 44% 44% 42% 42% / 56% 56% 44% 44%;
   box-shadow:
     inset 0 5px 10px rgba(255, 255, 255, 0.38),
     inset 0 -8px 14px rgba(120, 50, 10, 0.22),
@@ -200,15 +312,15 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 26px;
+  height: 28px;
   background: linear-gradient(
     180deg,
-    rgba(140, 60, 15, 0.38) 0%,
-    rgba(140, 60, 15, 0.1) 70%,
+    rgba(130, 55, 12, 0.42) 0%,
+    rgba(130, 55, 12, 0.12) 65%,
     transparent 100%
   );
   pointer-events: none;
-  z-index: 3;
+  z-index: 4;
 }
 
 /* ── Cream Belly Patch (Occupies ~55% Torso Width with Wide Side Orange Fur) ── */
@@ -217,20 +329,20 @@
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 76px;
+  width: 74px;
   height: 72px;
   background: radial-gradient(
-    ellipse at 48% 44%,
+    ellipse at 46% 42%,
     #FFFFFF 0%,
-    var(--hamster-cream-fur) 44%,
-    var(--hamster-cream-mid) 74%,
-    var(--hamster-cream-shadow) 94%,
-    rgba(236, 207, 168, 0.5) 100%
+    var(--hamster-cream-fur) 42%,
+    var(--hamster-cream-mid) 72%,
+    var(--hamster-cream-shadow) 92%,
+    rgba(223, 139, 52, 0.35) 100%
   );
-  border-radius: 46% 46% 42% 42% / 52% 52% 48% 48%;
+  border-radius: 46% 46% 40% 40% / 54% 54% 46% 46%;
   box-shadow:
-    inset 0 3px 6px rgba(255, 255, 255, 0.8),
-    inset -2px -4px 8px rgba(140, 85, 35, 0.18);
+    inset 0 3px 6px rgba(255, 255, 255, 0.82),
+    inset -2.5px -4px 8px rgba(135, 60, 18, 0.16);
   z-index: 1;
 }
 
@@ -246,94 +358,21 @@
   filter: blur(2px);
 }
 
-/* ── Anatomical Hind Feet Emerging Underneath Lower Body ───────── */
-.hamster-foot {
+/* Subtle Lower Torso Fur Occlusion Shadow */
+.torso-lower-fur-shadow {
   position: absolute;
-  width: 36px;
-  height: 26px;
-  z-index: 3;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 18px;
+  background: linear-gradient(
+    0deg,
+    rgba(140, 60, 15, 0.28) 0%,
+    transparent 100%
+  );
   pointer-events: none;
+  z-index: 3;
 }
-
-.hamster-foot--left {
-  left: 10px;
-  bottom: 1px;
-  transform: rotate(-16deg);
-}
-
-.hamster-foot--right {
-  right: 12px;
-  bottom: 2px;
-  transform: rotate(18deg);
-}
-
-.foot-sole {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(
-    ellipse at 48% 40%,
-    #FFF0EE 0%,
-    #F5B0A7 40%,
-    var(--hamster-pink-inner) 75%,
-    #C8655C 100%
-  );
-  border-radius: 52% 52% 42% 42% / 62% 62% 38% 38%;
-  box-shadow:
-    inset 0 2.5px 5px rgba(255, 255, 255, 0.75),
-    inset 0 -2.5px 5px rgba(130, 45, 35, 0.28),
-    0 3.5px 8px rgba(80, 35, 10, 0.24);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  padding-bottom: 2px;
-}
-
-.foot-main-pad {
-  position: absolute;
-  bottom: 2px;
-  width: 24px;
-  height: 16px;
-  background: radial-gradient(
-    ellipse at 50% 35%,
-    #FFF6F5 0%,
-    var(--hamster-pink-inner) 65%,
-    #D67C73 100%
-  );
-  border-radius: 50%;
-  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.65);
-}
-
-.foot-toes-row {
-  position: absolute;
-  top: 1.5px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 1.2px;
-  z-index: 2;
-  opacity: 0.88;
-}
-
-.foot-toe {
-  display: block;
-  background: radial-gradient(
-    circle at 45% 35%,
-    #FFF8F7 0%,
-    #F5B8B0 45%,
-    var(--hamster-pink-inner) 75%,
-    #D0786F 100%
-  );
-  border-radius: 50%;
-  box-shadow:
-    inset 0 0.8px 1.2px rgba(255, 255, 255, 0.7),
-    0 0.5px 1px rgba(120, 45, 35, 0.12);
-}
-
-.t-left { width: 5.5px; height: 6px; }
-.t-mid { width: 6.8px; height: 7px; margin-top: -0.8px; }
-.t-right { width: 5.5px; height: 6px; }
 
 /* ═══════════════════════════════════════════════════════════════
    2. HEAD, BROAD CHEEKS & CURVED CROWN FUR (Z-INDEX: 4)
