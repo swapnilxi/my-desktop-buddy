@@ -4,13 +4,14 @@
    ═══════════════════════════════════════════════════════════════ */
 
 :root {
-  --hamster-cream-fur: #fdf5e8;
-  --hamster-cream-dark: #ebd9be;
-  --hamster-pink-skin: #f8b4a8;
-  --hamster-pink-inner: #fca59d;
+  --hamster-cream-fur: #F5EDD8;
+  --hamster-cream-dark: #e5dcc6;
+  --hamster-pink-skin: #E8A0A0;
+  --hamster-pink-inner: #E8A0A0;
   --hamster-eye-dark: #140d07;
-  --hamster-eye-iris: #382010;
-  --hamster-nose-color: #e57c6b;
+  --hamster-eye-iris: #3D2010;
+  --hamster-nose-color: #E87878;
+  --hamster-paw-color: #E8A080;
 }
 
 .hamster-container {
@@ -53,11 +54,11 @@
   opacity: 0.2;
 }
 
-/* ── Base Hamster Canvas ───────────────────────────────────────── */
+/* ── Base Hamster Canvas — Chibi Blob Proportions ──────────────── */
 .hamster {
   position: relative;
-  width: 124px;
-  height: 104px;
+  width: 160px;
+  height: 170px;
   transform-origin: bottom center;
   transition: transform 0.25s ease;
 }
@@ -73,28 +74,28 @@
   height: 100%;
 }
 
-/* ── Volumetric Torso ──────────────────────────────────────────── */
+/* ── Volumetric Torso — Soft Organic Fur Silhouette ───────────── */
 .hamster-torso {
   position: absolute;
   bottom: 8px;
   left: 50%;
   transform: translateX(-50%);
-  width: 72px;
-  height: 60px;
+  width: 134px;
+  height: 126px;
   background: radial-gradient(
     ellipse at 50% 30%,
     var(--hamster-color-light) 0%,
     var(--hamster-color) 45%,
-    var(--hamster-color-dark) 85%,
+    var(--hamster-color-dark) 80%,
     var(--hamster-color-shadow) 100%
   );
-  border-radius: 50% 50% 46% 46% / 60% 60% 40% 40%;
+  border-radius: 50% 50% 47% 47% / 52% 52% 48% 48%;
   box-shadow:
-    inset 0 4px 10px rgba(255, 255, 255, 0.3),
-    inset 0 -6px 12px rgba(0, 0, 0, 0.3),
-    inset 4px 0 8px rgba(255, 255, 255, 0.15),
-    inset -4px 0 8px rgba(0, 0, 0, 0.25),
-    0 4px 12px rgba(0, 0, 0, 0.25);
+    inset 0 6px 16px rgba(255, 255, 255, 0.3),
+    inset 0 -8px 18px rgba(0, 0, 0, 0.26),
+    inset 5px 0 12px rgba(255, 255, 255, 0.16),
+    inset -5px 0 12px rgba(0, 0, 0, 0.2),
+    0 6px 18px rgba(0, 0, 0, 0.2);
   z-index: 2;
   overflow: hidden;
 }
@@ -105,35 +106,35 @@
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 14px;
-  height: 80%;
+  width: 18px;
+  height: 75%;
   background: linear-gradient(
     180deg,
-    rgba(0, 0, 0, 0.18) 0%,
-    rgba(0, 0, 0, 0.08) 60%,
+    rgba(0, 0, 0, 0.14) 0%,
+    rgba(0, 0, 0, 0.06) 60%,
     transparent 100%
   );
   border-radius: 50%;
-  filter: blur(2px);
+  filter: blur(3px);
 }
 
-/* Creamy white belly and chest */
+/* Large creamy white belly with soft organic fur curves */
 .hamster-belly {
   position: absolute;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 52px;
-  height: 44px;
+  width: 98px;
+  height: 90px;
   background: radial-gradient(
-    ellipse at 50% 70%,
+    ellipse at 50% 60%,
     var(--hamster-cream-fur) 0%,
-    #fef7ed 55%,
+    #fbf4e6 55%,
     var(--hamster-cream-dark) 85%,
     transparent 100%
   );
-  border-radius: 50% 50% 45% 45% / 55% 55% 45% 45%;
-  box-shadow: inset 0 -3px 8px rgba(210, 180, 140, 0.35);
+  border-radius: 50% 50% 47% 47% / 48% 48% 52% 52%;
+  box-shadow: inset 0 -4px 10px rgba(210, 180, 140, 0.28);
   z-index: 1;
 }
 
@@ -142,8 +143,8 @@
   top: 4px;
   left: 50%;
   transform: translateX(-50%);
-  width: 32px;
-  height: 22px;
+  width: 56px;
+  height: 36px;
   background: radial-gradient(
     ellipse at 50% 30%,
     #ffffff 0%,
@@ -151,37 +152,16 @@
     transparent 100%
   );
   border-radius: 50%;
-  filter: blur(1px);
-}
-
-/* Side fur tufts for fluffiness */
-.fur-tuft {
-  position: absolute;
-  top: 18px;
-  width: 10px;
-  height: 18px;
-  background: inherit;
-  border-radius: 50%;
-  opacity: 0.8;
-}
-
-.tuft-left {
-  left: -4px;
-  transform: rotate(-25deg);
-}
-
-.tuft-right {
-  right: -4px;
-  transform: rotate(25deg);
+  filter: blur(1.5px);
 }
 
 /* ── Fluffy Rounded Tail ───────────────────────────────────────── */
 .hamster-tail {
   position: absolute;
-  bottom: 16px;
+  bottom: 18px;
   right: 18px;
-  width: 14px;
-  height: 12px;
+  width: 16px;
+  height: 14px;
   background: radial-gradient(
     circle at 35% 35%,
     var(--hamster-color-light) 0%,
@@ -191,235 +171,394 @@
   border-radius: 50%;
   box-shadow:
     inset -1px -2px 3px rgba(0, 0, 0, 0.3),
-    0 2px 4px rgba(0, 0, 0, 0.2);
+    0 2px 5px rgba(0, 0, 0, 0.2);
   z-index: 1;
   transform-origin: left center;
 }
 
-/* ── Realistic Back Feet ───────────────────────────────────────── */
+/* ── Small Cute Peachy Back Feet Connected to Body ─────────────── */
 .hamster-back-foot {
   position: absolute;
-  bottom: 4px;
-  width: 18px;
-  height: 10px;
-  background: radial-gradient(
-    ellipse at 50% 40%,
-    var(--hamster-pink-inner) 0%,
-    var(--hamster-pink-skin) 60%,
-    #d88c7f 100%
-  );
-  border-radius: 50% 50% 45% 45%;
-  box-shadow:
-    inset 0 1px 2px rgba(255, 255, 255, 0.4),
-    0 2px 5px rgba(0, 0, 0, 0.25);
+  bottom: 8px;
+  width: 24px;
+  height: 28px;
   display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  padding-bottom: 1px;
-  gap: 1.5px;
-  z-index: 1;
+  flex-direction: column;
+  align-items: center;
+  z-index: 4;
+  pointer-events: none;
 }
 
 .hamster-foot-left {
-  left: 20px;
-  transform: rotate(-10deg);
+  left: 26px;
+  transform: rotate(-16deg);
 }
 
 .hamster-foot-right {
-  right: 20px;
-  transform: rotate(10deg);
+  right: 26px;
+  transform: rotate(16deg);
+}
+
+/* Small cute toes */
+.toes-group {
+  display: flex;
+  gap: 1.5px;
+  margin-bottom: -3px;
+  z-index: 2;
 }
 
 .hamster-back-foot .toe {
-  width: 3px;
-  height: 3px;
-  background: #fde8e3;
-  border-radius: 50%;
-  opacity: 0.9;
+  width: 5.5px;
+  height: 6.5px;
+  background: radial-gradient(circle at 40% 30%, #FFCAD4 0%, #FFB5A7 60%, #E8A080 100%);
+  border-radius: 50% 50% 40% 40%;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 }
 
-/* ── Realistic Connected Arms & Detailed Hands ─────────────────── */
-.hamster-arm {
-  position: absolute;
-  bottom: 12px;
+.hamster-back-foot .toe-2 {
+  height: 7.5px;
+  margin-top: -1px;
+}
+
+/* Small peachy pink sole pad */
+.foot-pad-main {
   width: 22px;
-  height: 25px;
-  z-index: 5;
-  transition: transform 0.25s ease;
-}
-
-.hamster-arm-left {
-  left: 24px;
-  transform-origin: top left;
-  transform: rotate(-18deg);
-}
-
-.hamster-arm-right {
-  right: 24px;
-  transform-origin: top right;
-  transform: rotate(18deg);
-}
-
-/* Fluffy upper arm connecting naturally to the body */
-.arm-fur {
-  width: 100%;
-  height: 18px;
+  height: 24px;
   background: radial-gradient(
-    ellipse at 40% 30%,
-    var(--hamster-color-light) 0%,
-    var(--hamster-color) 60%,
-    var(--hamster-color-dark) 100%
+    ellipse at 50% 45%,
+    #FFCAD4 0%,
+    #FFB5A7 40%,
+    #E8A080 75%,
+    #D0856C 100%
   );
-  border-radius: 50% 50% 45% 45% / 60% 60% 40% 40%;
+  border-radius: 46% 46% 50% 50% / 40% 40% 60% 60%;
   box-shadow:
-    inset 0 2px 4px rgba(255, 255, 255, 0.35),
-    0 2px 6px rgba(0, 0, 0, 0.22);
+    inset 0 1.5px 3px rgba(255, 255, 255, 0.5),
+    inset 0 -1.5px 3px rgba(0, 0, 0, 0.15),
+    0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
-/* Cute little hands with individual fingers */
-.hamster-hand {
+/* ── Small Chubby Arms Holding Seed Against Chest ──────────────── */
+.seed-holding-assembly {
   position: absolute;
-  bottom: 0;
-  width: 14px;
-  height: 11px;
-  background: radial-gradient(
-    circle at 50% 35%,
-    var(--hamster-pink-inner) 0%,
-    var(--hamster-pink-skin) 70%,
-    #d88c7f 100%
-  );
-  border-radius: 40% 40% 50% 50%;
-  box-shadow:
-    inset 0 1px 2px rgba(255, 255, 255, 0.55),
-    0 2px 4px rgba(0, 0, 0, 0.28);
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  gap: 1.2px;
-  padding-bottom: 1px;
-  z-index: 6;
-}
-
-.hamster-arm-left .hamster-hand {
-  right: -3px;
-  transform: rotate(10deg);
-}
-
-.hamster-arm-right .hamster-hand {
-  left: -3px;
-  transform: rotate(-10deg);
-}
-
-.hamster-hand .finger {
-  width: 2.2px;
-  height: 4px;
-  background: #fde8e3;
-  border-radius: 2px;
-  box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.2);
-}
-
-.finger-1 { height: 3.2px; }
-.finger-2 { height: 4.2px; }
-.finger-3 { height: 3.5px; }
-
-.palm-pad {
-  position: absolute;
-  top: 1px;
+  bottom: 42px;
   left: 50%;
   transform: translateX(-50%);
-  width: 6px;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.35);
-  border-radius: 50%;
+  width: 104px;
+  height: 42px;
+  z-index: 8;
 }
 
-/* ── Volumetric Head ───────────────────────────────────────────── */
-.hamster-head {
-  position: absolute;
-  top: 2px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 66px;
-  height: 56px;
-  background: radial-gradient(
-    ellipse at 50% 28%,
-    var(--hamster-color-light) 0%,
-    var(--hamster-color) 50%,
-    var(--hamster-color-dark) 85%,
-    var(--hamster-color-shadow) 100%
-  );
-  border-radius: 52% 52% 46% 46% / 58% 58% 42% 42%;
-  box-shadow:
-    inset 0 5px 12px rgba(255, 255, 255, 0.35),
-    inset 0 -4px 10px rgba(0, 0, 0, 0.25),
-    inset 4px 0 8px rgba(255, 255, 255, 0.2),
-    inset -4px 0 8px rgba(0, 0, 0, 0.25),
-    0 4px 14px rgba(0, 0, 0, 0.22);
-  z-index: 6;
-}
-
-.head-fur-highlight {
+/* Glossy Striped Black Sunflower Seed */
+.hamster-seed {
   position: absolute;
   top: 4px;
   left: 50%;
   transform: translateX(-50%);
+  width: 18px;
+  height: 26px;
+  background: radial-gradient(
+    ellipse at 42% 32%,
+    #42414A 0%,
+    #25242C 55%,
+    #121117 100%
+  );
+  border-radius: 42% 42% 50% 50% / 36% 36% 64% 64%;
+  box-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.35),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.6),
+    0 3px 8px rgba(0, 0, 0, 0.4);
+  z-index: 2;
+  overflow: hidden;
+}
+
+.seed-stripe {
+  position: absolute;
+  top: 2px;
+  border-radius: 2px;
+}
+
+.seed-stripe.stripe-center {
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 85%;
+  background: linear-gradient(180deg, #FFFFFF 0%, #F5EDD8 75%, transparent 100%);
+  opacity: 0.9;
+}
+
+.seed-stripe.stripe-left {
+  left: 3.5px;
+  width: 1.5px;
+  height: 70%;
+  transform: rotate(8deg);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.8) 0%, rgba(245, 237, 216, 0.4) 80%, transparent 100%);
+}
+
+.seed-stripe.stripe-right {
+  right: 3.5px;
+  width: 1.5px;
+  height: 70%;
+  transform: rotate(-8deg);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.8) 0%, rgba(245, 237, 216, 0.4) 80%, transparent 100%);
+}
+
+/* Small Chubby Arms naturally connected to torso */
+.hamster-arm {
+  position: absolute;
+  top: 4px;
+  width: 42px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  z-index: 3;
+  transition: transform 0.25s ease;
+}
+
+.hamster-arm-left {
+  left: 8px;
+  justify-content: flex-end;
+}
+
+.hamster-arm-right {
+  right: 8px;
+  justify-content: flex-start;
+}
+
+/* Soft arm fur smoothly blending into cream cuffs */
+.hamster-arm-left .arm-fur {
   width: 32px;
-  height: 18px;
-  background: radial-gradient(ellipse at 50% 30%, rgba(255, 255, 255, 0.3) 0%, transparent 80%);
+  height: 24px;
+  background: radial-gradient(
+    ellipse at 30% 40%,
+    var(--hamster-color-light) 0%,
+    var(--hamster-color) 45%,
+    var(--hamster-cream-fur) 85%
+  );
+  border-radius: 50% 40% 40% 50% / 50% 40% 40% 50%;
+  box-shadow:
+    inset 0 1.5px 4px rgba(255, 255, 255, 0.35),
+    0 2px 5px rgba(0, 0, 0, 0.18);
+}
+
+.hamster-arm-right .arm-fur {
+  width: 32px;
+  height: 24px;
+  background: radial-gradient(
+    ellipse at 70% 40%,
+    var(--hamster-color-light) 0%,
+    var(--hamster-color) 45%,
+    var(--hamster-cream-fur) 85%
+  );
+  border-radius: 40% 50% 50% 40% / 40% 50% 50% 40%;
+  box-shadow:
+    inset 0 1.5px 4px rgba(255, 255, 255, 0.35),
+    0 2px 5px rgba(0, 0, 0, 0.18);
+}
+
+/* Small Cute Paws wrapping around seed */
+.hamster-hand {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  z-index: 4;
+}
+
+.hamster-arm-left .hamster-hand {
+  right: 2px;
+}
+
+.hamster-arm-right .hamster-hand {
+  left: 2px;
+}
+
+.hamster-hand .finger {
+  width: 4.5px;
+  height: 4px;
+  background: radial-gradient(circle at 40% 40%, #FFCAD4 0%, #FFB5A7 60%, #E8A080 100%);
   border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.hamster-hand .finger-1 { width: 4px; height: 3.5px; }
+.hamster-hand .finger-2 { width: 5px; height: 4.5px; }
+.hamster-hand .finger-3 { width: 4px; height: 3.5px; }
+
+/* ── Volumetric Head — Soft Organic Chibi Contour ──────────────── */
+.hamster-head {
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 136px;
+  height: 104px;
+  background: radial-gradient(
+    ellipse at 50% 24%,
+    var(--hamster-color-light) 0%,
+    var(--hamster-color) 46%,
+    var(--hamster-color-dark) 80%,
+    var(--hamster-color-shadow) 100%
+  );
+  /* Organic chibi curve: smooth rounded crown flowing into wide puffy cheek curves */
+  border-radius: 48% 48% 46% 46% / 44% 44% 56% 56%;
+  box-shadow:
+    inset 0 6px 16px rgba(255, 255, 255, 0.32),
+    inset 0 -6px 14px rgba(0, 0, 0, 0.2),
+    inset 5px 0 10px rgba(255, 255, 255, 0.18),
+    inset -5px 0 10px rgba(0, 0, 0, 0.2),
+    0 5px 16px rgba(0, 0, 0, 0.18);
+  z-index: 6;
+}
+
+/* ── Soft Crown Fur Tuft / Hair Cowlick ────────────────────────── */
+.head-fur-tuft {
+  position: absolute;
+  top: -9px;
+  left: 51%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: flex-end;
+  z-index: 10;
   pointer-events: none;
+}
+
+.tuft-strand {
+  display: block;
+  background: radial-gradient(circle at 40% 30%, var(--hamster-color-light) 0%, var(--hamster-color) 70%, var(--hamster-color-dark) 100%);
+  border-radius: 50% 50% 20% 20% / 85% 85% 15% 15%;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.4);
+  transform-origin: bottom center;
+}
+
+.head-fur-tuft .strand-1 {
+  width: 7px;
+  height: 12px;
+  transform: rotate(-10deg);
+  margin-right: -2px;
+}
+
+.head-fur-tuft .strand-2 {
+  width: 9px;
+  height: 15px;
+  transform: rotate(4deg);
+  z-index: 2;
+}
+
+.head-fur-tuft .strand-3 {
+  width: 7px;
+  height: 11px;
+  transform: rotate(16deg);
+  margin-left: -2px;
+}
+
+/* ── Cream Face Mask / Soft Curved Cheek Puffs ─────────────────── */
+.hamster-cream-mask {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 132px;
+  height: 66px;
+  background: radial-gradient(
+    ellipse at 50% 60%,
+    var(--hamster-cream-fur) 0%,
+    #faf3e4 65%,
+    var(--hamster-cream-dark) 100%
+  );
+  /* Organic soft wavy curve arching across lower cheeks and muzzle */
+  border-radius: 50% 50% 46% 46% / 42% 42% 58% 58%;
+  box-shadow: inset 0 -3px 8px rgba(210, 180, 140, 0.28);
+  z-index: 2;
+}
+
+/* Naturally curved forehead fur dome highlight */
+.head-fur-highlight {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 54px;
+  height: 28px;
+  background: radial-gradient(ellipse at 50% 25%, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.12) 60%, transparent 80%);
+  border-radius: 50% 50% 40% 40% / 60% 60% 40% 40%;
+  pointer-events: none;
+  z-index: 3;
 }
 
 .hamster-face {
   position: relative;
   width: 100%;
   height: 100%;
+  z-index: 4;
 }
 
-/* ── Realistic Ears ────────────────────────────────────────────── */
+/* ── Cute Curved Anime Eyebrows ────────────────────────────────── */
+.hamster-eyebrow {
+  position: absolute;
+  top: 18px;
+  width: 10px;
+  height: 4px;
+  background: #4A2612;
+  border-radius: 4px;
+  z-index: 10;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+.eyebrow-left {
+  left: 28px;
+  transform: rotate(8deg);
+}
+
+.eyebrow-right {
+  right: 28px;
+  transform: rotate(-8deg);
+}
+
+/* ── Big Rounded Ears ─────────────────────────────────────────── */
 .hamster-ear {
   position: absolute;
-  top: -8px;
-  width: 20px;
-  height: 24px;
+  top: -12px;
+  width: 32px;
+  height: 36px;
   background: radial-gradient(
     ellipse at 50% 30%,
     var(--hamster-color-light) 0%,
-    var(--hamster-color) 60%,
+    var(--hamster-color) 55%,
     var(--hamster-color-dark) 100%
   );
   border-radius: 50% 50% 40% 40%;
   box-shadow:
-    inset 0 2px 4px rgba(255, 255, 255, 0.4),
+    inset 0 2px 5px rgba(255, 255, 255, 0.4),
     0 2px 6px rgba(0, 0, 0, 0.2);
-  z-index: 4;
+  z-index: 3;
   transition: transform 0.25s ease;
 }
 
 .hamster-ear-left {
-  left: 2px;
-  transform: rotate(-18deg);
+  left: 6px;
+  transform: rotate(-16deg);
   transform-origin: bottom right;
 }
 
 .hamster-ear-right {
-  right: 2px;
-  transform: rotate(18deg);
+  right: 6px;
+  transform: rotate(16deg);
   transform-origin: bottom left;
 }
 
 .ear-inner {
   position: absolute;
-  top: 4px;
+  top: 6px;
   left: 50%;
   transform: translateX(-50%);
-  width: 12px;
-  height: 15px;
+  width: 20px;
+  height: 23px;
   background: radial-gradient(
     ellipse at 50% 40%,
     var(--hamster-pink-inner) 0%,
     var(--hamster-pink-skin) 70%,
-    #e89587 100%
+    #d89088 100%
   );
   border-radius: 50% 50% 45% 45%;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15);
@@ -427,31 +566,31 @@
 
 .ear-fuzz {
   position: absolute;
-  bottom: 2px;
+  bottom: 3px;
   left: 50%;
   transform: translateX(-50%);
-  width: 10px;
-  height: 5px;
-  background: rgba(255, 255, 255, 0.6);
+  width: 14px;
+  height: 7px;
+  background: rgba(255, 255, 255, 0.5);
   border-radius: 50%;
-  filter: blur(1px);
+  filter: blur(1.5px);
 }
 
-/* ── Glassy 3D Eyes ────────────────────────────────────────────── */
+/* ── Large Glossy Anime Eyes ───────────────────────────────────── */
 .hamster-eye-socket {
   position: absolute;
-  top: 18px;
-  width: 15px;
-  height: 16px;
+  top: 26px;
+  width: 24px;
+  height: 26px;
   z-index: 8;
 }
 
 .eye-socket-left {
-  left: 10px;
+  left: 20px;
 }
 
 .eye-socket-right {
-  right: 10px;
+  right: 20px;
 }
 
 .hamster-eye {
@@ -459,16 +598,16 @@
   width: 100%;
   height: 100%;
   background: radial-gradient(
-    circle at 35% 30%,
+    circle at 38% 32%,
     var(--hamster-eye-iris) 0%,
-    var(--hamster-eye-dark) 65%,
+    var(--hamster-eye-dark) 58%,
     #050302 100%
   );
   border-radius: 50%;
   box-shadow:
     inset 0 1px 3px rgba(255, 255, 255, 0.2),
-    0 1px 4px rgba(0, 0, 0, 0.5),
-    0 0 1px rgba(0, 0, 0, 0.8);
+    0 1px 5px rgba(0, 0, 0, 0.5),
+    0 0 2px rgba(0, 0, 0, 0.8);
   overflow: hidden;
 }
 
@@ -477,8 +616,8 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 10px;
-  height: 10px;
+  width: 15px;
+  height: 15px;
   background: #080402;
   border-radius: 50%;
 }
@@ -486,24 +625,24 @@
 /* Primary crisp catchlight */
 .eye-highlight-primary {
   position: absolute;
-  top: 2.5px;
-  right: 3px;
-  width: 5px;
-  height: 5px;
+  top: 3px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
   background: #ffffff;
   border-radius: 50%;
-  box-shadow: 0 0 2px #ffffff;
+  box-shadow: 0 0 3px #ffffff;
   z-index: 2;
 }
 
 /* Secondary softer light reflection */
 .eye-highlight-secondary {
   position: absolute;
-  bottom: 3px;
-  left: 3.5px;
-  width: 2.5px;
-  height: 2.5px;
-  background: rgba(255, 255, 255, 0.7);
+  bottom: 4px;
+  left: 4px;
+  width: 4px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.65);
   border-radius: 50%;
   z-index: 2;
 }
@@ -514,9 +653,9 @@
   bottom: 1px;
   left: 50%;
   transform: translateX(-50%);
-  width: 10px;
-  height: 4px;
-  background: radial-gradient(ellipse at center, rgba(160, 100, 60, 0.45) 0%, transparent 80%);
+  width: 15px;
+  height: 5px;
+  background: radial-gradient(ellipse at center, rgba(160, 100, 60, 0.4) 0%, transparent 80%);
   border-radius: 50%;
 }
 
@@ -534,47 +673,47 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-/* ── Chubby Cheeks ─────────────────────────────────────────────── */
+/* ── Chubby Blush Cheeks ───────────────────────────────────────── */
 .hamster-cheek {
   position: absolute;
-  top: 26px;
-  width: 20px;
-  height: 14px;
+  top: 42px;
+  width: 26px;
+  height: 18px;
   background: radial-gradient(
     ellipse at center,
-    rgba(255, 130, 110, 0.42) 0%,
-    rgba(255, 150, 130, 0.2) 65%,
+    rgba(240, 144, 138, 0.55) 0%,
+    rgba(240, 144, 138, 0.25) 65%,
     transparent 100%
   );
   border-radius: 50%;
   z-index: 7;
-  filter: blur(1px);
+  filter: blur(1.5px);
 }
 
 .cheek-left {
-  left: 2px;
+  left: 8px;
 }
 
 .cheek-right {
-  right: 2px;
+  right: 8px;
 }
 
 /* ── Fluffy Muzzle & Nose ──────────────────────────────────────── */
 .hamster-muzzle {
   position: absolute;
-  top: 28px;
+  top: 42px;
   left: 50%;
   transform: translateX(-50%);
-  width: 32px;
-  height: 22px;
+  width: 44px;
+  height: 32px;
   z-index: 9;
 }
 
 .muzzle-pad {
   position: absolute;
-  top: 4px;
-  width: 16px;
-  height: 13px;
+  top: 5px;
+  width: 22px;
+  height: 18px;
   background: radial-gradient(
     ellipse at 50% 40%,
     var(--hamster-cream-fur) 0%,
@@ -583,7 +722,7 @@
   );
   border-radius: 50%;
   box-shadow:
-    inset 0 1px 2px rgba(255, 255, 255, 0.6),
+    inset 0 1px 3px rgba(255, 255, 255, 0.6),
     0 1px 3px rgba(0, 0, 0, 0.15);
 }
 
@@ -595,14 +734,14 @@
   right: 1px;
 }
 
-/* Heart-shaped cute nose */
+/* Cute button nose */
 .hamster-nose {
   position: absolute;
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 9px;
-  height: 7px;
+  width: 11px;
+  height: 9px;
   background: radial-gradient(
     circle at 50% 30%,
     var(--hamster-pink-inner) 0%,
@@ -611,8 +750,8 @@
   );
   border-radius: 45% 45% 55% 55% / 40% 40% 60% 60%;
   box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.6),
-    0 1.5px 3px rgba(0, 0, 0, 0.3);
+    inset 0 1px 2px rgba(255, 255, 255, 0.6),
+    0 2px 4px rgba(0, 0, 0, 0.3);
   z-index: 10;
 }
 
@@ -626,11 +765,11 @@
 }
 
 .nostril-left {
-  left: 2px;
+  left: 2.5px;
 }
 
 .nostril-right {
-  right: 2px;
+  right: 2.5px;
 }
 
 .nose-highlight {
@@ -638,15 +777,15 @@
   top: 1px;
   left: 50%;
   transform: translateX(-50%);
-  width: 4px;
-  height: 2px;
+  width: 4.5px;
+  height: 2.5px;
   background: rgba(255, 255, 255, 0.7);
   border-radius: 50%;
 }
 
 .hamster-philtrum {
   position: absolute;
-  top: 7px;
+  top: 9px;
   left: 50%;
   transform: translateX(-50%);
   width: 1.5px;
@@ -655,76 +794,130 @@
   border-radius: 1px;
 }
 
+/* ── Open Smiling Mouth with Two Front Teeth & Tongue ─────────── */
 .hamster-mouth {
   position: absolute;
-  bottom: 4px;
+  bottom: 1px;
   left: 50%;
   transform: translateX(-50%);
-  width: 10px;
-  height: 4px;
-  border-bottom: 1.8px solid #b05c4d;
-  border-radius: 0 0 50% 50%;
+  width: 15px;
+  height: 11px;
+  background: #7A211D;
+  border: 1.5px solid #4A1612;
+  border-radius: 20% 20% 50% 50% / 20% 20% 80% 80%;
   transition: all 0.2s ease;
-}
-
-/* ── Realistic Tapered Whiskers ────────────────────────────────── */
-.hamster-whiskers {
-  position: absolute;
-  top: 31px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  z-index: 11;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Two Cute Front Teeth */
+.hamster-teeth-pair {
+  display: flex;
+  gap: 1px;
+  margin-top: -1px;
+  z-index: 2;
+}
+
+.hamster-tooth {
+  width: 2.8px;
+  height: 3.8px;
+  background: #FFFFFF;
+  border-radius: 0 0 1px 1px;
+  box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.25);
+}
+
+/* Soft Pink Tongue */
+.hamster-tongue {
+  width: 11px;
+  height: 6px;
+  background: radial-gradient(ellipse at 50% 40%, #FA899B 0%, #E86A82 100%);
+  border-radius: 50% 50% 30% 30%;
+  margin-bottom: -1px;
+}
+
+/* ── Persistent Floating Heart ─────────────────────────────────── */
+.hamster-floating-heart {
+  position: absolute;
+  top: -4px;
+  left: -10px;
+  font-size: 12px;
+  color: #E83048;
+  z-index: 12;
+  pointer-events: none;
+  animation: heartBob 2.4s ease-in-out infinite;
+  filter: drop-shadow(0 1px 3px rgba(232, 48, 72, 0.4));
+}
+
+@keyframes heartBob {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-3px) scale(1.12); }
+}
+
+/* ── Natural Curved Hair Whiskers ─────────────────────────────── */
+.hamster-whiskers {
+  position: absolute;
+  top: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 12;
   pointer-events: none;
 }
 
 .whiskers-left {
-  left: -12px;
+  left: -20px;
   align-items: flex-end;
 }
 
 .whiskers-right {
-  right: -12px;
+  right: -20px;
   align-items: flex-start;
 }
 
 .whisker {
-  height: 1px;
-  background: linear-gradient(90deg, rgba(220, 200, 180, 0.8) 0%, rgba(220, 200, 180, 0.15) 100%);
-  border-radius: 1px;
-  transform-origin: right center;
+  display: block;
+  background: transparent;
   transition: transform 0.2s ease;
 }
 
-.whiskers-right .whisker {
-  background: linear-gradient(90deg, rgba(220, 200, 180, 0.15) 0%, rgba(220, 200, 180, 0.8) 100%);
-  transform-origin: left center;
+/* Left cheek: naturally curved fine hair wisps */
+.whiskers-left .whisker-top {
+  width: 38px;
+  height: 6px;
+  border-top: 1px solid rgba(48, 26, 16, 0.75);
+  border-radius: 60% 40% 0 0;
+  transform: rotate(4deg);
 }
 
-.whisker-top {
-  width: 18px;
-  transform: rotate(-10deg);
+.whiskers-left .whisker-bottom {
+  width: 32px;
+  height: 6px;
+  border-bottom: 1px solid rgba(48, 26, 16, 0.65);
+  border-radius: 0 0 60% 40%;
+  transform: rotate(-4deg);
 }
 
-.whisker-mid {
-  width: 22px;
-  transform: rotate(0deg);
-}
-
-.whisker-bot {
-  width: 16px;
-  transform: rotate(10deg);
-}
-
+/* Right cheek: naturally curved fine hair wisps */
 .whiskers-right .whisker-top {
-  transform: rotate(10deg);
+  width: 38px;
+  height: 6px;
+  border-top: 1px solid rgba(48, 26, 16, 0.75);
+  border-radius: 40% 60% 0 0;
+  transform: rotate(-4deg);
 }
 
-.whiskers-right .whisker-bot {
-  transform: rotate(-10deg);
+.whiskers-right .whisker-bottom {
+  width: 32px;
+  height: 6px;
+  border-bottom: 1px solid rgba(48, 26, 16, 0.65);
+  border-radius: 0 0 40% 60%;
+  transform: rotate(4deg);
 }
 
-/* ── Glassmorphic Drag Grip Button (Directly on Hamster) ─────── */
+/* ── Glassmorphic Drag Grip Button ─────────────────────────────── */
 .hamster-drag-handle-badge {
   position: absolute;
   top: -18px;
@@ -980,10 +1173,11 @@
 }
 
 .hamster-happy .hamster-mouth {
-  width: 14px;
-  height: 7px;
-  border-bottom: 2.2px solid #b05c4d;
-  border-radius: 0 0 50% 50%;
+  width: 17px;
+  height: 13px;
+  background: #7A211D;
+  border: 1.5px solid #4A1612;
+  border-radius: 20% 20% 50% 50% / 20% 20% 80% 80%;
 }
 
 .hamster-happy .hamster-cheek {

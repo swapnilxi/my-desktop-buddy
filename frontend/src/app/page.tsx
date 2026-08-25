@@ -47,7 +47,7 @@ export default function Home() {
   const [windowMode, setWindowModeState] = useState<WindowMode>('pet');
   const [activeTab, setActiveTab] = useState<TabId>('chat');
   const [hamsterMood, setHamsterMood] = useState<HamsterMood>('idle');
-  const [hamsterColor, setHamsterColor] = useState('#E2A44E');
+  const [hamsterColor, setHamsterColor] = useState('#D4893A');
   const [hamsterName, setHamsterName] = useState('Hammy');
   const [hamsterGreeting, setHamsterGreeting] = useState("Squeak! Let's build together! 🚀");
   const [backendOnline, setBackendOnline] = useState(false);

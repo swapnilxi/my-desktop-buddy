@@ -16,7 +16,7 @@ interface HamsterSpriteProps {
 
 export default function HamsterSprite({
   mood,
-  color = '#F4A460',
+  color = '#D4893A',
   name = 'Hammy',
   greeting = "Squeak! Let's build together! 🚀",
   isDragging = false,
@@ -66,54 +66,73 @@ export default function HamsterSprite({
           {/* Fluffy rounded tail */}
           <div className="hamster-tail" />
 
-          {/* Back feet with soft pads */}
-          <div className="hamster-back-foot hamster-foot-left">
-            <span className="toe toe-1" />
-            <span className="toe toe-2" />
-            <span className="toe toe-3" />
-          </div>
-          <div className="hamster-back-foot hamster-foot-right">
-            <span className="toe toe-1" />
-            <span className="toe toe-2" />
-            <span className="toe toe-3" />
-          </div>
-
           {/* Volumetric Torso with rich fur shading */}
           <div className="hamster-torso">
             {/* Subtle dorsal stripe / back fur contour */}
             <div className="hamster-fur-spine" />
-            {/* Soft cream belly and throat bib */}
+            {/* Large Soft cream belly */}
             <div className="hamster-belly">
               <div className="hamster-chest-bib" />
             </div>
-            {/* Fluffy cheek side-tufts */}
-            <div className="fur-tuft tuft-left" />
-            <div className="fur-tuft tuft-right" />
           </div>
 
-          {/* Realistic Fluffy Arms & Hands Connected to Torso */}
-          <div className="hamster-arm hamster-arm-left">
-            <div className="arm-fur" />
-            <div className="hamster-hand">
-              <span className="finger finger-1" />
-              <span className="finger finger-2" />
-              <span className="finger finger-3" />
-              <div className="palm-pad" />
+          {/* Small Cute Peachy Back Feet tucked under body */}
+          <div className="hamster-back-foot hamster-foot-left">
+            <div className="foot-pad-main" />
+            <div className="toes-group">
+              <span className="toe toe-1" />
+              <span className="toe toe-2" />
+              <span className="toe toe-3" />
+            </div>
+          </div>
+          <div className="hamster-back-foot hamster-foot-right">
+            <div className="foot-pad-main" />
+            <div className="toes-group">
+              <span className="toe toe-1" />
+              <span className="toe toe-2" />
+              <span className="toe toe-3" />
             </div>
           </div>
 
-          <div className="hamster-arm hamster-arm-right">
-            <div className="arm-fur" />
-            <div className="hamster-hand">
-              <span className="finger finger-1" />
-              <span className="finger finger-2" />
-              <span className="finger finger-3" />
-              <div className="palm-pad" />
+          {/* Small Chubby Arms holding the sunflower seed in center */}
+          <div className="seed-holding-assembly">
+            {/* Glossy Striped Sunflower Seed */}
+            <div className="hamster-seed">
+              <span className="seed-stripe stripe-left" />
+              <span className="seed-stripe stripe-center" />
+              <span className="seed-stripe stripe-right" />
+            </div>
+
+            {/* Left Little Arm & Paw */}
+            <div className="hamster-arm hamster-arm-left">
+              <div className="arm-fur" />
+              <div className="hamster-hand">
+                <span className="finger finger-1" />
+                <span className="finger finger-2" />
+                <span className="finger finger-3" />
+              </div>
+            </div>
+
+            {/* Right Little Arm & Paw */}
+            <div className="hamster-arm hamster-arm-right">
+              <div className="arm-fur" />
+              <div className="hamster-hand">
+                <span className="finger finger-1" />
+                <span className="finger finger-2" />
+                <span className="finger finger-3" />
+              </div>
             </div>
           </div>
 
           {/* Volumetric Realistic Head */}
           <div className="hamster-head">
+            {/* Soft Crown Fur Tuft / Hair Cowlick */}
+            <div className="head-fur-tuft">
+              <span className="tuft-strand strand-1" />
+              <span className="tuft-strand strand-2" />
+              <span className="tuft-strand strand-3" />
+            </div>
+
             {/* Ears with translucent inner pink & outer fur contour */}
             <div className="hamster-ear hamster-ear-left">
               <div className="ear-inner" />
@@ -124,11 +143,21 @@ export default function HamsterSprite({
               <div className="ear-fuzz" />
             </div>
 
+            {/* Persistent Floating Heart near left ear */}
+            <div className="hamster-floating-heart">❤</div>
+
             {/* Forehead Fur Highlight */}
             <div className="head-fur-highlight" />
 
+            {/* Cream Face Mask / Chubby Lower Cheeks */}
+            <div className="hamster-cream-mask" />
+
             {/* Face Structure */}
             <div className="hamster-face">
+              {/* Cute curved anime eyebrows */}
+              <div className="hamster-eyebrow eyebrow-left" />
+              <div className="hamster-eyebrow eyebrow-right" />
+
               {/* Glassy 3D Eyes with Specular Highlights */}
               <div className="hamster-eye-socket eye-socket-left">
                 <div className="hamster-eye eye-left">
@@ -156,7 +185,7 @@ export default function HamsterSprite({
               <div className="hamster-cheek cheek-left" />
               <div className="hamster-cheek cheek-right" />
 
-              {/* Fluffy Muzzle & Twitching Heart Nose */}
+              {/* Fluffy Muzzle & Nose */}
               <div className="hamster-muzzle">
                 <div className="muzzle-pad pad-left" />
                 <div className="muzzle-pad pad-right" />
@@ -166,19 +195,23 @@ export default function HamsterSprite({
                   <div className="nose-highlight" />
                 </div>
                 <div className="hamster-philtrum" />
-                <div className="hamster-mouth" />
+                <div className="hamster-mouth">
+                  <div className="hamster-teeth-pair">
+                    <span className="hamster-tooth tooth-left" />
+                    <span className="hamster-tooth tooth-right" />
+                  </div>
+                  <span className="hamster-tongue" />
+                </div>
               </div>
 
-              {/* Realistic Tapered Whiskers */}
+              {/* Anime Hair Whiskers */}
               <div className="hamster-whiskers whiskers-left">
                 <span className="whisker whisker-top" />
-                <span className="whisker whisker-mid" />
-                <span className="whisker whisker-bot" />
+                <span className="whisker whisker-bottom" />
               </div>
               <div className="hamster-whiskers whiskers-right">
                 <span className="whisker whisker-top" />
-                <span className="whisker whisker-mid" />
-                <span className="whisker whisker-bot" />
+                <span className="whisker whisker-bottom" />
               </div>
             </div>
           </div>
