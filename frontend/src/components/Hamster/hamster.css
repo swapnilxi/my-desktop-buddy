@@ -56,12 +56,12 @@
 
   /* Centralized Facial Coordinate System (Deliberate Layered Architecture) */
   --face-mask-top: 36px;
-  --face-mask-width: 146px;
-  --face-mask-height: 68px;
+  --face-mask-width: 142px;
+  --face-mask-height: 70px;
 
-  --muzzle-top: 5px;
-  --muzzle-width: 44px;
-  --muzzle-height: 40px;
+  --muzzle-top: 2px;
+  --muzzle-width: 48px;
+  --muzzle-height: 44px;
   --nose-top: 2px;
   --nose-width: 11px;
   --nose-height: 8px;
@@ -72,12 +72,12 @@
   --mouth-height: 13.5px;
 
   --eye-top: 28px;
-  --eye-x: 24px;
-  --eye-width: 29px;
-  --eye-height: 31px;
+  --eye-x: 23px;
+  --eye-width: 34px;
+  --eye-height: 36px;
 
-  --blush-top: 45px;
-  --blush-x: 12px;
+  --blush-top: 48px;
+  --blush-x: 10px;
 }
 
 /* ── Container & Canvas ────────────────────────────────────────── */
@@ -158,14 +158,14 @@
 }
 
 .hamster-foot--left {
-  left: 18px;
+  left: 20px;
   bottom: 2px;
   transform-origin: 50% 20%;
   transform: translate(var(--left-foot-x), var(--left-foot-y)) rotate(var(--left-foot-rotate));
 }
 
 .hamster-foot--right {
-  right: 20px;
+  right: 22px;
   bottom: 3px;
   transform-origin: 50% 20%;
   transform: translate(var(--right-foot-x), var(--right-foot-y)) rotate(var(--right-foot-rotate));
@@ -242,11 +242,11 @@
 /* ── Fleshy Lower Haunches (Rear/Hip Sitting Volume, Z-INDEX: 2) ── */
 .hamster-haunches {
   position: absolute;
-  bottom: 6px;
+  bottom: 4px;
   left: 50%;
   transform: translateX(-50%);
-  width: 146px;
-  height: 60px;
+  width: 154px;
+  height: 64px;
   z-index: 2;
   pointer-events: none;
 }
@@ -254,8 +254,8 @@
 .haunch-lobe {
   position: absolute;
   bottom: 0px;
-  width: 50px;
-  height: 54px;
+  width: 54px;
+  height: 58px;
   pointer-events: none;
 }
 
@@ -287,14 +287,14 @@
     0 4px 10px rgba(80, 35, 10, 0.16);
 }
 
-/* ── Pear-Shaped Torso Mass (Narrow Shoulders, Wide Lower Torso, Z-INDEX: 3) ── */
+/* ── Wide Chubby Torso Mass (148px x 108px, bottom: 4px, Z-INDEX: 3) ── */
 .hamster-torso {
   position: absolute;
-  bottom: 8px;
+  bottom: 4px;
   left: 50%;
   transform: translateX(-50%);
-  width: 132px;
-  height: 96px;
+  width: 148px;
+  height: 108px;
   background: radial-gradient(
     ellipse at 44% 28%,
     var(--hamster-color-light) 0%,
@@ -302,7 +302,7 @@
     var(--hamster-color-shadow) 80%,
     var(--hamster-color-deep) 100%
   );
-  border-radius: 44% 44% 42% 42% / 56% 56% 44% 44%;
+  border-radius: 46% 46% 44% 44% / 54% 54% 46% 46%;
   box-shadow:
     inset 0 5px 10px rgba(255, 255, 255, 0.38),
     inset 0 -8px 14px rgba(120, 50, 10, 0.22),
@@ -328,14 +328,14 @@
   z-index: 4;
 }
 
-/* ── Cream Belly Patch (Occupies ~55% Torso Width with Wide Side Orange Fur) ── */
+/* ── Cream Belly Patch (80px x 76px, Z-INDEX: 1) ── */
 .hamster-belly {
   position: absolute;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 74px;
-  height: 72px;
+  width: 80px;
+  height: 76px;
   background: radial-gradient(
     ellipse at 46% 42%,
     #FFFFFF 0%,
@@ -344,7 +344,7 @@
     var(--hamster-cream-shadow) 92%,
     rgba(223, 139, 52, 0.35) 100%
   );
-  border-radius: 46% 46% 40% 40% / 54% 54% 46% 46%;
+  border-radius: 48% 48% 42% 42% / 54% 54% 46% 46%;
   box-shadow:
     inset 0 3px 6px rgba(255, 255, 255, 0.82),
     inset -2.5px -4px 8px rgba(135, 60, 18, 0.16);
@@ -356,8 +356,8 @@
   top: 6px;
   left: 50%;
   transform: translateX(-50%);
-  width: 46px;
-  height: 28px;
+  width: 48px;
+  height: 30px;
   background: radial-gradient(ellipse at 50% 30%, #FFFFFF 0%, var(--hamster-cream-fur) 75%, transparent 100%);
   border-radius: 50%;
   filter: blur(2px);
@@ -385,12 +385,39 @@
 
 .hamster-head-layer {
   position: absolute;
-  top: 8px;
+  top: 18px;
   left: 50%;
   transform: translateX(-50%);
-  width: 156px;
+  width: 162px;
   height: 114px;
   z-index: 4;
+}
+
+/* ── Cheek Pouches (44px x 40px, top: 52px, left/right: -10px, z-index: 3) ── */
+.cheek-pouch-left {
+  position: absolute;
+  top: 52px;
+  left: -10px;
+  width: 44px;
+  height: 40px;
+  background: radial-gradient(ellipse at 40% 35%, #E89C46 0%, #DF8B34 60%, #C77324 100%);
+  border-radius: 50%;
+  z-index: 3;
+  box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.3);
+  pointer-events: none;
+}
+
+.cheek-pouch-right {
+  position: absolute;
+  top: 52px;
+  right: -10px;
+  width: 44px;
+  height: 40px;
+  background: radial-gradient(ellipse at 60% 35%, #E89C46 0%, #DF8B34 60%, #C77324 100%);
+  border-radius: 50%;
+  z-index: 3;
+  box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.3);
+  pointer-events: none;
 }
 
 /* ── Soft Flowing 3D Plush Forelock Fur Crest ─────────────────── */
@@ -534,24 +561,24 @@
   z-index: 4;
 }
 
-/* Tiny Rounded Hamster Ears (26px x 28px) */
+/* Rounded Hamster Ears (28px x 30px) */
 .hamster-ear {
   position: absolute;
-  top: -4px;
-  width: 26px;
-  height: 28px;
+  top: -8px;
+  width: 28px;
+  height: 30px;
   z-index: 3;
   transition: transform 0.25s ease;
 }
 
 .ear-left {
-  left: 18px;
+  left: 16px;
   transform: rotate(-10deg);
   transform-origin: bottom right;
 }
 
 .ear-right {
-  right: 18px;
+  right: 16px;
   transform: rotate(10deg);
   transform-origin: bottom left;
 }
@@ -577,8 +604,8 @@
   top: 4.5px;
   left: 50%;
   transform: translateX(-50%);
-  width: 17px;
-  height: 19px;
+  width: 18px;
+  height: 20px;
   background: radial-gradient(
     circle at 48% 40%,
     #FFF0EE 0%,
@@ -591,14 +618,14 @@
     inset 0 -1.5px 3px rgba(255, 255, 255, 0.25);
 }
 
-/* ── Head Base Mass (Broad Temples, Fluffy Dense Fur Skull) ────── */
+/* ── Head Base Mass (162px x 112px, border-radius: 50% 50% 52% 52% / 44% 44% 56% 56%) ── */
 .head-base-mass {
   position: absolute;
   top: 4px;
   left: 50%;
   transform: translateX(-50%);
-  width: 156px;
-  height: 106px;
+  width: 162px;
+  height: 112px;
   background: radial-gradient(
     ellipse at 40% 22%,
     var(--hamster-color-light) 0%,
@@ -606,7 +633,7 @@
     var(--hamster-color-shadow) 82%,
     var(--hamster-color-deep) 100%
   );
-  border-radius: 48% 48% 50% 50% / 36% 36% 64% 64%;
+  border-radius: 50% 50% 52% 52% / 44% 44% 56% 56%;
   box-shadow:
     inset 0 4px 10px rgba(255, 255, 255, 0.42),
     inset 0 -5px 10px rgba(120, 45, 10, 0.2),
@@ -619,7 +646,7 @@
   top: 4px;
   left: 50%;
   transform: translateX(-50%);
-  width: 60px;
+  width: 62px;
   height: 28px;
   background: radial-gradient(ellipse at 50% 25%, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.08) 60%, transparent 80%);
   border-radius: 50%;
@@ -641,7 +668,7 @@
   pointer-events: none;
 }
 
-/* ── Unified Organic Cream Face Mask (Flowing Fur Contours, Z-INDEX: 5) ── */
+/* ── Continuous Cream Face Mask System (Merged Organic Contour) ── */
 .hamster-face-mask {
   position: absolute;
   top: var(--face-mask-top);
@@ -653,104 +680,66 @@
   pointer-events: none;
 }
 
-/* Single Continuous Cream Fur Mantle Base (Spans Cheeks and Muzzle as ONE shape) */
-.face-mask-mantle {
+/* Organic Snout Crest rising upward between the eyes */
+.mask-snout-crest {
   position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    ellipse at 50% 45%,
-    #FFFFFF 0%,
-    var(--hamster-cream-fur) 48%,
-    var(--hamster-cream-mid) 78%,
-    var(--hamster-cream-shadow) 96%,
-    rgba(223, 139, 52, 0.35) 100%
-  );
-  border-radius: 46% 46% 40% 40% / 54% 54% 46% 46%;
-  box-shadow:
-    inset 0 3px 6px rgba(255, 255, 255, 0.85),
-    inset 0 -3px 6px rgba(135, 60, 18, 0.14),
-    0 3px 8px rgba(80, 35, 10, 0.12);
-}
-
-/* Gentle Under-Eye Cream Fur Rises (Left & Right Contour Arcs) */
-.mask-under-eye-rise {
-  position: absolute;
-  top: -6px;
-  width: 46px;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 34px;
   height: 24px;
   background: radial-gradient(
-    ellipse at 50% 70%,
-    var(--hamster-cream-fur) 0%,
-    rgba(255, 253, 247, 0.88) 50%,
-    rgba(249, 238, 217, 0.5) 75%,
+    ellipse at 50% 80%,
+    #FFFFFF 0%,
+    var(--hamster-cream-fur) 50%,
+    rgba(255, 253, 247, 0.85) 75%,
     transparent 100%
   );
   border-radius: 50% 50% 30% 30%;
   pointer-events: none;
+  z-index: 2;
+}
+
+/* Unbroken organic cream base mantle spanning cheeks and muzzle */
+.mask-base-mantle {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 50% 52%,
+    #FFFFFF 0%,
+    var(--hamster-cream-fur) 48%,
+    var(--hamster-cream-mid) 76%,
+    rgba(249, 238, 217, 0.85) 90%,
+    transparent 100%
+  );
+  border-radius: 48% 48% 44% 44% / 54% 54% 46% 46%;
+  box-shadow:
+    inset 0 3px 6px rgba(255, 255, 255, 0.85),
+    inset 0 -3px 6px rgba(140, 60, 15, 0.1);
   z-index: 1;
 }
 
-.rise-left {
-  left: 16px;
-  transform: rotate(-6deg);
-}
-
-.rise-right {
-  right: 16px;
-  transform: rotate(6deg);
-}
-
-/* Volumetric Cheek Lobes with Embedded Diffuse Pink Blush */
+/* Integrated 3D soft cheek volumes merged seamlessly inside the mask */
 .mask-cheek-volume {
   position: absolute;
-  top: 6px;
-  width: 48px;
-  height: 44px;
+  bottom: 4px;
+  width: 44px;
+  height: 40px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(255, 253, 247, 0.25) 55%,
+    transparent 85%
+  );
   border-radius: 50%;
   pointer-events: none;
   z-index: 2;
 }
 
-.left-volume {
-  left: 4px;
-  background: radial-gradient(
-    ellipse at 42% 35%,
-    rgba(255, 255, 255, 0.65) 0%,
-    rgba(255, 253, 247, 0.2) 60%,
-    transparent 85%
-  );
-}
+.left-cheek-volume { left: 6px; }
+.right-cheek-volume { right: 6px; }
 
-.right-volume {
-  right: 4px;
-  background: radial-gradient(
-    ellipse at 58% 35%,
-    rgba(255, 255, 255, 0.65) 0%,
-    rgba(255, 253, 247, 0.2) 60%,
-    transparent 85%
-  );
-}
-
-/* Diffuse Airbrushed Pink Cheek Blush (Embedded inside Cheek Volume) */
-.hamster-blush {
-  position: absolute;
-  top: 14px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 32px;
-  height: 18px;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(245, 161, 152, 0.48) 0%,
-    rgba(245, 161, 152, 0.18) 55%,
-    transparent 85%
-  );
-  border-radius: 50%;
-  filter: blur(2px);
-  pointer-events: none;
-}
-
-/* ── Central Muzzle Anchor Unit (Nested Inside Face-Mask) ── */
+/* ── Central Muzzle Anchor Unit (Holds Nose, Philtrum & Mouth Together) ── */
 .hamster-muzzle {
   position: absolute;
   top: var(--muzzle-top);
@@ -761,22 +750,17 @@
   z-index: 6;
 }
 
-/* Soft Volumetric Glow (Central Rise around Nose) */
-.muzzle-soft-glow {
+/* Subtle lighter volumetric region inside the face mask (NOT a separate white circle) */
+.muzzle-light-zone {
   position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 40px;
-  height: 38px;
+  inset: 0;
   background: radial-gradient(
-    ellipse at 50% 45%,
-    #FFFFFF 0%,
-    rgba(255, 253, 247, 0.92) 50%,
-    rgba(249, 238, 217, 0.5) 75%,
-    transparent 100%
+    ellipse at 50% 38%,
+    rgba(255, 255, 255, 0.75) 0%,
+    rgba(255, 253, 247, 0.35) 60%,
+    transparent 90%
   );
-  border-radius: 50% 50% 40% 40%;
+  border-radius: 50% 50% 44% 44% / 56% 56% 44% 44%;
   pointer-events: none;
   z-index: 1;
 }
@@ -862,25 +846,25 @@
 /* Eyebrows */
 .hamster-eyebrow {
   position: absolute;
-  top: 25px;
-  width: 9px;
-  height: 3.5px;
-  background: rgba(42, 23, 14, 0.7);
+  top: 18px;
+  width: 12px;
+  height: 4px;
+  background: rgba(42, 23, 14, 0.75);
   border-radius: 3px;
   z-index: 10;
 }
 
-.eyebrow-left { left: 35px; transform: rotate(7deg); }
-.eyebrow-right { right: 35px; transform: rotate(-7deg); }
+.eyebrow-left { left: 40px; transform: rotate(7deg); }
+.eyebrow-right { right: 40px; transform: rotate(-7deg); }
 
-/* Glossy Chocolate 3D Eyes Embedded in Fur (28px x 30px) */
+/* Glossy Chocolate 3D Eyes (34px x 36px) */
 .hamster-eye-socket {
   position: absolute;
   top: var(--eye-top);
   width: var(--eye-width);
   height: var(--eye-height);
   border-radius: 50%;
-  box-shadow: 0 1.5px 4px rgba(90, 35, 10, 0.18);
+  box-shadow: 0 1.5px 4px rgba(90, 35, 10, 0.2);
   z-index: 8;
 }
 
@@ -906,11 +890,11 @@
 
 .eye-iris-glow {
   position: absolute;
-  bottom: 2px;
+  bottom: 2.5px;
   left: 50%;
   transform: translateX(-50%);
-  width: 18px;
-  height: 9px;
+  width: 20px;
+  height: 10px;
   background: radial-gradient(ellipse at center, rgba(180, 90, 35, 0.65) 0%, rgba(180, 90, 35, 0.15) 65%, transparent 85%);
   border-radius: 50%;
   z-index: 1;
@@ -919,9 +903,9 @@
 .eye-highlight-primary {
   position: absolute;
   top: 3.5px;
-  left: 4.5px;
-  width: 10px;
-  height: 10px;
+  left: 5px;
+  width: 11px;
+  height: 11px;
   background: #FFFFFF;
   border-radius: 50%;
   box-shadow: 0 0 3px #FFFFFF;
@@ -930,10 +914,10 @@
 
 .eye-highlight-secondary {
   position: absolute;
-  bottom: 4px;
-  right: 4px;
-  width: 4.5px;
-  height: 4.5px;
+  bottom: 4.5px;
+  right: 4.5px;
+  width: 5px;
+  height: 5px;
   background: rgba(255, 255, 255, 0.9);
   border-radius: 50%;
   z-index: 2;
@@ -951,21 +935,21 @@
   transition: height 0.08s ease-out;
 }
 
-/* Diffuse Airbrushed Pink Cheek Blush */
+/* Diffuse Airbrushed Pink Cheek Blush (36px x 20px, opacity 0.75) */
 .hamster-blush {
   position: absolute;
   top: var(--blush-top);
-  width: 32px;
-  height: 18px;
+  width: 36px;
+  height: 20px;
   background: radial-gradient(
     ellipse at center,
-    rgba(245, 161, 152, 0.55) 0%,
-    rgba(245, 161, 152, 0.18) 55%,
-    transparent 80%
+    rgba(245, 155, 145, 0.75) 0%,
+    rgba(245, 155, 145, 0.38) 55%,
+    transparent 85%
   );
   border-radius: 50%;
   z-index: 7;
-  filter: blur(2px);
+  filter: blur(2.5px);
   pointer-events: none;
 }
 
@@ -975,7 +959,7 @@
 /* ── Natural Fine Hair Whiskers ─────────────────────────────────── */
 .hamster-whiskers {
   position: absolute;
-  top: 48px;
+  top: 50px;
   display: flex;
   flex-direction: column;
   gap: 3.5px;
@@ -984,12 +968,12 @@
 }
 
 .whiskers-left {
-  left: -14px;
+  left: -16px;
   align-items: flex-end;
 }
 
 .whiskers-right {
-  right: -14px;
+  right: -16px;
   align-items: flex-start;
 }
 
@@ -1087,10 +1071,6 @@
 .dot-1 { transform: translateX(1px); }
 .dot-2 { transform: translateX(0px); }
 .dot-3 { transform: translateX(1px); }
-
-/* ═══════════════════════════════════════════════════════════════
-   3. FOREGROUND SHORT ARMS & SEED LAYER (Z-INDEX: 8)
-   ═══════════════════════════════════════════════════════════════ */
 
 /* ═══════════════════════════════════════════════════════════════
    3. REUSABLE POSEABLE ARMS & HELD OBJECT LAYER (Z-INDEX: 8)

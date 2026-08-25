@@ -138,32 +138,31 @@ export default function HamsterSprite({
             </div>
           </div>
 
+          {/* Fluffy Rounded Cheek Pouches */}
+          <div className="cheek-pouch-left" />
+          <div className="cheek-pouch-right" />
+
           {/* Head Base Mass (Broad Golden-Orange Skull & Fur Shading) */}
           <div className="head-base-mass">
             <div className="head-top-glow" />
             <div className="head-fur-gradient-blend" />
           </div>
 
-          {/* ─── Unified Organic Cream Face Mask (Flowing Fur Contours) ─── */}
+          {/* ─── Continuous Cream Face Mask (Single Unified Merged System) ─── */}
           <div className="hamster-face-mask">
-            {/* Single Continuous Cream Fur Mantle Base */}
-            <div className="face-mask-mantle" />
+            {/* Rising snout crest bridging between the eyes */}
+            <span className="mask-snout-crest" />
 
-            {/* Gentle Under-Eye Cream Fur Rises (Left & Right Contour Arcs) */}
-            <div className="mask-under-eye-rise rise-left" />
-            <div className="mask-under-eye-rise rise-right" />
+            {/* Unbroken cream base mantle spanning cheeks and muzzle */}
+            <div className="mask-base-mantle" />
 
-            {/* Volumetric Cheek Lobes with Embedded Diffuse Pink Blush */}
-            <div className="mask-cheek-volume left-volume">
-              <div className="hamster-blush" />
-            </div>
-            <div className="mask-cheek-volume right-volume">
-              <div className="hamster-blush" />
-            </div>
+            {/* Soft 3D cheek volumes integrated inside the mask */}
+            <div className="mask-cheek-volume left-cheek-volume" />
+            <div className="mask-cheek-volume right-cheek-volume" />
 
-            {/* Central Muzzle Anchor Unit (Rises Higher around the Nose) */}
+            {/* Central Muzzle Anchor Unit: Holds Nose, Philtrum & Mouth Together */}
             <div className="hamster-muzzle">
-              <div className="muzzle-soft-glow" />
+              <div className="muzzle-light-zone" />
               <div className="hamster-nose">
                 <div className="nose-highlight" />
               </div>
@@ -174,7 +173,7 @@ export default function HamsterSprite({
             </div>
           </div>
 
-          {/* ─── Eyes, Brows & Whiskers Layer ─── */}
+          {/* ─── Eyes, Brows, Blush & Whiskers Layer (Aligned to Face Coordinate System) ─── */}
           <div className="hamster-face-features">
             {/* Subtle Eyebrows */}
             <div className="hamster-eyebrow eyebrow-left" />
@@ -198,6 +197,10 @@ export default function HamsterSprite({
               </div>
               <div className="eyelid-upper" />
             </div>
+
+            {/* Diffuse Airbrushed Pink Cheek Blush */}
+            <div className="hamster-blush blush-left" />
+            <div className="hamster-blush blush-right" />
 
             {/* Natural Fine Vibrissae Whiskers */}
             <div className="hamster-whiskers whiskers-left">
