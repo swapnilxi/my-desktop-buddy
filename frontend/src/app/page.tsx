@@ -36,23 +36,31 @@ const LOCAL_GREETINGS = [
   "Tiny hamster, big dreams! 🌟",
   "Always in your corner! 💛",
   "Ready when you are! ⚡",
+  "*yawns* Good morning! 😴",
+  "Nom nom nom! 🌰",
 ];
+
+// Idle variety sub-animations that cycle randomly
+const IDLE_VARIETIES: HamsterMood[] = ['idle', 'waving', 'idle', 'idle', 'idle'];
 
 export default function Home() {
   const [windowMode, setWindowModeState] = useState<WindowMode>('pet');
   const [activeTab, setActiveTab] = useState<TabId>('chat');
   const [hamsterMood, setHamsterMood] = useState<HamsterMood>('idle');
-  const [hamsterColor, setHamsterColor] = useState('#F4A460');
+  const [hamsterColor, setHamsterColor] = useState('#E2A44E');
   const [hamsterName, setHamsterName] = useState('Hammy');
   const [hamsterGreeting, setHamsterGreeting] = useState("Squeak! Let's build together! 🚀");
   const [backendOnline, setBackendOnline] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [petStreak, setPetStreak] = useState(0);
 
   // Drag tracking refs
   const dragStartPos = useRef({ x: 0, y: 0 });
   const isPointerDown = useRef(false);
   const hasMoved = useRef(false);
+  const petStreakTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastClickTime = useRef(0);
 
   const checkBackend = useCallback(async () => {
     try {
@@ -80,9 +88,23 @@ export default function Home() {
     refreshGreeting();
     const interval = setInterval(checkBackend, 30000);
     const greetingInterval = setInterval(refreshGreeting, 45000);
+
+    // Idle variety cycling — occasionally do a micro-animation
+    const idleVarietyInterval = setInterval(() => {
+      setHamsterMood((current) => {
+        if (current !== 'idle') return current; // don't interrupt active moods
+        const variety = IDLE_VARIETIES[Math.floor(Math.random() * IDLE_VARIETIES.length)];
+        if (variety !== 'idle') {
+          setTimeout(() => setHamsterMood('idle'), 3000);
+        }
+        return variety;
+      });
+    }, 15000);
+
     return () => {
       clearInterval(interval);
       clearInterval(greetingInterval);
+      clearInterval(idleVarietyInterval);
     };
   }, [checkBackend, refreshGreeting]);
 
@@ -120,11 +142,26 @@ export default function Home() {
   };
 
   const petHamster = () => {
+    // Track petting streak
+    setPetStreak((prev) => prev + 1);
+    if (petStreakTimer.current) clearTimeout(petStreakTimer.current);
+    petStreakTimer.current = setTimeout(() => setPetStreak(0), 10000);
+
     setHamsterMood('happy');
     refreshGreeting();
     setTimeout(() => {
       setHamsterMood('idle');
     }, 2800);
+  };
+
+  const feedHamster = () => {
+    setHamsterMood('eating');
+    setHamsterGreeting('Nom nom nom! So yummy! 🌰');
+    setTimeout(() => {
+      setHamsterMood('happy');
+      setHamsterGreeting('That was delicious! 😋');
+      setTimeout(() => setHamsterMood('idle'), 2000);
+    }, 3000);
   };
 
   // Tap to Talk: STAYS in Pet mode without expanding window unexpectedly!
@@ -194,7 +231,20 @@ export default function Home() {
     } catch {}
 
     if (!hasMoved.current) {
-      petHamster();
+      const now = Date.now();
+      if (now - lastClickTime.current < 400) {
+        // Double-click → feed
+        feedHamster();
+        lastClickTime.current = 0;
+      } else {
+        lastClickTime.current = now;
+        // Delay single-click pet to allow for double-click detection
+        setTimeout(() => {
+          if (lastClickTime.current !== 0) {
+            petHamster();
+          }
+        }, 420);
+      }
     }
   };
 
@@ -238,7 +288,9 @@ export default function Home() {
             name={hamsterName}
             greeting={hamsterGreeting}
             isDragging={isDragging}
+            petStreak={petStreak}
             onRefreshGreeting={refreshGreeting}
+            onFeed={feedHamster}
           />
         </div>
 
@@ -348,7 +400,9 @@ export default function Home() {
             name={hamsterName}
             greeting={hamsterGreeting}
             onClick={petHamster}
+            petStreak={petStreak}
             onRefreshGreeting={refreshGreeting}
+            onFeed={feedHamster}
           />
         </div>
 
@@ -426,7 +480,9 @@ export default function Home() {
             name={hamsterName}
             greeting={hamsterGreeting}
             onClick={petHamster}
+            petStreak={petStreak}
             onRefreshGreeting={refreshGreeting}
+            onFeed={feedHamster}
           />
         </div>
 

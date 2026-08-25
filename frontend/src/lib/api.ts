@@ -73,7 +73,7 @@ export interface AppConfig {
   api_keys: APIKeysConfig;
 }
 
-export type HamsterMood = 'idle' | 'listening' | 'thinking' | 'speaking' | 'happy';
+export type HamsterMood = 'idle' | 'listening' | 'thinking' | 'speaking' | 'happy' | 'sleeping' | 'eating' | 'waving' | 'excited' | 'dragged';
 
 // ── API Functions ────────────────────────────────────────────────
 

@@ -5,36 +5,36 @@
 
 /* ── CSS Custom Properties ─────────────────────────────────────── */
 :root {
-  /* Color Palette — Warm hamster tones on deep dark */
-  --bg-primary: #0a0a12;
-  --bg-secondary: #12121e;
-  --bg-tertiary: #1a1a2e;
-  --bg-card: rgba(26, 26, 46, 0.7);
-  --bg-glass: rgba(255, 255, 255, 0.04);
-  --bg-glass-hover: rgba(255, 255, 255, 0.08);
+  /* Color Palette — Warm cozy hamster tones (honey, apricot, buttercream on deep espresso) */
+  --bg-primary: #140d09;
+  --bg-secondary: #1e130d;
+  --bg-tertiary: #2a1b13;
+  --bg-card: rgba(38, 24, 17, 0.75);
+  --bg-glass: rgba(255, 248, 235, 0.05);
+  --bg-glass-hover: rgba(245, 168, 75, 0.12);
 
-  --text-primary: #e8e4df;
-  --text-secondary: #9b95a0;
-  --text-muted: #5a5565;
-  --text-accent: #f4a460;
+  --text-primary: #fffbf2;
+  --text-secondary: #d9c7b8;
+  --text-muted: #8c7665;
+  --text-accent: #f5a84b;
 
-  --accent-primary: #f4a460;       /* Sandy brown — hamster fur */
-  --accent-secondary: #e88d3c;     /* Darker fur */
-  --accent-tertiary: #c4732e;      /* Deep fur */
-  --accent-glow: rgba(244, 164, 96, 0.25);
+  --accent-primary: #f5a84b;       /* Golden honey hamster fur */
+  --accent-secondary: #e28a32;     /* Warm apricot */
+  --accent-tertiary: #c4681e;      /* Deep amber */
+  --accent-glow: rgba(245, 168, 75, 0.28);
 
-  --success: #4ecdc4;
-  --success-glow: rgba(78, 205, 196, 0.2);
-  --danger: #ff6b6b;
-  --danger-glow: rgba(255, 107, 107, 0.2);
-  --warning: #ffe66d;
+  --success: #66d79a;
+  --success-glow: rgba(102, 215, 154, 0.22);
+  --danger: #ff7675;
+  --danger-glow: rgba(255, 118, 117, 0.22);
+  --warning: #fed330;
   --info: #74b9ff;
 
   /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #f4a460 0%, #e88d3c 50%, #c4732e 100%);
-  --gradient-bg: linear-gradient(180deg, #0a0a12 0%, #12121e 50%, #1a1a2e 100%);
-  --gradient-card: linear-gradient(135deg, rgba(244, 164, 96, 0.08) 0%, rgba(26, 26, 46, 0.6) 100%);
-  --gradient-border: linear-gradient(135deg, rgba(244, 164, 96, 0.3), rgba(244, 164, 96, 0.05));
+  --gradient-primary: linear-gradient(135deg, #f5a84b 0%, #e28a32 50%, #c4681e 100%);
+  --gradient-bg: linear-gradient(180deg, #140d09 0%, #1e130d 50%, #2a1b13 100%);
+  --gradient-card: linear-gradient(135deg, rgba(245, 168, 75, 0.1) 0%, rgba(38, 24, 17, 0.7) 100%);
+  --gradient-border: linear-gradient(135deg, rgba(245, 168, 75, 0.35), rgba(245, 168, 75, 0.08));
 
   /* Typography */
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
