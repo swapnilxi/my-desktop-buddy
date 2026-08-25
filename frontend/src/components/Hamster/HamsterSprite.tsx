@@ -6,6 +6,8 @@ import './hamster.css';
 
 interface HamsterSpriteProps {
   mood: HamsterMood;
+  pose?: 'idle' | 'hold-seed' | 'wave' | 'reach' | 'tap' | 'eat' | 'shy';
+  heldItem?: 'seed' | 'berry' | 'heart' | 'none';
   color?: string;
   name?: string;
   greeting?: string;
@@ -18,6 +20,8 @@ interface HamsterSpriteProps {
 
 export default function HamsterSprite({
   mood,
+  pose = 'hold-seed',
+  heldItem = 'seed',
   color = '#DF8B34',
   name = 'Hammy',
   greeting = "Squeak! Let's build together! 🚀",
@@ -68,17 +72,24 @@ export default function HamsterSprite({
         {/* Floating Heart */}
         <div className="hamster-floating-heart">❤</div>
 
-        {/* ══════════ 1. BODY & TORSO LAYER (COMPACT BALL, Z-INDEX: 2) ══════════ */}
+        {/* ══════════ 1. BODY & TORSO LAYER (PEAR-SHAPED TORSO, Z-INDEX: 2) ══════════ */}
         <div className="hamster-body-layer">
-          {/* Volumetric Torso Mass */}
+          {/* Fleshy Lower Haunches (Rear/Hip Sitting Volume) */}
+          <div className="hamster-haunches">
+            <span className="haunch-lobe haunch-left" />
+            <span className="haunch-lobe haunch-right" />
+          </div>
+
+          {/* Pear-Shaped Torso Mass with Shoulders and Cream Belly */}
           <div className="hamster-torso">
-            {/* Soft Cream Belly */}
+            <div className="torso-neck-blend" />
+            {/* Soft Cream Belly (Occupies 55% Torso Width with Wide Side Orange Fur) */}
             <div className="hamster-belly">
               <div className="belly-glow" />
             </div>
           </div>
 
-          {/* Anatomical Hind Feet with Main Pad & Distinct 3-Toe Structure */}
+          {/* Anatomical Hind Feet Emerging Underneath Lower Body (Independent Transform Origins) */}
           <div className="hamster-foot hamster-foot--left">
             <div className="foot-sole">
               <span className="foot-main-pad" />
@@ -207,39 +218,62 @@ export default function HamsterSprite({
           </div>
         </div>
 
-        {/* ══════════ 3. FOREGROUND SHORT ARMS & SEED LAYER (Z-INDEX: 8) ══════════ */}
-        <div className="seed-holding-assembly">
-          {/* Sunflower Seed */}
-          <div className="hamster-seed">
-            <span className="seed-sheen" />
-            <span className="seed-stripe stripe-center" />
-          </div>
+        {/* ══════════ 3. REUSABLE POSEABLE ARMS & HELD OBJECT LAYER (Z-INDEX: 8) ══════════ */}
+        <div className={`hamster-limbs-layer pose-${pose}`}>
+          {/* Independent Held Object Container */}
+          {heldItem !== 'none' && (
+            <div className="hamster-held-object-container">
+              {heldItem === 'seed' && (
+                <div className="hamster-seed" onClick={onFeed} title="Yummy sunflower seed!">
+                  <span className="seed-sheen" />
+                  <span className="seed-stripe stripe-center" />
+                </div>
+              )}
+              {heldItem === 'berry' && (
+                <div className="hamster-held-berry">
+                  <span className="berry-body" />
+                  <span className="berry-leaf" />
+                </div>
+              )}
+              {heldItem === 'heart' && (
+                <div className="hamster-held-heart">💖</div>
+              )}
+            </div>
+          )}
 
-          {/* Short Left Arm & Little Hamster Paw with 3 Tiny Pads */}
-          <div className="hamster-arm arm-left">
-            <div className="arm-volume" />
-            <div className="hamster-paw">
-              <div className="paw-fur-rim">
-                <div className="paw-pad-cluster">
-                  <span className="paw-finger f-left" />
-                  <span className="paw-finger f-mid" />
-                  <span className="paw-finger f-right" />
-                  <span className="paw-palm-pad" />
+          {/* Left Arm Assembly: Shoulder Pivot -> Upper Arm -> Forearm/Wrist -> Paw */}
+          <div className="hamster-arm hamster-arm--left">
+            <div className="arm-shoulder-joint">
+              <div className="arm-volume">
+                <div className="arm-fur-shading" />
+              </div>
+              <div className="hamster-paw hamster-paw--left">
+                <div className="paw-fur-rim">
+                  <div className="paw-pad-cluster">
+                    <span className="paw-finger f-left" />
+                    <span className="paw-finger f-mid" />
+                    <span className="paw-finger f-right" />
+                    <span className="paw-palm-pad" />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Short Right Arm & Little Hamster Paw with 3 Tiny Pads */}
-          <div className="hamster-arm arm-right">
-            <div className="arm-volume" />
-            <div className="hamster-paw">
-              <div className="paw-fur-rim">
-                <div className="paw-pad-cluster">
-                  <span className="paw-finger f-left" />
-                  <span className="paw-finger f-mid" />
-                  <span className="paw-finger f-right" />
-                  <span className="paw-palm-pad" />
+          {/* Right Arm Assembly: Shoulder Pivot -> Upper Arm -> Forearm/Wrist -> Paw */}
+          <div className="hamster-arm hamster-arm--right">
+            <div className="arm-shoulder-joint">
+              <div className="arm-volume">
+                <div className="arm-fur-shading" />
+              </div>
+              <div className="hamster-paw hamster-paw--right">
+                <div className="paw-fur-rim">
+                  <div className="paw-pad-cluster">
+                    <span className="paw-finger f-left" />
+                    <span className="paw-finger f-mid" />
+                    <span className="paw-finger f-right" />
+                    <span className="paw-palm-pad" />
+                  </div>
                 </div>
               </div>
             </div>
