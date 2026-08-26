@@ -56,7 +56,7 @@
 
   /* Centralized Facial Coordinate System (Deliberate Layered Architecture) */
   --face-mask-top: 36px;
-  --face-mask-width: 152px;
+  --face-mask-width: 142px;
   --face-mask-height: 64px;
 
   --muzzle-top: 8px;
@@ -126,8 +126,8 @@
 /* ── Base Hamster Canvas (180px x 180px) ────────────────────────── */
 .hamster {
   position: relative;
-  width: 180px;
-  height: 180px;
+  width: 175px;
+  height: 190px;
   filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.12));
   transform-origin: bottom center;
   transition: transform 0.25s ease;
@@ -245,8 +245,8 @@
   bottom: 4px;
   left: 50%;
   transform: translateX(-50%);
-  width: 154px;
-  height: 64px;
+  width: 140px;
+  height: 62px;
   z-index: 2;
   pointer-events: none;
 }
@@ -293,8 +293,8 @@
   bottom: 4px;
   left: 50%;
   transform: translateX(-50%);
-  width: 148px;
-  height: 108px;
+  width: 136px;
+  height: 122px;
   background: radial-gradient(
     ellipse at 44% 28%,
     var(--hamster-color-light) 0%,
@@ -334,8 +334,8 @@
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 68px;
-  height: 65px;
+  width: 66px;
+  height: 78px;
   background: radial-gradient(
     ellipse at 46% 42%,
     #FFFFFF 0%,
@@ -388,16 +388,16 @@
   top: 18px;
   left: 50%;
   transform: translateX(-50%);
-  width: 178px;
+  width: 164px;
   height: 114px;
   z-index: 4;
 }
 
-/* ── Cheek Pouches (44px x 40px, top: 52px, left/right: -10px, z-index: 3) ── */
+/* ── Cheek Pouches (44px x 40px, top: 52px, left/right: -6px, z-index: 3) ── */
 .cheek-pouch-left {
   position: absolute;
   top: 52px;
-  left: -10px;
+  left: -6px;
   width: 44px;
   height: 40px;
   background: radial-gradient(ellipse at 35% 30%, #E89C46 0%, #DF8B34 55%, #C77324 90%);
@@ -410,7 +410,7 @@
 .cheek-pouch-right {
   position: absolute;
   top: 52px;
-  right: -10px;
+  right: -6px;
   width: 44px;
   height: 40px;
   background: radial-gradient(ellipse at 65% 30%, #E89C46 0%, #DF8B34 55%, #C77324 90%);
@@ -625,8 +625,8 @@
   top: 4px;
   left: 50%;
   transform: translateX(-50%);
-  width: 175px;
-  height: 105px;
+  width: 160px;
+  height: 104px;
   background: radial-gradient(
     ellipse at 40% 22%,
     var(--hamster-color-light) 0%,
