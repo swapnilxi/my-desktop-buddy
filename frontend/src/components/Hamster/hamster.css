@@ -5,26 +5,37 @@
 
 :root {
   /* Natural Syrian Hamster Palette */
-  --hamster-color: #DF8B34;          /* Warm Golden Honey Fur */
-  --hamster-color-light: #E89C46;    /* Light Keylight Fur */
-  --hamster-color-shadow: #C77324;   /* Warm Shadow Fur */
-  --hamster-color-deep: #B05F18;     /* Ambient Occlusion Fur */
+  --hamster-color: #DF8B34;
+  /* Warm Golden Honey Fur */
+  --hamster-color-light: #E89C46;
+  /* Light Keylight Fur */
+  --hamster-color-shadow: #C77324;
+  /* Warm Shadow Fur */
+  --hamster-color-deep: #B05F18;
+  /* Ambient Occlusion Fur */
 
   /* Soft Ivory Cream Fur */
-  --hamster-cream-fur: #FFFDF7;      /* Ivory Cream */
+  --hamster-cream-fur: #FFFDF7;
+  /* Ivory Cream */
   --hamster-cream-mid: #F9EED9;
   --hamster-cream-shadow: #ECCFA8;
 
   /* Soft Fleshy Skin, Paw Pads & Inner Ear */
-  --hamster-pink-inner: #F2A89F;    /* Soft Muted Pink */
-  --hamster-pink-blush: #F5A198;    /* Diffuse Blush */
-  --hamster-nose-color: #E88880;     /* Tiny Pink Nose */
-  --hamster-tongue-color: #F17F89;   /* Tongue */
+  --hamster-pink-inner: #F2A89F;
+  /* Soft Muted Pink */
+  --hamster-pink-blush: #F5A198;
+  /* Diffuse Blush */
+  --hamster-nose-color: #E88880;
+  /* Tiny Pink Nose */
+  --hamster-tongue-color: #F17F89;
+  /* Tongue */
 
   /* Deep Chocolate Eyes */
-  --hamster-eye-base: #2A170E;       /* Deep Chocolate Base */
+  --hamster-eye-base: #2A170E;
+  /* Deep Chocolate Base */
   --hamster-eye-dark: #180C07;
-  --hamster-eye-iris: #5C341F;       /* Warm Iris Reflection */
+  --hamster-eye-iris: #5C341F;
+  /* Warm Iris Reflection */
 
   /* Reusable Dynamic Limb Transforms (Shoulder & Wrist & Ankle Pivots) */
   --left-arm-rotate: 0deg;
@@ -63,18 +74,18 @@
   --muzzle-width: 54px;
   --muzzle-height: 50px;
   --nose-top: 2px;
-  --nose-width: 11px;
-  --nose-height: 8px;
+  --nose-width: 13px;
+  --nose-height: 10px;
   --philtrum-top: 9.5px;
   --philtrum-height: 3.5px;
   --mouth-top: 12.5px;
-  --mouth-width: 18px;
-  --mouth-height: 13.5px;
+  --mouth-width: 22px;
+  --mouth-height: 16px;
 
-  --eye-top: 36px;
-  --eye-x: 30px;
-  --eye-width: 34px;
-  --eye-height: 36px;
+  --eye-top: 34px;
+  --eye-x: 28px;
+  --eye-width: 38px;
+  --eye-height: 40px;
 
   --blush-top: 52px;
   --blush-x: 14px;
@@ -175,13 +186,11 @@
   position: relative;
   width: 100%;
   height: 100%;
-  background: radial-gradient(
-    ellipse at 48% 40%,
-    #FFF0EE 0%,
-    #F5B0A7 40%,
-    var(--hamster-pink-inner) 75%,
-    #C8655C 100%
-  );
+  background: radial-gradient(ellipse at 48% 40%,
+      #FFF0EE 0%,
+      #F5B0A7 40%,
+      var(--hamster-pink-inner) 75%,
+      #C8655C 100%);
   border-radius: 52% 52% 42% 42% / 62% 62% 38% 38%;
   box-shadow:
     inset 0 2px 4px rgba(255, 255, 255, 0.75),
@@ -199,12 +208,10 @@
   bottom: 2px;
   width: 18px;
   height: 12px;
-  background: radial-gradient(
-    ellipse at 50% 35%,
-    #FFF6F5 0%,
-    var(--hamster-pink-inner) 65%,
-    #D67C73 100%
-  );
+  background: radial-gradient(ellipse at 50% 35%,
+      #FFF6F5 0%,
+      var(--hamster-pink-inner) 65%,
+      #D67C73 100%);
   border-radius: 50%;
   box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.65);
 }
@@ -222,22 +229,32 @@
 
 .foot-toe {
   display: block;
-  background: radial-gradient(
-    circle at 45% 35%,
-    #FFF8F7 0%,
-    #F5B8B0 45%,
-    var(--hamster-pink-inner) 75%,
-    #D0786F 100%
-  );
+  background: radial-gradient(circle at 45% 35%,
+      #FFF8F7 0%,
+      #F5B8B0 45%,
+      var(--hamster-pink-inner) 75%,
+      #D0786F 100%);
   border-radius: 50%;
   box-shadow:
     inset 0 0.8px 1.2px rgba(255, 255, 255, 0.7),
     0 0.5px 1px rgba(120, 45, 35, 0.15);
 }
 
-.t-left { width: 5px; height: 5.5px; }
-.t-mid { width: 6.5px; height: 7px; margin-top: -1px; }
-.t-right { width: 5px; height: 5.5px; }
+.t-left {
+  width: 5px;
+  height: 5.5px;
+}
+
+.t-mid {
+  width: 6.5px;
+  height: 7px;
+  margin-top: -1px;
+}
+
+.t-right {
+  width: 5px;
+  height: 5.5px;
+}
 
 /* ── Fleshy Lower Haunches (Rear/Hip Sitting Volume, Z-INDEX: 2) ── */
 .hamster-haunches {
@@ -262,12 +279,10 @@
 .haunch-left {
   left: -5px;
   border-radius: 68% 32% 56% 44% / 58% 42% 56% 44%;
-  background: radial-gradient(
-    ellipse at 35% 40%,
-    var(--hamster-color-light) 0%,
-    var(--hamster-color) 60%,
-    var(--hamster-color-shadow) 90%
-  );
+  background: radial-gradient(ellipse at 35% 40%,
+      var(--hamster-color-light) 0%,
+      var(--hamster-color) 60%,
+      var(--hamster-color-shadow) 90%);
   box-shadow:
     inset 0 2px 4px rgba(255, 255, 255, 0.35),
     0 4px 10px rgba(80, 35, 10, 0.16);
@@ -276,12 +291,10 @@
 .haunch-right {
   right: -5px;
   border-radius: 32% 68% 44% 56% / 42% 58% 44% 56%;
-  background: radial-gradient(
-    ellipse at 65% 40%,
-    var(--hamster-color-light) 0%,
-    var(--hamster-color) 60%,
-    var(--hamster-color-shadow) 90%
-  );
+  background: radial-gradient(ellipse at 65% 40%,
+      var(--hamster-color-light) 0%,
+      var(--hamster-color) 60%,
+      var(--hamster-color-shadow) 90%);
   box-shadow:
     inset 0 2px 4px rgba(255, 255, 255, 0.35),
     0 4px 10px rgba(80, 35, 10, 0.16);
@@ -295,13 +308,11 @@
   transform: translateX(-50%);
   width: 136px;
   height: 122px;
-  background: radial-gradient(
-    ellipse at 44% 28%,
-    var(--hamster-color-light) 0%,
-    var(--hamster-color) 46%,
-    var(--hamster-color-shadow) 80%,
-    var(--hamster-color-deep) 100%
-  );
+  background: radial-gradient(ellipse at 44% 28%,
+      var(--hamster-color-light) 0%,
+      var(--hamster-color) 46%,
+      var(--hamster-color-shadow) 80%,
+      var(--hamster-color-deep) 100%);
   border-radius: 42% 42% 50% 50% / 38% 38% 62% 62%;
   box-shadow:
     inset 0 5px 10px rgba(255, 255, 255, 0.38),
@@ -318,12 +329,10 @@
   left: 0;
   right: 0;
   height: 28px;
-  background: linear-gradient(
-    180deg,
-    rgba(130, 55, 12, 0.42) 0%,
-    rgba(130, 55, 12, 0.12) 65%,
-    transparent 100%
-  );
+  background: linear-gradient(180deg,
+      rgba(130, 55, 12, 0.42) 0%,
+      rgba(130, 55, 12, 0.12) 65%,
+      transparent 100%);
   pointer-events: none;
   z-index: 4;
 }
@@ -336,14 +345,12 @@
   transform: translateX(-50%);
   width: 66px;
   height: 78px;
-  background: radial-gradient(
-    ellipse at 46% 42%,
-    #FFFFFF 0%,
-    var(--hamster-cream-fur) 42%,
-    var(--hamster-cream-mid) 72%,
-    var(--hamster-cream-shadow) 92%,
-    rgba(223, 139, 52, 0.35) 100%
-  );
+  background: radial-gradient(ellipse at 46% 42%,
+      #FFFFFF 0%,
+      var(--hamster-cream-fur) 42%,
+      var(--hamster-cream-mid) 72%,
+      var(--hamster-cream-shadow) 92%,
+      rgba(223, 139, 52, 0.35) 100%);
   border-radius: 48% 48% 42% 42% / 54% 54% 46% 46%;
   box-shadow:
     inset 0 3px 6px rgba(255, 255, 255, 0.82),
@@ -370,11 +377,9 @@
   left: 0;
   right: 0;
   height: 18px;
-  background: linear-gradient(
-    0deg,
-    rgba(140, 60, 15, 0.28) 0%,
-    transparent 100%
-  );
+  background: linear-gradient(0deg,
+      rgba(140, 60, 15, 0.28) 0%,
+      transparent 100%);
   pointer-events: none;
   z-index: 3;
 }
@@ -444,12 +449,10 @@
   transform: translateX(-50%);
   width: 44px;
   height: 14px;
-  background: radial-gradient(
-    ellipse at 50% 60%,
-    var(--hamster-color-light) 0%,
-    var(--hamster-color) 65%,
-    var(--hamster-color-shadow) 100%
-  );
+  background: radial-gradient(ellipse at 50% 60%,
+      var(--hamster-color-light) 0%,
+      var(--hamster-color) 65%,
+      var(--hamster-color-shadow) 100%);
   border-radius: 50% 50% 30% 30%;
   box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.35);
   z-index: 0;
@@ -467,13 +470,11 @@
   height: 14px;
   transform: rotate(-19deg);
   border-radius: 70% 30% 35% 35% / 75% 70% 30% 25%;
-  background: radial-gradient(
-    ellipse at 35% 25%,
-    var(--hamster-color-light) 0%,
-    var(--hamster-color) 50%,
-    var(--hamster-color-shadow) 85%,
-    var(--hamster-color-deep) 100%
-  );
+  background: radial-gradient(ellipse at 35% 25%,
+      var(--hamster-color-light) 0%,
+      var(--hamster-color) 50%,
+      var(--hamster-color-shadow) 85%,
+      var(--hamster-color-deep) 100%);
   box-shadow:
     inset 0 1.5px 2px rgba(255, 255, 255, 0.45),
     inset 0 -2px 3px rgba(176, 95, 24, 0.3);
@@ -487,14 +488,12 @@
   height: 25px;
   transform: rotate(12deg) skewX(-3deg);
   border-radius: 75% 25% 25% 25% / 85% 75% 25% 20%;
-  background: radial-gradient(
-    ellipse at 32% 22%,
-    #FFF4E5 0%,
-    var(--hamster-color-light) 25%,
-    var(--hamster-color) 58%,
-    var(--hamster-color-shadow) 85%,
-    var(--hamster-color-deep) 100%
-  );
+  background: radial-gradient(ellipse at 32% 22%,
+      #FFF4E5 0%,
+      var(--hamster-color-light) 25%,
+      var(--hamster-color) 58%,
+      var(--hamster-color-shadow) 85%,
+      var(--hamster-color-deep) 100%);
   box-shadow:
     inset 0 2px 3.5px rgba(255, 255, 255, 0.6),
     inset -1.5px -3px 4px rgba(160, 75, 18, 0.35),
@@ -508,12 +507,10 @@
   left: 4px;
   width: 9px;
   height: 12px;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.65) 0%,
-    rgba(255, 255, 255, 0.1) 60%,
-    transparent 100%
-  );
+  background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.65) 0%,
+      rgba(255, 255, 255, 0.1) 60%,
+      transparent 100%);
   border-radius: 50%;
   transform: rotate(-15deg);
   filter: blur(0.5px);
@@ -526,13 +523,11 @@
   height: 18px;
   transform: rotate(-10deg);
   border-radius: 35% 65% 30% 30% / 75% 80% 20% 25%;
-  background: radial-gradient(
-    ellipse at 45% 25%,
-    var(--hamster-color-light) 0%,
-    var(--hamster-color) 52%,
-    var(--hamster-color-shadow) 85%,
-    var(--hamster-color-deep) 100%
-  );
+  background: radial-gradient(ellipse at 45% 25%,
+      var(--hamster-color-light) 0%,
+      var(--hamster-color) 52%,
+      var(--hamster-color-shadow) 85%,
+      var(--hamster-color-deep) 100%);
   box-shadow:
     inset 0 1.5px 2px rgba(255, 255, 255, 0.45),
     inset 0 -2.5px 3.5px rgba(176, 95, 24, 0.3);
@@ -549,12 +544,10 @@
   height: 12px;
   transform: rotate(4deg);
   border-radius: 60% 40% 30% 30% / 75% 75% 25% 25%;
-  background: radial-gradient(
-    circle at 40% 30%,
-    #FFEED8 0%,
-    var(--hamster-color-light) 40%,
-    var(--hamster-color) 80%
-  );
+  background: radial-gradient(circle at 40% 30%,
+      #FFEED8 0%,
+      var(--hamster-color-light) 40%,
+      var(--hamster-color) 80%);
   box-shadow:
     inset 0 1px 2px rgba(255, 255, 255, 0.6),
     0 1px 2px rgba(90, 40, 10, 0.1);
@@ -564,36 +557,34 @@
 /* Rounded Hamster Ears (Wider 32px x 22px, Flatter, Lowered) */
 .hamster-ear {
   position: absolute;
-  top: 2px;
-  width: 32px;
-  height: 22px;
+  top: 0px;
+  width: 36px;
+  height: 26px;
   border-radius: 50%;
   z-index: 3;
   transition: transform 0.25s ease;
 }
 
 .ear-left {
-  left: 8px;
-  transform: rotate(-12deg);
+  left: 6px;
+  transform: rotate(-15deg);
   transform-origin: bottom right;
 }
 
 .ear-right {
-  right: 8px;
-  transform: rotate(12deg);
+  right: 6px;
+  transform: rotate(15deg);
   transform-origin: bottom left;
 }
 
 .ear-outer {
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-    circle at 45% 30%,
-    var(--hamster-color-light) 0%,
-    var(--hamster-color) 55%,
-    var(--hamster-color-shadow) 90%,
-    var(--hamster-color-deep) 100%
-  );
+  background: radial-gradient(circle at 45% 30%,
+      var(--hamster-color-light) 0%,
+      var(--hamster-color) 55%,
+      var(--hamster-color-shadow) 90%,
+      var(--hamster-color-deep) 100%);
   border-radius: 50%;
   box-shadow:
     inset 0 2px 4px rgba(255, 255, 255, 0.45),
@@ -607,12 +598,10 @@
   transform: translateX(-50%);
   width: 20px;
   height: 14px;
-  background: radial-gradient(
-    circle at 48% 40%,
-    #FFF0EE 0%,
-    var(--hamster-pink-inner) 55%,
-    #D0786F 100%
-  );
+  background: radial-gradient(circle at 48% 40%,
+      #FFF0EE 0%,
+      var(--hamster-pink-inner) 55%,
+      #D0786F 100%);
   border-radius: 50%;
   box-shadow:
     inset 0 1.5px 3px rgba(140, 45, 35, 0.25),
@@ -627,13 +616,11 @@
   transform: translateX(-50%);
   width: 160px;
   height: 104px;
-  background: radial-gradient(
-    ellipse at 40% 22%,
-    var(--hamster-color-light) 0%,
-    var(--hamster-color) 48%,
-    var(--hamster-color-shadow) 82%,
-    var(--hamster-color-deep) 100%
-  );
+  background: radial-gradient(ellipse at 40% 22%,
+      var(--hamster-color-light) 0%,
+      var(--hamster-color) 48%,
+      var(--hamster-color-shadow) 82%,
+      var(--hamster-color-deep) 100%);
   border-radius: 50% 50% 48% 48% / 42% 42% 58% 58%;
   box-shadow:
     inset 0 4px 10px rgba(255, 255, 255, 0.42),
@@ -658,13 +645,11 @@
 .head-fur-gradient-blend {
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-    ellipse at 50% 74%,
-    rgba(255, 253, 247, 0.96) 0%,
-    rgba(249, 238, 217, 0.82) 38%,
-    rgba(232, 156, 70, 0.45) 68%,
-    transparent 90%
-  );
+  background: radial-gradient(ellipse at 50% 74%,
+      rgba(255, 253, 247, 0.96) 0%,
+      rgba(249, 238, 217, 0.82) 38%,
+      rgba(232, 156, 70, 0.45) 68%,
+      transparent 90%);
   border-radius: inherit;
   pointer-events: none;
 }
@@ -689,13 +674,11 @@
   transform: translateX(-50%);
   width: 34px;
   height: 24px;
-  background: radial-gradient(
-    ellipse at 50% 80%,
-    #FFFFFF 0%,
-    var(--hamster-cream-fur) 50%,
-    rgba(255, 253, 247, 0.85) 75%,
-    transparent 100%
-  );
+  background: radial-gradient(ellipse at 50% 80%,
+      #FFFFFF 0%,
+      var(--hamster-cream-fur) 50%,
+      rgba(255, 253, 247, 0.85) 75%,
+      transparent 100%);
   border-radius: 50% 50% 30% 30%;
   pointer-events: none;
   z-index: 2;
@@ -705,14 +688,12 @@
 .mask-base-mantle {
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-    ellipse at 50% 52%,
-    #FFFFFF 0%,
-    var(--hamster-cream-fur) 48%,
-    var(--hamster-cream-mid) 76%,
-    rgba(249, 238, 217, 0.85) 90%,
-    transparent 100%
-  );
+  background: radial-gradient(ellipse at 50% 52%,
+      #FFFFFF 0%,
+      var(--hamster-cream-fur) 48%,
+      var(--hamster-cream-mid) 76%,
+      rgba(249, 238, 217, 0.85) 90%,
+      transparent 100%);
   border-radius: 48% 48% 44% 44% / 54% 54% 46% 46%;
   box-shadow:
     inset 0 3px 6px rgba(255, 255, 255, 0.85),
@@ -726,19 +707,22 @@
   bottom: 4px;
   width: 52px;
   height: 46px;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(255, 255, 255, 0.5) 0%,
-    rgba(255, 253, 247, 0.25) 55%,
-    transparent 85%
-  );
+  background: radial-gradient(ellipse at center,
+      rgba(255, 255, 255, 0.5) 0%,
+      rgba(255, 253, 247, 0.25) 55%,
+      transparent 85%);
   border-radius: 50%;
   pointer-events: none;
   z-index: 2;
 }
 
-.left-cheek-volume { left: 6px; }
-.right-cheek-volume { right: 6px; }
+.left-cheek-volume {
+  left: 6px;
+}
+
+.right-cheek-volume {
+  right: 6px;
+}
 
 /* ── Central Muzzle Anchor Unit (Holds Nose, Philtrum & Mouth Together) ── */
 .hamster-muzzle {
@@ -757,12 +741,10 @@
 .muzzle-light-zone {
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-    ellipse at 50% 38%,
-    rgba(255, 255, 255, 0.75) 0%,
-    rgba(255, 253, 247, 0.35) 60%,
-    transparent 90%
-  );
+  background: radial-gradient(ellipse at 50% 38%,
+      rgba(255, 255, 255, 0.75) 0%,
+      rgba(255, 253, 247, 0.35) 60%,
+      transparent 90%);
   border-radius: 50% 50% 44% 44% / 56% 56% 44% 44%;
   pointer-events: none;
   z-index: 1;
@@ -775,12 +757,10 @@
   transform: translateX(-50%);
   width: var(--nose-width);
   height: var(--nose-height);
-  background: radial-gradient(
-    ellipse at 50% 35%,
-    #FFAAA0 0%,
-    var(--hamster-nose-color) 65%,
-    #C85D55 100%
-  );
+  background: radial-gradient(ellipse at 50% 35%,
+      #FFAAA0 0%,
+      var(--hamster-nose-color) 65%,
+      #C85D55 100%);
   border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
   box-shadow:
     inset 0 1px 1.5px rgba(255, 255, 255, 0.7),
@@ -857,8 +837,15 @@
   z-index: 10;
 }
 
-.eyebrow-left { left: 40px; transform: rotate(7deg); }
-.eyebrow-right { right: 40px; transform: rotate(-7deg); }
+.eyebrow-left {
+  left: 40px;
+  transform: rotate(7deg);
+}
+
+.eyebrow-right {
+  right: 40px;
+  transform: rotate(-7deg);
+}
 
 /* Glossy Chocolate 3D Eyes (34px x 36px) */
 .hamster-eye-socket {
@@ -871,19 +858,22 @@
   z-index: 8;
 }
 
-.eye-socket-left { left: var(--eye-x); }
-.eye-socket-right { right: var(--eye-x); }
+.eye-socket-left {
+  left: var(--eye-x);
+}
+
+.eye-socket-right {
+  right: var(--eye-x);
+}
 
 .hamster-eye {
   position: relative;
   width: 100%;
   height: 100%;
-  background: radial-gradient(
-    circle at 40% 30%,
-    var(--hamster-eye-base) 0%,
-    var(--hamster-eye-dark) 65%,
-    #080402 100%
-  );
+  background: radial-gradient(circle at 40% 30%,
+      var(--hamster-eye-base) 0%,
+      var(--hamster-eye-dark) 65%,
+      #080402 100%);
   border-radius: 50%;
   box-shadow:
     inset 0 2px 4px rgba(255, 255, 255, 0.25),
@@ -893,11 +883,11 @@
 
 .eye-iris-glow {
   position: absolute;
-  bottom: 2.5px;
+  bottom: 3px;
   left: 50%;
   transform: translateX(-50%);
-  width: 20px;
-  height: 10px;
+  width: 24px;
+  height: 12px;
   background: radial-gradient(ellipse at center, rgba(180, 90, 35, 0.65) 0%, rgba(180, 90, 35, 0.15) 65%, transparent 85%);
   border-radius: 50%;
   z-index: 1;
@@ -905,10 +895,10 @@
 
 .eye-highlight-primary {
   position: absolute;
-  top: 3.5px;
-  left: 5px;
-  width: 11px;
-  height: 11px;
+  top: 4px;
+  left: 6px;
+  width: 13px;
+  height: 13px;
   background: #FFFFFF;
   border-radius: 50%;
   box-shadow: 0 0 3px #FFFFFF;
@@ -917,10 +907,10 @@
 
 .eye-highlight-secondary {
   position: absolute;
-  bottom: 4.5px;
-  right: 4.5px;
-  width: 5px;
-  height: 5px;
+  bottom: 5px;
+  right: 5px;
+  width: 6px;
+  height: 6px;
   background: rgba(255, 255, 255, 0.9);
   border-radius: 50%;
   z-index: 2;
@@ -944,20 +934,23 @@
   top: var(--blush-top);
   width: 36px;
   height: 20px;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(245, 155, 145, 0.75) 0%,
-    rgba(245, 155, 145, 0.38) 55%,
-    transparent 85%
-  );
+  background: radial-gradient(ellipse at center,
+      rgba(245, 155, 145, 0.75) 0%,
+      rgba(245, 155, 145, 0.38) 55%,
+      transparent 85%);
   border-radius: 50%;
   z-index: 7;
   filter: blur(2.5px);
   pointer-events: none;
 }
 
-.blush-left { left: var(--blush-x); }
-.blush-right { right: var(--blush-x); }
+.blush-left {
+  left: var(--blush-x);
+}
+
+.blush-right {
+  right: var(--blush-x);
+}
 
 /* ── Natural Fine Hair Whiskers ─────────────────────────────────── */
 .hamster-whiskers {
@@ -1071,9 +1064,17 @@
   border-radius: 50%;
 }
 
-.dot-1 { transform: translateX(1px); }
-.dot-2 { transform: translateX(0px); }
-.dot-3 { transform: translateX(1px); }
+.dot-1 {
+  transform: translateX(1px);
+}
+
+.dot-2 {
+  transform: translateX(0px);
+}
+
+.dot-3 {
+  transform: translateX(1px);
+}
 
 /* ═══════════════════════════════════════════════════════════════
    3. REUSABLE POSEABLE ARMS & HELD OBJECT LAYER (Z-INDEX: 8)
@@ -1106,13 +1107,11 @@
   position: relative;
   width: 16px;
   height: 24px;
-  background: radial-gradient(
-    ellipse at 35% 28%,
-    #423F4B 0%,
-    #222028 50%,
-    #100F14 85%,
-    #08070A 100%
-  );
+  background: radial-gradient(ellipse at 35% 28%,
+      #423F4B 0%,
+      #222028 50%,
+      #100F14 85%,
+      #08070A 100%);
   border-radius: 46% 46% 50% 50% / 34% 34% 66% 66%;
   box-shadow:
     inset 0 2px 4px rgba(255, 255, 255, 0.45),
@@ -1164,7 +1163,7 @@
   inset: 0;
   background: radial-gradient(circle at 35% 30%, #FF6B81 0%, #E81745 60%, #9E0B2B 100%);
   border-radius: 50%;
-  box-shadow: inset 0 2px 4px rgba(255,255,255,0.6), 0 3px 6px rgba(100,20,40,0.3);
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.6), 0 3px 6px rgba(100, 20, 40, 0.3);
 }
 
 .berry-leaf {
@@ -1195,13 +1194,15 @@
 
 .hamster-arm--left {
   left: 4px;
-  transform-origin: 6px 8px; /* Natural Shoulder Pivot */
+  transform-origin: 6px 8px;
+  /* Natural Shoulder Pivot */
   transform: translate(var(--left-arm-x), var(--left-arm-y)) rotate(var(--left-arm-rotate));
 }
 
 .hamster-arm--right {
   right: 4px;
-  transform-origin: calc(100% - 6px) 8px; /* Natural Shoulder Pivot */
+  transform-origin: calc(100% - 6px) 8px;
+  /* Natural Shoulder Pivot */
   transform: translate(var(--right-arm-x), var(--right-arm-y)) rotate(var(--right-arm-rotate));
 }
 
@@ -1229,12 +1230,10 @@
 }
 
 .hamster-arm--left .arm-volume {
-  background: radial-gradient(
-    ellipse at 32% 35%,
-    var(--hamster-color-light) 0%,
-    var(--hamster-color) 60%,
-    var(--hamster-cream-fur) 90%
-  );
+  background: radial-gradient(ellipse at 32% 35%,
+      var(--hamster-color-light) 0%,
+      var(--hamster-color) 60%,
+      var(--hamster-cream-fur) 90%);
   border-radius: 60% 40% 36% 54% / 54% 40% 40% 56%;
   box-shadow:
     inset 0 2px 4px rgba(255, 255, 255, 0.45),
@@ -1242,12 +1241,10 @@
 }
 
 .hamster-arm--right .arm-volume {
-  background: radial-gradient(
-    ellipse at 68% 35%,
-    var(--hamster-color-light) 0%,
-    var(--hamster-color) 60%,
-    var(--hamster-cream-fur) 90%
-  );
+  background: radial-gradient(ellipse at 68% 35%,
+      var(--hamster-color-light) 0%,
+      var(--hamster-color) 60%,
+      var(--hamster-cream-fur) 90%);
   border-radius: 40% 60% 54% 36% / 40% 54% 56% 40%;
   box-shadow:
     inset 0 2px 4px rgba(255, 255, 255, 0.45),
@@ -1265,13 +1262,15 @@
 
 .hamster-paw--left {
   right: -3px;
-  transform-origin: 30% 20%; /* Natural Wrist Pivot */
+  transform-origin: 30% 20%;
+  /* Natural Wrist Pivot */
   transform: translate(var(--left-paw-x), var(--left-paw-y)) rotate(var(--left-paw-rotate));
 }
 
 .hamster-paw--right {
   left: -3px;
-  transform-origin: 70% 20%; /* Natural Wrist Pivot */
+  transform-origin: 70% 20%;
+  /* Natural Wrist Pivot */
   transform: translate(var(--right-paw-x), var(--right-paw-y)) rotate(var(--right-paw-rotate));
 }
 
@@ -1279,13 +1278,11 @@
   position: relative;
   width: 100%;
   height: 100%;
-  background: radial-gradient(
-    ellipse at 42% 35%,
-    #FFFFFF 0%,
-    #FFFDF7 40%,
-    var(--hamster-cream-fur) 75%,
-    var(--hamster-cream-mid) 100%
-  );
+  background: radial-gradient(ellipse at 42% 35%,
+      #FFFFFF 0%,
+      #FFFDF7 40%,
+      var(--hamster-cream-fur) 75%,
+      var(--hamster-cream-mid) 100%);
   border-radius: 54% 46% 48% 52% / 56% 44% 54% 46%;
   box-shadow:
     inset 0 1.5px 3px rgba(255, 255, 255, 0.85),
@@ -1311,33 +1308,40 @@
   display: block;
   width: 2.8px;
   height: 3.6px;
-  background: radial-gradient(
-    circle at 40% 35%,
-    #FFF8F7 0%,
-    #F5B8B0 45%,
-    var(--hamster-pink-inner) 70%,
-    #D0786F 100%
-  );
+  background: radial-gradient(circle at 40% 35%,
+      #FFF8F7 0%,
+      #F5B8B0 45%,
+      var(--hamster-pink-inner) 70%,
+      #D0786F 100%);
   border-radius: 50% 50% 45% 45%;
   box-shadow: inset 0 0.5px 1px rgba(255, 255, 255, 0.7);
   opacity: 0.9;
 }
 
-.f-left { left: 0.8px; transform: rotate(-10deg); }
-.f-mid { left: 4.6px; top: 0px; }
-.f-right { right: 0.8px; transform: rotate(10deg); }
+.f-left {
+  left: 0.8px;
+  transform: rotate(-10deg);
+}
+
+.f-mid {
+  left: 4.6px;
+  top: 0px;
+}
+
+.f-right {
+  right: 0.8px;
+  transform: rotate(10deg);
+}
 
 .paw-palm-pad {
   position: absolute;
   bottom: 0px;
   width: 5.8px;
   height: 4.2px;
-  background: radial-gradient(
-    ellipse at 50% 40%,
-    #FFF8F7 0%,
-    var(--hamster-pink-inner) 65%,
-    #D0786F 100%
-  );
+  background: radial-gradient(ellipse at 50% 40%,
+      #FFF8F7 0%,
+      var(--hamster-pink-inner) 65%,
+      #D0786F 100%);
   border-radius: 50%;
   box-shadow: inset 0 0.5px 1px rgba(255, 255, 255, 0.6);
   opacity: 0.92;
@@ -1373,13 +1377,23 @@
 }
 
 @keyframes hamster-wave-arm {
-  0% { transform: translate(4px, -14px) rotate(-50deg); }
-  100% { transform: translate(4px, -16px) rotate(-65deg); }
+  0% {
+    transform: translate(4px, -14px) rotate(-50deg);
+  }
+
+  100% {
+    transform: translate(4px, -16px) rotate(-65deg);
+  }
 }
 
 @keyframes hamster-wave-paw {
-  0% { transform: rotate(15deg); }
-  100% { transform: rotate(38deg); }
+  0% {
+    transform: rotate(15deg);
+  }
+
+  100% {
+    transform: rotate(38deg);
+  }
 }
 
 /* Pose: Reach Toward Cursor */
@@ -1406,18 +1420,33 @@
 }
 
 @keyframes hamster-nibble-seed {
-  0% { transform: translateX(-50%) translateY(0px) scale(1); }
-  100% { transform: translateX(-50%) translateY(-3px) scale(0.96); }
+  0% {
+    transform: translateX(-50%) translateY(0px) scale(1);
+  }
+
+  100% {
+    transform: translateX(-50%) translateY(-3px) scale(0.96);
+  }
 }
 
 @keyframes hamster-nibble-paw-l {
-  0% { transform: rotate(12deg) translateY(0px); }
-  100% { transform: rotate(18deg) translateY(-2px); }
+  0% {
+    transform: rotate(12deg) translateY(0px);
+  }
+
+  100% {
+    transform: rotate(18deg) translateY(-2px);
+  }
 }
 
 @keyframes hamster-nibble-paw-r {
-  0% { transform: rotate(-12deg) translateY(0px); }
-  100% { transform: rotate(-18deg) translateY(-2px); }
+  0% {
+    transform: rotate(-12deg) translateY(0px);
+  }
+
+  100% {
+    transform: rotate(-18deg) translateY(-2px);
+  }
 }
 
 /* Pose: Shy (Paws covering cheeks) */
@@ -1454,8 +1483,15 @@
 }
 
 @keyframes heartFloat3D {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-4px) scale(1.12); }
+
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    transform: translateY(-4px) scale(1.12);
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1477,7 +1513,7 @@
   border-radius: 7px;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  box-shadow: 
+  box-shadow:
     0 4px 12px rgba(0, 0, 0, 0.4),
     inset 0 1px 1px rgba(255, 255, 255, 0.15);
   z-index: 15;
@@ -1485,10 +1521,10 @@
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-              transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-              background 0.2s ease,
-              border-color 0.2s ease,
-              box-shadow 0.2s ease;
+    transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
   user-select: none;
 }
 
@@ -1504,7 +1540,7 @@
   background: rgba(223, 139, 52, 0.25);
   border-color: var(--accent-primary, #DF8B34);
   transform: translateX(-50%) translateY(0) scale(1.08);
-  box-shadow: 
+  box-shadow:
     0 0 14px var(--accent-glow, rgba(223, 139, 52, 0.4)),
     0 4px 14px rgba(0, 0, 0, 0.5),
     inset 0 1px 2px rgba(255, 255, 255, 0.25);
@@ -1597,42 +1633,108 @@
 }
 
 @keyframes organicBreathing3D {
-  0%, 100% { transform: translateX(-50%) scale(1, 1); }
-  50% { transform: translateX(-50%) scale(1.02, 0.99); }
+
+  0%,
+  100% {
+    transform: translateX(-50%) scale(1, 1);
+  }
+
+  50% {
+    transform: translateX(-50%) scale(1.02, 0.99);
+  }
 }
 
 @keyframes bellyExpansion3D {
-  0%, 100% { transform: translateX(-50%) scale(1, 1); }
-  50% { transform: translateX(-50%) scale(1.03, 1.01); }
+
+  0%,
+  100% {
+    transform: translateX(-50%) scale(1, 1);
+  }
+
+  50% {
+    transform: translateX(-50%) scale(1.03, 1.01);
+  }
 }
 
 @keyframes headMicroBob3D {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  50% { transform: translateX(-50%) translateY(1px); }
+
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  50% {
+    transform: translateX(-50%) translateY(1px);
+  }
 }
 
 @keyframes noseSniff3D {
-  0%, 80%, 100% { transform: translateX(-50%) scale(1); }
-  85% { transform: translateX(-50%) scale(1.12, 0.92) translateY(-1px); }
-  90% { transform: translateX(-50%) scale(0.96, 1.04); }
-  95% { transform: translateX(-50%) scale(1.08, 0.96); }
+
+  0%,
+  80%,
+  100% {
+    transform: translateX(-50%) scale(1);
+  }
+
+  85% {
+    transform: translateX(-50%) scale(1.12, 0.92) translateY(-1px);
+  }
+
+  90% {
+    transform: translateX(-50%) scale(0.96, 1.04);
+  }
+
+  95% {
+    transform: translateX(-50%) scale(1.08, 0.96);
+  }
 }
 
 @keyframes naturalBlink3D {
-  0%, 92%, 100% { height: 0%; }
-  94%, 98% { height: 100%; }
+
+  0%,
+  92%,
+  100% {
+    height: 0%;
+  }
+
+  94%,
+  98% {
+    height: 100%;
+  }
 }
 
 @keyframes earFlickLeft3D {
-  0%, 94%, 100% { transform: rotate(-10deg); }
-  96% { transform: rotate(-22deg) translateY(-2px); }
-  98% { transform: rotate(-6deg); }
+
+  0%,
+  94%,
+  100% {
+    transform: rotate(-10deg);
+  }
+
+  96% {
+    transform: rotate(-22deg) translateY(-2px);
+  }
+
+  98% {
+    transform: rotate(-6deg);
+  }
 }
 
 @keyframes earFlickRight3D {
-  0%, 93%, 100% { transform: rotate(10deg); }
-  95% { transform: rotate(22deg) translateY(-2px); }
-  97% { transform: rotate(6deg); }
+
+  0%,
+  93%,
+  100% {
+    transform: rotate(10deg);
+  }
+
+  95% {
+    transform: rotate(22deg) translateY(-2px);
+  }
+
+  97% {
+    transform: rotate(6deg);
+  }
 }
 
 /* ── 2. Dragged ───────────────────────────────────────────────── */
@@ -1667,13 +1769,23 @@
 }
 
 @keyframes armDangleLeft3D {
-  0% { transform: rotate(-8deg) translateY(2px); }
-  100% { transform: rotate(-20deg) translateY(-1px); }
+  0% {
+    transform: rotate(-8deg) translateY(2px);
+  }
+
+  100% {
+    transform: rotate(-20deg) translateY(-1px);
+  }
 }
 
 @keyframes armDangleRight3D {
-  0% { transform: rotate(20deg) translateY(-1px); }
-  100% { transform: rotate(8deg) translateY(2px); }
+  0% {
+    transform: rotate(20deg) translateY(-1px);
+  }
+
+  100% {
+    transform: rotate(8deg) translateY(2px);
+  }
 }
 
 .drag-halo {
@@ -1690,8 +1802,17 @@
 }
 
 @keyframes haloPulse3D {
-  0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.7; }
-  50% { transform: scale(1.3) rotate(20deg); opacity: 1; }
+
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 0.7;
+  }
+
+  50% {
+    transform: scale(1.3) rotate(20deg);
+    opacity: 1;
+  }
 }
 
 /* ── 3. Happy ─────────────────────────────────────────────────── */
@@ -1714,9 +1835,17 @@
 }
 
 @keyframes happyPurr3D {
-  0% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-3px) rotate(2deg) scale(1.02); }
-  100% { transform: translateY(0) rotate(-2deg); }
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-3px) rotate(2deg) scale(1.02);
+  }
+
+  100% {
+    transform: translateY(0) rotate(-2deg);
+  }
 }
 
 .happy-hearts {
@@ -1735,14 +1864,34 @@
   animation: heartFloatParticle 1.2s ease-out infinite;
 }
 
-.hp-1 { animation-delay: 0s; }
-.hp-2 { animation-delay: 0.3s; font-size: 11px; }
-.hp-3 { animation-delay: 0.6s; }
+.hp-1 {
+  animation-delay: 0s;
+}
+
+.hp-2 {
+  animation-delay: 0.3s;
+  font-size: 11px;
+}
+
+.hp-3 {
+  animation-delay: 0.6s;
+}
 
 @keyframes heartFloatParticle {
-  0% { transform: scale(0) translateY(4px); opacity: 0; }
-  40% { transform: scale(1.2) translateY(-6px); opacity: 1; }
-  100% { transform: scale(1) translateY(-18px); opacity: 0; }
+  0% {
+    transform: scale(0) translateY(4px);
+    opacity: 0;
+  }
+
+  40% {
+    transform: scale(1.2) translateY(-6px);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1) translateY(-18px);
+    opacity: 0;
+  }
 }
 
 /* ── 4. Listening ─────────────────────────────────────────────── */
@@ -1763,9 +1912,19 @@
 }
 
 @keyframes listenCuriosity3D {
-  0%, 100% { transform: translateX(-50%) rotate(0deg); }
-  35% { transform: translateX(-50%) rotate(4deg) translateY(-2px); }
-  70% { transform: translateX(-50%) rotate(-4deg) translateY(-2px); }
+
+  0%,
+  100% {
+    transform: translateX(-50%) rotate(0deg);
+  }
+
+  35% {
+    transform: translateX(-50%) rotate(4deg) translateY(-2px);
+  }
+
+  70% {
+    transform: translateX(-50%) rotate(-4deg) translateY(-2px);
+  }
 }
 
 .listening-waves {
@@ -1786,13 +1945,33 @@
   animation: wavePulse3D 1s ease-in-out infinite;
 }
 
-.w-1 { width: 8px; animation-delay: 0s; }
-.w-2 { width: 14px; animation-delay: 0.2s; }
-.w-3 { width: 8px; animation-delay: 0.4s; }
+.w-1 {
+  width: 8px;
+  animation-delay: 0s;
+}
+
+.w-2 {
+  width: 14px;
+  animation-delay: 0.2s;
+}
+
+.w-3 {
+  width: 8px;
+  animation-delay: 0.4s;
+}
 
 @keyframes wavePulse3D {
-  0%, 100% { opacity: 0.3; transform: scaleX(0.8); }
-  50% { opacity: 1; transform: scaleX(1.4); }
+
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scaleX(0.8);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scaleX(1.4);
+  }
 }
 
 /* ── 5. Thinking ──────────────────────────────────────────────── */
@@ -1810,8 +1989,15 @@
 }
 
 @keyframes thinkPonder3D {
-  0%, 100% { transform: translateX(-50%) rotate(0deg); }
-  50% { transform: translateX(-50%) rotate(-5deg) translateY(-2px); }
+
+  0%,
+  100% {
+    transform: translateX(-50%) rotate(0deg);
+  }
+
+  50% {
+    transform: translateX(-50%) rotate(-5deg) translateY(-2px);
+  }
 }
 
 .thought-bubbles {
@@ -1831,13 +2017,34 @@
   animation: bubbleRise3D 1.6s ease-in-out infinite;
 }
 
-.bubble-1 { font-size: 8px; animation-delay: 0s; opacity: 0.5; }
-.bubble-2 { font-size: 11px; animation-delay: 0.3s; opacity: 0.75; }
-.bubble-3 { font-size: 14px; animation-delay: 0.6s; opacity: 1; }
+.bubble-1 {
+  font-size: 8px;
+  animation-delay: 0s;
+  opacity: 0.5;
+}
+
+.bubble-2 {
+  font-size: 11px;
+  animation-delay: 0.3s;
+  opacity: 0.75;
+}
+
+.bubble-3 {
+  font-size: 14px;
+  animation-delay: 0.6s;
+  opacity: 1;
+}
 
 @keyframes bubbleRise3D {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
 }
 
 /* ── 6. Speaking ──────────────────────────────────────────────── */
@@ -1854,16 +2061,42 @@
 }
 
 @keyframes mouthSpeak3D {
-  0%, 100% { height: 6px; width: 10px; border-radius: 20% 20% 50% 50%; }
-  50% { height: 11px; width: 13px; border-radius: 20% 20% 60% 60%; background: #681916; }
+
+  0%,
+  100% {
+    height: 6px;
+    width: 10px;
+    border-radius: 20% 20% 50% 50%;
+  }
+
+  50% {
+    height: 11px;
+    width: 13px;
+    border-radius: 20% 20% 60% 60%;
+    background: #681916;
+  }
 }
 
 @keyframes speakNod3D {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  50% { transform: translateX(-50%) translateY(-2px); }
+
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  50% {
+    transform: translateX(-50%) translateY(-2px);
+  }
 }
 
 @keyframes cheekPuff3D {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.15); }
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.15);
+  }
 }
