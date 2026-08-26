@@ -56,12 +56,12 @@
 
   /* Centralized Facial Coordinate System (Deliberate Layered Architecture) */
   --face-mask-top: 36px;
-  --face-mask-width: 142px;
-  --face-mask-height: 70px;
+  --face-mask-width: 152px;
+  --face-mask-height: 64px;
 
-  --muzzle-top: 2px;
-  --muzzle-width: 48px;
-  --muzzle-height: 44px;
+  --muzzle-top: 8px;
+  --muzzle-width: 54px;
+  --muzzle-height: 50px;
   --nose-top: 2px;
   --nose-width: 11px;
   --nose-height: 8px;
@@ -71,13 +71,13 @@
   --mouth-width: 18px;
   --mouth-height: 13.5px;
 
-  --eye-top: 28px;
-  --eye-x: 23px;
+  --eye-top: 36px;
+  --eye-x: 30px;
   --eye-width: 34px;
   --eye-height: 36px;
 
-  --blush-top: 48px;
-  --blush-x: 10px;
+  --blush-top: 52px;
+  --blush-x: 14px;
 }
 
 /* ── Container & Canvas ────────────────────────────────────────── */
@@ -150,15 +150,15 @@
 /* ── Anatomical Hind Feet Emerging from Lower Body (Z-INDEX: 5) ── */
 .hamster-foot {
   position: absolute;
-  width: 34px;
-  height: 26px;
+  width: 28px;
+  height: 20px;
   z-index: 5;
   pointer-events: none;
   transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .hamster-foot--left {
-  left: 20px;
+  left: 22px;
   bottom: 2px;
   transform-origin: 50% 20%;
   transform: translate(var(--left-foot-x), var(--left-foot-y)) rotate(var(--left-foot-rotate));
@@ -197,8 +197,8 @@
 .foot-main-pad {
   position: absolute;
   bottom: 2px;
-  width: 22px;
-  height: 15px;
+  width: 18px;
+  height: 12px;
   background: radial-gradient(
     ellipse at 50% 35%,
     #FFF6F5 0%,
@@ -235,9 +235,9 @@
     0 0.5px 1px rgba(120, 45, 35, 0.15);
 }
 
-.t-left { width: 6px; height: 6.5px; }
-.t-mid { width: 7.5px; height: 8px; margin-top: -1px; }
-.t-right { width: 6px; height: 6.5px; }
+.t-left { width: 5px; height: 5.5px; }
+.t-mid { width: 6.5px; height: 7px; margin-top: -1px; }
+.t-right { width: 5px; height: 5.5px; }
 
 /* ── Fleshy Lower Haunches (Rear/Hip Sitting Volume, Z-INDEX: 2) ── */
 .hamster-haunches {
@@ -287,7 +287,7 @@
     0 4px 10px rgba(80, 35, 10, 0.16);
 }
 
-/* ── Wide Chubby Torso Mass (148px x 108px, bottom: 4px, Z-INDEX: 3) ── */
+/* ── Wide Chubby Torso Mass (Pear-Shaped Teardrop, Z-INDEX: 3) ── */
 .hamster-torso {
   position: absolute;
   bottom: 4px;
@@ -302,7 +302,7 @@
     var(--hamster-color-shadow) 80%,
     var(--hamster-color-deep) 100%
   );
-  border-radius: 46% 46% 44% 44% / 54% 54% 46% 46%;
+  border-radius: 42% 42% 50% 50% / 38% 38% 62% 62%;
   box-shadow:
     inset 0 5px 10px rgba(255, 255, 255, 0.38),
     inset 0 -8px 14px rgba(120, 50, 10, 0.22),
@@ -328,14 +328,14 @@
   z-index: 4;
 }
 
-/* ── Cream Belly Patch (80px x 76px, Z-INDEX: 1) ── */
+/* ── Cream Belly Patch (68px x 65px, Z-INDEX: 1) ── */
 .hamster-belly {
   position: absolute;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 80px;
-  height: 76px;
+  width: 68px;
+  height: 65px;
   background: radial-gradient(
     ellipse at 46% 42%,
     #FFFFFF 0%,
@@ -356,8 +356,8 @@
   top: 6px;
   left: 50%;
   transform: translateX(-50%);
-  width: 48px;
-  height: 30px;
+  width: 44px;
+  height: 26px;
   background: radial-gradient(ellipse at 50% 30%, #FFFFFF 0%, var(--hamster-cream-fur) 75%, transparent 100%);
   border-radius: 50%;
   filter: blur(2px);
@@ -388,7 +388,7 @@
   top: 18px;
   left: 50%;
   transform: translateX(-50%);
-  width: 162px;
+  width: 178px;
   height: 114px;
   z-index: 4;
 }
@@ -400,7 +400,7 @@
   left: -10px;
   width: 44px;
   height: 40px;
-  background: radial-gradient(ellipse at 40% 35%, #E89C46 0%, #DF8B34 60%, #C77324 100%);
+  background: radial-gradient(ellipse at 35% 30%, #E89C46 0%, #DF8B34 55%, #C77324 90%);
   border-radius: 50%;
   z-index: 3;
   box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.3);
@@ -413,7 +413,7 @@
   right: -10px;
   width: 44px;
   height: 40px;
-  background: radial-gradient(ellipse at 60% 35%, #E89C46 0%, #DF8B34 60%, #C77324 100%);
+  background: radial-gradient(ellipse at 65% 30%, #E89C46 0%, #DF8B34 55%, #C77324 90%);
   border-radius: 50%;
   z-index: 3;
   box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.3);
@@ -423,7 +423,7 @@
 /* ── Soft Flowing 3D Plush Forelock Fur Crest ─────────────────── */
 .hamster-crown {
   position: absolute;
-  top: -15px;
+  top: -12px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -561,25 +561,26 @@
   z-index: 4;
 }
 
-/* Rounded Hamster Ears (28px x 30px) */
+/* Rounded Hamster Ears (Wider 32px x 22px, Flatter, Lowered) */
 .hamster-ear {
   position: absolute;
-  top: -8px;
-  width: 28px;
-  height: 30px;
+  top: 2px;
+  width: 32px;
+  height: 22px;
+  border-radius: 50%;
   z-index: 3;
   transition: transform 0.25s ease;
 }
 
 .ear-left {
-  left: 16px;
-  transform: rotate(-10deg);
+  left: 8px;
+  transform: rotate(-12deg);
   transform-origin: bottom right;
 }
 
 .ear-right {
-  right: 16px;
-  transform: rotate(10deg);
+  right: 8px;
+  transform: rotate(12deg);
   transform-origin: bottom left;
 }
 
@@ -601,11 +602,11 @@
 
 .ear-inner {
   position: absolute;
-  top: 4.5px;
+  top: 3px;
   left: 50%;
   transform: translateX(-50%);
-  width: 18px;
-  height: 20px;
+  width: 20px;
+  height: 14px;
   background: radial-gradient(
     circle at 48% 40%,
     #FFF0EE 0%,
@@ -618,14 +619,14 @@
     inset 0 -1.5px 3px rgba(255, 255, 255, 0.25);
 }
 
-/* ── Head Base Mass (162px x 112px, border-radius: 50% 50% 52% 52% / 44% 44% 56% 56%) ── */
+/* ── Head Base Mass (175px x 105px, border-radius: 50% 50% 48% 48% / 42% 42% 58% 58%) ── */
 .head-base-mass {
   position: absolute;
   top: 4px;
   left: 50%;
   transform: translateX(-50%);
-  width: 162px;
-  height: 112px;
+  width: 175px;
+  height: 105px;
   background: radial-gradient(
     ellipse at 40% 22%,
     var(--hamster-color-light) 0%,
@@ -633,7 +634,7 @@
     var(--hamster-color-shadow) 82%,
     var(--hamster-color-deep) 100%
   );
-  border-radius: 50% 50% 52% 52% / 44% 44% 56% 56%;
+  border-radius: 50% 50% 48% 48% / 42% 42% 58% 58%;
   box-shadow:
     inset 0 4px 10px rgba(255, 255, 255, 0.42),
     inset 0 -5px 10px rgba(120, 45, 10, 0.2),
@@ -723,8 +724,8 @@
 .mask-cheek-volume {
   position: absolute;
   bottom: 4px;
-  width: 44px;
-  height: 40px;
+  width: 52px;
+  height: 46px;
   background: radial-gradient(
     ellipse at center,
     rgba(255, 255, 255, 0.5) 0%,
@@ -747,6 +748,8 @@
   transform: translateX(-50%);
   width: var(--muzzle-width);
   height: var(--muzzle-height);
+  border-radius: 50% 50% 46% 46% / 54% 54% 46% 46%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12), inset 0 2px 4px rgba(255, 255, 255, 0.8);
   z-index: 6;
 }
 
@@ -846,9 +849,9 @@
 /* Eyebrows */
 .hamster-eyebrow {
   position: absolute;
-  top: 18px;
-  width: 12px;
-  height: 4px;
+  top: 27px;
+  width: 10px;
+  height: 3.5px;
   background: rgba(42, 23, 14, 0.75);
   border-radius: 3px;
   z-index: 10;
