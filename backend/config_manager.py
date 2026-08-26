@@ -18,7 +18,7 @@ TODOS_FILE = CONFIG_DIR / "todos.json"
 
 class LLMConfig(BaseModel):
     provider: str = Field(default="gemini", description="LLM provider: gemini, deepseek, ollama")
-    gemini_model: str = Field(default="gemini-3.7-flash", description="Gemini model name")
+    gemini_model: str = Field(default="gemini-2.5-flash", description="Gemini model name")
     deepseek_model: str = Field(default="deepseek-chat", description="DeepSeek model name")
     ollama_model: str = Field(default="llama3", description="Ollama model name")
     ollama_endpoint: str = Field(default="http://localhost:11434", description="Ollama API endpoint")

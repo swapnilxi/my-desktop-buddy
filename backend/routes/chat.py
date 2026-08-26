@@ -6,7 +6,7 @@ from typing import List
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from context import get_full_context
-from llm.router import get_llm_adapter
+from llm.router import get_llm_adapter, generate_with_fallback
 from config_manager import get_config
 
 router = APIRouter(tags=["chat"])
@@ -32,11 +32,6 @@ class ChatResponse(BaseModel):
 @router.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
     """Send a message and get an LLM response with hamster context."""
-    try:
-        adapter = get_llm_adapter()
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
     # Build system prompt from context
     system_prompt = get_full_context()
 
@@ -57,10 +52,16 @@ async def chat(request: ChatRequest):
     messages.append({"role": "user", "content": request.message})
 
     try:
-        response_text = await adapter.generate(
+        response_text, adapter = await generate_with_fallback(
             messages=messages,
             system_prompt=system_prompt,
         )
+
+        # Clean any unwanted internal thinking or action prefixes
+        import re
+        response_text = re.sub(r'<think>.*?</think>', '', response_text, flags=re.DOTALL)
+        response_text = re.sub(r'^(Thought|Action|Thinking):\s*', '', response_text, flags=re.IGNORECASE | re.MULTILINE)
+        response_text = response_text.strip()
 
         # Determine hamster mood based on response
         mood = "speaking"
@@ -101,14 +102,13 @@ async def get_greeting():
     ]
 
     try:
-        adapter = get_llm_adapter()
         prompt = (
             "You are Hammy, a cheerful, cute desktop hamster pet. "
             "Generate a single adorable, encouraging thought or greeting for the user. "
             "It MUST be strictly between 2 to 6 words long. "
             "Include 1 cute emoji. Output ONLY the 2-6 words."
         )
-        text = await adapter.generate(
+        text, adapter = await generate_with_fallback(
             messages=[{"role": "user", "content": prompt}],
             system_prompt="You are a tiny, cheerful pet hamster. Respond in strictly 2 to 6 words only.",
         )

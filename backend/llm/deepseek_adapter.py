@@ -19,9 +19,9 @@ class DeepSeekAdapter(LLMAdapter):
             raise ValueError("DeepSeek API key not configured. Set it in Config → API Keys.")
         self.client = AsyncOpenAI(
             api_key=api_key,
-            base_url="https://api.deepseek.com/v1",
+            base_url="https://api.deepseek.com",
         )
-        self.model = config.llm.deepseek_model
+        self.model = config.llm.deepseek_model or "deepseek-chat"
 
     async def generate(
         self,

@@ -1,8 +1,27 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import type { AppConfig } from '@/lib/api';
-import { fetchConfig, saveConfig } from '@/lib/api';
+import { fetchConfig, saveConfig, fetchRevealedKeys } from '@/lib/api';
+
+// localStorage cache so keys survive backend restarts / offline edits
+const KEYS_CACHE_KEY = 'hamsterdesk_api_keys';
+
+function loadCachedKeys(): Partial<AppConfig['api_keys']> {
+  if (typeof window === 'undefined') return {};
+  try {
+    return JSON.parse(localStorage.getItem(KEYS_CACHE_KEY) || '{}');
+  } catch {
+    return {};
+  }
+}
+
+function cacheKeys(keys: AppConfig['api_keys']) {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(KEYS_CACHE_KEY, JSON.stringify(keys));
+  } catch { }
+}
 
 const HAMSTER_COLORS = [
   { name: 'Classic', hex: '#F4A460' },
@@ -18,7 +37,7 @@ const HAMSTER_COLORS = [
 const DEFAULT_CONFIG: AppConfig = {
   llm: {
     provider: 'gemini',
-    gemini_model: 'gemini-3.7-flash',
+    gemini_model: 'gemini-2.5-flash',
     deepseek_model: 'deepseek-chat',
     ollama_model: 'llama3',
     ollama_endpoint: 'http://localhost:11434',
@@ -61,14 +80,44 @@ export default function ConfigPanel({ onColorChange, onNameChange }: ConfigPanel
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const [showKeys, setShowKeys] = useState({ gemini: false, deepseek: false, deepgram: false });
 
+  const revealedKeysRef = useRef<Partial<AppConfig['api_keys']>>({});
+
   const loadConfig = useCallback(async () => {
+    const cached = loadCachedKeys();
     try {
       const data = await fetchConfig();
-      setConfig(data);
+      // Prefer cached real keys over masked placeholders from the backend
+      const merged: AppConfig = {
+        ...data,
+        api_keys: {
+          ...data.api_keys,
+          ...Object.fromEntries(
+            Object.entries(cached).filter(([, v]) => v) as [keyof AppConfig['api_keys'], string][]
+          ),
+        },
+      };
+      setConfig(merged);
     } catch {
-      // Use defaults if backend unavailable
+      // Backend unavailable — fall back to defaults + cached keys
+      setConfig((prev) => ({
+        ...prev,
+        api_keys: { ...prev.api_keys, ...cached },
+      }));
     } finally {
       setIsLoading(false);
+    }
+  }, []);
+
+  /** Fetch the real keys from the backend (falls back to localStorage). */
+  const revealKeys = useCallback(async () => {
+    if (Object.keys(revealedKeysRef.current).length) return revealedKeysRef.current;
+    try {
+      const real = await fetchRevealedKeys();
+      revealedKeysRef.current = real;
+      cacheKeys(real);
+      return real;
+    } catch {
+      return loadCachedKeys();
     }
   }, []);
 
@@ -94,10 +143,25 @@ export default function ConfigPanel({ onColorChange, onNameChange }: ConfigPanel
     setSaveStatus('saving');
     try {
       await saveConfig(config);
+      cacheKeys(config.api_keys); // persist keys locally too
       setSaveStatus('saved');
       setTimeout(() => setSaveStatus('idle'), 2000);
     } catch {
       setSaveStatus('error');
+    }
+  };
+
+  /** 👁️ toggle — show the real stored key instead of the masked one. */
+  const toggleKeyVisibility = async (toggle: 'gemini' | 'deepseek' | 'deepgram') => {
+    const showing = showKeys[toggle];
+    setShowKeys((prev) => ({ ...prev, [toggle]: !prev[toggle] }));
+    if (!showing) {
+      const field = `${toggle}_key` as keyof AppConfig['api_keys'];
+      const real = await revealKeys();
+      const value = real[field];
+      if (value) {
+        updateConfig(`api_keys.${field}`, value);
+      }
     }
   };
 
@@ -296,7 +360,8 @@ export default function ConfigPanel({ onColorChange, onNameChange }: ConfigPanel
                 />
                 <button
                   className="api-key-toggle"
-                  onClick={() => setShowKeys((prev) => ({ ...prev, [toggle]: !prev[toggle] }))}
+                  onClick={() => toggleKeyVisibility(toggle)}
+                  title={show ? 'Hide key' : 'Show saved key'}
                 >
                   {show ? '🙈' : '👁️'}
                 </button>

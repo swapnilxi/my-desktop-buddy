@@ -14,19 +14,32 @@ async def load_config():
     return get_masked_config()
 
 
+@router.get("/reveal-keys")
+async def reveal_keys():
+    """
+    Return the real (unmasked) API keys. Local-only desktop app — the
+    frontend uses this so the 👁️ toggle can show the actual stored key.
+    """
+    config = get_config()
+    return {
+        "gemini_key": config.api_keys.gemini_key,
+        "deepseek_key": config.api_keys.deepseek_key,
+        "deepgram_key": config.api_keys.deepgram_key,
+    }
+
+
 @router.post("")
 async def update_config(config: AppConfig):
     """Save updated configuration."""
-    # Merge API keys — if masked (contains •), keep the old value
+    # Merge API keys — keep the stored value when the incoming one is
+    # masked (contains •) or empty, so keys are never wiped by accident.
     current = get_config()
     keys = config.api_keys
 
-    if "•" in keys.gemini_key:
-        config.api_keys.gemini_key = current.api_keys.gemini_key
-    if "•" in keys.deepseek_key:
-        config.api_keys.deepseek_key = current.api_keys.deepseek_key
-    if "•" in keys.deepgram_key:
-        config.api_keys.deepgram_key = current.api_keys.deepgram_key
+    for field in ("gemini_key", "deepseek_key", "deepgram_key"):
+        incoming = getattr(keys, field)
+        if not incoming or "•" in incoming:
+            setattr(keys, field, getattr(current.api_keys, field))
 
     save_config(config)
     return {"status": "ok", "message": "Configuration saved successfully 🐹"}

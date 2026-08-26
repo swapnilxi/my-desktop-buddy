@@ -6,8 +6,10 @@ import ChatPanel from '@/components/Chat/ChatPanel';
 import TodoPanel from '@/components/TodoList/TodoPanel';
 import ConfigPanel from '@/components/Config/ConfigPanel';
 import SpeechTrainingPanel from '@/components/SpeechTraining/SpeechTrainingPanel';
-import { checkHealth, fetchGreeting } from '@/lib/api';
+import { checkHealth, fetchGreeting, sendChatMessage } from '@/lib/api';
 import type { HamsterMood } from '@/lib/api';
+import { speak } from '@/lib/speech';
+import { useVoiceRecorder } from '@/lib/useVoiceRecorder';
 
 export type WindowMode = 'pet' | 'compact' | 'fullscreen';
 type TabId = 'chat' | 'todo' | 'config' | 'speech';
@@ -78,7 +80,7 @@ export default function Home() {
         setHamsterGreeting(res.greeting);
         return;
       }
-    } catch {}
+    } catch { }
     const randomG = LOCAL_GREETINGS[Math.floor(Math.random() * LOCAL_GREETINGS.length)];
     setHamsterGreeting(randomG);
   }, []);
@@ -169,24 +171,50 @@ export default function Home() {
     }, 3000);
   };
 
-  // Tap to Talk: STAYS in Pet mode without expanding window unexpectedly!
-  const handleTapToTalk = () => {
-    if (!isListening) {
-      setIsListening(true);
-      setHamsterMood('listening');
-      setTimeout(() => {
-        setIsListening(false);
-        setHamsterMood('thinking');
-        refreshGreeting();
-        setTimeout(() => {
-          setHamsterMood('speaking');
-          setTimeout(() => setHamsterMood('idle'), 2500);
-        }, 1200);
-      }, 2000);
-    } else {
-      setIsListening(false);
+  // Tap to Talk: STAYS in Pet mode — records, transcribes (Deepgram),
+  // asks the LLM and speaks the reply aloud.
+  const handleVoiceTranscribed = useCallback(async (transcript: string) => {
+    setHamsterGreeting(`You said: “${transcript}”`);
+    setHamsterMood('thinking');
+    try {
+      const response = await sendChatMessage(transcript, [], false);
+      setHamsterGreeting(
+        response.response.length > 120 ? response.response.slice(0, 117) + '…' : response.response
+      );
+      setHamsterMood('speaking');
+      speak(response.response, { onEnd: () => setHamsterMood('idle') });
+      // Safety net if speech events never fire
+      setTimeout(() => setHamsterMood((m) => (m === 'speaking' ? 'idle' : m)), 20000);
+    } catch (err) {
+      setHamsterGreeting(err instanceof Error ? `😵 ${err.message}` : '😵 Something went wrong!');
       setHamsterMood('idle');
     }
+  }, []);
+
+  const voiceRecorder = useVoiceRecorder({
+    onTranscribed: handleVoiceTranscribed,
+    onRecordingStart: () => {
+      setIsListening(true);
+      setHamsterMood('listening');
+      setHamsterGreeting('🎙️ Listening… speak now!');
+    },
+    onRecordingStop: () => setIsListening(false),
+    onTranscribingStart: () => {
+      setHamsterMood('thinking');
+      setHamsterGreeting('🤔 Understanding…');
+    },
+  });
+
+  // Show recorder errors in Hammy's speech bubble
+  useEffect(() => {
+    if (voiceRecorder.error) {
+      setHamsterGreeting(`🎤 ${voiceRecorder.error}`);
+      setHamsterMood('idle');
+    }
+  }, [voiceRecorder.error]);
+
+  const handleTapToTalk = () => {
+    voiceRecorder.toggle();
   };
 
   const handleMoodChange = (mood: HamsterMood) => {
@@ -204,7 +232,7 @@ export default function Home() {
 
     try {
       e.currentTarget.setPointerCapture(e.pointerId);
-    } catch {}
+    } catch { }
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
@@ -233,7 +261,7 @@ export default function Home() {
 
     try {
       e.currentTarget.releasePointerCapture(e.pointerId);
-    } catch {}
+    } catch { }
 
     if (!hasMoved.current) {
       const now = Date.now();
@@ -425,23 +453,24 @@ export default function Home() {
           ))}
         </nav>
 
-        {/* Tab Content */}
+        {/* Tab Content — all panels stay mounted (hidden via CSS) so
+            chat history / todo state survive tab switches */}
         <main className="tab-content">
-          {activeTab === 'chat' && (
+          <div style={{ display: activeTab === 'chat' ? 'contents' : 'none' }}>
             <ChatPanel onMoodChange={handleMoodChange} />
-          )}
-          {activeTab === 'todo' && (
+          </div>
+          <div style={{ display: activeTab === 'todo' ? 'contents' : 'none' }}>
             <TodoPanel onMoodChange={handleMoodChange} />
-          )}
-          {activeTab === 'config' && (
+          </div>
+          <div style={{ display: activeTab === 'config' ? 'contents' : 'none' }}>
             <ConfigPanel
               onColorChange={setHamsterColor}
               onNameChange={setHamsterName}
             />
-          )}
-          {activeTab === 'speech' && (
+          </div>
+          <div style={{ display: activeTab === 'speech' ? 'contents' : 'none' }}>
             <SpeechTrainingPanel />
-          )}
+          </div>
         </main>
 
         {/* Status Bar */}
@@ -588,23 +617,23 @@ export default function Home() {
           ))}
         </nav>
 
-        {/* Tab View */}
+        {/* Tab View — panels stay mounted so state survives tab switches */}
         <div className="dashboard-workspace-body">
-          {activeTab === 'chat' && (
+          <div style={{ display: activeTab === 'chat' ? 'contents' : 'none' }}>
             <ChatPanel onMoodChange={handleMoodChange} />
-          )}
-          {activeTab === 'todo' && (
+          </div>
+          <div style={{ display: activeTab === 'todo' ? 'contents' : 'none' }}>
             <TodoPanel onMoodChange={handleMoodChange} />
-          )}
-          {activeTab === 'config' && (
+          </div>
+          <div style={{ display: activeTab === 'config' ? 'contents' : 'none' }}>
             <ConfigPanel
               onColorChange={setHamsterColor}
               onNameChange={setHamsterName}
             />
-          )}
-          {activeTab === 'speech' && (
+          </div>
+          <div style={{ display: activeTab === 'speech' ? 'contents' : 'none' }}>
             <SpeechTrainingPanel />
-          )}
+          </div>
         </div>
       </main>
     </div>

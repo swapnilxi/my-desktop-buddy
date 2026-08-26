@@ -18,9 +18,12 @@
   --text-muted: #8c7665;
   --text-accent: #f5a84b;
 
-  --accent-primary: #f5a84b;       /* Golden honey hamster fur */
-  --accent-secondary: #e28a32;     /* Warm apricot */
-  --accent-tertiary: #c4681e;      /* Deep amber */
+  --accent-primary: #f5a84b;
+  /* Golden honey hamster fur */
+  --accent-secondary: #e28a32;
+  /* Warm apricot */
+  --accent-tertiary: #c4681e;
+  /* Deep amber */
   --accent-glow: rgba(245, 168, 75, 0.28);
 
   --success: #66d79a;
@@ -345,8 +348,13 @@ body {
   animation: typingBounce 1.4s ease-in-out infinite;
 }
 
-.typing-dot:nth-child(2) { animation-delay: 0.2s; }
-.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+.typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
 
 /* Chat Input */
 .chat-input-area {
@@ -433,11 +441,11 @@ body {
   transition: all var(--transition-base);
 }
 
-.rag-toggle input:checked + .rag-switch {
+.rag-toggle input:checked+.rag-switch {
   background: var(--accent-primary);
 }
 
-.rag-toggle input:checked + .rag-switch::after {
+.rag-toggle input:checked+.rag-switch::after {
   left: 17px;
   background: #1a1a2e;
 }
@@ -966,6 +974,7 @@ body {
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -977,6 +986,7 @@ body {
     opacity: 0;
     transform: translateX(-10px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -984,40 +994,60 @@ body {
 }
 
 @keyframes typingBounce {
-  0%, 60%, 100% {
+
+  0%,
+  60%,
+  100% {
     transform: translateY(0);
   }
+
   30% {
     transform: translateY(-6px);
   }
 }
 
 @keyframes bounce {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-8px);
   }
 }
 
 @keyframes pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.4);
   }
+
   50% {
     box-shadow: 0 0 0 8px rgba(255, 107, 107, 0);
   }
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 /* ── Status Bar ────────────────────────────────────────────────── */
@@ -1041,8 +1071,13 @@ body {
   margin-right: var(--space-xs);
 }
 
-.status-dot.online { background: var(--success); }
-.status-dot.offline { background: var(--danger); }
+.status-dot.online {
+  background: var(--success);
+}
+
+.status-dot.offline {
+  background: var(--danger);
+}
 
 /* ── Window Header & Controls ──────────────────────────────────── */
 /* ── Window Header & Controls ──────────────────────────────────── */
@@ -1504,4 +1539,104 @@ nextjs-portal,
   flex-direction: column;
 }
 
+/* ══════════════════════════════════════════════════════════════
+   VOICE INPUT — Listening / Transcribing Indicators
+   ══════════════════════════════════════════════════════════════ */
 
+.voice-status-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 12px 6px;
+  padding: 7px 12px;
+  border-radius: 10px;
+  font-size: 12.5px;
+  font-weight: 600;
+  animation: voice-banner-in 0.2s ease-out;
+}
+
+.voice-status-banner.recording {
+  background: rgba(255, 59, 48, 0.12);
+  color: var(--danger, #ff3b30);
+  border: 1px solid rgba(255, 59, 48, 0.35);
+}
+
+.voice-status-banner.transcribing {
+  background: rgba(88, 86, 214, 0.1);
+  color: #5856d6;
+  border: 1px solid rgba(88, 86, 214, 0.3);
+}
+
+@keyframes voice-banner-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.voice-pulse-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--danger, #ff3b30);
+  flex-shrink: 0;
+  animation: voice-pulse 1s ease-in-out infinite;
+}
+
+@keyframes voice-pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.5);
+  }
+
+  50% {
+    opacity: 0.55;
+    transform: scale(1.25);
+    box-shadow: 0 0 0 6px rgba(255, 59, 48, 0);
+  }
+}
+
+.voice-spinner {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 2px solid rgba(88, 86, 214, 0.25);
+  border-top-color: #5856d6;
+  flex-shrink: 0;
+  animation: voice-spin 0.7s linear infinite;
+}
+
+@keyframes voice-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Mic button states */
+.btn-voice.recording {
+  background: var(--danger, #ff3b30);
+  color: #fff;
+  animation: mic-throb 1s ease-in-out infinite;
+}
+
+@keyframes mic-throb {
+
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.45);
+  }
+
+  50% {
+    transform: scale(1.08);
+    box-shadow: 0 0 0 7px rgba(255, 59, 48, 0);
+  }
+}

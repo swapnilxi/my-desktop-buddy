@@ -164,3 +164,36 @@ export async function fetchGreeting(): Promise<{ greeting: string; model: string
   return apiRequest('/greeting');
 }
 
+// Config — reveal real (unmasked) API keys
+export async function fetchRevealedKeys(): Promise<{
+  gemini_key: string;
+  deepseek_key: string;
+  deepgram_key: string;
+}> {
+  return apiRequest('/config/reveal-keys');
+}
+
+// Voice — Speech-to-Text (Deepgram)
+export async function transcribeAudio(
+  audioBlob: Blob
+): Promise<{ transcript: string; model: string }> {
+  const formData = new FormData();
+  formData.append('audio', audioBlob, 'recording.webm');
+
+  const response = await fetch(`${API_BASE}/voice/transcribe`, {
+    method: 'POST',
+    body: formData,
+  });
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ detail: 'Transcription failed' }));
+    const detailMsg =
+      typeof errorData.detail === 'string'
+        ? errorData.detail
+        : Array.isArray(errorData.detail)
+          ? errorData.detail.map((d: { msg?: string }) => d.msg || 'Validation error').join(', ')
+          : JSON.stringify(errorData.detail || errorData);
+    throw new Error(detailMsg || `API error: ${response.status}`);
+  }
+  return response.json();
+}
+

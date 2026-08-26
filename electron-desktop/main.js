@@ -5,7 +5,7 @@
  * right edge of the macOS screen. Manages tray icon and FastAPI sidecar.
  */
 
-const { app, BrowserWindow, Tray, Menu, screen, nativeImage, ipcMain } = require('electron');
+const { app, BrowserWindow, Tray, Menu, screen, nativeImage, ipcMain, session, systemPreferences } = require('electron');
 const path = require('path');
 const { spawn } = require('child_process');
 
@@ -14,8 +14,9 @@ let tray = null;
 let backendProcess = null;
 
 const IS_DEV = process.env.ELECTRON_DEV === 'true';
-const FRONTEND_URL = IS_DEV ? 'http://localhost:3000' : `file://${path.join(__dirname, '../frontend/out/index.html')}`;
-const BACKEND_PORT = 8000;
+const BACKEND_PORT = parseInt(process.env.BACKEND_PORT || '8000', 10);
+const FRONTEND_PORT = parseInt(process.env.FRONTEND_PORT || '3000', 10);
+const FRONTEND_URL = IS_DEV ? `http://localhost:${FRONTEND_PORT}` : `file://${path.join(__dirname, '../frontend/out/index.html')}`;
 
 // Dimensions for modes
 const PET_WIDTH = 240;
@@ -64,6 +65,18 @@ function createWindow() {
 
   // Make Hammy float across all macOS spaces/desktops
   mainWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+
+  // Forward renderer console logs & errors directly to the terminal stdout/stderr
+  mainWindow.webContents.on('console-message', (_event, level, message, line, sourceId) => {
+    const srcBasename = sourceId ? path.basename(sourceId) : '';
+    if (level >= 2) {
+      console.error(`[Renderer ERROR] ${message} (${srcBasename}:${line})`);
+    } else if (level === 1) {
+      console.warn(`[Renderer WARN] ${message}`);
+    } else {
+      console.log(`[Renderer LOG] ${message}`);
+    }
+  });
 
   mainWindow.loadURL(FRONTEND_URL);
 
@@ -365,10 +378,40 @@ function setupDock() {
   }
 }
 
+function setupMediaPermissions() {
+  const allowed = new Set(['media', 'audioCapture', 'microphone']);
+
+  session.defaultSession.setPermissionRequestHandler((_wc, permission, callback) => {
+    callback(allowed.has(permission));
+  });
+
+  session.defaultSession.setPermissionCheckHandler((_wc, permission) => {
+    return allowed.has(permission);
+  });
+
+  if (process.platform === 'darwin' && systemPreferences) {
+    try {
+      const status = systemPreferences.getMediaAccessStatus ? systemPreferences.getMediaAccessStatus('microphone') : 'unknown';
+      console.log(`[Mic] Current macOS microphone status: ${status}`);
+      if (status !== 'granted' && systemPreferences.askForMediaAccess) {
+        systemPreferences.askForMediaAccess('microphone').then((granted) => {
+          console.log(`[Mic] macOS microphone access request result: ${granted ? 'GRANTED ✅' : 'DENIED ❌'}`);
+        }).catch((err) => {
+          console.error('[Mic] macOS microphone request error:', err);
+        });
+      }
+    } catch (err) {
+      console.error('[Mic] Error checking systemPreferences:', err);
+    }
+  }
+}
+
 app.whenReady().then(() => {
   if (IS_DEV) {
     console.log('🐹 Starting HamsterDesk in development mode...');
   }
+
+  setupMediaPermissions();
 
   setupIPC();
   setupDock();
