@@ -1539,7 +1539,8 @@
   cursor: pointer;
   transition: all 0.2s ease;
   z-index: 10;
-  margin-top: 2px;
+  margin-top: 0;
+  margin-bottom: 4px;
 }
 
 .hamster-greeting-bubble:hover {

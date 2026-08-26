@@ -86,6 +86,11 @@ export default function Home() {
   useEffect(() => {
     checkBackend();
     refreshGreeting();
+
+    if (typeof window !== 'undefined' && window.hamsterDesk?.window) {
+      window.hamsterDesk.window.setMode('pet');
+    }
+
     const interval = setInterval(checkBackend, 30000);
     const greetingInterval = setInterval(refreshGreeting, 45000);
 

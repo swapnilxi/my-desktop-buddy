@@ -55,9 +55,16 @@ export default function HamsterSprite({
       {/* Soft Ambient Ground Shadow */}
       <div className={`hamster-ground-shadow ${isDragging ? 'shadow-lifted' : ''}`} />
 
-      {/* Drag Grip Handle */}
-      <div className="hamster-drag-handle-badge" title="Drag Hammy anywhere on screen!">
-        <span className="drag-grip-icon">⠿</span>
+      {/* AI Greeting / Thought Speech Badge ABOVE Hammy */}
+      <div
+        className="hamster-greeting-bubble"
+        onClick={(e) => {
+          e.stopPropagation();
+          onRefreshGreeting?.();
+        }}
+        title="Click for a new thought from Hammy!"
+      >
+        <span className="greeting-text">{greeting}</span>
       </div>
 
       <div
@@ -318,18 +325,6 @@ export default function HamsterSprite({
             <span className="drag-sparkle">✦</span>
           </div>
         )}
-      </div>
-
-      {/* AI Greeting / Thought Speech Badge */}
-      <div
-        className="hamster-greeting-bubble"
-        onClick={(e) => {
-          e.stopPropagation();
-          onRefreshGreeting?.();
-        }}
-        title="Click for a new thought from Hammy!"
-      >
-        <span className="greeting-text">{greeting}</span>
       </div>
     </div>
   );

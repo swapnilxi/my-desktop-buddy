@@ -18,8 +18,8 @@ const FRONTEND_URL = IS_DEV ? 'http://localhost:3000' : `file://${path.join(__di
 const BACKEND_PORT = 8000;
 
 // Dimensions for modes
-const PET_WIDTH = 220;
-const PET_HEIGHT = 320;
+const PET_WIDTH = 240;
+const PET_HEIGHT = 360;
 const COMPACT_WIDTH = 380;
 const COMPACT_HEIGHT = 680;
 const DASHBOARD_WIDTH = 1100;
