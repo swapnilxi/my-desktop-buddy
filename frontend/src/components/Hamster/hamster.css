@@ -52,11 +52,11 @@
   --right-paw-x: 0px;
   --right-paw-y: 0px;
 
-  --left-foot-rotate: -16deg;
+  --left-foot-rotate: -22deg;
   --left-foot-x: 0px;
   --left-foot-y: 0px;
 
-  --right-foot-rotate: 18deg;
+  --right-foot-rotate: 22deg;
   --right-foot-x: 0px;
   --right-foot-y: 0px;
 
@@ -134,11 +134,11 @@
   opacity: 0.25;
 }
 
-/* ── Base Hamster Canvas (180px x 180px) ────────────────────────── */
+/* ── Base Hamster Canvas (Upright Elongated) ────────────────────── */
 .hamster {
   position: relative;
   width: 175px;
-  height: 210px;
+  height: 222px;
   filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.12));
   transform-origin: bottom center;
   transition: transform 0.25s ease;
@@ -159,26 +159,28 @@
 }
 
 /* ── Anatomical Hind Feet Emerging from Lower Body (Z-INDEX: 5) ── */
+/* Plump pink sitting paws tucked at lower corners matching reference image */
 .hamster-foot {
   position: absolute;
-  width: 28px;
-  height: 20px;
+  width: 38px;
+  height: 30px;
   z-index: 5;
   pointer-events: none;
   transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+/* Feet positioned at outer bottom corners of lower belly/haunches */
 .hamster-foot--left {
-  left: 22px;
+  left: 10px;
   bottom: -4px;
-  transform-origin: 50% 20%;
+  transform-origin: 50% 30%;
   transform: translate(var(--left-foot-x), var(--left-foot-y)) rotate(var(--left-foot-rotate));
 }
 
 .hamster-foot--right {
-  right: 22px;
-  bottom: -3px;
-  transform-origin: 50% 20%;
+  right: 10px;
+  bottom: -4px;
+  transform-origin: 50% 30%;
   transform: translate(var(--right-foot-x), var(--right-foot-y)) rotate(var(--right-foot-rotate));
 }
 
@@ -186,16 +188,17 @@
   position: relative;
   width: 100%;
   height: 100%;
-  background: radial-gradient(ellipse at 48% 40%,
-      #FFF0EE 0%,
-      #F5B0A7 40%,
-      var(--hamster-pink-inner) 75%,
-      #C8655C 100%);
-  border-radius: 52% 52% 42% 42% / 62% 62% 38% 38%;
+  background: radial-gradient(ellipse at 46% 36%,
+      #FFFFFF 0%,
+      #FFF0EE 22%,
+      #FCAAA3 55%,
+      var(--hamster-pink-inner) 78%,
+      #D07268 100%);
+  border-radius: 54% 54% 44% 44% / 60% 60% 40% 40%;
   box-shadow:
-    inset 0 2px 4px rgba(255, 255, 255, 0.75),
-    inset 0 -2.5px 5px rgba(130, 45, 35, 0.26),
-    0 3px 6px rgba(80, 35, 10, 0.22);
+    inset 0 3px 6px rgba(255, 255, 255, 0.88),
+    inset 0 -3px 6px rgba(160, 55, 45, 0.24),
+    0 4px 10px rgba(80, 35, 10, 0.22);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -203,67 +206,90 @@
   padding-bottom: 2px;
 }
 
+/* Soft contact shadow where each foot meets the torso/ground */
+.hamster-foot::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 9px;
+  background: radial-gradient(ellipse at 50% 100%,
+      rgba(80, 35, 10, 0.28) 0%,
+      rgba(80, 35, 10, 0.08) 55%,
+      transparent 80%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+}
+
 .foot-main-pad {
   position: absolute;
-  bottom: 2px;
-  width: 18px;
-  height: 12px;
+  bottom: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 22px;
+  height: 15px;
   background: radial-gradient(ellipse at 50% 35%,
-      #FFF6F5 0%,
-      var(--hamster-pink-inner) 65%,
-      #D67C73 100%);
+      #FFFFFF 0%,
+      #FDBAB3 40%,
+      var(--hamster-pink-inner) 75%,
+      #CE6B61 100%);
   border-radius: 50%;
-  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.65);
+  box-shadow: inset 0 1.5px 3px rgba(255, 255, 255, 0.75);
 }
 
 .foot-toes-row {
   position: absolute;
-  top: 1px;
+  top: 2px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 1.2px;
+  gap: 1.5px;
   z-index: 2;
-  opacity: 0.92;
 }
 
 .foot-toe {
   display: block;
-  background: radial-gradient(circle at 45% 35%,
-      #FFF8F7 0%,
-      #F5B8B0 45%,
+  background: radial-gradient(circle at 38% 30%,
+      #FFFFFF 0%,
+      #FDBAB3 40%,
       var(--hamster-pink-inner) 75%,
-      #D0786F 100%);
+      #CE6B61 100%);
   border-radius: 50%;
   box-shadow:
-    inset 0 0.8px 1.2px rgba(255, 255, 255, 0.7),
-    0 0.5px 1px rgba(120, 45, 35, 0.15);
+    inset 0 1px 2px rgba(255, 255, 255, 0.8),
+    0 1px 2px rgba(120, 45, 35, 0.2);
 }
 
 .t-left {
-  width: 5px;
-  height: 5.5px;
+  width: 7.5px;
+  height: 8.5px;
+  transform: rotate(-12deg);
 }
 
 .t-mid {
-  width: 6.5px;
-  height: 7px;
-  margin-top: -1px;
+  width: 9.5px;
+  height: 10.5px;
+  margin-top: -2px;
 }
 
 .t-right {
-  width: 5px;
-  height: 5.5px;
+  width: 7.5px;
+  height: 8.5px;
+  transform: rotate(12deg);
 }
 
 /* ── Fleshy Lower Haunches (Rear/Hip Sitting Volume, Z-INDEX: 2) ── */
+/* Narrower to match the new pear-shaped torso width */
 .hamster-haunches {
   position: absolute;
   bottom: -2px;
   left: 50%;
   transform: translateX(-50%);
-  width: 140px;
-  height: 62px;
+  width: 124px;
+  height: 66px;
   z-index: 2;
   pointer-events: none;
 }
@@ -271,13 +297,13 @@
 .haunch-lobe {
   position: absolute;
   bottom: 0px;
-  width: 54px;
+  width: 48px;
   height: 58px;
   pointer-events: none;
 }
 
 .haunch-left {
-  left: -5px;
+  left: -2px;
   border-radius: 68% 32% 56% 44% / 58% 42% 56% 44%;
   background: radial-gradient(ellipse at 35% 40%,
       var(--hamster-color-light) 0%,
@@ -289,7 +315,7 @@
 }
 
 .haunch-right {
-  right: -5px;
+  right: -2px;
   border-radius: 32% 68% 44% 56% / 42% 58% 44% 56%;
   background: radial-gradient(ellipse at 65% 40%,
       var(--hamster-color-light) 0%,
@@ -300,20 +326,22 @@
     0 4px 10px rgba(80, 35, 10, 0.16);
 }
 
-/* ── Wide Chubby Torso Mass (Upright Elongated Pear, Z-INDEX: 3) ── */
+/* ── Teardrop/Pear-Shaped Torso Mass (Z-INDEX: 3) ── */
+/* Narrow upper torso under head -> gradually expanding lower torso -> widest in lower third -> wide rounded bottom */
 .hamster-torso {
   position: absolute;
-  bottom: 4px;
+  bottom: 6px;
   left: 50%;
   transform: translateX(-50%);
-  width: 136px;
-  height: 138px;
-  background: radial-gradient(ellipse at 44% 26%,
+  width: 120px;
+  height: 180px;
+  background: radial-gradient(ellipse at 44% 35%,
       var(--hamster-color-light) 0%,
-      var(--hamster-color) 44%,
-      var(--hamster-color-shadow) 78%,
+      var(--hamster-color) 38%,
+      var(--hamster-color-shadow) 72%,
       var(--hamster-color-deep) 100%);
-  border-radius: 38% 38% 48% 48% / 32% 32% 68% 68%;
+  /* Teardrop pear shape: narrow upper (shoulders), wider lower torso, widest in lower third, wide rounded bottom */
+  border-radius: 48% 48% 24% 24% / 40% 40% 26% 26%;
   box-shadow:
     inset 0 5px 10px rgba(255, 255, 255, 0.38),
     inset 0 -8px 14px rgba(120, 50, 10, 0.22),
@@ -325,47 +353,50 @@
 /* Soft Neck Blend connecting Head to Torso */
 .torso-neck-blend {
   position: absolute;
-  top: 0;
+  top: 58px;
   left: 0;
   right: 0;
-  height: 28px;
+  height: 20px;
   background: linear-gradient(180deg,
-      rgba(130, 55, 12, 0.42) 0%,
-      rgba(130, 55, 12, 0.12) 65%,
+      rgba(130, 55, 12, 0.18) 0%,
+      rgba(130, 55, 12, 0.04) 62%,
       transparent 100%);
   pointer-events: none;
   z-index: 4;
 }
 
-/* ── Cream Belly Patch (Taller Elongated, Z-INDEX: 1) ── */
+/* ── Soft Continuous Cream Belly Patch (Z-INDEX: 1) ── */
+/* Large continuous oval belly patch matching reference image: starts directly under chin (top: -2px),
+   extends down to lower torso (bottom: 8px), occupying ~70% torso width with soft rounded sides. */
 .hamster-belly {
   position: absolute;
-  bottom: 0;
+  top: -2px;
+  bottom: 8px;
   left: 50%;
   transform: translateX(-50%);
-  width: 62px;
-  height: 88px;
-  background: radial-gradient(ellipse at 46% 40%,
+  width: 82px;
+  background: radial-gradient(ellipse at 50% 45%,
       #FFFFFF 0%,
-      var(--hamster-cream-fur) 40%,
-      var(--hamster-cream-mid) 70%,
-      var(--hamster-cream-shadow) 90%,
-      rgba(223, 139, 52, 0.35) 100%);
-  border-radius: 46% 46% 40% 40% / 50% 50% 50% 50%;
+      var(--hamster-cream-fur) 25%,
+      var(--hamster-cream-mid) 72%,
+      var(--hamster-cream-shadow) 92%,
+      rgba(223, 139, 52, 0.06) 100%);
+  /* Soft continuous egg/oval shape matching reference image */
+  border-radius: 46% 46% 45% 45% / 32% 32% 65% 65%;
   box-shadow:
-    inset 0 3px 6px rgba(255, 255, 255, 0.82),
-    inset -2.5px -4px 8px rgba(135, 60, 18, 0.16);
+    inset 0 2px 4px rgba(255, 255, 255, 0.65),
+    inset 0 -4px 8px rgba(210, 130, 45, 0.12);
   z-index: 1;
 }
 
 .belly-glow {
   position: absolute;
-  top: 6px;
+  top: 12px;
   left: 50%;
   transform: translateX(-50%);
-  width: 44px;
-  height: 26px;
-  background: radial-gradient(ellipse at 50% 30%, #FFFFFF 0%, var(--hamster-cream-fur) 75%, transparent 100%);
+  width: 64px;
+  height: 80px;
+  background: radial-gradient(ellipse at 50% 35%, #FFFFFF 0%, var(--hamster-cream-fur) 80%, transparent 100%);
   border-radius: 50%;
   filter: blur(2px);
 }
@@ -1298,9 +1329,11 @@
    3. REUSABLE POSEABLE ARMS & HELD OBJECT LAYER (Z-INDEX: 8)
    ═══════════════════════════════════════════════════════════════ */
 
+/* Arms moved up to lower chest/mid-torso (was bottom: 52px) */
+/* Arms positioned at upper chest / upper belly area matching reference image */
 .hamster-limbs-layer {
   position: absolute;
-  bottom: 44px;
+  bottom: 86px;
   left: 50%;
   transform: translateX(-50%);
   width: 104px;
@@ -1323,17 +1356,17 @@
 /* Sunflower Seed */
 .hamster-seed {
   position: relative;
-  width: 16px;
-  height: 24px;
+  width: 17px;
+  height: 25px;
   background: radial-gradient(ellipse at 35% 28%,
-      #423F4B 0%,
+      #3D3945 0%,
       #222028 50%,
       #100F14 85%,
       #08070A 100%);
   border-radius: 46% 46% 50% 50% / 34% 34% 66% 66%;
   box-shadow:
-    inset 0 2px 4px rgba(255, 255, 255, 0.45),
-    0 3.5px 8px rgba(60, 25, 10, 0.3);
+    inset 0 2px 4px rgba(255, 255, 255, 0.5),
+    0 3.5px 8px rgba(60, 25, 10, 0.35);
   overflow: hidden;
   cursor: pointer;
   transition: transform 0.15s ease;
@@ -1349,7 +1382,7 @@
   left: 2.5px;
   width: 4.5px;
   height: 8px;
-  background: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.6);
   border-radius: 50%;
   transform: rotate(-22deg);
   filter: blur(0.5px);
@@ -1361,7 +1394,7 @@
   top: 2px;
   left: 50%;
   transform: translateX(-50%);
-  width: 2px;
+  width: 2.2px;
   height: 90%;
   background: linear-gradient(180deg, #FFFFFF 0%, #F5EFE0 75%, transparent 100%);
   border-radius: 2px;
@@ -1404,8 +1437,8 @@
 .hamster-arm {
   position: absolute;
   top: 4px;
-  width: 34px;
-  height: 24px;
+  width: 35px;
+  height: 25px;
   pointer-events: auto;
   transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
@@ -1442,16 +1475,16 @@
 
 .arm-volume {
   position: relative;
-  width: 28px;
-  height: 22px;
+  width: 30px;
+  height: 24px;
   z-index: 1;
 }
 
 .hamster-arm--left .arm-volume {
   background: radial-gradient(ellipse at 32% 35%,
       var(--hamster-color-light) 0%,
-      var(--hamster-color) 60%,
-      var(--hamster-cream-fur) 90%);
+      var(--hamster-color) 62%,
+      var(--hamster-color-shadow) 95%);
   border-radius: 60% 40% 36% 54% / 54% 40% 40% 56%;
   box-shadow:
     inset 0 2px 4px rgba(255, 255, 255, 0.45),
@@ -1461,8 +1494,8 @@
 .hamster-arm--right .arm-volume {
   background: radial-gradient(ellipse at 68% 35%,
       var(--hamster-color-light) 0%,
-      var(--hamster-color) 60%,
-      var(--hamster-cream-fur) 90%);
+      var(--hamster-color) 62%,
+      var(--hamster-color-shadow) 95%);
   border-radius: 40% 60% 54% 36% / 40% 54% 56% 40%;
   box-shadow:
     inset 0 2px 4px rgba(255, 255, 255, 0.45),
@@ -1472,21 +1505,21 @@
 /* ── Independent Poseable Front Paw (Wrist Pivot) ─────────────── */
 .hamster-paw {
   position: absolute;
-  width: 17px;
-  height: 16px;
+  width: 19px;
+  height: 18px;
   z-index: 4;
   transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .hamster-paw--left {
-  right: -3px;
+  right: -4px;
   transform-origin: 30% 20%;
   /* Natural Wrist Pivot */
   transform: translate(var(--left-paw-x), var(--left-paw-y)) rotate(var(--left-paw-rotate));
 }
 
 .hamster-paw--right {
-  left: -3px;
+  left: -4px;
   transform-origin: 70% 20%;
   /* Natural Wrist Pivot */
   transform: translate(var(--right-paw-x), var(--right-paw-y)) rotate(var(--right-paw-rotate));
@@ -1496,15 +1529,15 @@
   position: relative;
   width: 100%;
   height: 100%;
-  background: radial-gradient(ellipse at 42% 35%,
+  background: radial-gradient(circle at 45% 35%,
       #FFFFFF 0%,
-      #FFFDF7 40%,
-      var(--hamster-cream-fur) 75%,
+      #FFFDF7 50%,
+      var(--hamster-cream-fur) 85%,
       var(--hamster-cream-mid) 100%);
-  border-radius: 54% 46% 48% 52% / 56% 44% 54% 46%;
+  border-radius: 50%;
   box-shadow:
-    inset 0 1.5px 3px rgba(255, 255, 255, 0.85),
-    0 2px 5px rgba(80, 30, 10, 0.22);
+    inset 0 2px 4px rgba(255, 255, 255, 0.95),
+    0 2px 6px rgba(80, 30, 10, 0.22);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1512,8 +1545,8 @@
 
 .paw-pad-cluster {
   position: relative;
-  width: 12px;
-  height: 11px;
+  width: 14px;
+  height: 13px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1524,16 +1557,16 @@
   position: absolute;
   top: 0.5px;
   display: block;
-  width: 2.8px;
-  height: 3.6px;
+  width: 3.4px;
+  height: 4.2px;
   background: radial-gradient(circle at 40% 35%,
-      #FFF8F7 0%,
-      #F5B8B0 45%,
-      var(--hamster-pink-inner) 70%,
+      #FFFFFF 0%,
+      #FCAAA3 45%,
+      var(--hamster-pink-inner) 80%,
       #D0786F 100%);
   border-radius: 50% 50% 45% 45%;
   box-shadow: inset 0 0.5px 1px rgba(255, 255, 255, 0.7);
-  opacity: 0.9;
+  opacity: 0.95;
 }
 
 .f-left {
@@ -1542,7 +1575,7 @@
 }
 
 .f-mid {
-  left: 4.6px;
+  left: 5.3px;
   top: 0px;
 }
 
@@ -1554,15 +1587,16 @@
 .paw-palm-pad {
   position: absolute;
   bottom: 0px;
-  width: 5.8px;
-  height: 4.2px;
+  width: 6.8px;
+  height: 5px;
   background: radial-gradient(ellipse at 50% 40%,
-      #FFF8F7 0%,
-      var(--hamster-pink-inner) 65%,
+      #FFFFFF 0%,
+      #FCAAA3 50%,
+      var(--hamster-pink-inner) 80%,
       #D0786F 100%);
   border-radius: 50%;
   box-shadow: inset 0 0.5px 1px rgba(255, 255, 255, 0.6);
-  opacity: 0.92;
+  opacity: 0.95;
 }
 
 /* ═══════════════════════════════════════════════════════════════
