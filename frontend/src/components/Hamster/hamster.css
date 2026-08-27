@@ -66,29 +66,29 @@
   --held-object-scale: 1;
 
   /* Centralized Facial Coordinate System (Deliberate Layered Architecture) */
-  --face-mask-top: 36px;
-  --face-mask-width: 142px;
-  --face-mask-height: 64px;
+  --face-mask-top: 34px;
+  --face-mask-width: 148px;
+  --face-mask-height: 68px;
 
-  --muzzle-top: 8px;
-  --muzzle-width: 54px;
-  --muzzle-height: 50px;
-  --nose-top: 2px;
+  --muzzle-top: 10px;
+  --muzzle-width: 56px;
+  --muzzle-height: 52px;
+  --nose-top: 4px;
   --nose-width: 13px;
   --nose-height: 10px;
-  --philtrum-top: 9.5px;
+  --philtrum-top: 11.5px;
   --philtrum-height: 3.5px;
-  --mouth-top: 12.5px;
+  --mouth-top: 14.5px;
   --mouth-width: 22px;
   --mouth-height: 16px;
 
   --eye-top: 34px;
-  --eye-x: 28px;
+  --eye-x: 30px;
   --eye-width: 38px;
   --eye-height: 40px;
 
   --blush-top: 52px;
-  --blush-x: 14px;
+  --blush-x: 16px;
 }
 
 /* ── Container & Canvas ────────────────────────────────────────── */
@@ -118,7 +118,7 @@
 /* ── Soft Ground Shadow ─────────────────────────────────────────── */
 .hamster-ground-shadow {
   position: absolute;
-  bottom: 8px;
+  bottom: 2px;
   width: 124px;
   height: 16px;
   background: radial-gradient(ellipse at center, rgba(100, 45, 15, 0.28) 0%, rgba(100, 45, 15, 0.08) 60%, transparent 80%);
@@ -138,7 +138,7 @@
 .hamster {
   position: relative;
   width: 175px;
-  height: 190px;
+  height: 210px;
   filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.12));
   transform-origin: bottom center;
   transition: transform 0.25s ease;
@@ -170,14 +170,14 @@
 
 .hamster-foot--left {
   left: 22px;
-  bottom: 2px;
+  bottom: -4px;
   transform-origin: 50% 20%;
   transform: translate(var(--left-foot-x), var(--left-foot-y)) rotate(var(--left-foot-rotate));
 }
 
 .hamster-foot--right {
   right: 22px;
-  bottom: 3px;
+  bottom: -3px;
   transform-origin: 50% 20%;
   transform: translate(var(--right-foot-x), var(--right-foot-y)) rotate(var(--right-foot-rotate));
 }
@@ -259,7 +259,7 @@
 /* ── Fleshy Lower Haunches (Rear/Hip Sitting Volume, Z-INDEX: 2) ── */
 .hamster-haunches {
   position: absolute;
-  bottom: 4px;
+  bottom: -2px;
   left: 50%;
   transform: translateX(-50%);
   width: 140px;
@@ -300,20 +300,20 @@
     0 4px 10px rgba(80, 35, 10, 0.16);
 }
 
-/* ── Wide Chubby Torso Mass (Pear-Shaped Teardrop, Z-INDEX: 3) ── */
+/* ── Wide Chubby Torso Mass (Upright Elongated Pear, Z-INDEX: 3) ── */
 .hamster-torso {
   position: absolute;
   bottom: 4px;
   left: 50%;
   transform: translateX(-50%);
   width: 136px;
-  height: 122px;
-  background: radial-gradient(ellipse at 44% 28%,
+  height: 138px;
+  background: radial-gradient(ellipse at 44% 26%,
       var(--hamster-color-light) 0%,
-      var(--hamster-color) 46%,
-      var(--hamster-color-shadow) 80%,
+      var(--hamster-color) 44%,
+      var(--hamster-color-shadow) 78%,
       var(--hamster-color-deep) 100%);
-  border-radius: 42% 42% 50% 50% / 38% 38% 62% 62%;
+  border-radius: 38% 38% 48% 48% / 32% 32% 68% 68%;
   box-shadow:
     inset 0 5px 10px rgba(255, 255, 255, 0.38),
     inset 0 -8px 14px rgba(120, 50, 10, 0.22),
@@ -337,21 +337,21 @@
   z-index: 4;
 }
 
-/* ── Cream Belly Patch (68px x 65px, Z-INDEX: 1) ── */
+/* ── Cream Belly Patch (Taller Elongated, Z-INDEX: 1) ── */
 .hamster-belly {
   position: absolute;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 66px;
-  height: 78px;
-  background: radial-gradient(ellipse at 46% 42%,
+  width: 62px;
+  height: 88px;
+  background: radial-gradient(ellipse at 46% 40%,
       #FFFFFF 0%,
-      var(--hamster-cream-fur) 42%,
-      var(--hamster-cream-mid) 72%,
-      var(--hamster-cream-shadow) 92%,
+      var(--hamster-cream-fur) 40%,
+      var(--hamster-cream-mid) 70%,
+      var(--hamster-cream-shadow) 90%,
       rgba(223, 139, 52, 0.35) 100%);
-  border-radius: 48% 48% 42% 42% / 54% 54% 46% 46%;
+  border-radius: 46% 46% 40% 40% / 50% 50% 50% 50%;
   box-shadow:
     inset 0 3px 6px rgba(255, 255, 255, 0.82),
     inset -2.5px -4px 8px rgba(135, 60, 18, 0.16);
@@ -398,31 +398,41 @@
   z-index: 4;
 }
 
-/* ── Cheek Pouches (44px x 40px, top: 52px, left/right: -6px, z-index: 3) ── */
-.cheek-pouch-left {
+/* ── Broad Upper-Cheek Fur Volumes (integrated into the head silhouette) ── */
+/* These replace the old flat cheek-pouch circles with soft anatomical bulk. */
+.head-cheek-bulk {
   position: absolute;
-  top: 52px;
-  left: -6px;
-  width: 44px;
-  height: 40px;
-  background: radial-gradient(ellipse at 35% 30%, #E89C46 0%, #DF8B34 55%, #C77324 90%);
-  border-radius: 50%;
+  top: 40px;
+  width: 58px;
+  height: 52px;
   z-index: 3;
-  box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.3);
   pointer-events: none;
 }
 
-.cheek-pouch-right {
-  position: absolute;
-  top: 52px;
-  right: -6px;
-  width: 44px;
-  height: 40px;
-  background: radial-gradient(ellipse at 65% 30%, #E89C46 0%, #DF8B34 55%, #C77324 90%);
-  border-radius: 50%;
-  z-index: 3;
-  box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.3);
-  pointer-events: none;
+.head-cheek-bulk--left {
+  left: -4px;
+  background: radial-gradient(ellipse at 38% 32%,
+      var(--hamster-color-light) 0%,
+      var(--hamster-color) 52%,
+      var(--hamster-color-shadow) 82%,
+      var(--hamster-color-deep) 100%);
+  border-radius: 62% 38% 52% 48% / 46% 54% 58% 42%;
+  box-shadow:
+    inset 0 3px 7px rgba(255, 255, 255, 0.32),
+    inset -3px -4px 8px rgba(120, 45, 10, 0.2);
+}
+
+.head-cheek-bulk--right {
+  right: -4px;
+  background: radial-gradient(ellipse at 62% 32%,
+      var(--hamster-color-light) 0%,
+      var(--hamster-color) 52%,
+      var(--hamster-color-shadow) 82%,
+      var(--hamster-color-deep) 100%);
+  border-radius: 38% 62% 48% 52% / 54% 46% 42% 58%;
+  box-shadow:
+    inset 0 3px 7px rgba(255, 255, 255, 0.32),
+    inset 3px -4px 8px rgba(120, 45, 10, 0.2);
 }
 
 /* ── Soft Flowing 3D Plush Forelock Fur Crest ─────────────────── */
@@ -608,25 +618,68 @@
     inset 0 -1.5px 3px rgba(255, 255, 255, 0.25);
 }
 
-/* ── Head Base Mass (175px x 105px, border-radius: 50% 50% 48% 48% / 42% 42% 58% 58%) ── */
+/* ── Head Base Mass: Broad-Cheeked Volumetric Skull Silhouette ── */
+/* Uses a clip-path to create a natural hamster head shape: broad through the
+   upper cheeks, slightly narrower forehead, gently protruding lower cheeks,
+   tapering subtly toward the chin, with a soft flattened crown. */
 .head-base-mass {
   position: absolute;
   top: 4px;
   left: 50%;
   transform: translateX(-50%);
-  width: 160px;
-  height: 104px;
-  background: radial-gradient(ellipse at 40% 22%,
+  width: 164px;
+  height: 108px;
+  background: radial-gradient(ellipse at 42% 24%,
       var(--hamster-color-light) 0%,
-      var(--hamster-color) 48%,
-      var(--hamster-color-shadow) 82%,
+      var(--hamster-color) 46%,
+      var(--hamster-color-shadow) 80%,
       var(--hamster-color-deep) 100%);
-  border-radius: 50% 50% 48% 48% / 42% 42% 58% 58%;
+  clip-path: polygon(50% 0%,
+      62% 2%,
+      72% 8%,
+      80% 18%,
+      85% 30%,
+      88% 42%,
+      89% 52%,
+      87% 62%,
+      82% 72%,
+      74% 82%,
+      64% 90%,
+      55% 96%,
+      50% 100%,
+      45% 96%,
+      36% 90%,
+      26% 82%,
+      18% 72%,
+      13% 62%,
+      11% 52%,
+      12% 42%,
+      15% 30%,
+      20% 18%,
+      28% 8%,
+      38% 2%);
   box-shadow:
-    inset 0 4px 10px rgba(255, 255, 255, 0.42),
-    inset 0 -5px 10px rgba(120, 45, 10, 0.2),
-    0 5px 14px rgba(80, 35, 10, 0.16);
+    inset 0 5px 12px rgba(255, 255, 255, 0.4),
+    inset 0 -6px 12px rgba(120, 45, 10, 0.22),
+    0 6px 16px rgba(80, 35, 10, 0.16);
   z-index: 4;
+}
+
+/* Soft flattened crown dome (slightly flattened top rather than a perfect circle) */
+.head-crown-dome {
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 96px;
+  height: 40px;
+  background: radial-gradient(ellipse at 50% 30%,
+      rgba(255, 255, 255, 0.5) 0%,
+      rgba(255, 255, 255, 0.12) 55%,
+      transparent 82%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 2;
 }
 
 .head-top-glow {
@@ -650,8 +703,25 @@
       rgba(249, 238, 217, 0.82) 38%,
       rgba(232, 156, 70, 0.45) 68%,
       transparent 90%);
-  border-radius: inherit;
+  clip-path: inherit;
   pointer-events: none;
+}
+
+/* Lower-face ambient occlusion tapering into the chin */
+.head-chin-occlusion {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 92px;
+  height: 34px;
+  background: radial-gradient(ellipse at 50% 100%,
+      rgba(120, 45, 10, 0.28) 0%,
+      rgba(120, 45, 10, 0.1) 55%,
+      transparent 80%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 3;
 }
 
 /* ── Continuous Cream Face Mask System (Merged Organic Contour) ── */
@@ -684,47 +754,130 @@
   z-index: 2;
 }
 
-/* Unbroken organic cream base mantle spanning cheeks and muzzle */
+/* ── Organic Cream Face Mask (Natural Lighter Fur Following Head Volume) ── */
+/* Solid, fully-opaque cream fur built from layered radial gradients so it
+   clearly reads as lighter fur covering the face — never transparent. */
 .mask-base-mantle {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 50% 52%,
+  background:
+    radial-gradient(ellipse at 50% 26%,
       #FFFFFF 0%,
-      var(--hamster-cream-fur) 48%,
-      var(--hamster-cream-mid) 76%,
-      rgba(249, 238, 217, 0.85) 90%,
-      transparent 100%);
-  border-radius: 48% 48% 44% 44% / 54% 54% 46% 46%;
+      var(--hamster-cream-fur) 30%,
+      var(--hamster-cream-mid) 62%,
+      var(--hamster-cream-shadow) 88%,
+      var(--hamster-cream-shadow) 100%);
+  border-radius: 50% 50% 46% 46% / 56% 56% 44% 44%;
   box-shadow:
-    inset 0 3px 6px rgba(255, 255, 255, 0.85),
-    inset 0 -3px 6px rgba(140, 60, 15, 0.1);
+    inset 0 4px 8px rgba(255, 255, 255, 0.9),
+    inset 0 -4px 8px rgba(140, 60, 15, 0.12);
   z-index: 1;
 }
 
-/* Integrated 3D soft cheek volumes merged seamlessly inside the mask */
-.mask-cheek-volume {
+/* Brighter central forehead light (subtle volume, not a hard shape) */
+.mask-forehead-glow {
   position: absolute;
-  bottom: 4px;
-  width: 52px;
-  height: 46px;
-  background: radial-gradient(ellipse at center,
-      rgba(255, 255, 255, 0.5) 0%,
-      rgba(255, 253, 247, 0.25) 55%,
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 74px;
+  height: 30px;
+  background: radial-gradient(ellipse at 50% 30%,
+      rgba(255, 255, 255, 0.85) 0%,
+      rgba(255, 253, 247, 0.35) 55%,
       transparent 85%);
   border-radius: 50%;
   pointer-events: none;
   z-index: 2;
 }
 
+/* Soft shading around the eye sockets (subtle depth, not outlines) */
+.mask-eye-socket-shade {
+  position: absolute;
+  top: 6px;
+  width: 40px;
+  height: 30px;
+  background: radial-gradient(ellipse at 50% 40%,
+      rgba(140, 60, 15, 0.16) 0%,
+      rgba(140, 60, 15, 0.06) 55%,
+      transparent 80%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.shade-left {
+  left: 8px;
+}
+
+.shade-right {
+  right: 8px;
+}
+
+/* ── Plush 3D Cheek Volumes (Soft Forward-Facing Anatomical Bulk) ── */
+/* Not circles: layered radial lighting makes each cheek read as a rounded
+   volume, brightest toward the forward-facing upper-middle, with ambient
+   shading toward the sides and underneath. */
+.mask-cheek-volume {
+  position: absolute;
+  bottom: 2px;
+  width: 58px;
+  height: 50px;
+  background: radial-gradient(ellipse at 50% 34%,
+      rgba(255, 255, 255, 0.62) 0%,
+      rgba(255, 253, 247, 0.34) 42%,
+      rgba(249, 238, 217, 0.18) 68%,
+      transparent 88%);
+  border-radius: 52% 48% 46% 54% / 40% 44% 60% 56%;
+  box-shadow:
+    inset 0 3px 6px rgba(255, 255, 255, 0.5),
+    inset 0 -4px 8px rgba(140, 60, 15, 0.14);
+  pointer-events: none;
+  z-index: 2;
+}
+
 .left-cheek-volume {
-  left: 6px;
+  left: 2px;
 }
 
 .right-cheek-volume {
-  right: 6px;
+  right: 2px;
 }
 
-/* ── Central Muzzle Anchor Unit (Holds Nose, Philtrum & Mouth Together) ── */
+/* Bright forward-facing highlight on each cheek */
+.cheek-highlight {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 26px;
+  height: 18px;
+  background: radial-gradient(ellipse at 50% 40%,
+      rgba(255, 255, 255, 0.7) 0%,
+      rgba(255, 255, 255, 0.2) 60%,
+      transparent 85%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Gentle shadow beneath the muzzle (contact shadow into the chin) */
+.mask-under-muzzle-shadow {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 18px;
+  background: radial-gradient(ellipse at 50% 100%,
+      rgba(140, 60, 15, 0.2) 0%,
+      rgba(140, 60, 15, 0.06) 55%,
+      transparent 80%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ── Central Muzzle Anchor Unit: Two Soft Muzzle Pads ── */
 .hamster-muzzle {
   position: absolute;
   top: var(--muzzle-top);
@@ -732,24 +885,68 @@
   transform: translateX(-50%);
   width: var(--muzzle-width);
   height: var(--muzzle-height);
-  border-radius: 50% 50% 46% 46% / 54% 54% 46% 46%;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12), inset 0 2px 4px rgba(255, 255, 255, 0.8);
   z-index: 6;
 }
 
-/* Subtle lighter volumetric region inside the face mask (NOT a separate white circle) */
-.muzzle-light-zone {
+/* Left & right soft vertically-oval muzzle pads, overlapping in the center,
+   creating a subtle central depression where the nose sits. */
+.muzzle-pad {
   position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at 50% 38%,
-      rgba(255, 255, 255, 0.75) 0%,
-      rgba(255, 253, 247, 0.35) 60%,
-      transparent 90%);
-  border-radius: 50% 50% 44% 44% / 56% 56% 44% 44%;
+  top: 0;
+  width: 30px;
+  height: 46px;
+  background: radial-gradient(ellipse at 50% 36%,
+      #FFFFFF 0%,
+      var(--hamster-cream-fur) 42%,
+      var(--hamster-cream-mid) 72%,
+      var(--hamster-cream-shadow) 100%);
+  box-shadow:
+    inset 0 3px 6px rgba(255, 255, 255, 0.85),
+    inset 0 -4px 8px rgba(140, 60, 15, 0.16);
   pointer-events: none;
-  z-index: 1;
 }
 
+.muzzle-pad--left {
+  left: 0;
+  border-radius: 58% 42% 46% 54% / 42% 46% 58% 54%;
+}
+
+.muzzle-pad--right {
+  right: 0;
+  border-radius: 42% 58% 54% 46% / 46% 42% 54% 58%;
+}
+
+/* Ambient occlusion where the pads meet the cheeks */
+.muzzle-pad-occlusion {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 60%,
+      rgba(140, 60, 15, 0.14) 0%,
+      rgba(140, 60, 15, 0.05) 50%,
+      transparent 78%);
+  border-radius: 50% 50% 46% 46% / 54% 54% 46% 46%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Subtle lighter volumetric region inside the muzzle pads */
+.muzzle-light-zone {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 34px;
+  height: 30px;
+  background: radial-gradient(ellipse at 50% 38%,
+      rgba(255, 255, 255, 0.8) 0%,
+      rgba(255, 253, 247, 0.4) 60%,
+      transparent 90%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* ── Tiny Embedded Nose (Centered in the Muzzle) ── */
 .hamster-nose {
   position: absolute;
   top: var(--nose-top);
@@ -780,6 +977,24 @@
   filter: blur(0.3px);
 }
 
+/* Subtle shadow cast beneath the nose (embeds it into the muzzle) */
+.nose-under-shadow {
+  position: absolute;
+  top: calc(var(--nose-top) + var(--nose-height) - 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 6px;
+  background: radial-gradient(ellipse at 50% 100%,
+      rgba(120, 45, 15, 0.28) 0%,
+      rgba(120, 45, 15, 0.08) 55%,
+      transparent 80%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9;
+}
+
+/* Central philtrum connecting nose to mouth */
 .hamster-philtrum {
   position: absolute;
   top: var(--philtrum-top);
@@ -792,6 +1007,9 @@
   z-index: 9;
 }
 
+/* ── Tiny Soft Embedded Mouth ── */
+/* A small vertical connection from the nose plus two curved directions
+   toward the lower muzzle, embedded rather than painted on. */
 .hamster-mouth {
   position: absolute;
   top: var(--mouth-top);
@@ -1082,7 +1300,7 @@
 
 .hamster-limbs-layer {
   position: absolute;
-  bottom: 34px;
+  bottom: 44px;
   left: 50%;
   transform: translateX(-50%);
   width: 104px;
@@ -1357,6 +1575,28 @@
   --right-arm-rotate: 0deg;
   --left-paw-rotate: 12deg;
   --right-paw-rotate: -12deg;
+}
+
+/* Pose: Sleep */
+.pose-sleep {
+  --left-arm-rotate: -20deg;
+  --left-arm-y: -10px;
+  --left-paw-rotate: 10deg;
+  --right-arm-rotate: 20deg;
+  --right-arm-y: -10px;
+  --right-paw-rotate: -10deg;
+  --held-object-scale: 0;
+}
+
+/* Pose: Sleep */
+.pose-sleep {
+  --left-arm-rotate: -20deg;
+  --left-arm-y: -10px;
+  --left-paw-rotate: 10deg;
+  --right-arm-rotate: 20deg;
+  --right-arm-y: -10px;
+  --right-paw-rotate: -10deg;
+  --held-object-scale: 0;
 }
 
 /* Pose: Wave Hello (Cute waving right paw) */

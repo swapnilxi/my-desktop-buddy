@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react';
 import type { HamsterMood } from '@/lib/api';
 import './hamster.css';
 
+
 interface HamsterSpriteProps {
   mood: HamsterMood;
-  pose?: 'idle' | 'hold-seed' | 'wave' | 'reach' | 'tap' | 'eat' | 'shy';
+  pose?: 'idle' | 'hold-seed' | 'wave' | 'reach' | 'tap' | 'eat' | 'shy' | 'sleep';
   heldItem?: 'seed' | 'berry' | 'heart' | 'none';
   color?: string;
   name?: string;
@@ -145,35 +146,64 @@ export default function HamsterSprite({
             </div>
           </div>
 
-          {/* Fluffy Rounded Cheek Pouches */}
-          <div className="cheek-pouch-left" />
-          <div className="cheek-pouch-right" />
-
-          {/* Head Base Mass (Broad Golden-Orange Skull & Fur Shading) */}
+          {/* ─── Head Base Mass: Broad-Cheeked Volumetric Skull Silhouette ─── */}
           <div className="head-base-mass">
+            {/* Soft flattened crown dome with broad cheek fullness */}
+            <div className="head-crown-dome" />
+            {/* Broad upper-cheek fur volumes */}
+            <div className="head-cheek-bulk head-cheek-bulk--left" />
+            <div className="head-cheek-bulk head-cheek-bulk--right" />
+            {/* Warm keylight + ambient fur shading */}
             <div className="head-top-glow" />
             <div className="head-fur-gradient-blend" />
+            {/* Lower-face ambient occlusion into the chin */}
+            <div className="head-chin-occlusion" />
           </div>
 
-          {/* ─── Continuous Cream Face Mask (Single Unified Merged System) ─── */}
+          {/* ─── Continuous Organic Cream Face Mask (Natural Lighter Fur) ─── */}
           <div className="hamster-face-mask">
             {/* Rising snout crest bridging between the eyes */}
             <span className="mask-snout-crest" />
 
-            {/* Unbroken cream base mantle spanning cheeks and muzzle */}
+            {/* Organic cream mantle following the head volume */}
             <div className="mask-base-mantle" />
 
-            {/* Soft 3D cheek volumes integrated inside the mask */}
-            <div className="mask-cheek-volume left-cheek-volume" />
-            <div className="mask-cheek-volume right-cheek-volume" />
+            {/* Brighter central forehead light */}
+            <div className="mask-forehead-glow" />
 
-            {/* Central Muzzle Anchor Unit: Holds Nose, Philtrum & Mouth Together */}
+            {/* Soft eye-socket shading around the eyes */}
+            <div className="mask-eye-socket-shade shade-left" />
+            <div className="mask-eye-socket-shade shade-right" />
+
+            {/* Plush 3D cheek volumes (soft forward-facing highlights) */}
+            <div className="mask-cheek-volume left-cheek-volume">
+              <span className="cheek-highlight" />
+            </div>
+            <div className="mask-cheek-volume right-cheek-volume">
+              <span className="cheek-highlight" />
+            </div>
+
+            {/* Gentle shadow beneath the muzzle */}
+            <div className="mask-under-muzzle-shadow" />
+
+            {/* ─── Central Muzzle Anchor Unit: Two Soft Muzzle Pads ─── */}
             <div className="hamster-muzzle">
+              {/* Left & right soft muzzle pads with central depression */}
+              <div className="muzzle-pad muzzle-pad--left" />
+              <div className="muzzle-pad muzzle-pad--right" />
+              {/* Ambient occlusion where pads meet the cheeks */}
+              <div className="muzzle-pad-occlusion" />
+              {/* Subtle lighter volumetric region inside the pads */}
               <div className="muzzle-light-zone" />
+              {/* Tiny embedded nose */}
               <div className="hamster-nose">
                 <div className="nose-highlight" />
               </div>
+              {/* Subtle shadow cast beneath the nose */}
+              <div className="nose-under-shadow" />
+              {/* Central philtrum connecting nose to mouth */}
               <div className="hamster-philtrum" />
+              {/* Tiny soft embedded mouth */}
               <div className="hamster-mouth">
                 <span className="hamster-tongue" />
               </div>
