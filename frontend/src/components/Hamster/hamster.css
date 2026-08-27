@@ -119,8 +119,8 @@
 .hamster-ground-shadow {
   position: absolute;
   bottom: 2px;
-  width: 124px;
-  height: 16px;
+  width: 140px;
+  height: 18px;
   background: radial-gradient(ellipse at center, rgba(100, 45, 15, 0.28) 0%, rgba(100, 45, 15, 0.08) 60%, transparent 80%);
   border-radius: 50%;
   filter: blur(2px);
@@ -169,16 +169,16 @@
   transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* Feet positioned at outer bottom corners of lower belly/haunches */
+/* Feet positioned at outer bottom corners of wide chubby lower body */
 .hamster-foot--left {
-  left: 10px;
+  left: 6px;
   bottom: -4px;
   transform-origin: 50% 30%;
   transform: translate(var(--left-foot-x), var(--left-foot-y)) rotate(var(--left-foot-rotate));
 }
 
 .hamster-foot--right {
-  right: 10px;
+  right: 6px;
   bottom: -4px;
   transform-origin: 50% 30%;
   transform: translate(var(--right-foot-x), var(--right-foot-y)) rotate(var(--right-foot-rotate));
@@ -282,14 +282,14 @@
 }
 
 /* ── Fleshy Lower Haunches (Rear/Hip Sitting Volume, Z-INDEX: 2) ── */
-/* Narrower to match the new pear-shaped torso width */
+/* Substantial side volume masses creating natural chubby plush haunches */
 .hamster-haunches {
   position: absolute;
   bottom: -2px;
   left: 50%;
   transform: translateX(-50%);
-  width: 124px;
-  height: 66px;
+  width: 152px;
+  height: 72px;
   z-index: 2;
   pointer-events: none;
 }
@@ -297,14 +297,14 @@
 .haunch-lobe {
   position: absolute;
   bottom: 0px;
-  width: 48px;
-  height: 58px;
+  width: 58px;
+  height: 68px;
   pointer-events: none;
 }
 
 .haunch-left {
-  left: -2px;
-  border-radius: 68% 32% 56% 44% / 58% 42% 56% 44%;
+  left: -4px;
+  border-radius: 72% 28% 52% 48% / 62% 38% 54% 46%;
   background: radial-gradient(ellipse at 35% 40%,
       var(--hamster-color-light) 0%,
       var(--hamster-color) 60%,
@@ -315,8 +315,8 @@
 }
 
 .haunch-right {
-  right: -2px;
-  border-radius: 32% 68% 44% 56% / 42% 58% 44% 56%;
+  right: -4px;
+  border-radius: 28% 72% 48% 52% / 38% 62% 46% 54%;
   background: radial-gradient(ellipse at 65% 40%,
       var(--hamster-color-light) 0%,
       var(--hamster-color) 60%,
@@ -326,26 +326,26 @@
     0 4px 10px rgba(80, 35, 10, 0.16);
 }
 
-/* ── Teardrop/Pear-Shaped Torso Mass (Z-INDEX: 3) ── */
-/* Narrow upper torso under head -> gradually expanding lower torso -> widest in lower third -> wide rounded bottom */
+/* ── Volumetric Chubby Torso Mass (Z-INDEX: 3) ── */
+/* Narrow upper shoulders under head -> gradually expanding mid-torso -> very full chubby lower body -> broad rounded bottom */
 .hamster-torso {
   position: absolute;
-  bottom: 6px;
+  bottom: 4px;
   left: 50%;
   transform: translateX(-50%);
-  width: 120px;
-  height: 180px;
-  background: radial-gradient(ellipse at 44% 35%,
+  width: 144px;
+  height: 176px;
+  background: radial-gradient(ellipse at 44% 32%,
       var(--hamster-color-light) 0%,
-      var(--hamster-color) 38%,
-      var(--hamster-color-shadow) 72%,
+      var(--hamster-color) 40%,
+      var(--hamster-color-shadow) 74%,
       var(--hamster-color-deep) 100%);
-  /* Teardrop pear shape: narrow upper (shoulders), wider lower torso, widest in lower third, wide rounded bottom */
-  border-radius: 48% 48% 24% 24% / 40% 40% 26% 26%;
+  /* Volumetric plush silhouette: narrow upper shoulders -> expanding mid-torso -> very full chubby lower body -> broad rounded base */
+  border-radius: 52% 52% 22% 22% / 44% 44% 28% 28%;
   box-shadow:
-    inset 0 5px 10px rgba(255, 255, 255, 0.38),
-    inset 0 -8px 14px rgba(120, 50, 10, 0.22),
-    0 6px 16px rgba(80, 35, 10, 0.14);
+    inset 0 6px 12px rgba(255, 255, 255, 0.4),
+    inset 0 -10px 16px rgba(120, 50, 10, 0.24),
+    0 8px 20px rgba(80, 35, 10, 0.16);
   z-index: 3;
   overflow: hidden;
 }
@@ -365,38 +365,73 @@
   z-index: 4;
 }
 
-/* ── Soft Continuous Cream Belly Patch (Z-INDEX: 1) ── */
-/* Large continuous oval belly patch matching reference image: starts directly under chin (top: -2px),
-   extends down to lower torso (bottom: 8px), occupying ~70% torso width with soft rounded sides. */
+/* ── Custom Pear-Shaped Curvy Hamster Belly Patch (Z-INDEX: 1) ── */
+/* Pronounced pear silhouette: Narrow upper chest (0-20% ht) -> Smooth diagonal swell ->
+   Lush, round, bulbous lower belly (70-75% ht: 100% width) -> Deep, curvy, rounded circular base */
 .hamster-belly {
   position: absolute;
-  top: -2px;
-  bottom: 8px;
+  top: 40px;
+  bottom: 0px;
   left: 50%;
   transform: translateX(-50%);
-  width: 82px;
-  background: radial-gradient(ellipse at 50% 45%,
+  width: 90px;
+  background: radial-gradient(ellipse at 50% 55%,
       #FFFFFF 0%,
-      var(--hamster-cream-fur) 25%,
+      var(--hamster-cream-fur) 32%,
       var(--hamster-cream-mid) 72%,
       var(--hamster-cream-shadow) 92%,
-      rgba(223, 139, 52, 0.06) 100%);
-  /* Soft continuous egg/oval shape matching reference image */
-  border-radius: 46% 46% 45% 45% / 32% 32% 65% 65%;
+      rgba(223, 139, 52, 0.08) 100%);
+  /* Pronounced curvy pear-shaped silhouette */
+  clip-path: polygon(
+    50% 0%,
+    55% 0.8%,
+    61% 3%,
+    67% 7%,
+    72% 13%,
+    76% 20%,
+    80% 28%,
+    85% 38%,
+    90% 48%,
+    95% 58%,
+    98.5% 68%,
+    100% 75%,
+    98% 83%,
+    93% 90%,
+    84% 95%,
+    72% 98.5%,
+    58% 100%,
+    50% 100%,
+    42% 100%,
+    28% 98.5%,
+    16% 95%,
+    7% 90%,
+    2% 83%,
+    0% 75%,
+    1.5% 68%,
+    5% 58%,
+    10% 48%,
+    15% 38%,
+    20% 28%,
+    24% 20%,
+    28% 13%,
+    33% 7%,
+    39% 3%,
+    45% 0.8%
+  );
   box-shadow:
-    inset 0 2px 4px rgba(255, 255, 255, 0.65),
-    inset 0 -4px 8px rgba(210, 130, 45, 0.12);
+    inset 0 2px 5px rgba(255, 255, 255, 0.7),
+    inset 0 -4px 8px rgba(210, 130, 45, 0.14);
   z-index: 1;
 }
 
 .belly-glow {
   position: absolute;
-  top: 12px;
+  top: 10px;
   left: 50%;
   transform: translateX(-50%);
-  width: 64px;
-  height: 80px;
-  background: radial-gradient(ellipse at 50% 35%, #FFFFFF 0%, var(--hamster-cream-fur) 80%, transparent 100%);
+  width: 70px;
+  height: 85px;
+  background: radial-gradient(ellipse at 50% 32%, #FFFFFF 0%, var(--hamster-cream-fur) 80%, transparent 100%);
   border-radius: 50%;
   filter: blur(2px);
 }
@@ -1329,14 +1364,13 @@
    3. REUSABLE POSEABLE ARMS & HELD OBJECT LAYER (Z-INDEX: 8)
    ═══════════════════════════════════════════════════════════════ */
 
-/* Arms moved up to lower chest/mid-torso (was bottom: 52px) */
 /* Arms positioned at upper chest / upper belly area matching reference image */
 .hamster-limbs-layer {
   position: absolute;
-  bottom: 86px;
+  bottom: 84px;
   left: 50%;
   transform: translateX(-50%);
-  width: 104px;
+  width: 108px;
   height: 42px;
   z-index: 8;
   pointer-events: none;
