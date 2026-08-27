@@ -327,27 +327,58 @@
 }
 
 /* ── Volumetric Chubby Torso Mass (Z-INDEX: 3) ── */
-/* Narrow upper shoulders under head -> gradually expanding mid-torso -> very full chubby lower body -> broad rounded bottom */
+/* Narrow/slender upper shoulders under head -> dramatic organic outward flare -> very wide, curvy, bulbous chubby lower body & base */
 .hamster-torso {
   position: absolute;
   bottom: 4px;
   left: 50%;
   transform: translateX(-50%);
-  width: 144px;
+  width: 154px;
   height: 176px;
-  background: radial-gradient(ellipse at 44% 32%,
+  background: radial-gradient(ellipse at 44% 30%,
       var(--hamster-color-light) 0%,
-      var(--hamster-color) 40%,
-      var(--hamster-color-shadow) 74%,
+      var(--hamster-color) 42%,
+      var(--hamster-color-shadow) 76%,
       var(--hamster-color-deep) 100%);
-  /* Volumetric plush silhouette: narrow upper shoulders -> expanding mid-torso -> very full chubby lower body -> broad rounded base */
-  border-radius: 52% 52% 22% 22% / 44% 44% 28% 28%;
+  /* Strong pear silhouette: slim shoulders at top, sweeping into chubby, curvy wide bottom */
+  border-radius: 68% 68% 36% 36% / 60% 60% 40% 40%;
+  clip-path: polygon(
+    50% 0%,
+    58% 1.5%,
+    65% 5%,
+    71% 11%,
+    76% 19%,
+    80% 28%,
+    84% 38%,
+    89% 49%,
+    94% 60%,
+    98% 70%,
+    100% 78%,
+    99% 86%,
+    95% 92%,
+    88% 97%,
+    76% 99.5%,
+    50% 100%,
+    24% 99.5%,
+    12% 97%,
+    5% 92%,
+    1% 86%,
+    0% 78%,
+    2% 70%,
+    6% 60%,
+    11% 49%,
+    16% 38%,
+    20% 28%,
+    24% 19%,
+    29% 11%,
+    35% 5%,
+    42% 1.5%
+  );
   box-shadow:
     inset 0 6px 12px rgba(255, 255, 255, 0.4),
     inset 0 -10px 16px rgba(120, 50, 10, 0.24),
     0 8px 20px rgba(80, 35, 10, 0.16);
   z-index: 3;
-  overflow: hidden;
 }
 
 /* Soft Neck Blend connecting Head to Torso */
@@ -366,57 +397,59 @@
 }
 
 /* ── Custom Pear-Shaped Curvy Hamster Belly Patch (Z-INDEX: 1) ── */
-/* Pronounced pear silhouette: Narrow upper chest (0-20% ht) -> Smooth diagonal swell ->
-   Lush, round, bulbous lower belly (70-75% ht: 100% width) -> Deep, curvy, rounded circular base */
+/* Pronounced pear silhouette: Slender/tapered top (chest) -> Smooth dramatic outward curve ->
+   Extra-wide, lush, bulbous curvy lower belly -> Deep, voluptuous rounded base */
 .hamster-belly {
   position: absolute;
-  top: 40px;
+  top: 36px;
   bottom: 0px;
   left: 50%;
   transform: translateX(-50%);
-  width: 90px;
-  background: radial-gradient(ellipse at 50% 55%,
+  width: 114px;
+  background: radial-gradient(ellipse at 50% 62%,
       #FFFFFF 0%,
-      var(--hamster-cream-fur) 32%,
+      var(--hamster-cream-fur) 34%,
       var(--hamster-cream-mid) 72%,
       var(--hamster-cream-shadow) 92%,
       rgba(223, 139, 52, 0.08) 100%);
-  /* Pronounced curvy pear-shaped silhouette */
+  /* Dramatic pear-shaped polygon: narrow at top (centered narrow apex), widening gently at mid-torso, then sweeping into wide, curvy bulbous flanks and round bottom */
   clip-path: polygon(
     50% 0%,
-    55% 0.8%,
-    61% 3%,
-    67% 7%,
-    72% 13%,
-    76% 20%,
-    80% 28%,
-    85% 38%,
-    90% 48%,
-    95% 58%,
-    98.5% 68%,
-    100% 75%,
-    98% 83%,
-    93% 90%,
-    84% 95%,
-    72% 98.5%,
+    54% 1.2%,
+    58% 4%,
+    62% 8.5%,
+    66% 14.5%,
+    70% 21.5%,
+    74% 29.5%,
+    79% 38.5%,
+    85% 48%,
+    91% 57.5%,
+    96.5% 66.5%,
+    99.5% 74%,
+    100% 81%,
+    97.5% 88%,
+    92% 93.5%,
+    83% 97.5%,
+    70% 99.5%,
     58% 100%,
     50% 100%,
     42% 100%,
-    28% 98.5%,
-    16% 95%,
-    7% 90%,
-    2% 83%,
-    0% 75%,
-    1.5% 68%,
-    5% 58%,
-    10% 48%,
-    15% 38%,
-    20% 28%,
-    24% 20%,
-    28% 13%,
-    33% 7%,
-    39% 3%,
-    45% 0.8%
+    30% 99.5%,
+    17% 97.5%,
+    8% 93.5%,
+    2.5% 88%,
+    0% 81%,
+    0.5% 74%,
+    3.5% 66.5%,
+    9% 57.5%,
+    15% 48%,
+    21% 38.5%,
+    26% 29.5%,
+    30% 21.5%,
+    34% 14.5%,
+    38% 8.5%,
+    42% 4%,
+    46% 1.2%
   );
   box-shadow:
     inset 0 2px 5px rgba(255, 255, 255, 0.7),
@@ -426,14 +459,14 @@
 
 .belly-glow {
   position: absolute;
-  top: 10px;
+  top: 18px;
   left: 50%;
   transform: translateX(-50%);
-  width: 70px;
-  height: 85px;
-  background: radial-gradient(ellipse at 50% 32%, #FFFFFF 0%, var(--hamster-cream-fur) 80%, transparent 100%);
+  width: 90px;
+  height: 104px;
+  background: radial-gradient(ellipse at 50% 46%, #FFFFFF 0%, var(--hamster-cream-fur) 75%, transparent 100%);
   border-radius: 50%;
-  filter: blur(2px);
+  filter: blur(3px);
 }
 
 /* Subtle Lower Torso Fur Occlusion Shadow */
