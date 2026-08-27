@@ -397,22 +397,22 @@
 }
 
 /* ── Custom Pear-Shaped Curvy Hamster Belly Patch (Z-INDEX: 1) ── */
-/* Pronounced pear silhouette: Slender/tapered top (chest) -> Smooth dramatic outward curve ->
-   Extra-wide, lush, bulbous curvy lower belly -> Deep, voluptuous rounded base */
+/* Pronounced pear silhouette: Slender/tapered top (chest) -> Smooth organic outward curve ->
+   Curvy, balanced lower belly -> Deep rounded base */
 .hamster-belly {
   position: absolute;
   top: 36px;
   bottom: 0px;
   left: 50%;
   transform: translateX(-50%);
-  width: 114px;
-  background: radial-gradient(ellipse at 50% 62%,
+  width: 90px;
+  background: radial-gradient(ellipse at 50% 60%,
       #FFFFFF 0%,
       var(--hamster-cream-fur) 34%,
       var(--hamster-cream-mid) 72%,
       var(--hamster-cream-shadow) 92%,
       rgba(223, 139, 52, 0.08) 100%);
-  /* Dramatic pear-shaped polygon: narrow at top (centered narrow apex), widening gently at mid-torso, then sweeping into wide, curvy bulbous flanks and round bottom */
+  /* Pear-shaped polygon: slender at upper chest, widening smoothly into a neat curvy lower belly and rounded base */
   clip-path: polygon(
     50% 0%,
     54% 1.2%,
@@ -421,29 +421,29 @@
     66% 14.5%,
     70% 21.5%,
     74% 29.5%,
-    79% 38.5%,
-    85% 48%,
-    91% 57.5%,
-    96.5% 66.5%,
-    99.5% 74%,
-    100% 81%,
-    97.5% 88%,
-    92% 93.5%,
-    83% 97.5%,
-    70% 99.5%,
+    78% 38.5%,
+    84% 48%,
+    89% 58%,
+    94% 67%,
+    97.5% 75%,
+    98% 81%,
+    95.5% 88%,
+    90% 93.5%,
+    82% 97.5%,
+    68% 99.5%,
     58% 100%,
     50% 100%,
     42% 100%,
-    30% 99.5%,
-    17% 97.5%,
-    8% 93.5%,
-    2.5% 88%,
-    0% 81%,
-    0.5% 74%,
-    3.5% 66.5%,
-    9% 57.5%,
-    15% 48%,
-    21% 38.5%,
+    32% 99.5%,
+    18% 97.5%,
+    10% 93.5%,
+    4.5% 88%,
+    2% 81%,
+    2.5% 75%,
+    6% 67%,
+    11% 58%,
+    16% 48%,
+    22% 38.5%,
     26% 29.5%,
     30% 21.5%,
     34% 14.5%,
@@ -462,8 +462,8 @@
   top: 18px;
   left: 50%;
   transform: translateX(-50%);
-  width: 90px;
-  height: 104px;
+  width: 72px;
+  height: 94px;
   background: radial-gradient(ellipse at 50% 46%, #FFFFFF 0%, var(--hamster-cream-fur) 75%, transparent 100%);
   border-radius: 50%;
   filter: blur(3px);
