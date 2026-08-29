@@ -1,13 +1,21 @@
 """
 HamsterDesk Configuration Manager
-Handles loading/saving config from ~/.hamsterdesk/config.json
+Handles loading/saving config from ~/.hamsterdesk/config.json with .env and environment variable fallbacks.
 """
 
 import json
 import os
 from pathlib import Path
 from typing import Optional
+from dotenv import load_dotenv
 from pydantic import BaseModel, Field
+
+# ── Load .env from workspace / backend if present ───────────────────
+_workspace_root = Path(__file__).resolve().parent.parent
+_backend_dir = Path(__file__).resolve().parent
+
+load_dotenv(_workspace_root / ".env")
+load_dotenv(_backend_dir / ".env")
 
 
 # ── Config directory ──────────────────────────────────────────────
@@ -17,15 +25,33 @@ TODOS_FILE = CONFIG_DIR / "todos.json"
 
 
 class LLMConfig(BaseModel):
-    provider: str = Field(default="gemini", description="LLM provider: gemini, deepseek, ollama")
-    gemini_model: str = Field(default="gemini-2.5-flash", description="Gemini model name")
-    deepseek_model: str = Field(default="deepseek-chat", description="DeepSeek model name")
-    ollama_model: str = Field(default="llama3", description="Ollama model name")
-    ollama_endpoint: str = Field(default="http://localhost:11434", description="Ollama API endpoint")
+    provider: str = Field(
+        default_factory=lambda: os.getenv("DEFAULT_LLM_PROVIDER", "gemini"),
+        description="LLM provider: gemini, deepseek, ollama"
+    )
+    gemini_model: str = Field(
+        default_factory=lambda: os.getenv("GEMINI_MODEL", "gemini-2.5-flash"),
+        description="Gemini model name"
+    )
+    deepseek_model: str = Field(
+        default_factory=lambda: os.getenv("DEEPSEEK_MODEL", "deepseek-chat"),
+        description="DeepSeek model name"
+    )
+    ollama_model: str = Field(
+        default_factory=lambda: os.getenv("OLLAMA_MODEL", "llama3"),
+        description="Ollama model name"
+    )
+    ollama_endpoint: str = Field(
+        default_factory=lambda: os.getenv("OLLAMA_ENDPOINT", "http://localhost:11434"),
+        description="Ollama API endpoint"
+    )
 
 
 class VoiceConfig(BaseModel):
-    mode: str = Field(default="apple", description="Voice mode: deepgram, apple")
+    mode: str = Field(
+        default_factory=lambda: os.getenv("VOICE_MODE", "apple"),
+        description="Voice mode: deepgram, apple"
+    )
     deepgram_model: str = Field(default="nova-2", description="Deepgram STT model")
     tts_voice: str = Field(default="aura-asteria-en", description="Deepgram TTS voice")
     apple_voice: str = Field(default="Samantha", description="Apple TTS voice name")
@@ -38,7 +64,10 @@ class RAGConfig(BaseModel):
 
 
 class HamsterConfig(BaseModel):
-    name: str = Field(default="Hammy", description="Hamster character name")
+    name: str = Field(
+        default_factory=lambda: os.getenv("HAMSTER_NAME", "Hammy"),
+        description="Hamster character name"
+    )
     skin: str = Field(default="classic", description="Hamster skin/theme")
     color: str = Field(default="#F4A460", description="Hamster primary color")
 
@@ -49,9 +78,18 @@ class StartupConfig(BaseModel):
 
 
 class APIKeysConfig(BaseModel):
-    gemini_key: str = Field(default="", description="Gemini API key")
-    deepseek_key: str = Field(default="", description="DeepSeek API key")
-    deepgram_key: str = Field(default="", description="Deepgram API key")
+    gemini_key: str = Field(
+        default_factory=lambda: os.getenv("GEMINI_API_KEY") or os.getenv("GEMINI_KEY", ""),
+        description="Gemini API key"
+    )
+    deepseek_key: str = Field(
+        default_factory=lambda: os.getenv("DEEPSEEK_API_KEY") or os.getenv("DEEPSEEK_KEY", ""),
+        description="DeepSeek API key"
+    )
+    deepgram_key: str = Field(
+        default_factory=lambda: os.getenv("DEEPGRAM_API_KEY") or os.getenv("DEEPGRAM_KEY", ""),
+        description="Deepgram API key"
+    )
 
 
 class AppConfig(BaseModel):
@@ -65,7 +103,7 @@ class AppConfig(BaseModel):
     class Config:
         json_schema_extra = {
             "example": {
-                "llm": {"provider": "gemini", "gemini_model": "gemini-3.7-flash"},
+                "llm": {"provider": "gemini", "gemini_model": "gemini-2.5-flash"},
                 "hamster": {"name": "Nibbles", "skin": "classic", "color": "#F4A460"},
             }
         }
@@ -81,7 +119,7 @@ def _ensure_config_dir():
 
 
 def load_config() -> AppConfig:
-    """Load config from disk, or create default if missing."""
+    """Load config from disk (or .env defaults), or create default if missing."""
     global _config
     _ensure_config_dir()
 
@@ -92,41 +130,77 @@ def load_config() -> AppConfig:
             _config = AppConfig(**data)
         except (json.JSONDecodeError, Exception):
             _config = AppConfig()
-            save_config(_config)
     else:
         _config = AppConfig()
-        save_config(_config)
+
+    # Always inject environment variables if the file had empty keys
+    env_gemini = os.getenv("GEMINI_API_KEY") or os.getenv("GEMINI_KEY", "")
+    env_deepseek = os.getenv("DEEPSEEK_API_KEY") or os.getenv("DEEPSEEK_KEY", "")
+    env_deepgram = os.getenv("DEEPGRAM_API_KEY") or os.getenv("DEEPGRAM_KEY", "")
+
+    if env_gemini and not _config.api_keys.gemini_key:
+        _config.api_keys.gemini_key = env_gemini
+    if env_deepseek and not _config.api_keys.deepseek_key:
+        _config.api_keys.deepseek_key = env_deepseek
+    if env_deepgram and not _config.api_keys.deepgram_key:
+        _config.api_keys.deepgram_key = env_deepgram
 
     return _config
 
 
-def save_config(config: AppConfig) -> None:
-    """Save config to disk."""
+def save_config(config: AppConfig, persist_secrets: bool = False) -> None:
+    """
+    Save config to disk.
+    If persist_secrets is False (default for server/public usage),
+    secrets are not written to the shared file.
+    """
     global _config
     _ensure_config_dir()
     _config = config
 
+    data = config.model_dump()
+    if not persist_secrets:
+        # Don't persist API keys to server disk so multiple users don't conflict
+        data["api_keys"] = {"gemini_key": "", "deepseek_key": "", "deepgram_key": ""}
+
     with open(CONFIG_FILE, "w") as f:
-        json.dump(config.model_dump(), f, indent=2)
+        json.dump(data, f, indent=2)
 
 
 def get_config() -> AppConfig:
-    """Get current config (loads from disk if not cached)."""
+    """Get current config (loads from disk/env if not cached)."""
     global _config
     if _config is None:
         return load_config()
     return _config
 
 
+def get_server_capabilities() -> dict:
+    """
+    Return non-sensitive info about which services have server-level .env keys configured.
+    Never returns raw secret keys.
+    """
+    config = get_config()
+    return {
+        "server_has_gemini": bool(config.api_keys.gemini_key or os.getenv("GEMINI_API_KEY") or os.getenv("GEMINI_KEY")),
+        "server_has_deepseek": bool(config.api_keys.deepseek_key or os.getenv("DEEPSEEK_API_KEY") or os.getenv("DEEPSEEK_KEY")),
+        "server_has_deepgram": bool(config.api_keys.deepgram_key or os.getenv("DEEPGRAM_API_KEY") or os.getenv("DEEPGRAM_KEY")),
+    }
+
+
 def get_masked_config() -> dict:
-    """Return config with API keys masked for frontend display."""
+    """Return config for frontend display, safe for public sharing."""
     config = get_config()
     data = config.model_dump()
 
-    # Mask API keys — show last 4 chars only
-    for key_field in ["gemini_key", "deepseek_key", "deepgram_key"]:
-        val = data["api_keys"].get(key_field, "")
-        if val and len(val) > 4:
-            data["api_keys"][key_field] = "•" * (len(val) - 4) + val[-4:]
+    # Never send real keys to client in public mode; show whether server has them
+    caps = get_server_capabilities()
+    data["server_capabilities"] = caps
+    data["api_keys"] = {
+        "gemini_key": "••••••••" if caps["server_has_gemini"] else "",
+        "deepseek_key": "••••••••" if caps["server_has_deepseek"] else "",
+        "deepgram_key": "••••••••" if caps["server_has_deepgram"] else "",
+    }
 
     return data
+

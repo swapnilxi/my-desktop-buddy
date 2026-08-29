@@ -1,9 +1,4 @@
-/**
- * Hammy Speech — Text-to-Speech.
- *
- * Primary: backend /voice/speak (Deepgram Aura or Apple native `say`),
- * played as an <audio> blob. Fallback: Web Speech API (browser voices).
- */
+import { getClientAuthHeaders } from '@/lib/api';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
@@ -42,9 +37,13 @@ export interface SpeakOptions {
 /** Fetch TTS audio from the backend. Returns null on failure. */
 async function fetchBackendTts(text: string): Promise<Blob | null> {
   try {
+    const clientHeaders = getClientAuthHeaders();
     const resp = await fetch(`${API_BASE}/voice/speak`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...clientHeaders,
+      },
       body: JSON.stringify({ text }),
     });
     if (!resp.ok) return null;
@@ -54,6 +53,7 @@ async function fetchBackendTts(text: string): Promise<Blob | null> {
     return null;
   }
 }
+
 
 // ── Web Speech API fallback ──────────────────────────────────────
 

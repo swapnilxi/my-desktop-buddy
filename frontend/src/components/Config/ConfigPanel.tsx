@@ -1,27 +1,16 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import type { AppConfig } from '@/lib/api';
-import { fetchConfig, saveConfig, fetchRevealedKeys } from '@/lib/api';
-
-// localStorage cache so keys survive backend restarts / offline edits
-const KEYS_CACHE_KEY = 'hamsterdesk_api_keys';
-
-function loadCachedKeys(): Partial<AppConfig['api_keys']> {
-  if (typeof window === 'undefined') return {};
-  try {
-    return JSON.parse(localStorage.getItem(KEYS_CACHE_KEY) || '{}');
-  } catch {
-    return {};
-  }
-}
-
-function cacheKeys(keys: AppConfig['api_keys']) {
-  if (typeof window === 'undefined') return;
-  try {
-    localStorage.setItem(KEYS_CACHE_KEY, JSON.stringify(keys));
-  } catch { }
-}
+import {
+  fetchConfig,
+  saveConfig,
+  getClientApiKeys,
+  saveClientApiKeys,
+  clearClientApiKeys,
+  getClientSavedConfig,
+  saveClientSavedConfig,
+} from '@/lib/api';
 
 const HAMSTER_COLORS = [
   { name: 'Classic', hex: '#F4A460' },
@@ -79,47 +68,38 @@ export default function ConfigPanel({ onColorChange, onNameChange }: ConfigPanel
   const [isLoading, setIsLoading] = useState(true);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const [showKeys, setShowKeys] = useState({ gemini: false, deepseek: false, deepgram: false });
-
-  const revealedKeysRef = useRef<Partial<AppConfig['api_keys']>>({});
+  const [clearedNotice, setClearedNotice] = useState(false);
 
   const loadConfig = useCallback(async () => {
-    const cached = loadCachedKeys();
+    const localKeys = getClientApiKeys();
+    const localSaved = getClientSavedConfig();
+
     try {
-      const data = await fetchConfig();
-      // Prefer cached real keys over masked placeholders from the backend
+      const serverConfig = await fetchConfig();
       const merged: AppConfig = {
-        ...data,
+        ...serverConfig,
+        ...(localSaved || {}),
         api_keys: {
-          ...data.api_keys,
-          ...Object.fromEntries(
-            Object.entries(cached).filter(([, v]) => v) as [keyof AppConfig['api_keys'], string][]
-          ),
+          gemini_key: localKeys.gemini_key || '',
+          deepseek_key: localKeys.deepseek_key || '',
+          deepgram_key: localKeys.deepgram_key || '',
         },
+        server_capabilities: serverConfig.server_capabilities,
       };
       setConfig(merged);
+      if (merged.hamster?.color && onColorChange) onColorChange(merged.hamster.color);
+      if (merged.hamster?.name && onNameChange) onNameChange(merged.hamster.name);
     } catch {
-      // Backend unavailable — fall back to defaults + cached keys
+      // Backend unavailable — use defaults + local storage
       setConfig((prev) => ({
         ...prev,
-        api_keys: { ...prev.api_keys, ...cached },
+        ...(localSaved || {}),
+        api_keys: localKeys,
       }));
     } finally {
       setIsLoading(false);
     }
-  }, []);
-
-  /** Fetch the real keys from the backend (falls back to localStorage). */
-  const revealKeys = useCallback(async () => {
-    if (Object.keys(revealedKeysRef.current).length) return revealedKeysRef.current;
-    try {
-      const real = await fetchRevealedKeys();
-      revealedKeysRef.current = real;
-      cacheKeys(real);
-      return real;
-    } catch {
-      return loadCachedKeys();
-    }
-  }, []);
+  }, [onColorChange, onNameChange]);
 
   useEffect(() => {
     loadConfig();
@@ -142,27 +122,33 @@ export default function ConfigPanel({ onColorChange, onNameChange }: ConfigPanel
   const handleSave = async () => {
     setSaveStatus('saving');
     try {
+      // 1. Save directly to browser LocalStorage
+      saveClientApiKeys(config.api_keys);
+      saveClientSavedConfig(config);
+
+      // 2. Sync non-secret preferences with backend if reachable
       await saveConfig(config);
-      cacheKeys(config.api_keys); // persist keys locally too
       setSaveStatus('saved');
-      setTimeout(() => setSaveStatus('idle'), 2000);
+      setTimeout(() => setSaveStatus('idle'), 2500);
     } catch {
-      setSaveStatus('error');
+      // If server sync fails, local storage still succeeded
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus('idle'), 2500);
     }
   };
 
-  /** 👁️ toggle — show the real stored key instead of the masked one. */
-  const toggleKeyVisibility = async (toggle: 'gemini' | 'deepseek' | 'deepgram') => {
-    const showing = showKeys[toggle];
+  const handleClearKeys = () => {
+    clearClientApiKeys();
+    setConfig((prev) => ({
+      ...prev,
+      api_keys: { gemini_key: '', deepseek_key: '', deepgram_key: '' },
+    }));
+    setClearedNotice(true);
+    setTimeout(() => setClearedNotice(false), 3000);
+  };
+
+  const toggleKeyVisibility = (toggle: 'gemini' | 'deepseek' | 'deepgram') => {
     setShowKeys((prev) => ({ ...prev, [toggle]: !prev[toggle] }));
-    if (!showing) {
-      const field = `${toggle}_key` as keyof AppConfig['api_keys'];
-      const real = await revealKeys();
-      const value = real[field];
-      if (value) {
-        updateConfig(`api_keys.${field}`, value);
-      }
-    }
   };
 
   if (isLoading) {
@@ -173,8 +159,29 @@ export default function ConfigPanel({ onColorChange, onNameChange }: ConfigPanel
     );
   }
 
+  const caps = config.server_capabilities;
+
   return (
     <div className="config-panel">
+      {/* Privacy Notice Banner */}
+      <div
+        style={{
+          background: 'rgba(56, 189, 248, 0.08)',
+          border: '1px solid rgba(56, 189, 248, 0.25)',
+          borderRadius: '12px',
+          padding: '10px 14px',
+          marginBottom: '14px',
+          fontSize: '12px',
+          lineHeight: '1.45',
+          color: 'var(--text-primary)',
+        }}
+      >
+        <div style={{ fontWeight: 600, color: '#38bdf8', marginBottom: '3px' }}>
+          🔒 Privacy & Public Sharing Safe
+        </div>
+        Your API keys are stored safely in your browser&apos;s <strong>LocalStorage</strong> and sent directly with requests. They are never permanently stored on the server.
+      </div>
+
       {/* LLM Provider */}
       <div className="config-section">
         <div className="config-section-title">🧠 LLM Provider</div>
@@ -196,6 +203,33 @@ export default function ConfigPanel({ onColorChange, onNameChange }: ConfigPanel
               </label>
             ))}
           </div>
+
+          {config.llm.provider === 'gemini' && (
+            <div className="config-row">
+              <span className="config-label">Model</span>
+              <select
+                className="config-select"
+                value={config.llm.gemini_model || 'gemini-2.5-flash'}
+                onChange={(e) => updateConfig('llm.gemini_model', e.target.value)}
+              >
+                <option value="gemini-2.5-flash">gemini-2.5-flash (Fast & Free)</option>
+                <option value="gemini-2.5-pro">gemini-2.5-pro (High Quality)</option>
+                <option value="gemini-2.0-flash">gemini-2.0-flash</option>
+              </select>
+            </div>
+          )}
+
+          {config.llm.provider === 'deepseek' && (
+            <div className="config-row">
+              <span className="config-label">Model</span>
+              <input
+                className="config-input"
+                value={config.llm.deepseek_model || 'deepseek-chat'}
+                onChange={(e) => updateConfig('llm.deepseek_model', e.target.value)}
+                placeholder="deepseek-chat"
+              />
+            </div>
+          )}
 
           {config.llm.provider === 'ollama' && (
             <div className="config-row">
@@ -246,7 +280,7 @@ export default function ConfigPanel({ onColorChange, onNameChange }: ConfigPanel
                 checked={config.voice.mode === 'apple'}
                 onChange={() => updateConfig('voice.mode', 'apple')}
               />
-              🍎 Apple (Local)
+              🍎 Apple / Browser TTS
             </label>
           </div>
         </div>
@@ -341,36 +375,82 @@ export default function ConfigPanel({ onColorChange, onNameChange }: ConfigPanel
 
       {/* API Keys */}
       <div className="config-section">
-        <div className="config-section-title">🔑 API Keys</div>
+        <div className="config-section-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span>🔑 API Keys (LocalStorage)</span>
+          {(config.api_keys.gemini_key || config.api_keys.deepseek_key || config.api_keys.deepgram_key) && (
+            <button
+              onClick={handleClearKeys}
+              style={{
+                background: 'rgba(239, 68, 68, 0.15)',
+                border: '1px solid rgba(239, 68, 68, 0.3)',
+                color: '#f87171',
+                padding: '3px 8px',
+                borderRadius: '6px',
+                fontSize: '11px',
+                cursor: 'pointer',
+              }}
+              title="Clear all stored keys from this browser"
+            >
+              🗑️ Clear Keys
+            </button>
+          )}
+        </div>
         <div className="config-group">
           {[
-            { key: 'gemini_key' as const, label: 'Gemini', show: showKeys.gemini, toggle: 'gemini' as const },
-            { key: 'deepseek_key' as const, label: 'DeepSeek', show: showKeys.deepseek, toggle: 'deepseek' as const },
-            { key: 'deepgram_key' as const, label: 'Deepgram', show: showKeys.deepgram, toggle: 'deepgram' as const },
-          ].map(({ key, label, show, toggle }) => (
+            {
+              key: 'gemini_key' as const,
+              label: 'Gemini',
+              show: showKeys.gemini,
+              toggle: 'gemini' as const,
+              serverFallback: caps?.server_has_gemini,
+            },
+            {
+              key: 'deepseek_key' as const,
+              label: 'DeepSeek',
+              show: showKeys.deepseek,
+              toggle: 'deepseek' as const,
+              serverFallback: caps?.server_has_deepseek,
+            },
+            {
+              key: 'deepgram_key' as const,
+              label: 'Deepgram',
+              show: showKeys.deepgram,
+              toggle: 'deepgram' as const,
+              serverFallback: caps?.server_has_deepgram,
+            },
+          ].map(({ key, label, show, toggle, serverFallback }) => (
             <div className="config-row" key={key}>
-              <span className="config-label">{label}</span>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <span className="config-label">{label}</span>
+                {serverFallback && (
+                  <span style={{ fontSize: '10px', color: '#10b981' }}>
+                    ● Server .env active
+                  </span>
+                )}
+              </div>
               <div className="api-key-wrapper">
                 <input
                   className="api-key-input"
                   type={show ? 'text' : 'password'}
-                  value={config.api_keys[key]}
+                  value={config.api_keys[key] || ''}
                   onChange={(e) => updateConfig(`api_keys.${key}`, e.target.value)}
-                  placeholder={`Enter ${label} API key`}
+                  placeholder={serverFallback ? `Using server default (or enter key)` : `Enter ${label} API key`}
                 />
                 <button
                   className="api-key-toggle"
                   onClick={() => toggleKeyVisibility(toggle)}
-                  title={show ? 'Hide key' : 'Show saved key'}
+                  title={show ? 'Hide key' : 'Show key'}
                 >
                   {show ? '🙈' : '👁️'}
                 </button>
               </div>
             </div>
           ))}
-          <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)', marginTop: '4px' }}>
-            🔒 Keys are stored locally and never sent to external servers.
-          </p>
+          {clearedNotice && (
+            <p style={{ fontSize: 'var(--text-xs)', color: '#38bdf8', marginTop: '6px' }}>
+              ✨ LocalStorage keys cleared!
+            </p>
+          )}
         </div>
       </div>
 
@@ -383,7 +463,7 @@ export default function ConfigPanel({ onColorChange, onNameChange }: ConfigPanel
         {saveStatus === 'saving'
           ? '⏳ Saving...'
           : saveStatus === 'saved'
-            ? '✅ Saved!'
+            ? '✅ Saved Locally!'
             : saveStatus === 'error'
               ? '❌ Error — Retry'
               : '💾 Save Configuration'}
@@ -391,3 +471,4 @@ export default function ConfigPanel({ onColorChange, onNameChange }: ConfigPanel
     </div>
   );
 }
+

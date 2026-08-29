@@ -163,15 +163,54 @@ cd my-desktop-pet
 
 ---
 
+---
+
+## 🔒 Public Sharing & Privacy-First Architecture
+
+HamsterDesk is customized for safe public sharing, self-hosting, and multi-user environments:
+
+### 1. Client-Side Credentials (LocalStorage — BYOK)
+- **Zero Server Leaks**: API keys (Google Gemini, DeepSeek, Deepgram) entered by public users are stored exclusively inside their browser's **`LocalStorage`**.
+- **Request Header Injection**: The frontend automatically attaches credentials per-request via secure custom headers (`X-Gemini-Key`, `X-DeepSeek-Key`, `X-Deepgram-Key`).
+- **No Shared Disk Exposure**: Public users' API keys are never written to the server's files or exposed to other visitors.
+- **One-Click Clear**: Users can easily purge all stored keys and local settings using the **"🗑️ Clear Keys"** button in the Config panel.
+
+### 2. Server `.env` Configuration (Host Fallback)
+Server hosts can optionally configure fallback environment variables by copying `.env.example` to `.env`:
+
+```bash
+# Copy template
+cp .env.example .env
+```
+
+```env
+# Server fallback keys (Optional)
+GEMINI_API_KEY=your_gemini_api_key_here
+DEEPSEEK_API_KEY=your_deepseek_api_key_here
+DEEPGRAM_API_KEY=your_deepgram_api_key_here
+
+# Provider & Model defaults
+DEFAULT_LLM_PROVIDER=gemini
+GEMINI_MODEL=gemini-2.5-flash
+DEEPSEEK_MODEL=deepseek-chat
+
+# CORS allowed origins
+CORS_ORIGINS=http://localhost:3000,http://localhost:3001
+```
+
+If a server `.env` key is provided, the backend uses it as a graceful fallback when a visitor hasn't entered their own key, while still letting any visitor override with their own client key.
+
+---
+
 ## ⚙️ Configuration & Personality
 
-Settings are persisted in `~/.hamsterdesk/config.json`:
+Settings can be customized either in the UI (Config tab) or persisted in `~/.hamsterdesk/config.json`:
 
 ```json
 {
   "llm": {
     "provider": "gemini",
-    "gemini_model": "gemini-3.7-flash",
+    "gemini_model": "gemini-2.5-flash",
     "deepseek_model": "deepseek-chat",
     "ollama_model": "llama3"
   },
@@ -183,19 +222,19 @@ Settings are persisted in `~/.hamsterdesk/config.json`:
   },
   "hamster": {
     "name": "Hammy",
-    "color": "#E89848"
+    "color": "#F4A460"
   }
 }
 ```
 
 ### Hammy Persona (`context.py`)
-- Warm, bubbly, childlike, playful tone with occasional *squeak!* and *wheee!* expressions.
-- Default timezone: **IST (`Asia/Kolkata`)**.
-- Injects pending tasks, daily water log, and current mood directly into the LLM system prompt.
-- Friendly redirection for coding questions to keep focus on personal productivity and daily wellness.
+- Warm, bubbly, cheerful, playful tone with natural conversation.
+- Injects pending tasks and status directly into the LLM system prompt.
+- Direct conversational replies without internal thinking or tag noise.
 
 ---
 
 ## 📄 License
 
 MIT
+

@@ -6,7 +6,7 @@ import ChatPanel from '@/components/Chat/ChatPanel';
 import TodoPanel from '@/components/TodoList/TodoPanel';
 import ConfigPanel from '@/components/Config/ConfigPanel';
 import SpeechTrainingPanel from '@/components/SpeechTraining/SpeechTrainingPanel';
-import { checkHealth, fetchGreeting, sendChatMessage } from '@/lib/api';
+import { checkHealth, fetchGreeting, sendChatMessage, getClientSavedConfig } from '@/lib/api';
 import type { HamsterMood } from '@/lib/api';
 import { speak } from '@/lib/speech';
 import { useVoiceRecorder } from '@/lib/useVoiceRecorder';
@@ -86,6 +86,14 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    // Load local client preferences
+    const saved = getClientSavedConfig();
+    if (saved?.hamster?.color) setHamsterColor(saved.hamster.color);
+    if (saved?.hamster?.name) setHamsterName(saved.hamster.name);
+    if (saved?.startup?.default_tab && ['chat', 'todo', 'config', 'speech'].includes(saved.startup.default_tab)) {
+      setActiveTab(saved.startup.default_tab as TabId);
+    }
+
     checkBackend();
     refreshGreeting();
 

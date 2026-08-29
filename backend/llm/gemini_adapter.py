@@ -1,8 +1,10 @@
 """
 Gemini LLM Adapter using the official google-genai SDK.
+Supports dynamic per-request API keys (client LocalStorage) and server .env fallback.
 """
 from __future__ import annotations
 
+import os
 from typing import Optional
 from google import genai
 from google.genai import types
@@ -13,13 +15,21 @@ from config_manager import get_config
 class GeminiAdapter(LLMAdapter):
     """Adapter for Google Gemini models via Google AI Studio."""
 
-    def __init__(self):
+    def __init__(self, api_key: Optional[str] = None, model: Optional[str] = None):
         config = get_config()
-        api_key = config.api_keys.gemini_key
-        if not api_key:
-            raise ValueError("Gemini API key not configured. Set it in Config → API Keys.")
-        self.client = genai.Client(api_key=api_key)
-        self.model = config.llm.gemini_model or "gemini-2.5-flash"
+        resolved_key = (
+            api_key
+            or config.api_keys.gemini_key
+            or os.getenv("GEMINI_API_KEY")
+            or os.getenv("GEMINI_KEY")
+        )
+        if not resolved_key:
+            raise ValueError(
+                "Gemini API key not configured. Add your free key in Config → API Keys (stored locally in browser) or set GEMINI_API_KEY in .env."
+            )
+        self.api_key = resolved_key
+        self.client = genai.Client(api_key=resolved_key)
+        self.model = model or config.llm.gemini_model or "gemini-2.5-flash"
 
     async def generate(
         self,
@@ -64,4 +74,5 @@ class GeminiAdapter(LLMAdapter):
 
     def get_model_name(self) -> str:
         return f"Gemini ({self.model})"
+
 

@@ -2,17 +2,18 @@
 Voice routes — STT and TTS endpoints.
 
 TTS supports:
-  - Deepgram Aura (mode="deepgram", requires api_keys.deepgram_key)
+  - Deepgram Aura (mode="deepgram", requires client key or server DEEPGRAM_API_KEY)
   - Apple native voices via the macOS `say` CLI (mode="apple")
 
 Both return raw audio bytes that the frontend plays directly.
 """
 import asyncio
+import os
 import tempfile
 from typing import Optional
 
 import httpx
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request, Header
 from fastapi.responses import Response
 from pydantic import BaseModel
 
@@ -56,19 +57,26 @@ async def _deepgram_stt(audio_bytes: bytes, content_type: str, model: str, api_k
 
 
 @router.post("/transcribe")
-async def transcribe(request: Request):
+async def transcribe(
+    request: Request,
+    x_deepgram_key: Optional[str] = Header(None),
+):
     """
     Speech-to-text transcription via Deepgram (nova models).
-    Accepts the raw audio bytes as the request body — any format Deepgram
-    supports works (webm, mp3, wav, m4a...). Content-Type header is used
-    to tell Deepgram what it's receiving.
+    Accepts the raw audio bytes as the request body.
+    Supports client-provided X-Deepgram-Key or server .env key.
     """
     config = get_config()
-    deepgram_key = config.api_keys.deepgram_key
+    deepgram_key = (
+        x_deepgram_key
+        or config.api_keys.deepgram_key
+        or os.getenv("DEEPGRAM_API_KEY")
+        or os.getenv("DEEPGRAM_KEY")
+    )
     if not deepgram_key:
         raise HTTPException(
             status_code=400,
-            detail="No Deepgram API key configured. Add one in Settings → API Keys.",
+            detail="No Deepgram API key configured. Enter your key in Config → API Keys (stored locally in browser) or set DEEPGRAM_API_KEY in server .env.",
         )
 
     audio_bytes = await request.body()
@@ -112,9 +120,6 @@ async def _deepgram_tts(text: str, voice: str, api_key: str) -> bytes:
 
 def _apple_tts_sync(text: str, voice: str) -> bytes:
     """Synthesize speech with macOS `say`; returns WAV bytes."""
-    import os
-    import subprocess
-
     with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
         out_path = tmp.name
 
@@ -139,14 +144,18 @@ def _apple_tts_sync(text: str, voice: str) -> bytes:
 
 
 async def _apple_tts(text: str, voice: str) -> bytes:
+    import subprocess
     return await asyncio.to_thread(_apple_tts_sync, text, voice)
 
 
 @router.post("/speak")
-async def speak(request: SpeakRequest):
+async def speak(
+    request: SpeakRequest,
+    x_deepgram_key: Optional[str] = Header(None),
+):
     """
     Text-to-speech synthesis. Returns audio bytes (audio/mpeg or audio/wav).
-    Uses Deepgram Aura when configured, otherwise falls back to Apple `say`.
+    Uses Deepgram Aura when configured with client key or server key, otherwise falls back to Apple `say`.
     """
     text = request.text.strip()
     if not text:
@@ -154,9 +163,14 @@ async def speak(request: SpeakRequest):
 
     config = get_config()
     voice_cfg = config.voice
-    deepgram_key = config.api_keys.deepgram_key
+    deepgram_key = (
+        x_deepgram_key
+        or config.api_keys.deepgram_key
+        or os.getenv("DEEPGRAM_API_KEY")
+        or os.getenv("DEEPGRAM_KEY")
+    )
 
-    if voice_cfg.mode == "deepgram" and deepgram_key:
+    if (voice_cfg.mode == "deepgram" or x_deepgram_key) and deepgram_key:
         voice = request.voice or voice_cfg.tts_voice or "aura-asteria-en"
         audio = await _deepgram_tts(text, voice, deepgram_key)
         return Response(content=audio, media_type="audio/mpeg")
@@ -164,13 +178,15 @@ async def speak(request: SpeakRequest):
     # Apple native fallback (macOS)
     voice = request.voice or voice_cfg.apple_voice or "Samantha"
     try:
+        import subprocess
         audio = await _apple_tts(text, voice)
     except FileNotFoundError:
         raise HTTPException(
             status_code=501,
-            detail="Apple TTS unavailable on this system. Configure Deepgram in Settings.",
+            detail="Apple TTS unavailable on this server. Configure Deepgram API key in Config or use browser voices.",
         )
     except Exception as exc:
-        raise HTTPException(status_code=502, detail=f"Apple TTS failed: {exc}")
+        raise HTTPException(status_code=502, detail=f"TTS failed: {exc}")
 
     return Response(content=audio, media_type="audio/wav")
+

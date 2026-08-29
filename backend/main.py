@@ -12,6 +12,7 @@ try:
 except ImportError:
     pass
 
+import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -40,19 +41,31 @@ app = FastAPI(
 )
 
 # ── CORS ──────────────────────────────────────────────────────────
+default_origins = [
+    "http://localhost:3000",      # Next.js dev server
+    "http://localhost:3001",      # Alternate port
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:8000",
+    "app://.",                     # Electron
+    "file://",                     # Electron local files
+]
+env_cors = os.getenv("CORS_ORIGINS", "")
+if env_cors:
+    if env_cors.strip() == "*":
+        allowed_origins = ["*"]
+    else:
+        allowed_origins = [o.strip() for o in env_cors.split(",") if o.strip()] + default_origins
+else:
+    allowed_origins = ["*"]  # Public-friendly default for web API
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",      # Next.js dev server
-        "http://localhost:3001",      # Alternate port
-        "http://127.0.0.1:3000",
-        "app://.",                     # Electron
-        "file://",                     # Electron local files
-    ],
-    allow_credentials=True,
+    allow_origins=allowed_origins,
+    allow_credentials=True if allowed_origins != ["*"] else False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 # ── Routes ────────────────────────────────────────────────────────
 app.include_router(chat_router)
