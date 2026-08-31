@@ -1,7 +1,7 @@
 {
-  "name": "hamsterdesk-electron",
+  "name": "desktop-buddy-electron",
   "version": "0.1.0",
-  "description": "HamsterDesk — AI Desktop Pet & Productivity Assistant (Electron Shell)",
+  "description": "Desktop Buddy — AI Desktop Companions & Productivity Assistant (Electron Shell)",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -14,8 +14,9 @@
     "electron-builder": "^25.0.0"
   },
   "build": {
-    "appId": "com.hamsterdesk.app",
-    "productName": "HamsterDesk",
+    "appId": "com.desktopbuddy.app",
+    "productName": "Desktop Buddy",
+
     "mac": {
       "category": "public.app-category.productivity",
       "icon": "assets/icon.icns",

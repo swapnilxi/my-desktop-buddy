@@ -1,240 +1,180 @@
-# 🐹 HAMMY — AI Virtual Assistant & Desktop Pet
+# 🐾 Desktop Buddy (`my-desktop-buddy`)
 
-> **Hammy** is an irresistibly cute, fully functional AI virtual assistant that lives on your macOS desktop as a floating animated hamster pet and productivity companion. Built with Next.js, FastAPI, and Electron.
+<div align="center">
 
----
+<h3>✨ Your Adorable AI Desktop Companions & Productivity Pets ✨</h3>
 
-## 🎯 What Is Hammy?
+<p>
+  <strong>Hammy the Hamster</strong> 🐹 &bull; <strong>Bambu the Panda</strong> 🐼
+</p>
 
-Hammy is a chibi-style orange Syrian hamster desktop pet that combines irresistible cuteness with complete productivity superpowers:
-- 💬 **AI Conversational Partner** — Natural dialog powered by Gemini 1.5 Flash (default), DeepSeek V3, or local Ollama with live context injection.
-- ✅ **Task & Time Management** — Natural language task input, priorities (🔴🟡🟢), due dates, subtasks, tags, and drag-and-drop reordering.
-- 🌍 **Hammy's World (Wellness Dashboard)** — Daily water tracker (8 glasses goal), Pomodoro focus timer with running animation, mood check-ins, and health stats.
-- 🎙️ **Voice Assistant** — Squeaky chipmunk kid voice via Deepgram Aura-Asteria or Apple local AVSpeech, wake word *"Hey Hammy!"*, and push-to-talk.
-- 🔍 **Spotlight File Search** — Natural language macOS Spotlight integration to quickly locate documents, images, and applications.
-- ❌ **Pure Productivity** — Not a coding assistant; dedicated to daily planning, focus, health reminders, and personal assistance.
+[![Next.js 15](https://img.shields.io/badge/Next.js-15.x-black?style=flat&logo=next.js)](https://nextjs.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?style=flat&logo=fastapi)](https://fastapi.tiangolo.com/)
+[![Electron](https://img.shields.io/badge/Electron-33-47848F?style=flat&logo=electron)](https://www.electronjs.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
----
-
-## 🪟 4 Window & Display Modes
-
-Hammy dynamically adapts to how you work across 4 distinct viewing modes:
-
-```
-┌─────────────────┐   ┌───────────────────────────┐   ┌───────────────────────────────────────────────┐
-│ 🐾 SMALL / PET  │   │     📱 COMPACT MODE       │   │      🖥️ FULLSCREEN / DASHBOARD WORKSPACE      │
-│  (Floating Pet) │   │   (Right Sidebar Widget)  │   │           (Full Studio Companion)            │
-│  • Transparent  │   │  • Floating compact panel │   │  • Left Co-Pilot Sidebar (Hammy + Controls)   │
-│  • Speech bubble│   │  • 5-Tab quick navigation │   │  • Main workspace (Chat/Tasks/World/Settings) │
-│  • Drag anywhere│   │  • Chat input + mic       │   │  • Productivity metrics & calendar views      │
-└─────────────────┘   └───────────────────────────┘   └───────────────────────────────────────────────┘
-                                       │
-                                       ▼
-                       ┌───────────────────────────────┐
-                       │       🪟 MINIMIZED MODE       │
-                       │  • macOS system tray icon     │
-                       │  • Quick show/hide toggle     │
-                       │  • Zero-clutter background    │
-                       └───────────────────────────────┘
-```
-
-1. **🐾 Small / Pet Mode**:
-   - Ultra-lightweight transparent window containing only Hammy, his ground shadow, thought/speech bubbles, and floating action controls.
-   - Interactive petting with heart/sparkle burst particles, double-click feeding (sunflower seed appears in paws), and smooth mouse cursor-tracking parallax.
-   - Free dragging to place Hammy anywhere on your screen.
-
-2. **📱 Compact Mode**:
-   - Sleek right-docked floating panel with a compact header, window controls, and tab bar.
-   - Ideal for keeping Hammy visible alongside your browser or IDE while chatting or checking off quick tasks.
-
-3. **🖥️ Fullscreen / Dashboard Workspace Mode**:
-   - Complete desktop workspace featuring a **Left Co-Pilot Sidebar** with Hammy, status indicators, and talk button.
-   - Expansive main area displaying full tabs: AI Chat with history, Task Matrix with drag-and-drop, Hammy's World dashboard (Water tracker, Pomodoro, Wellness), and Configuration.
-
-4. **🪟 Minimized Mode**:
-   - Tucks Hammy into the macOS system tray or dock; instant hotkey or tray click to restore.
+</div>
 
 ---
 
-## 🏗️ Architecture
+## 🌟 What is Desktop Buddy?
+
+**Desktop Buddy** is a delightful, open-source AI desktop companion that floats on your screen as a responsive animated character. Whether you need a focus partner, an encouraging voice, an AI assistant to answer questions, or simply an adorable buddy munching snacks by your side while you work, Desktop Buddy is here for you!
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                 ELECTRON SHELL (macOS-first)                │
-│    Frameless · Transparent · Always-on-top · Multi-mode     │
-├──────────────────────────────┬──────────────────────────────┤
-│        NEXT.JS 14 UI         │       FASTAPI BACKEND        │
-│    (TypeScript · App Router) │  (Python · Async · Sidecar)  │
-├──────────────────────────────┴──────────────────────────────┤
-│                        CORE SERVICES                        │
-│  • LLM: Gemini 1.5 Flash (Primary) / DeepSeek / Ollama      │
-│  • Voice: Deepgram S2S / Apple AVSpeech (Local Offline)     │
-│  • RAG: LlamaIndex + ChromaDB vector database               │
-│  • Tasks: JSON / DB store with live prompt context          │
-│  • Wellness: APScheduler (Water, Stretch, Eye Rest, Sleep)  │
-│  • System: macOS Spotlight API (mdfind)                     │
-└─────────────────────────────────────────────────────────────┘
+       🐹 Hammy the Hamster                  🐼 Bambu the Panda
+   "Squeak! Let's build together!"        "Peaceful focus mode on! 🎋"
+        [🌻 Sunflower Seeds]                   [🎋 Fresh Bamboo]
 ```
 
 ---
 
-## 📁 Project Structure
+## 🐾 Meet the Buddies
 
-```
-my-desktop-pet/
-├── electron-desktop/          # Electron shell
-│   ├── main.js                # Window modes, tray, sidecar manager
-│   └── preload.js             # Secure IPC bridge
-│
-├── frontend/                  # Next.js 14 Web & Desktop UI
-│   ├── src/
-│   │   ├── app/
-│   │   │   ├── page.tsx       # Multi-mode state, tab router, interaction loop
-│   │   │   ├── globals.css    # Warm honey-espresso glassmorphism design system
-│   │   │   └── layout.tsx     # Google Fonts (Outfit, Inter, JetBrains Mono)
-│   │   ├── components/
-│   │   │   ├── Hamster/       # Vector SVG character, 10 mood animations, parallax
-│   │   │   ├── Chat/          # AI chat, quick prompts, RAG toggle
-│   │   │   ├── TodoList/      # Tasks with priority, tags, subtasks, progress
-│   │   │   ├── Dashboard/     # Hammy's World (Water tracker, Pomodoro, Mood)
-│   │   │   ├── Config/        # Multi-provider LLM & Voice settings
-│   │   │   └── SpeechTraining/# Speech training scaffold
-│   │   ├── lib/
-│   │   │   └── api.ts         # Typed API client
-│   │   └── types/
-│   │       └── electron.d.ts  # Multi-window mode IPC declarations
-│   └── package.json
-│
-├── backend/                   # FastAPI Python Backend
-│   ├── main.py                # App entrypoint, lifespan, CORS
-│   ├── context.py             # Hammy persona + dynamic live task context injection
-│   ├── config_manager.py      # Pydantic configuration models & persistence
-│   ├── routes/
-│   │   ├── chat.py            # /chat endpoint
-│   │   ├── todos.py           # /todos CRUD endpoints
-│   │   ├── config.py          # /config GET/POST
-│   │   └── voice.py           # /voice endpoints
-│   ├── llm/
-│   │   ├── gemini_adapter.py  # Gemini adapter
-│   │   ├── deepseek_adapter.py# DeepSeek adapter
-│   │   ├── ollama_adapter.py  # Ollama adapter
-│   │   └── router.py          # LLM router
-│   ├── rag/                   # Document processor & vector search
-│   ├── reminders/             # APScheduler wellness timers
-│   └── voice/                 # Deepgram & Apple voice engines
-│
-├── startup.sh                 # Concurrent dev launcher
-├── todo.md                    # Detailed roadmap & task tracking
-└── readme.md                  # Project documentation
-```
+| Buddy | Character | Snack | Personality & Vibe |
+| :--- | :--- | :--- | :--- |
+| 🐹 **Hammy** | Golden Hamster | 🌻 Sunflower Seeds | Energetic, cheerful, celebratory, and always ready to cheer you on! |
+| 🐼 **Bambu** | Kawaii Panda | 🎋 Fresh Bamboo | Calm, peaceful, zen, mindful, and loves cozy focus sessions. |
+
+> 💡 **Extensible Buddy System**: Each character lives in its own folder with its own `.tsx` sprite and `.css` animation engine. You can customize colors, names, and themes anytime!
 
 ---
 
-## 🎨 Visual Design & Hamster Anatomy
+## ✨ Features
 
-Hammy is crafted to faithfully replicate the watercolor kawaii reference illustration:
-- **Body**: Smooth continuous chubby gourd/bean silhouette with thick dark chocolate outline (`#3D1B0B`).
-- **Fur**: Multi-layered golden amber watercolor gradient (`#FAC87E` → `#EDA24D` → `#DF8830`).
-- **Forehead Blaze**: Soft feathered white/cream starburst radiating upward between the eyes.
-- **Eyes**: Large glossy dark espresso buttons with crisp white circular catchlights and micro-parallax cursor tracking.
-- **Snout & Mouth**: Soft pink nose with 3 whisker root freckles per cheek, inverted "Y" mouth, and sweet pink tongue dot.
-- **Paws & Snacks**: Tiny pink paws holding in front of the chest; animates with a real sunflower seed when eating.
+- 💬 **Intelligent AI Companion**: Chat naturally using Google Gemini (Free Tier supported), DeepSeek, or local Ollama.
+- 🎙️ **Voice Interaction (Tap to Talk)**: Talk directly to your buddy with real-time speech recognition and voice replies.
+- 🍎 **Interactive Care & Play**:
+  - **Single Click**: Pet your buddy to trigger happiness hearts and cheerful animations.
+  - **Double Click**: Feed your buddy their favorite snack (Sunflower seeds for Hammy, fresh crunchy bamboo for Bambu).
+  - **Click & Drag**: Pick up and move your buddy anywhere across your desktop.
+- 🪟 **3 Window Modes**:
+  1. **🐾 Pet / Small Mode**: Floating transparent widget with speech bubble and quick toolbar.
+  2. **💬 Compact Sidebar Mode**: Sleek side panel with chat, tasks, and settings.
+  3. **🖥️ Dashboard Workspace Mode**: Full productivity workspace with co-pilot sidebar and task management.
+- 🔒 **Privacy-First (LocalStorage BYOK)**:
+  - Your API keys are saved exclusively in your browser's `LocalStorage`.
+  - Keys are sent directly with your requests and **never permanently stored on the server**.
+  - One-click **"🗑️ Clear Keys"** button to instantly wipe credentials on shared devices.
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Quick Start Guide (For Everyone!)
 
-### 1. Prerequisites
-- **Node.js**: v18 or higher
-- **Python**: v3.10 or higher
+### Step 1: Install Prerequisites
+Make sure you have:
+- [Node.js](https://nodejs.org/) (version 18 or newer)
+- [Python](https://www.python.org/) (version 3.10 or newer)
 
-### 2. Run All Services
+### Step 2: Clone and Start
+Open your Terminal (macOS/Linux) or Command Prompt (Windows) and run:
+
 ```bash
-# Clone and enter directory
-cd my-desktop-pet
+# 1. Clone the repository
+git clone https://github.com/swapnilxi/my-desktop-pet.git my-desktop-buddy
+cd my-desktop-buddy
 
-# Run unified launcher (starts FastAPI on port 8000 + Next.js on port 3000)
+# 2. Run the 1-click startup script
 ./startup.sh
 ```
 
-- **Frontend App**: `http://localhost:3000`
-- **Backend API**: `http://localhost:8000`
-- **Interactive API Docs**: `http://localhost:8000/docs`
+- 🌐 **Web Interface**: Open [http://localhost:3000](http://localhost:3000)
+- 🔌 **Backend API**: Running on [http://localhost:8000](http://localhost:8000)
 
 ---
 
----
+## 🔑 How to Get a Free AI API Key (30 Seconds)
 
-## 🔒 Public Sharing & Privacy-First Architecture
+You can use Desktop Buddy with **Google Gemini 2.5 Flash for free**:
 
-HamsterDesk is customized for safe public sharing, self-hosting, and multi-user environments:
-
-### 1. Client-Side Credentials (LocalStorage — BYOK)
-- **Zero Server Leaks**: API keys (Google Gemini, DeepSeek, Deepgram) entered by public users are stored exclusively inside their browser's **`LocalStorage`**.
-- **Request Header Injection**: The frontend automatically attaches credentials per-request via secure custom headers (`X-Gemini-Key`, `X-DeepSeek-Key`, `X-Deepgram-Key`).
-- **No Shared Disk Exposure**: Public users' API keys are never written to the server's files or exposed to other visitors.
-- **One-Click Clear**: Users can easily purge all stored keys and local settings using the **"🗑️ Clear Keys"** button in the Config panel.
-
-### 2. Server `.env` Configuration (Host Fallback)
-Server hosts can optionally configure fallback environment variables by copying `.env.example` to `.env`:
-
-```bash
-# Copy template
-cp .env.example .env
-```
-
-```env
-# Server fallback keys (Optional)
-GEMINI_API_KEY=your_gemini_api_key_here
-DEEPSEEK_API_KEY=your_deepseek_api_key_here
-DEEPGRAM_API_KEY=your_deepgram_api_key_here
-
-# Provider & Model defaults
-DEFAULT_LLM_PROVIDER=gemini
-GEMINI_MODEL=gemini-2.5-flash
-DEEPSEEK_MODEL=deepseek-chat
-
-# CORS allowed origins
-CORS_ORIGINS=http://localhost:3000,http://localhost:3001
-```
-
-If a server `.env` key is provided, the backend uses it as a graceful fallback when a visitor hasn't entered their own key, while still letting any visitor override with their own client key.
+1. Go to [Google AI Studio](https://aistudio.google.com/).
+2. Click **"Get API Key"** and create a free key.
+3. In Desktop Buddy, click the **⚙️ Config** tab.
+4. Paste your key into **Gemini API Key** and click **💾 Save Configuration**.
+5. *Done! Your key is saved locally in your browser and your buddy will start talking!*
 
 ---
 
-## ⚙️ Configuration & Personality
+## 🎮 How to Switch Buddies & Customize
 
-Settings can be customized either in the UI (Config tab) or persisted in `~/.hamsterdesk/config.json`:
+1. **Quick Switch**: Click the **🐼 / 🐹 button** in the floating toolbar to toggle between Hammy and Bambu instantly.
+2. **In Config Panel**:
+   - Go to **⚙️ Config**.
+   - Click the buddy card you want (🐹 Hamster or 🐼 Panda).
+   - Choose a custom name (e.g. *Nibbles*, *Pan-Pan*, *Bambu*).
+   - Pick from 8 signature color themes!
 
-```json
-{
-  "llm": {
-    "provider": "gemini",
-    "gemini_model": "gemini-2.5-flash",
-    "deepseek_model": "deepseek-chat",
-    "ollama_model": "llama3"
-  },
-  "voice": {
-    "mode": "apple",
-    "deepgram_model": "nova-2",
-    "tts_voice": "aura-asteria-en",
-    "apple_voice": "Samantha"
-  },
-  "hamster": {
-    "name": "Hammy",
-    "color": "#F4A460"
-  }
-}
+---
+
+## 📁 Modular Project Structure
+
+```
+my-desktop-buddy/
+├── frontend/                     # Next.js 15 Web & Desktop Interface
+│   └── src/
+│       ├── app/                  # Main page, multi-mode controller, layout
+│       ├── components/
+│       │   ├── Buddies/          # 🐾 Multi-Buddy Engine
+│       │   │   ├── types.ts      # Shared Buddy interfaces & mood definitions
+│       │   │   ├── registry.ts   # Character definitions & color palettes
+│       │   │   ├── BuddyRenderer.tsx # Unified character switcher component
+│       │   │   ├── Hamster/      # 🐹 Hamster Character Module
+│       │   │   │   ├── HamsterSprite.tsx
+│       │   │   │   └── hamster.css
+│       │   │   └── Panda/        # 🐼 Panda Character Module
+│       │   │       ├── PandaSprite.tsx
+│       │   │       └── panda.css
+│       │   ├── Chat/             # AI chat conversation panel
+│       │   ├── TodoList/         # Productivity tasks & checklists
+│       │   └── Config/           # Multi-buddy & API keys configuration
+│       └── lib/
+│           ├── api.ts            # LocalStorage key manager & typed API client
+│           └── speech.ts         # TTS voice synthesis engine
+│
+├── backend/                      # FastAPI Python Backend
+│   ├── main.py                   # App lifecycle, CORS, routing
+│   ├── context.py                # Buddy persona injection (Hamster vs Panda)
+│   ├── config_manager.py         # Config schema & .env fallbacks
+│   ├── routes/
+│   │   ├── chat.py               # AI Chat & greeting generator
+│   │   ├── todos.py              # Todo CRUD routes
+│   │   ├── config.py             # Safe configuration endpoints
+│   │   └── voice.py              # STT transcription & TTS audio
+│   └── llm/
+│       ├── router.py             # Multi-provider router with fallback
+│       ├── gemini_adapter.py     # Google Gemini SDK adapter
+│       └── deepseek_adapter.py   # DeepSeek OpenAI-compatible adapter
+│
+├── electron-desktop/             # Optional native desktop wrapper
+├── startup.sh                    # 1-click launcher for frontend + backend
+└── .env.example                  # Server-level environment template
 ```
 
-### Hammy Persona (`context.py`)
-- Warm, bubbly, cheerful, playful tone with natural conversation.
-- Injects pending tasks and status directly into the LLM system prompt.
-- Direct conversational replies without internal thinking or tag noise.
+---
+
+## 🛠️ Adding a New Buddy (For Developers)
+
+Creating a new character is clean and modular:
+
+1. Create a folder in `frontend/src/components/Buddies/<YourBuddyName>/`.
+2. Add your sprite component (`<YourBuddyName>Sprite.tsx`) implementing `BuddySpriteProps`.
+3. Add your styles and animations (`<yourbuddy>.css`).
+4. Register your character in `frontend/src/components/Buddies/registry.ts`.
+5. Add the persona in `backend/context.py`.
+
+---
+
+## 🔒 Security & Privacy
+
+- **No Remote Credential Storage**: User API keys are stored in client `LocalStorage` and passed per-request.
+- **Server `.env` Fallback**: Hosts can optionally configure default server keys in `.env` without exposing them to public clients.
 
 ---
 
 ## 📄 License
 
-MIT
+Distributed under the **MIT License**. Free for personal and educational use.
 
+<div align="center">
+  <sub>Built with 💖 for developers, creators, and cute desktop pet lovers everywhere.</sub>
+</div>

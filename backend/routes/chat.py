@@ -61,10 +61,12 @@ async def chat(
     x_llm_provider: Optional[str] = Header(None),
     x_gemini_model: Optional[str] = Header(None),
     x_deepseek_model: Optional[str] = Header(None),
+    x_buddy_type: Optional[str] = Header(None),
+    x_buddy_name: Optional[str] = Header(None),
 ):
-    """Send a message and get an LLM response with hamster context and client-side keys."""
+    """Send a message and get an LLM response with buddy context and client-side keys."""
     # Build system prompt from context
-    system_prompt = get_full_context()
+    system_prompt = get_full_context(buddy_type=x_buddy_type, buddy_name=x_buddy_name)
 
     # Add RAG context if enabled
     if request.use_rag:
@@ -103,7 +105,7 @@ async def chat(
         # Determine hamster mood based on response
         mood = "speaking"
         lower_response = response_text.lower()
-        if any(w in lower_response for w in ["great job", "well done", "congrat", "awesome", "🎉"]):
+        if any(w in lower_response for w in ["great job", "well done", "congrat", "awesome", "🎉", "peaceful", "zen"]):
             mood = "happy"
 
         return ChatResponse(
@@ -127,9 +129,14 @@ async def get_greeting(
     x_llm_provider: Optional[str] = Header(None),
     x_gemini_model: Optional[str] = Header(None),
     x_deepseek_model: Optional[str] = Header(None),
+    x_buddy_type: Optional[str] = Header(None),
+    x_buddy_name: Optional[str] = Header(None),
 ):
-    """Generate a cute 2-6 word AI greeting or thought from Hammy."""
-    fallback_greetings = [
+    """Generate a cute 2-6 word AI greeting or thought from the Desktop Buddy."""
+    is_panda = (x_buddy_type or "").lower() == "panda"
+    buddy_title = x_buddy_name or ("Bambu" if is_panda else "Hammy")
+
+    hamster_greetings = [
         "Squeak! Let's code together! 🚀",
         "Crunching sunflower seeds! 🌻",
         "You've got this! ✨",
@@ -142,35 +149,51 @@ async def get_greeting(
         "Ready when you are! ⚡",
     ]
 
+    panda_greetings = [
+        "Peaceful focus mode on! 🎋",
+        "Crunching fresh bamboo! 🐼",
+        "Take a breath, you got this! 🌿",
+        "Stay calm and keep building! 💚",
+        "Sending big panda hugs! 🐼✨",
+        "One step at a time! 🐾",
+        "Zen vibes for your day! 🧘",
+        "Bamboo power activated! 🎋⚡",
+        "Chilling right beside you! 🍃",
+        "Happy moments ahead! 🌟",
+    ]
+
+    fallback_greetings = panda_greetings if is_panda else hamster_greetings
+
     client_keys, client_models, client_provider = _extract_client_context(
         x_gemini_key, x_deepseek_key, x_llm_provider, x_gemini_model, x_deepseek_model
     )
 
     try:
+        animal = "panda pet who loves bamboo" if is_panda else "hamster pet who loves sunflower seeds"
         prompt = (
-            "You are Hammy, a cheerful, cute desktop hamster pet. "
+            f"You are {buddy_title}, a cute desktop {animal}. "
             "Generate a single adorable, encouraging thought or greeting for the user. "
             "It MUST be strictly between 2 to 6 words long. "
             "Include 1 cute emoji. Output ONLY the 2-6 words."
         )
         text, adapter = await generate_with_fallback(
             messages=[{"role": "user", "content": prompt}],
-            system_prompt="You are a tiny, cheerful pet hamster. Respond in strictly 2 to 6 words only.",
+            system_prompt=f"You are a tiny, cheerful pet {animal}. Respond in strictly 2 to 6 words only.",
             client_provider=client_provider,
             client_keys=client_keys,
             client_models=client_models,
         )
         cleaned = text.strip().strip('"').strip("'")
-        # Ensure it's reasonably short
         words = cleaned.split()
         if len(words) > 8:
-            cleaned = " ".join(words[:6]) + " 🐹"
+            emoji = " 🎋" if is_panda else " 🐹"
+            cleaned = " ".join(words[:6]) + emoji
         return GreetingResponse(greeting=cleaned, model=adapter.get_model_name())
     except Exception:
-        # Graceful fallback to curated greetings if LLM is offline or no API key set
         return GreetingResponse(
             greeting=random.choice(fallback_greetings),
             model="local-preset"
         )
+
 
 

@@ -64,12 +64,17 @@ class RAGConfig(BaseModel):
 
 
 class HamsterConfig(BaseModel):
+    buddy_type: str = Field(
+        default_factory=lambda: os.getenv("DEFAULT_BUDDY_TYPE", "hamster"),
+        description="Buddy character type: hamster, panda"
+    )
     name: str = Field(
         default_factory=lambda: os.getenv("HAMSTER_NAME", "Hammy"),
-        description="Hamster character name"
+        description="Buddy character name"
     )
-    skin: str = Field(default="classic", description="Hamster skin/theme")
-    color: str = Field(default="#F4A460", description="Hamster primary color")
+    skin: str = Field(default="classic", description="Buddy skin/theme")
+    color: str = Field(default="#F4A460", description="Buddy primary color")
+
 
 
 class StartupConfig(BaseModel):

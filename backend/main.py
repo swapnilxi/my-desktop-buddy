@@ -26,19 +26,20 @@ from routes.voice import router as voice_router
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifecycle — load config on startup."""
-    print("🐹 HamsterDesk backend starting up...")
+    print("🐾 Desktop Buddy backend starting up...")
     load_config()
     print("✅ Configuration loaded")
     yield
-    print("🐹 HamsterDesk backend shutting down...")
+    print("🐾 Desktop Buddy backend shutting down...")
 
 
 app = FastAPI(
-    title="HamsterDesk API",
-    description="Backend API for HamsterDesk — AI Desktop Pet & Productivity Assistant",
+    title="Desktop Buddy API",
+    description="Backend API for Desktop Buddy — AI Desktop Companions & Productivity Assistant",
     version="0.1.0",
     lifespan=lifespan,
 )
+
 
 # ── CORS ──────────────────────────────────────────────────────────
 default_origins = [

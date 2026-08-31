@@ -11,17 +11,8 @@ import {
   getClientSavedConfig,
   saveClientSavedConfig,
 } from '@/lib/api';
-
-const HAMSTER_COLORS = [
-  { name: 'Classic', hex: '#F4A460' },
-  { name: 'Cream', hex: '#FFE4C4' },
-  { name: 'Chestnut', hex: '#C4732E' },
-  { name: 'Gray', hex: '#A9A9A9' },
-  { name: 'Golden', hex: '#DAA520' },
-  { name: 'Pink', hex: '#FFB6C1' },
-  { name: 'Lavender', hex: '#B39DDB' },
-  { name: 'Mint', hex: '#80CBC4' },
-];
+import { BUDDY_REGISTRY, getBuddyDefinition } from '@/components/Buddies/registry';
+import type { BuddyType } from '@/components/Buddies/types';
 
 const DEFAULT_CONFIG: AppConfig = {
   llm: {
@@ -43,6 +34,7 @@ const DEFAULT_CONFIG: AppConfig = {
     endpoint: '',
   },
   hamster: {
+    buddy_type: 'hamster',
     name: 'Hammy',
     skin: 'classic',
     color: '#F4A460',
@@ -61,14 +53,22 @@ const DEFAULT_CONFIG: AppConfig = {
 interface ConfigPanelProps {
   onColorChange?: (color: string) => void;
   onNameChange?: (name: string) => void;
+  onBuddyTypeChange?: (type: string) => void;
 }
 
-export default function ConfigPanel({ onColorChange, onNameChange }: ConfigPanelProps) {
+export default function ConfigPanel({
+  onColorChange,
+  onNameChange,
+  onBuddyTypeChange,
+}: ConfigPanelProps) {
   const [config, setConfig] = useState<AppConfig>(DEFAULT_CONFIG);
   const [isLoading, setIsLoading] = useState(true);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const [showKeys, setShowKeys] = useState({ gemini: false, deepseek: false, deepgram: false });
   const [clearedNotice, setClearedNotice] = useState(false);
+
+  const currentBuddyType = (config.hamster?.buddy_type || 'hamster') as BuddyType;
+  const currentBuddyDef = getBuddyDefinition(currentBuddyType);
 
   const loadConfig = useCallback(async () => {
     const localKeys = getClientApiKeys();
@@ -79,6 +79,11 @@ export default function ConfigPanel({ onColorChange, onNameChange }: ConfigPanel
       const merged: AppConfig = {
         ...serverConfig,
         ...(localSaved || {}),
+        hamster: {
+          ...serverConfig.hamster,
+          ...(localSaved?.hamster || {}),
+          buddy_type: localSaved?.hamster?.buddy_type || serverConfig.hamster?.buddy_type || 'hamster',
+        },
         api_keys: {
           gemini_key: localKeys.gemini_key || '',
           deepseek_key: localKeys.deepseek_key || '',
@@ -89,17 +94,26 @@ export default function ConfigPanel({ onColorChange, onNameChange }: ConfigPanel
       setConfig(merged);
       if (merged.hamster?.color && onColorChange) onColorChange(merged.hamster.color);
       if (merged.hamster?.name && onNameChange) onNameChange(merged.hamster.name);
+      if (merged.hamster?.buddy_type && onBuddyTypeChange) onBuddyTypeChange(merged.hamster.buddy_type);
     } catch {
       // Backend unavailable — use defaults + local storage
-      setConfig((prev) => ({
-        ...prev,
+      const fallbackConfig: AppConfig = {
+        ...DEFAULT_CONFIG,
         ...(localSaved || {}),
+        hamster: {
+          ...DEFAULT_CONFIG.hamster,
+          ...(localSaved?.hamster || {}),
+        },
         api_keys: localKeys,
-      }));
+      };
+      setConfig(fallbackConfig);
+      if (fallbackConfig.hamster?.color && onColorChange) onColorChange(fallbackConfig.hamster.color);
+      if (fallbackConfig.hamster?.name && onNameChange) onNameChange(fallbackConfig.hamster.name);
+      if (fallbackConfig.hamster?.buddy_type && onBuddyTypeChange) onBuddyTypeChange(fallbackConfig.hamster.buddy_type);
     } finally {
       setIsLoading(false);
     }
-  }, [onColorChange, onNameChange]);
+  }, [onColorChange, onNameChange, onBuddyTypeChange]);
 
   useEffect(() => {
     loadConfig();
@@ -117,6 +131,16 @@ export default function ConfigPanel({ onColorChange, onNameChange }: ConfigPanel
       return updated;
     });
     setSaveStatus('idle');
+  };
+
+  const handleBuddySelect = (buddyId: BuddyType) => {
+    const def = BUDDY_REGISTRY[buddyId];
+    updateConfig('hamster.buddy_type', buddyId);
+    updateConfig('hamster.name', def.defaultName);
+    updateConfig('hamster.color', def.defaultColor);
+    onBuddyTypeChange?.(buddyId);
+    onNameChange?.(def.defaultName);
+    onColorChange?.(def.defaultColor);
   };
 
   const handleSave = async () => {
@@ -179,12 +203,84 @@ export default function ConfigPanel({ onColorChange, onNameChange }: ConfigPanel
         <div style={{ fontWeight: 600, color: '#38bdf8', marginBottom: '3px' }}>
           🔒 Privacy & Public Sharing Safe
         </div>
-        Your API keys are stored safely in your browser&apos;s <strong>LocalStorage</strong> and sent directly with requests. They are never permanently stored on the server.
+        Your Desktop Buddy configuration and API keys are stored in your browser&apos;s <strong>LocalStorage</strong> and sent directly with your requests.
+      </div>
+
+      {/* ── Choose Desktop Buddy Character ── */}
+      <div className="config-section">
+        <div className="config-section-title">🐾 Choose Your Desktop Buddy</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', marginTop: '6px' }}>
+          {Object.values(BUDDY_REGISTRY).map((buddy) => {
+            const isSelected = currentBuddyType === buddy.id;
+            return (
+              <div
+                key={buddy.id}
+                onClick={() => handleBuddySelect(buddy.id)}
+                style={{
+                  background: isSelected ? 'rgba(244, 164, 96, 0.15)' : 'var(--card-bg, rgba(255, 255, 255, 0.04))',
+                  border: isSelected ? '2px solid var(--accent-primary, #F4A460)' : '1px solid var(--border-color, rgba(255,255,255,0.1))',
+                  borderRadius: '12px',
+                  padding: '12px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  textAlign: 'center',
+                }}
+              >
+                <div style={{ fontSize: '36px', marginBottom: '4px' }}>{buddy.emoji}</div>
+                <div style={{ fontWeight: 700, fontSize: '13px', color: isSelected ? 'var(--accent-primary, #F4A460)' : 'var(--text-primary)' }}>
+                  {buddy.name}
+                </div>
+                <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                  {buddy.favoriteSnack} {buddy.snackEmoji}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Buddy Appearance & Customization */}
+      <div className="config-section">
+        <div className="config-section-title">{currentBuddyDef.emoji} {currentBuddyDef.name} Customization</div>
+        <div className="config-group">
+          <div className="config-row">
+            <span className="config-label">Name</span>
+            <input
+              className="config-input"
+              value={config.hamster.name || currentBuddyDef.defaultName}
+              onChange={(e) => {
+                updateConfig('hamster.name', e.target.value);
+                onNameChange?.(e.target.value);
+              }}
+              placeholder={currentBuddyDef.defaultName}
+            />
+          </div>
+          <div className="config-row">
+            <span className="config-label">Color Theme</span>
+            <div className="color-picker-wrapper">
+              {currentBuddyDef.colors.map((c) => (
+                <div
+                  key={c.hex}
+                  className={`color-swatch ${(config.hamster.color || currentBuddyDef.defaultColor) === c.hex ? 'selected' : ''}`}
+                  style={{ backgroundColor: c.hex }}
+                  title={c.name}
+                  onClick={() => {
+                    updateConfig('hamster.color', c.hex);
+                    onColorChange?.(c.hex);
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* LLM Provider */}
       <div className="config-section">
-        <div className="config-section-title">🧠 LLM Provider</div>
+        <div className="config-section-title">🧠 AI Model Provider</div>
         <div className="config-group">
           <div className="radio-group">
             {['gemini', 'deepseek', 'ollama'].map((provider) => (
@@ -308,42 +404,6 @@ export default function ConfigPanel({ onColorChange, onNameChange }: ConfigPanel
               />
             </div>
           )}
-        </div>
-      </div>
-
-      {/* Hamster Appearance */}
-      <div className="config-section">
-        <div className="config-section-title">🐹 Hamster</div>
-        <div className="config-group">
-          <div className="config-row">
-            <span className="config-label">Name</span>
-            <input
-              className="config-input"
-              value={config.hamster.name}
-              onChange={(e) => {
-                updateConfig('hamster.name', e.target.value);
-                onNameChange?.(e.target.value);
-              }}
-              placeholder="Hammy"
-            />
-          </div>
-          <div className="config-row">
-            <span className="config-label">Color</span>
-            <div className="color-picker-wrapper">
-              {HAMSTER_COLORS.map((c) => (
-                <div
-                  key={c.hex}
-                  className={`color-swatch ${config.hamster.color === c.hex ? 'selected' : ''}`}
-                  style={{ backgroundColor: c.hex }}
-                  title={c.name}
-                  onClick={() => {
-                    updateConfig('hamster.color', c.hex);
-                    onColorChange?.(c.hex);
-                  }}
-                />
-              ))}
-            </div>
-          </div>
         </div>
       </div>
 
@@ -471,4 +531,5 @@ export default function ConfigPanel({ onColorChange, onNameChange }: ConfigPanel
     </div>
   );
 }
+
 

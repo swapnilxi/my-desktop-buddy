@@ -52,6 +52,7 @@ export interface RAGConfig {
 }
 
 export interface HamsterConfig {
+  buddy_type?: string;
   name: string;
   skin: string;
   color: string;
@@ -85,6 +86,7 @@ export interface AppConfig {
 }
 
 export type HamsterMood = 'idle' | 'listening' | 'thinking' | 'speaking' | 'happy' | 'sleeping' | 'eating' | 'waving' | 'excited' | 'dragged';
+export type BuddyMood = HamsterMood;
 
 // ── LocalStorage Helpers ─────────────────────────────────────────
 
@@ -133,7 +135,7 @@ export function saveClientSavedConfig(config: AppConfig) {
   } catch { }
 }
 
-/** Get headers containing user's client-side API keys and provider choices */
+/** Get headers containing user's client-side API keys, buddy choice, and provider choices */
 export function getClientAuthHeaders(): Record<string, string> {
   const keys = getClientApiKeys();
   const savedConfig = getClientSavedConfig();
@@ -159,8 +161,16 @@ export function getClientAuthHeaders(): Record<string, string> {
     headers['X-DeepSeek-Model'] = savedConfig.llm.deepseek_model;
   }
 
+  if (savedConfig?.hamster?.buddy_type) {
+    headers['X-Buddy-Type'] = savedConfig.hamster.buddy_type;
+  }
+  if (savedConfig?.hamster?.name) {
+    headers['X-Buddy-Name'] = savedConfig.hamster.name;
+  }
+
   return headers;
 }
+
 
 // ── API Functions ────────────────────────────────────────────────
 

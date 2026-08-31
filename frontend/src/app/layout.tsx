@@ -2,14 +2,15 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "HamsterDesk — AI Desktop Pet & Productivity Assistant",
+  title: "Desktop Buddy — AI Desktop Companions & Productivity Assistant",
   description:
-    "Meet Hammy, your cute animated hamster desktop companion. AI chatbot, to-do manager, voice assistant, and more!",
-  keywords: ["AI assistant", "desktop pet", "hamster", "productivity", "chatbot"],
+    "Meet your cute animated desktop companions (Hammy the Hamster & Bambu the Panda). AI chatbot, to-do manager, voice assistant, and focus buddy!",
+  keywords: ["AI assistant", "desktop pet", "desktop buddy", "hamster", "panda", "productivity", "chatbot"],
   icons: {
     icon: "/icon.png",
   },
 };
+
 
 export default function RootLayout({
   children,

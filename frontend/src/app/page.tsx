@@ -1,15 +1,17 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import HamsterSprite from '@/components/Hamster/HamsterSprite';
+import BuddyRenderer from '@/components/Buddies/BuddyRenderer';
 import ChatPanel from '@/components/Chat/ChatPanel';
 import TodoPanel from '@/components/TodoList/TodoPanel';
 import ConfigPanel from '@/components/Config/ConfigPanel';
 import SpeechTrainingPanel from '@/components/SpeechTraining/SpeechTrainingPanel';
-import { checkHealth, fetchGreeting, sendChatMessage, getClientSavedConfig } from '@/lib/api';
+import { checkHealth, fetchGreeting, sendChatMessage, getClientSavedConfig, saveClientSavedConfig } from '@/lib/api';
 import type { HamsterMood } from '@/lib/api';
 import { speak } from '@/lib/speech';
 import { useVoiceRecorder } from '@/lib/useVoiceRecorder';
+import { BUDDY_REGISTRY, getBuddyDefinition } from '@/components/Buddies/registry';
+import type { BuddyType } from '@/components/Buddies/types';
 
 export type WindowMode = 'pet' | 'compact' | 'fullscreen';
 type TabId = 'chat' | 'todo' | 'config' | 'speech';
@@ -27,29 +29,15 @@ const TABS: Tab[] = [
   { id: 'speech', emoji: '🎤', label: 'Speech' },
 ];
 
-const LOCAL_GREETINGS = [
-  "Squeak! Let's code together! 🚀",
-  "Crunching sunflower seeds! 🌻",
-  "You've got this! ✨",
-  "Whiskers twitching with ideas! 🐾",
-  "Watching you build! 💻",
-  "Need a quick stretch? 🧘",
-  "Your code looks awesome! 🐹",
-  "Tiny hamster, big dreams! 🌟",
-  "Always in your corner! 💛",
-  "Ready when you are! ⚡",
-  "*yawns* Good morning! 😴",
-  "Nom nom nom! 🌰",
-];
-
 // Idle variety sub-animations that cycle randomly
 const IDLE_VARIETIES: HamsterMood[] = ['idle', 'waving', 'idle', 'idle', 'idle'];
 
 export default function Home() {
   const [windowMode, setWindowModeState] = useState<WindowMode>('pet');
   const [activeTab, setActiveTab] = useState<TabId>('chat');
+  const [buddyType, setBuddyType] = useState<BuddyType>('hamster');
   const [hamsterMood, setHamsterMood] = useState<HamsterMood>('idle');
-  const [hamsterColor, setHamsterColor] = useState('#F2A653');
+  const [hamsterColor, setHamsterColor] = useState('#F4A460');
   const [hamsterName, setHamsterName] = useState('Hammy');
   const [hamsterGreeting, setHamsterGreeting] = useState("Squeak! Let's build together! 🚀");
   const [backendOnline, setBackendOnline] = useState(false);
@@ -63,6 +51,8 @@ export default function Home() {
   const hasMoved = useRef(false);
   const petStreakTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastClickTime = useRef(0);
+
+  const currentBuddyDef = getBuddyDefinition(buddyType);
 
   const checkBackend = useCallback(async () => {
     try {
@@ -81,13 +71,17 @@ export default function Home() {
         return;
       }
     } catch { }
-    const randomG = LOCAL_GREETINGS[Math.floor(Math.random() * LOCAL_GREETINGS.length)];
+    const greetings = currentBuddyDef.greetings;
+    const randomG = greetings[Math.floor(Math.random() * greetings.length)];
     setHamsterGreeting(randomG);
-  }, []);
+  }, [currentBuddyDef.greetings]);
 
   useEffect(() => {
     // Load local client preferences
     const saved = getClientSavedConfig();
+    if (saved?.hamster?.buddy_type && (saved.hamster.buddy_type === 'hamster' || saved.hamster.buddy_type === 'panda')) {
+      setBuddyType(saved.hamster.buddy_type as BuddyType);
+    }
     if (saved?.hamster?.color) setHamsterColor(saved.hamster.color);
     if (saved?.hamster?.name) setHamsterName(saved.hamster.name);
     if (saved?.startup?.default_tab && ['chat', 'todo', 'config', 'speech'].includes(saved.startup.default_tab)) {
@@ -171,15 +165,34 @@ export default function Home() {
 
   const feedHamster = () => {
     setHamsterMood('eating');
-    setHamsterGreeting('Nom nom nom! So yummy! 🌰');
+    setHamsterGreeting(currentBuddyDef.eatMessage);
     setTimeout(() => {
       setHamsterMood('happy');
-      setHamsterGreeting('That was delicious! 😋');
-      setTimeout(() => setHamsterMood('idle'), 2000);
+      setHamsterGreeting(currentBuddyDef.fullMessage);
+      setTimeout(() => setHamsterMood('idle'), 2200);
     }, 3000);
   };
 
-  // Tap to Talk: STAYS in Pet mode — records, transcribes (Deepgram),
+  const switchBuddy = (nextType?: BuddyType) => {
+    const targetType = nextType || (buddyType === 'hamster' ? 'panda' : 'hamster');
+    const targetDef = BUDDY_REGISTRY[targetType];
+    setBuddyType(targetType);
+    setHamsterName(targetDef.defaultName);
+    setHamsterColor(targetDef.defaultColor);
+    setHamsterGreeting(targetDef.greetings[0]);
+
+    // Save to local storage
+    const saved = getClientSavedConfig() || ({} as any);
+    saved.hamster = {
+      ...(saved.hamster || {}),
+      buddy_type: targetType,
+      name: targetDef.defaultName,
+      color: targetDef.defaultColor,
+    };
+    saveClientSavedConfig(saved);
+  };
+
+  // Tap to Talk: STAYS in Pet mode — records, transcribes,
   // asks the LLM and speaks the reply aloud.
   const handleVoiceTranscribed = useCallback(async (transcript: string) => {
     setHamsterGreeting(`You said: “${transcript}”`);
@@ -191,7 +204,6 @@ export default function Home() {
       );
       setHamsterMood('speaking');
       speak(response.response, { onEnd: () => setHamsterMood('idle') });
-      // Safety net if speech events never fire
       setTimeout(() => setHamsterMood((m) => (m === 'speaking' ? 'idle' : m)), 20000);
     } catch (err) {
       setHamsterGreeting(err instanceof Error ? `😵 ${err.message}` : '😵 Something went wrong!');
@@ -213,7 +225,7 @@ export default function Home() {
     },
   });
 
-  // Show recorder errors in Hammy's speech bubble
+  // Show recorder errors in speech bubble
   useEffect(() => {
     if (voiceRecorder.error) {
       setHamsterGreeting(`🎤 ${voiceRecorder.error}`);
@@ -279,7 +291,6 @@ export default function Home() {
         lastClickTime.current = 0;
       } else {
         lastClickTime.current = now;
-        // Delay single-click pet to allow for double-click detection
         setTimeout(() => {
           if (lastClickTime.current !== 0) {
             petHamster();
@@ -289,7 +300,7 @@ export default function Home() {
     }
   };
 
-  // ── MODE 1: PET / SMALL MODE (Floating Desktop Pet Widget) ──────
+  // ── MODE 1: PET / SMALL MODE (Floating Desktop Buddy Widget) ──────
   if (windowMode === 'pet') {
     return (
       <div
@@ -311,19 +322,20 @@ export default function Home() {
             <button
               className="compact-control-btn compact-close-btn"
               onClick={handleQuit}
-              title="Quit Hammy"
+              title={`Quit ${hamsterName}`}
             >
               ✕
             </button>
           </div>
         </div>
 
-        {/* Floating Hammy with on-body drag badge & AI greeting speech bubble */}
+        {/* Floating Buddy with on-body drag badge & AI greeting speech bubble */}
         <div
           className="compact-hamster-area"
-          title="Click to pet Hammy, drag to move!"
+          title={`Click to pet ${hamsterName}, double-click to feed ${currentBuddyDef.snackEmoji}, drag to move!`}
         >
-          <HamsterSprite
+          <BuddyRenderer
+            type={buddyType}
             mood={hamsterMood}
             color={hamsterColor}
             name={hamsterName}
@@ -337,6 +349,14 @@ export default function Home() {
 
         {/* Floating Quick Icon Toolbar */}
         <div className="floating-controls" onPointerDown={(e) => e.stopPropagation()}>
+          {/* Quick Buddy Switcher */}
+          <button
+            className="floating-btn"
+            onClick={() => switchBuddy()}
+            title={`Switch Buddy (Current: ${currentBuddyDef.emoji} ${currentBuddyDef.name})`}
+          >
+            {buddyType === 'hamster' ? '🐼' : '🐹'}
+          </button>
           {/* Tap to Talk — Stays in Pet Mode! */}
           <button
             className={`floating-btn btn-mic ${isListening ? 'listening' : ''}`}
@@ -395,19 +415,27 @@ export default function Home() {
         >
           <div className="app-title-area">
             <span className="app-drag-dots">⋮⋮</span>
-            <span>🐹</span>
+            <span>{currentBuddyDef.emoji}</span>
             <span>{hamsterName}</span>
             <span className={`status-dot ${backendOnline ? 'online' : 'offline'}`} />
           </div>
 
           <div className="window-controls" onPointerDown={(e) => e.stopPropagation()}>
+            {/* Quick Buddy Switcher */}
+            <button
+              className="win-btn collapse"
+              onClick={() => switchBuddy()}
+              title={`Switch Buddy (Current: ${currentBuddyDef.emoji} ${currentBuddyDef.name})`}
+            >
+              {buddyType === 'hamster' ? '🐼' : '🐹'}
+            </button>
             {/* Mode Switchers */}
             <button
               className="win-btn collapse"
               onClick={() => setWindowMode('pet')}
               title="Switch to Pet / Small Mode"
             >
-              🐹
+              🐾
             </button>
             <button
               className="win-btn collapse"
@@ -433,9 +461,10 @@ export default function Home() {
           </div>
         </header>
 
-        {/* Hamster Character (Clickable to pet or collapse to pet mode) */}
+        {/* Buddy Character (Clickable to pet or collapse to pet mode) */}
         <div className="hamster-section">
-          <HamsterSprite
+          <BuddyRenderer
+            type={buddyType}
             mood={hamsterMood}
             color={hamsterColor}
             name={hamsterName}
@@ -461,8 +490,7 @@ export default function Home() {
           ))}
         </nav>
 
-        {/* Tab Content — all panels stay mounted (hidden via CSS) so
-            chat history / todo state survive tab switches */}
+        {/* Tab Content */}
         <main className="tab-content">
           <div style={{ display: activeTab === 'chat' ? 'contents' : 'none' }}>
             <ChatPanel onMoodChange={handleMoodChange} />
@@ -474,6 +502,7 @@ export default function Home() {
             <ConfigPanel
               onColorChange={setHamsterColor}
               onNameChange={setHamsterName}
+              onBuddyTypeChange={(type) => setBuddyType(type as BuddyType)}
             />
           </div>
           <div style={{ display: activeTab === 'speech' ? 'contents' : 'none' }}>
@@ -497,7 +526,7 @@ export default function Home() {
               fontSize: '11px',
             }}
           >
-            🐹 Switch to Pet Mode
+            🐾 Switch to Pet Mode
           </button>
         </div>
       </div>
@@ -510,13 +539,14 @@ export default function Home() {
       {/* Co-Pilot Left Sidebar */}
       <aside className="dashboard-copilot-sidebar">
         <div className="copilot-header">
-          <span className="copilot-logo">🐹</span>
-          <span className="copilot-title">HamsterDesk</span>
+          <span className="copilot-logo">{currentBuddyDef.emoji}</span>
+          <span className="copilot-title">Desktop Buddy</span>
         </div>
 
         {/* Animated Co-Pilot Character */}
         <div className="copilot-pet-box">
-          <HamsterSprite
+          <BuddyRenderer
+            type={buddyType}
             mood={hamsterMood}
             color={hamsterColor}
             name={hamsterName}
@@ -538,6 +568,30 @@ export default function Home() {
           </button>
         </div>
 
+        {/* Quick Buddy Switcher in Sidebar */}
+        <div style={{ padding: '0 16px', marginTop: '6px' }}>
+          <button
+            onClick={() => switchBuddy()}
+            style={{
+              width: '100%',
+              padding: '8px',
+              borderRadius: '10px',
+              border: '1px solid var(--border-color, rgba(255,255,255,0.1))',
+              background: 'rgba(255,255,255,0.06)',
+              color: 'var(--text-primary)',
+              fontSize: '12px',
+              fontWeight: 600,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+            }}
+          >
+            Switch to {buddyType === 'hamster' ? '🐼 Bambu the Panda' : '🐹 Hammy the Hamster'}
+          </button>
+        </div>
+
         {/* Mode Switcher Navigation */}
         <div className="copilot-mode-nav">
           <div className="mode-nav-label">WINDOW MODE</div>
@@ -545,7 +599,7 @@ export default function Home() {
             className="mode-nav-btn"
             onClick={() => setWindowMode('pet')}
           >
-            <span>🐹</span> Pet / Small Mode
+            <span>🐾</span> Pet / Small Mode
           </button>
           <button
             className="mode-nav-btn"
@@ -576,7 +630,7 @@ export default function Home() {
         >
           <div className="dashboard-header-title">
             <span className="app-drag-dots">⋮⋮</span>
-            <span>Productivity Dashboard & Workspace</span>
+            <span>Desktop Buddy Productivity Workspace</span>
           </div>
 
           <div className="dashboard-header-controls" onPointerDown={(e) => e.stopPropagation()}>
@@ -592,7 +646,7 @@ export default function Home() {
               onClick={() => setWindowMode('pet')}
               title="Collapse to Pet Mode"
             >
-              🐹
+              🐾
             </button>
             <button
               className="win-btn"
@@ -625,7 +679,7 @@ export default function Home() {
           ))}
         </nav>
 
-        {/* Tab View — panels stay mounted so state survives tab switches */}
+        {/* Tab View */}
         <div className="dashboard-workspace-body">
           <div style={{ display: activeTab === 'chat' ? 'contents' : 'none' }}>
             <ChatPanel onMoodChange={handleMoodChange} />
@@ -637,6 +691,7 @@ export default function Home() {
             <ConfigPanel
               onColorChange={setHamsterColor}
               onNameChange={setHamsterName}
+              onBuddyTypeChange={(type) => setBuddyType(type as BuddyType)}
             />
           </div>
           <div style={{ display: activeTab === 'speech' ? 'contents' : 'none' }}>
@@ -647,3 +702,4 @@ export default function Home() {
     </div>
   );
 }
+
