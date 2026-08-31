@@ -17,11 +17,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   user-select: none;
   cursor: pointer;
   transform-origin: bottom center;
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: visible !important;
 }
 
 .krishnaContainer:hover {
@@ -30,54 +31,58 @@
 
 /* Sizing Modes */
 .sizeSm {
-  width: 80px;
-  height: 96px;
-  --k-scale: 0.5;
+  width: 140px;
+  height: 200px;
+  padding-top: 30px;
+  --k-scale: 0.85;
 }
 
 .sizeMd {
-  width: 160px;
-  height: 192px;
-  --k-scale: 1;
+  width: 270px;
+  height: 350px;
+  padding-top: 55px;
+  --k-scale: 1.45;
 }
 
 .sizeLg {
-  width: 320px;
-  height: 384px;
-  --k-scale: 2;
+  width: 480px;
+  height: 600px;
+  padding-top: 100px;
+  --k-scale: 2.6;
 }
 
 /* Base Character Wrapper */
 .krishna {
   position: relative;
-  width: 170px;
-  height: 190px;
-  transform: scale(var(--k-scale, 1));
+  width: 230px;
+  height: 290px;
+  transform: scale(var(--k-scale, 1.45));
   transform-origin: center bottom;
   display: flex;
   flex-direction: column;
   align-items: center;
+  overflow: visible !important;
 }
 
 .krishnaSvg {
   width: 100%;
   height: 100%;
-  overflow: visible;
+  overflow: visible !important;
   /* Ambient glow and subtle drop shadow */
-  filter: drop-shadow(0 0 20px rgba(255, 200, 61, 0.35)) drop-shadow(0 6px 18px rgba(15, 27, 61, 0.5));
+  filter: drop-shadow(0 0 28px rgba(255, 200, 61, 0.45)) drop-shadow(0 10px 26px rgba(15, 27, 61, 0.6));
   transition: filter 0.3s ease;
 }
 
 .krishnaContainer:hover .krishnaSvg {
-  filter: drop-shadow(0 0 30px rgba(255, 200, 61, 0.55)) drop-shadow(0 8px 24px rgba(15, 27, 61, 0.6));
+  filter: drop-shadow(0 0 40px rgba(255, 200, 61, 0.7)) drop-shadow(0 12px 32px rgba(15, 27, 61, 0.7));
 }
 
 /* ── Ground Shadow ──────────────────────────────────────────────── */
 .groundShadow {
   position: absolute;
-  bottom: 0px;
-  width: 110px;
-  height: 16px;
+  bottom: 2px;
+  width: 160px;
+  height: 22px;
   background: radial-gradient(ellipse at center, rgba(15, 27, 61, 0.55) 0%, rgba(15, 27, 61, 0) 75%);
   border-radius: 50%;
   z-index: 1;
@@ -94,8 +99,8 @@
   border: 1.5px solid #FF8A00;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(255, 138, 0, 0.35);
   border-radius: 14px;
-  padding: 6px 12px;
-  max-width: 220px;
+  padding: 7px 16px;
+  max-width: 270px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -121,7 +126,7 @@
 }
 
 .greetingText {
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 700;
   color: #FFF2D1;
   letter-spacing: 0.2px;
@@ -130,12 +135,12 @@
 /* ── Floating Divine Aura Particle ──────────────────────────────── */
 .divineAura {
   position: absolute;
-  top: 10px;
+  top: 15px;
   left: 50%;
   transform: translateX(-50%);
-  width: 140px;
-  height: 140px;
-  background: radial-gradient(circle, rgba(255, 200, 61, 0.18) 0%, rgba(255, 138, 0, 0.08) 50%, rgba(15, 27, 61, 0) 70%);
+  width: 190px;
+  height: 190px;
+  background: radial-gradient(circle, rgba(255, 200, 61, 0.2) 0%, rgba(255, 138, 0, 0.1) 50%, rgba(15, 27, 61, 0) 70%);
   border-radius: 50%;
   z-index: 0;
   pointer-events: none;
@@ -722,70 +727,34 @@
 }
 
 /* ── 11. PEACOCK FEATHER (MOR PANKH) ────────────────────────────── */
-.peacockFeather {
-  position: absolute;
-  top: -46px;
-  left: 18px;
-  width: 42px;
-  height: 58px;
-  transform: rotate(-32deg);
-  transform-origin: bottom right;
-  z-index: 16;
-  animation: featherSway 4s ease-in-out infinite alternate;
+.featherSvgAnim {
+  transform-origin: 174px 86px;
+  animation: featherSwayAnim 4.5s ease-in-out infinite alternate;
 }
 
-.featherStem {
-  position: absolute;
-  bottom: 0;
-  right: 12px;
-  width: 2.5px;
-  height: 40px;
-  background: linear-gradient(180deg, #4ADE80 0%, #16A34A 100%);
-  border-radius: 2px;
-  transform: rotate(14deg);
+.featherSparkle {
+  animation: featherSparkleAnim 2.8s ease-in-out infinite alternate;
 }
 
-.featherVane {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  width: 36px;
-  height: 42px;
-  background: radial-gradient(ellipse at center, #4ADE80 0%, #16A34A 60%, #14532D 100%);
-  border-radius: 50% 50% 40% 40%;
-  box-shadow: 0 2px 8px rgba(15, 27, 61, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+@keyframes featherSwayAnim {
+  0% {
+    transform: rotate(-3deg);
+  }
+  100% {
+    transform: rotate(3.5deg);
+  }
 }
 
-.featherEyeOuter {
-  width: 24px;
-  height: 28px;
-  background: radial-gradient(ellipse at center, #0EA5E9 0%, #0284C7 60%, #0369A1 100%);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 0 6px rgba(14, 165, 233, 0.8);
-}
-
-.featherEyeMid {
-  width: 15px;
-  height: 18px;
-  background: radial-gradient(ellipse at center, #38BDF8 0%, #1E3A8A 70%, #0F1B3D 100%);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.featherEyeCenter {
-  width: 7px;
-  height: 9px;
-  background: radial-gradient(circle, #E0F2FE 0%, #38BDF8 60%, #0284C7 100%);
-  border-radius: 50%;
-  box-shadow: 0 0 4px #FFFFFF;
+@keyframes featherSparkleAnim {
+  0% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
 }
 
 /* ── 12. GOLDEN FLUTE (BANSURI) ─────────────────────────────────── */

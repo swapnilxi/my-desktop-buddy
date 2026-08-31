@@ -19,8 +19,8 @@ const FRONTEND_PORT = parseInt(process.env.FRONTEND_PORT || '3000', 10);
 const FRONTEND_URL = IS_DEV ? `http://localhost:${FRONTEND_PORT}` : `file://${path.join(__dirname, '../frontend/out/index.html')}`;
 
 // Dimensions for modes
-const PET_WIDTH = 240;
-const PET_HEIGHT = 360;
+const PET_WIDTH = 340;
+const PET_HEIGHT = 540;
 const COMPACT_WIDTH = 380;
 const COMPACT_HEIGHT = 680;
 const DASHBOARD_WIDTH = 1100;

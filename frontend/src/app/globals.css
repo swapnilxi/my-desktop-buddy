@@ -1780,6 +1780,8 @@ body {
   position: relative;
   z-index: 2;
   cursor: grab;
+  padding-top: 40px;
+  overflow: visible !important;
 }
 
 /* ── Floating Pet Mode Focus Timer Chip ─────────────────────────── */
