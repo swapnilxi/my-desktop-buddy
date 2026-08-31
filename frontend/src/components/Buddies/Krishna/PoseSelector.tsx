@@ -1,27 +1,42 @@
 import React from 'react';
 import styles from './poseSelector.module.css';
+import type { KrishnaState } from './KrishnaSprite';
 
-type Pose = 'base' | 'chakra' | 'crossed';
+type PoseOrState = 'idle' | 'protector' | 'thinking' | 'happy' | 'motivation' | 'relax' | 'greeting' | 'clicked' | 'base' | 'chakra' | 'crossed';
 
 interface PoseSelectorProps {
-  currentPose: Pose;
-  onChange: (pose: Pose) => void;
+  currentPose?: string;
+  currentState?: KrishnaState;
+  onChange: (stateOrPose: any) => void;
 }
 
-export default function PoseSelector({ currentPose, onChange }: PoseSelectorProps) {
-  const poses: Pose[] = ['base', 'chakra', 'crossed'];
+export default function PoseSelector({ currentPose, currentState, onChange }: PoseSelectorProps) {
+  const states: KrishnaState[] = [
+    'idle',
+    'protector',
+    'thinking',
+    'happy',
+    'motivation',
+    'relax',
+    'greeting',
+    'clicked',
+  ];
+
+  const active = currentState || (currentPose === 'chakra' ? 'protector' : 'idle');
+
   return (
-    <div className={styles.selector} role="radiogroup" aria-label="Krishna pose selector">
-      {poses.map((pose) => (
+    <div className={styles.selector} role="radiogroup" aria-label="Krishna state selector">
+      {states.map((st) => (
         <button
-          key={pose}
-          className={`${styles.poseBtn} ${currentPose === pose ? styles.active : ''}`}
-          onClick={() => onChange(pose)}
-          aria-pressed={currentPose === pose}
+          key={st}
+          className={`${styles.poseBtn} ${active === st ? styles.active : ''}`}
+          onClick={() => onChange(st)}
+          aria-pressed={active === st}
         >
-          {pose.charAt(0).toUpperCase() + pose.slice(1)}
+          {st.charAt(0).toUpperCase() + st.slice(1)}
         </button>
       ))}
     </div>
   );
 }
+

@@ -61,6 +61,20 @@ export default function Home() {
   const [isListening, setIsListening] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [petStreak, setPetStreak] = useState(0);
+  const [isFlutePlaying, setIsFlutePlaying] = useState(false);
+
+  const toggleFlute = useCallback(() => {
+    const audio = document.getElementById('flute-bg-music') as HTMLAudioElement;
+    if (audio) {
+      if (audio.paused) {
+        audio.play().catch(console.error);
+        setIsFlutePlaying(true);
+      } else {
+        audio.pause();
+        setIsFlutePlaying(false);
+      }
+    }
+  }, []);
 
   // Drag tracking refs
   const dragStartPos = useRef({ x: 0, y: 0 });
@@ -455,14 +469,6 @@ export default function Home() {
           >
             ✅
           </button>
-          {/* Fullscreen Dashboard Mode */}
-          <button
-            className="floating-btn"
-            onClick={() => setWindowMode('fullscreen')}
-            title="Full Screen Dashboard Mode"
-          >
-            🖥️
-          </button>
           {/* Settings */}
           <button
             className="floating-btn"
@@ -512,13 +518,6 @@ export default function Home() {
               🐾
             </button>
             <button
-              className="win-btn collapse"
-              onClick={() => setWindowMode('fullscreen')}
-              title="Expand to Full Screen Dashboard"
-            >
-              🖥️
-            </button>
-            <button
               className="win-btn"
               onClick={handleMinimize}
               title="Minimize"
@@ -566,6 +565,16 @@ export default function Home() {
               {tab.label}
             </button>
           ))}
+          {buddyType === 'krishna' && (
+            <button
+              className="tab-btn"
+              onClick={toggleFlute}
+              title={isFlutePlaying ? "Pause Flute Music" : "Play Flute Music"}
+            >
+              <span className="tab-emoji">{isFlutePlaying ? '🔇' : '🔊'}</span>
+              Flute
+            </button>
+          )}
         </nav>
 
         {/* Tab Content */}
@@ -776,6 +785,16 @@ export default function Home() {
               {tab.label}
             </button>
           ))}
+          {buddyType === 'krishna' && (
+            <button
+              className="tab-btn"
+              onClick={toggleFlute}
+              title={isFlutePlaying ? "Pause Flute Music" : "Play Flute Music"}
+            >
+              <span className="tab-emoji">{isFlutePlaying ? '🔇' : '🔊'}</span>
+              Flute
+            </button>
+          )}
         </nav>
 
         {/* Tab View */}

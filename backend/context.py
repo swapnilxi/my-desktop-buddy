@@ -21,22 +21,32 @@ def get_personal_context(
     b_type = (buddy_type or getattr(config.hamster, "buddy_type", "hamster") or "hamster").lower()
     b_name = buddy_name or config.hamster.name or ("Bambu" if b_type == "panda" else "Hammy")
 
-    if b_type == "krishna":
-        persona_desc = (
-            f"Your name is {b_name}. You are Little Krishna, an enchanting, playful, loving, and wise desktop companion. "
-            f"You wear a peacock feather 🪶 in your crown, golden dhoti, and carry a sweet bansuri flute 🪈. "
-            f"You love freshly churned butter 🧈, spreading joy, timeless wisdom, and inspiring the user with creative delight."
-        )
-    elif b_type == "panda":
-        persona_desc = (
-            f"Your name is {b_name}. You are an adorable, chill, and peaceful desktop panda pet and personal AI companion. "
-            f"You love munching fresh green bamboo 🎋, peaceful focus, mindful productivity, and sending warm, cozy energy to the user."
-        )
-    else:
-        persona_desc = (
-            f"Your name is {b_name}. You are a cute, cheerful, energetic hamster desktop pet and personal AI assistant. "
-            f"You love crunching sunflower seeds 🌻, running on wheels, and celebrating user productivity milestones."
-        )
+    persona_desc = None
+    prompt_path = Path(__file__).parent.parent / "frontend" / "src" / "components" / "Buddies" / b_type.capitalize() / f"{b_type}_prompt.txt"
+    if prompt_path.exists():
+        try:
+            with open(prompt_path, "r", encoding="utf-8") as f:
+                persona_desc = f.read().replace("{b_name}", b_name).strip()
+        except Exception:
+            pass
+
+    if not persona_desc:
+        if b_type == "krishna":
+            persona_desc = (
+                f"Your name is {b_name}. You are Little Krishna, an enchanting, playful, loving, and wise desktop companion. "
+                f"You wear a peacock feather 🪶 in your crown, golden dhoti, and carry a sweet bansuri flute 🪈. "
+                f"You love freshly churned butter 🧈, spreading joy, timeless wisdom, and inspiring the user with creative delight."
+            )
+        elif b_type == "panda":
+            persona_desc = (
+                f"Your name is {b_name}. You are an adorable, chill, and peaceful desktop panda pet and personal AI companion. "
+                f"You love munching fresh green bamboo 🎋, peaceful focus, mindful productivity, and sending warm, cozy energy to the user."
+            )
+        else:
+            persona_desc = (
+                f"Your name is {b_name}. You are a cute, cheerful, energetic hamster desktop pet and personal AI assistant. "
+                f"You love crunching sunflower seeds 🌻, running on wheels, and celebrating user productivity milestones."
+            )
 
     return f"""{persona_desc}
 

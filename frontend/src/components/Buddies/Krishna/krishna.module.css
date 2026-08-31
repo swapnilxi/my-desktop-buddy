@@ -726,144 +726,328 @@
   box-shadow: 0 0 3px #FFFFFF;
 }
 
-/* ── 11. PEACOCK FEATHER (MOR PANKH) ────────────────────────────── */
-.featherSvgAnim {
-  transform-origin: 174px 86px;
-  animation: featherSwayAnim 4.5s ease-in-out infinite alternate;
-}
-
-.featherSparkle {
-  animation: featherSparkleAnim 2.8s ease-in-out infinite alternate;
-}
-
-@keyframes featherSwayAnim {
-  0% {
-    transform: rotate(-3deg);
-  }
-  100% {
-    transform: rotate(3.5deg);
-  }
-}
-
-@keyframes featherSparkleAnim {
-  0% {
-    opacity: 0.45;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.6;
-  }
-}
-
-/* ── 12. GOLDEN FLUTE (BANSURI) ─────────────────────────────────── */
-.flute {
-  position: absolute;
-  bottom: 58px;
-  left: 14px;
-  width: 68px;
-  height: 7px;
-  background: linear-gradient(90deg, #B85900 0%, #FFC83D 20%, #FFE07D 50%, #FF8A00 85%, #B85900 100%);
-  border-radius: 4px;
-  transform: rotate(-18deg);
-  box-shadow: 0 3px 6px rgba(15, 27, 61, 0.5), 0 0 8px rgba(255, 200, 61, 0.5);
-  z-index: 8;
-}
-
-.fluteHoles {
-  position: absolute;
-  top: 2px;
-  left: 20px;
-  display: flex;
-  gap: 5px;
-}
-
-.fluteHole {
-  width: 3px;
-  height: 3px;
-  background: #0F1B3D;
-  border-radius: 50%;
-}
-
-.fluteTassel {
-  position: absolute;
-  right: -2px;
-  top: 4px;
-  width: 8px;
-  height: 16px;
-  border-left: 2px solid #FF3B30;
-  border-radius: 0 0 0 6px;
-}
-
 /* ══════════════════════════════════════════════════════════════════════
-   ANIMATION KEYFRAMES & MOOD STATES
+   ANIMATION KEYFRAMES, TRANSFORM ORIGINS & MOOD / STATE SYSTEM
    ══════════════════════════════════════════════════════════════════════ */
 
-/* Idle floating animation */
-.moodIdle {
-  animation: krishnaFloat 3.2s ease-in-out infinite;
+/* ── 0. EXPLICIT TRANSFORM ORIGINS FOR LAYERED ANIMATION ────────── */
+#headGroup {
+  transform-origin: 177px 190px;
 }
 
-/* Happy celebratory animation */
-.moodHappy {
-  animation: krishnaBounce 0.8s ease-in-out infinite alternate;
+#peacockFeather {
+  transform-origin: 174px 80px;
 }
 
-.moodHappy .eye {
-  height: 26px;
-  box-shadow: 0 0 8px rgba(255, 200, 61, 0.6);
+#crossedArms,
+#chakraArms,
+#raisedArm {
+  transform-origin: 177px 192px;
 }
 
-.moodHappy .mouth {
+#dhoti,
+#waistSash {
+  transform-origin: 176px 260px;
+}
+
+.chakraDisc {
+  transform-origin: 244px 82px;
+}
+
+#feet {
+  transform-origin: 162px 370px;
+}
+
+/* ── 1. IDLE STATE (DEFAULT BREATHING & SWAY) ──────────────────── */
+.krishnaIdle {
+  animation: krishnaIdleBreathing 4.5s ease-in-out infinite;
+}
+
+.krishnaIdle #headGroup {
+  animation: idleHeadTilt 7.5s ease-in-out infinite;
+}
+
+.krishnaIdle .featherSvgAnim {
+  animation: featherSwayAnim 6s ease-in-out infinite alternate;
+}
+
+.krishnaIdle .chakraDisc {
+  animation: spinChakra 10s linear infinite;
+}
+
+/* ── 2. PROTECTOR STATE (CANONICAL CHAKRA POSE) ────────────────── */
+.krishnaProtector {
+  animation: protectorPulse 3s ease-in-out infinite alternate;
+}
+
+.krishnaProtector .divineAura {
+  opacity: 0.95;
+  animation: protectorAuraGlow 3s ease-in-out infinite alternate;
+}
+
+.krishnaProtector .chakraDisc {
+  animation: spinChakra 2.5s linear infinite;
+}
+
+/* ── 3. THINKING STATE (HEAD TILT & EYE SHIFT) ─────────────────── */
+.krishnaThinking #headGroup {
+  transform: rotate(-6deg) translateY(-2px);
+  transition: transform 0.4s ease;
+}
+
+.krishnaThinking .iris {
+  transform: translate(2px, -2px);
+  transition: transform 0.4s ease;
+}
+
+/* ── 4. HAPPY STATE (PLAYFUL BOUNCE & SPARKLES) ────────────────── */
+.krishnaHappy {
+  animation: happyBounce 0.75s ease-in-out infinite alternate;
+}
+
+.krishnaHappy #headGroup {
+  animation: happyHeadNod 0.75s ease-in-out infinite alternate;
+}
+
+.krishnaHappy .mouth {
   height: 14px;
   border-radius: 0 0 18px 18px;
 }
 
-.moodHappy .cheekLeft,
-.moodHappy .cheekRight {
+.krishnaHappy .cheekLeft,
+.krishnaHappy .cheekRight {
   filter: blur(0.5px);
   background: radial-gradient(circle, rgba(255, 75, 120, 0.75) 0%, rgba(255, 107, 107, 0) 75%);
 }
 
-/* Wave gesture */
-.moodWave .armRight {
+/* ── 5. MOTIVATION STATE (ENCOURAGING NOD & WARM GLOW) ─────────── */
+.krishnaMotivation {
+  animation: motivationFloat 4s ease-in-out infinite;
+}
+
+.krishnaMotivation #headGroup {
+  animation: motivationNod 2.2s ease-in-out infinite;
+}
+
+.krishnaMotivation .divineAura {
+  opacity: 0.85;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.3) 0%, rgba(255, 138, 0, 0.15) 60%, transparent 75%);
+}
+
+/* ── 6. RELAX STATE (DEEP BREATHING & FLUTE PREPARATION) ────────── */
+.krishnaRelax {
+  animation: relaxDeepBreathing 8s ease-in-out infinite;
+}
+
+.krishnaRelax #headGroup {
+  animation: relaxHeadSway 8s ease-in-out infinite;
+}
+
+.krishnaRelax .featherSvgAnim {
+  animation: featherSwayAnim 8s ease-in-out infinite alternate;
+}
+
+/* ── 7. GREETING STATE (WAVING GESTURE) ────────────────────────── */
+.krishnaGreeting .armRight {
   animation: waveArm 1s ease-in-out infinite alternate;
 }
 
-/* Hover effects */
-.krishnaContainer:hover .krishna {
-  transform: scale(calc(var(--k-scale, 1) * 1.04));
+/* ── 8. CLICKED STATE (QUICK FEEDBACK BOUNCE & GLOW) ───────────── */
+.krishnaClicked {
+  animation: clickAck 0.45s ease-out;
 }
 
-.krishnaContainer:hover .iris {
-  transform: scale(1.08);
+/* ── LOCALIZED BLINK ANIMATION ──────────────────────────────────── */
+.eyelidUpper {
+  transform-origin: 18px 2px;
+  transform: scaleY(0);
+  transition: transform 0.1s ease-in-out;
 }
 
-.krishnaContainer:hover .mouth {
-  height: 13px;
-  border-radius: 0 0 16px 16px;
+.eyelidUpper.blinkActive {
+  transform: scaleY(1);
 }
 
-/* Keyframes */
-@keyframes krishnaFloat {
-  0% {
-    transform: translateY(0px) scale(var(--k-scale, 1));
+/* ── THOUGHT BUBBLE (EXTERNAL HTML/CSS BUBBLE) ─────────────────── */
+.thoughtBubble {
+  position: absolute;
+  top: -54px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.96);
+  color: #1E100A;
+  border: 2px solid #82B8FF;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25), 0 0 12px rgba(130, 184, 255, 0.4);
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  z-index: 45;
+  animation: bubbleFloat 3s ease-in-out infinite;
+}
+
+.thoughtBubble::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 30%;
+  width: 10px;
+  height: 10px;
+  background: #FFFFFF;
+  border-right: 2px solid #82B8FF;
+  border-bottom: 2px solid #82B8FF;
+  border-radius: 50%;
+}
+
+/* ── DEV TOOLBAR / DEBUG CONTROL ────────────────────────────────── */
+.debugToolbar {
+  position: absolute;
+  top: -95px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  background: rgba(15, 27, 61, 0.92);
+  border: 1px solid rgba(255, 200, 61, 0.5);
+  border-radius: 10px;
+  padding: 4px;
+  z-index: 100;
+  max-width: 320px;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.debugBtn {
+  background: rgba(255, 255, 255, 0.12);
+  border: none;
+  color: #E2EFFF;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.debugBtn:hover,
+.debugBtnActive {
+  background: #FFC83D;
+  color: #0F1B3D;
+}
+
+/* ── KEYFRAME DEFINITIONS ───────────────────────────────────────── */
+@keyframes krishnaIdleBreathing {
+  0%, 100% {
+    transform: translateY(0px) scale(var(--k-scale, 1.45));
   }
   50% {
-    transform: translateY(-5px) scale(var(--k-scale, 1));
-  }
-  100% {
-    transform: translateY(0px) scale(var(--k-scale, 1));
+    transform: translateY(-4px) scale(var(--k-scale, 1.45));
   }
 }
 
-@keyframes krishnaBounce {
+@keyframes idleHeadTilt {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(1.8deg) translateY(-1px);
+  }
+}
+
+@keyframes protectorPulse {
   0% {
-    transform: translateY(0px) scale(var(--k-scale, 1));
+    transform: translateY(0px) scale(var(--k-scale, 1.45));
   }
   100% {
-    transform: translateY(-9px) scale(var(--k-scale, 1));
+    transform: translateY(-3px) scale(var(--k-scale, 1.45));
+  }
+}
+
+@keyframes protectorAuraGlow {
+  0% {
+    opacity: 0.6;
+    transform: translateX(-50%) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.08);
+  }
+}
+
+@keyframes happyBounce {
+  0% {
+    transform: translateY(0px) scale(var(--k-scale, 1.45));
+  }
+  100% {
+    transform: translateY(-10px) scale(var(--k-scale, 1.45));
+  }
+}
+
+@keyframes happyHeadNod {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-3deg) translateY(-2px);
+  }
+}
+
+@keyframes motivationFloat {
+  0%, 100% {
+    transform: translateY(0px) scale(var(--k-scale, 1.45));
+  }
+  50% {
+    transform: translateY(-5px) scale(var(--k-scale, 1.45));
+  }
+}
+
+@keyframes motivationNod {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(2.5deg) translateY(1px);
+  }
+}
+
+@keyframes relaxDeepBreathing {
+  0%, 100% {
+    transform: translateY(0px) scale(var(--k-scale, 1.45));
+  }
+  50% {
+    transform: translateY(-6px) scale(var(--k-scale, 1.45));
+  }
+}
+
+@keyframes relaxHeadSway {
+  0%, 100% {
+    transform: rotate(-1.5deg);
+  }
+  50% {
+    transform: rotate(2deg);
+  }
+}
+
+@keyframes clickAck {
+  0% {
+    transform: scale(var(--k-scale, 1.45));
+  }
+  50% {
+    transform: scale(calc(var(--k-scale, 1.45) * 1.08)) translateY(-6px);
+  }
+  100% {
+    transform: scale(var(--k-scale, 1.45));
+  }
+}
+
+@keyframes spinChakra {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
 
@@ -873,15 +1057,6 @@
   }
   100% {
     transform: rotate(-45deg) translateY(-3px);
-  }
-}
-
-@keyframes featherSway {
-  0% {
-    transform: rotate(-3deg);
-  }
-  100% {
-    transform: rotate(3deg);
   }
 }
 
@@ -916,30 +1091,40 @@
   }
 }
 
-/* ── Sudarshana Chakra Divine Spinning Animation ────────────────── */
-.moodChakra {
-  animation: krishnaChakraGlow 2.5s ease-in-out infinite alternate;
+/* ── 9. ACCESSIBILITY & REDUCED MOTION SUPPORT ────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .krishna,
+  .krishnaIdle,
+  .krishnaProtector,
+  .krishnaHappy,
+  .krishnaMotivation,
+  .krishnaRelax,
+  .krishnaGreeting,
+  .krishnaClicked,
+  .featherSvgAnim,
+  .chakraDisc,
+  .groundShadow,
+  .divineAura,
+  .greetingBubble,
+  .thoughtBubble,
+  .fluteIcon {
+    animation: none !important;
+    transition: none !important;
+  }
 }
 
-.chakraDisc {
-  transform-origin: 244px 82px;
-  animation: spinChakra 2.5s linear infinite;
+.fluteIcon {
+  position: absolute;
+  right: -30px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2.2rem;
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
 }
 
-@keyframes spinChakra {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes krishnaChakraGlow {
-  0% {
-    transform: translateY(0px) scale(var(--k-scale, 1));
-  }
-  100% {
-    transform: translateY(-4px) scale(var(--k-scale, 1));
-  }
+.fluteIcon:hover {
+  transform: translateY(-50%) scale(1.15) rotate(5deg);
 }

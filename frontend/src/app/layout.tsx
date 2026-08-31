@@ -27,7 +27,10 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <audio id="flute-bg-music" src="/flute.mp3" loop />
+      </body>
     </html>
   );
 }
