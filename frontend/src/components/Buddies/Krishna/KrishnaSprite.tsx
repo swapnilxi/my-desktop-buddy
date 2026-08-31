@@ -56,9 +56,9 @@ export function LittleKrishna({
     if (stateProp) return stateProp;
     if (mood === 'happy' || mood === 'excited') return 'happy';
     if (mood === 'thinking') return 'thinking';
-    if (mood === 'chakra' || pose === 'chakra') return 'protector';
     if (mood === 'waving' || mood === 'wave') return 'greeting';
-    return 'idle';
+    if (pose === 'crossed') return 'idle';
+    return 'protector';
   };
 
   const [activeState, setActiveState] = useState<KrishnaState>(deriveDefaultState());
@@ -69,8 +69,10 @@ export function LittleKrishna({
   useEffect(() => {
     if (stateProp) {
       setActiveState(stateProp);
+    } else {
+      setActiveState(deriveDefaultState());
     }
-  }, [stateProp]);
+  }, [stateProp, mood, pose]);
 
   // Handle state updates cleanly
   const changeState = (newState: KrishnaState) => {
@@ -101,6 +103,25 @@ export function LittleKrishna({
       clearTimeout(holdTimer);
     };
   }, []);
+
+  // Periodic micro-action timer for idle / standing states
+  useEffect(() => {
+    let microTimer: NodeJS.Timeout;
+    const scheduleMicroAction = () => {
+      const delay = Math.random() * 240000 + 60000; // 1 to 5 minutes (60s to 300s)
+      microTimer = setTimeout(() => {
+        if (!stateProp && (activeState === 'idle' || activeState === 'protector')) {
+          const microActions: KrishnaState[] = ['happy', 'motivation', 'greeting'];
+          const randomAction = microActions[Math.floor(Math.random() * microActions.length)];
+          triggerTemporaryState(randomAction, 3000);
+        }
+        scheduleMicroAction();
+      }, delay);
+    };
+
+    scheduleMicroAction();
+    return () => clearTimeout(microTimer);
+  }, [stateProp, activeState, pose]);
 
   // Helper for temporary state transitions (e.g. click feedback returning to idle/protector)
   const triggerTemporaryState = (tempState: KrishnaState, durationMs: number) => {
@@ -933,7 +954,6 @@ export function LittleKrishna({
                 <ellipse cx="236" cy="178" rx="8" ry="3.5" fill="url(#kGoldGrad)" />
               </g>
 
-              <ellipse cx="244" cy="82" rx="44" ry="18" fill="url(#kCheekBlush)" opacity="0.85" />
               <ellipse cx="244" cy="82" rx="30" ry="12" fill="url(#kGoldGrad)" opacity="0.6" />
 
               <g transform="translate(244, 82) scale(1, 0.35) translate(-244, -82)">
@@ -950,7 +970,7 @@ export function LittleKrishna({
                       <path
                         d="M 272 82 L 278 77 L 284 82 L 278 87 Z"
                         fill="url(#kGoldGrad)"
-                        stroke="#FF3B30"
+                        stroke="#B85900"
                         strokeWidth="1"
                       />
                     </g>

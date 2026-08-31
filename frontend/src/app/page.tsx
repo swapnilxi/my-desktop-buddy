@@ -131,7 +131,9 @@ export default function Home() {
     if (saved?.hamster?.color) setHamsterColor(saved.hamster.color);
     if (saved?.hamster?.name) setHamsterName(saved.hamster.name);
     if (saved?.hamster?.pose && ['crossed', 'chakra', 'standing'].includes(saved.hamster.pose)) {
-      setKrishnaPose(saved.hamster.pose === 'chakra' ? 'chakra' : 'crossed');
+      setKrishnaPose(saved.hamster.pose === 'crossed' ? 'crossed' : 'chakra');
+    } else {
+      setKrishnaPose('chakra');
     }
     if (saved?.startup?.default_tab && ['chat', 'todo', 'config', 'speech'].includes(saved.startup.default_tab)) {
       setActiveTab(saved.startup.default_tab as TabId);
@@ -157,7 +159,7 @@ export default function Home() {
         }
         return variety;
       });
-    }, 15000);
+    }, 120000);
 
     return () => {
       clearInterval(interval);
@@ -445,6 +447,15 @@ export default function Home() {
           >
             {nextBuddyDef.emoji}
           </button>
+          {buddyType === 'krishna' && (
+            <button
+              className="floating-btn"
+              onClick={toggleFlute}
+              title={isFlutePlaying ? "Pause Flute Music" : "Play Flute Music"}
+            >
+              {isFlutePlaying ? '🎶' : '🪈'}
+            </button>
+          )}
           {/* Tap to Talk — Stays in Pet Mode! */}
           <button
             className={`floating-btn btn-mic ${isListening ? 'listening' : ''}`}
@@ -571,7 +582,7 @@ export default function Home() {
               onClick={toggleFlute}
               title={isFlutePlaying ? "Pause Flute Music" : "Play Flute Music"}
             >
-              <span className="tab-emoji">{isFlutePlaying ? '🔇' : '🔊'}</span>
+              <span className="tab-emoji">{isFlutePlaying ? '🎶' : '🪈'}</span>
               Flute
             </button>
           )}
@@ -791,7 +802,7 @@ export default function Home() {
               onClick={toggleFlute}
               title={isFlutePlaying ? "Pause Flute Music" : "Play Flute Music"}
             >
-              <span className="tab-emoji">{isFlutePlaying ? '🔇' : '🔊'}</span>
+              <span className="tab-emoji">{isFlutePlaying ? '🎶' : '🪈'}</span>
               Flute
             </button>
           )}

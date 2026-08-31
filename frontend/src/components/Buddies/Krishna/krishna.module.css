@@ -780,6 +780,14 @@
   animation: protectorPulse 3s ease-in-out infinite alternate;
 }
 
+.krishnaProtector #headGroup {
+  animation: idleHeadTilt 7.5s ease-in-out infinite;
+}
+
+.krishnaProtector .featherSvgAnim {
+  animation: featherSwayAnim 6s ease-in-out infinite alternate;
+}
+
 .krishnaProtector .divineAura {
   opacity: 0.95;
   animation: protectorAuraGlow 3s ease-in-out infinite alternate;
