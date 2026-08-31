@@ -1,0 +1,966 @@
+/* ══════════════════════════════════════════════════════════════════════
+   LITTLE KRISHNA — DESKTOP BUDDY STYLING (PIXAR 3D HYBRID CSS/SVG)
+   Color Palette:
+   - Skin: #6BA7FF
+   - Hair: #1E3A8A
+   - Shadow: #0F1B3D
+   - Dhoti: #FFC83D
+   - Accent (Gold/Jewelry): #FF8A00
+   - Feather Green: #16A34A / #4ADE80
+   - Feather Blue: #0EA5E9 / #38BDF8
+   - Tilak: #F8F9FF
+   - Background: #0F1B3D
+   ══════════════════════════════════════════════════════════════════════ */
+
+.krishnaContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  cursor: pointer;
+  transform-origin: bottom center;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Sizing Modes */
+.sizeSm {
+  width: 80px;
+  height: 96px;
+  --k-scale: 0.5;
+}
+
+.sizeMd {
+  width: 160px;
+  height: 192px;
+  --k-scale: 1;
+}
+
+.sizeLg {
+  width: 320px;
+  height: 384px;
+  --k-scale: 2;
+}
+
+/* Base Character Wrapper */
+.krishna {
+  position: relative;
+  width: 170px;
+  height: 190px;
+  transform: scale(var(--k-scale, 1));
+  transform-origin: center bottom;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.krishnaSvg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 6px 18px rgba(15, 27, 61, 0.5));
+}
+
+/* ── Ground Shadow ──────────────────────────────────────────────── */
+.groundShadow {
+  position: absolute;
+  bottom: 0px;
+  width: 110px;
+  height: 16px;
+  background: radial-gradient(ellipse at center, rgba(15, 27, 61, 0.55) 0%, rgba(15, 27, 61, 0) 75%);
+  border-radius: 50%;
+  z-index: 1;
+  animation: shadowPulse 3s ease-in-out infinite;
+}
+
+/* ── Floating Speech Bubble (Desktop Buddy mode) ────────────────── */
+.greetingBubble {
+  position: absolute;
+  top: -46px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 27, 61, 0.95);
+  border: 1.5px solid #FF8A00;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(255, 138, 0, 0.35);
+  border-radius: 14px;
+  padding: 6px 12px;
+  max-width: 220px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  z-index: 40;
+  pointer-events: auto;
+  cursor: pointer;
+  animation: bubbleFloat 3s ease-in-out infinite;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.greetingBubble::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px 6px 0;
+  border-style: solid;
+  border-color: rgba(15, 27, 61, 0.95) transparent transparent;
+  display: block;
+  width: 0;
+}
+
+.greetingText {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #FFF2D1;
+  letter-spacing: 0.2px;
+}
+
+/* ── Floating Divine Aura Particle ──────────────────────────────── */
+.divineAura {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(circle, rgba(255, 200, 61, 0.18) 0%, rgba(255, 138, 0, 0.08) 50%, rgba(15, 27, 61, 0) 70%);
+  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
+  animation: auraGlow 4s ease-in-out infinite alternate;
+}
+
+/* ── 1. FEET & ANKLES ───────────────────────────────────────────── */
+.feetLayer {
+  position: absolute;
+  bottom: 6px;
+  width: 80px;
+  height: 20px;
+  display: flex;
+  justify-content: space-between;
+  z-index: 2;
+}
+
+.foot {
+  position: relative;
+  width: 28px;
+  height: 14px;
+  background: radial-gradient(circle at 40% 30%, #8ec0ff 0%, #6BA7FF 60%, #4075c7 100%);
+  border-radius: 12px 14px 10px 10px;
+  box-shadow: 0 3px 6px rgba(15, 27, 61, 0.4), inset 0 -2px 3px rgba(15, 27, 61, 0.35);
+}
+
+.footLeft {
+  transform: rotate(-6deg);
+}
+
+.footRight {
+  transform: rotate(6deg);
+}
+
+.anklet {
+  position: absolute;
+  top: -2px;
+  left: 3px;
+  width: 22px;
+  height: 6px;
+  border: 1.5px solid #FF8A00;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #FFC83D 0%, #FF8A00 100%);
+  box-shadow: 0 0 5px rgba(255, 138, 0, 0.6);
+}
+
+.ankletBell {
+  position: absolute;
+  bottom: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  background: #FFC83D;
+  border-radius: 50%;
+  box-shadow: 0 0 3px #FF8A00;
+}
+
+/* ── 2. DHOTI (LOWER BODY CLOTH) ────────────────────────────────── */
+.dhoti {
+  position: absolute;
+  bottom: 14px;
+  width: 92px;
+  height: 52px;
+  background: radial-gradient(ellipse at 35% 30%, #FFE07D 0%, #FFC83D 55%, #D49312 100%);
+  border-radius: 26px 26px 36px 36px;
+  box-shadow: 0 6px 14px rgba(15, 27, 61, 0.45), inset 0 -4px 6px rgba(15, 27, 61, 0.3);
+  z-index: 3;
+  overflow: hidden;
+  border: 1px solid rgba(255, 138, 0, 0.35);
+}
+
+.dhotiPleatLeft {
+  position: absolute;
+  top: 4px;
+  left: 10px;
+  width: 32px;
+  height: 44px;
+  border-right: 1.5px dashed #FF8A00;
+  border-bottom: 2px solid #D49312;
+  border-radius: 0 0 16px 8px;
+  transform: rotate(10deg);
+  opacity: 0.85;
+}
+
+.dhotiPleatRight {
+  position: absolute;
+  top: 4px;
+  right: 10px;
+  width: 32px;
+  height: 44px;
+  border-left: 1.5px dashed #FF8A00;
+  border-bottom: 2px solid #D49312;
+  border-radius: 0 0 8px 16px;
+  transform: rotate(-10deg);
+  opacity: 0.85;
+}
+
+.dhotiKnot {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 18px;
+  background: radial-gradient(circle at 40% 35%, #FFE07D 0%, #FF8A00 70%, #B85900 100%);
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(15, 27, 61, 0.5), inset 0 1px 2px #FFF2D1;
+  z-index: 4;
+}
+
+.dhotiSash {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 30px;
+  background: linear-gradient(180deg, #FF8A00 0%, #FFC83D 80%, #D49312 100%);
+  border-radius: 4px 4px 10px 10px;
+  border: 0.5px solid #B85900;
+  box-shadow: 0 2px 4px rgba(15, 27, 61, 0.3);
+  z-index: 3;
+}
+
+/* ── 3. TORSO & CHEST ───────────────────────────────────────────── */
+.torso {
+  position: absolute;
+  bottom: 48px;
+  width: 74px;
+  height: 48px;
+  background: radial-gradient(circle at 40% 30%, #9BC4FF 0%, #6BA7FF 50%, #4679C6 100%);
+  border-radius: 20px 20px 14px 14px;
+  box-shadow: 0 4px 10px rgba(15, 27, 61, 0.35), inset 0 2px 4px rgba(255, 255, 255, 0.4);
+  z-index: 4;
+}
+
+/* ── 4. ARMS & BANGLES ──────────────────────────────────────────── */
+.armLeft {
+  position: absolute;
+  bottom: 52px;
+  left: 20px;
+  width: 44px;
+  height: 20px;
+  background: radial-gradient(circle at 35% 35%, #9BC4FF 0%, #6BA7FF 60%, #3D6EB8 100%);
+  border-radius: 12px;
+  transform: rotate(26deg);
+  box-shadow: 0 3px 8px rgba(15, 27, 61, 0.4), inset 0 1px 3px rgba(255, 255, 255, 0.4);
+  z-index: 5;
+  transform-origin: left center;
+}
+
+.armRight {
+  position: absolute;
+  bottom: 50px;
+  right: 22px;
+  width: 46px;
+  height: 20px;
+  background: radial-gradient(circle at 35% 35%, #9BC4FF 0%, #6BA7FF 60%, #3D6EB8 100%);
+  border-radius: 12px;
+  transform: rotate(-24deg);
+  box-shadow: 0 3px 8px rgba(15, 27, 61, 0.4), inset 0 1px 3px rgba(255, 255, 255, 0.4);
+  z-index: 6;
+  transform-origin: right center;
+}
+
+.bangles {
+  position: absolute;
+  top: 3px;
+  right: 6px;
+  display: flex;
+  gap: 2px;
+}
+
+.bangle {
+  width: 4px;
+  height: 14px;
+  background: linear-gradient(180deg, #FFE07D 0%, #FF8A00 100%);
+  border-radius: 2px;
+  box-shadow: 0 0 3px rgba(255, 138, 0, 0.6);
+}
+
+/* ── 5. JEWELRY & NECKLACE ──────────────────────────────────────── */
+.necklaceLayer {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 52px;
+  height: 32px;
+  z-index: 7;
+}
+
+.necklaceStrand1 {
+  position: absolute;
+  top: 0px;
+  left: 6px;
+  width: 40px;
+  height: 18px;
+  border-bottom: 2px solid #FF8A00;
+  border-radius: 0 0 20px 20px;
+  box-shadow: 0 1px 3px rgba(255, 138, 0, 0.4);
+}
+
+.necklaceStrand2 {
+  position: absolute;
+  top: 4px;
+  left: 10px;
+  width: 32px;
+  height: 18px;
+  border-bottom: 2px solid #FFC83D;
+  border-radius: 0 0 16px 16px;
+}
+
+.necklaceStrand3 {
+  position: absolute;
+  top: 8px;
+  left: 14px;
+  width: 24px;
+  height: 16px;
+  border-bottom: 2px solid #FF8A00;
+  border-radius: 0 0 12px 12px;
+}
+
+.pendant {
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 10px;
+  background: radial-gradient(circle at 35% 35%, #FFF2D1 0%, #FFC83D 45%, #FF8A00 100%);
+  border-radius: 50%;
+  border: 1px solid #B85900;
+  box-shadow: 0 0 6px rgba(255, 138, 0, 0.8);
+}
+
+/* ── 6. HEAD & FACE ─────────────────────────────────────────────── */
+.head {
+  position: absolute;
+  top: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 96px;
+  height: 86px;
+  background: radial-gradient(circle at 38% 32%, #A1C8FF 0%, #6BA7FF 55%, #4275BF 100%);
+  border-radius: 46px 46px 42px 42px;
+  box-shadow: 0 8px 22px rgba(15, 27, 61, 0.5), inset 0 2px 5px rgba(255, 255, 255, 0.5);
+  z-index: 10;
+}
+
+/* Rosy Cheeks */
+.cheekLeft {
+  position: absolute;
+  bottom: 20px;
+  left: 8px;
+  width: 18px;
+  height: 12px;
+  background: radial-gradient(circle, rgba(255, 95, 135, 0.45) 0%, rgba(255, 107, 107, 0) 75%);
+  border-radius: 50%;
+  filter: blur(1.5px);
+}
+
+.cheekRight {
+  position: absolute;
+  bottom: 20px;
+  right: 8px;
+  width: 18px;
+  height: 12px;
+  background: radial-gradient(circle, rgba(255, 95, 135, 0.45) 0%, rgba(255, 107, 107, 0) 75%);
+  border-radius: 50%;
+  filter: blur(1.5px);
+}
+
+/* ── 7. FACE DETAILS ────────────────────────────────────────────── */
+/* Eyebrows */
+.eyebrows {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 68px;
+  display: flex;
+  justify-content: space-between;
+  z-index: 12;
+}
+
+.eyebrow {
+  width: 22px;
+  height: 8px;
+  border-top: 3.5px solid #1E3A8A;
+  border-radius: 12px 12px 0 0;
+  transition: transform 0.2s ease;
+}
+
+.eyebrowLeft {
+  transform: rotate(4deg);
+}
+
+.eyebrowRight {
+  transform: rotate(-4deg);
+}
+
+/* Eyes */
+.eyes {
+  position: absolute;
+  top: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70px;
+  display: flex;
+  justify-content: space-between;
+  z-index: 12;
+}
+
+.eye {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  background: #FFFFFF;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(15, 27, 61, 0.35), 0 2px 5px rgba(15, 27, 61, 0.2);
+  border-top: 2px solid #1E3A8A;
+}
+
+.iris {
+  position: absolute;
+  top: 2px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  background: radial-gradient(circle at 40% 35%, #784508 0%, #4A2800 65%, #1F0F00 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.pupil {
+  width: 10px;
+  height: 10px;
+  background: #0F1B3D;
+  border-radius: 50%;
+  position: relative;
+}
+
+/* Glossy Eye Sparkle Highlights */
+.sparklePrimary {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 6px;
+  height: 6px;
+  background: #FFFFFF;
+  border-radius: 50%;
+  box-shadow: 0 0 3px rgba(255, 255, 255, 0.9);
+}
+
+.sparkleSecondary {
+  position: absolute;
+  bottom: 2px;
+  left: 2px;
+  width: 2.5px;
+  height: 2.5px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 50%;
+}
+
+/* Tilak (Forehead U-shape Mark & Bindi) */
+.tilak {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 18px;
+  z-index: 13;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tilakU {
+  width: 10px;
+  height: 13px;
+  border-left: 2px solid #F8F9FF;
+  border-right: 2px solid #F8F9FF;
+  border-bottom: 2px solid #F8F9FF;
+  border-radius: 0 0 6px 6px;
+  box-shadow: 0 0 4px rgba(248, 249, 255, 0.8);
+}
+
+.tilakDot {
+  width: 3.5px;
+  height: 3.5px;
+  background: #FF3B30;
+  border-radius: 50%;
+  margin-top: 1.5px;
+  box-shadow: 0 0 3px #FF8A00;
+}
+
+/* Nose */
+.nose {
+  position: absolute;
+  top: 52px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 7px;
+  height: 5px;
+  background: radial-gradient(circle at 40% 30%, #88B9FF 0%, #548CD9 100%);
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(15, 27, 61, 0.25);
+  z-index: 12;
+}
+
+/* Smile / Mouth */
+.mouth {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 10px;
+  border-bottom: 3px solid #842A1E;
+  border-radius: 0 0 14px 14px;
+  background: radial-gradient(ellipse at center, #E04D5A 0%, #B82C3A 80%, #842A1E 100%);
+  box-shadow: 0 1px 3px rgba(15, 27, 61, 0.3);
+  z-index: 12;
+  transition: all 0.2s ease;
+}
+
+.lipHighlight {
+  position: absolute;
+  bottom: 1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 2px;
+}
+
+/* ── 8. EARS & GOLD HOOP EARRINGS ───────────────────────────────── */
+.earLeft {
+  position: absolute;
+  top: 36px;
+  left: -9px;
+  width: 16px;
+  height: 20px;
+  background: radial-gradient(circle at 30% 35%, #8ec0ff 0%, #6BA7FF 70%, #3D6EB8 100%);
+  border-radius: 12px 6px 8px 12px;
+  box-shadow: -2px 2px 4px rgba(15, 27, 61, 0.3);
+  z-index: 9;
+}
+
+.earRight {
+  position: absolute;
+  top: 36px;
+  right: -9px;
+  width: 16px;
+  height: 20px;
+  background: radial-gradient(circle at 70% 35%, #8ec0ff 0%, #6BA7FF 70%, #3D6EB8 100%);
+  border-radius: 6px 12px 12px 8px;
+  box-shadow: 2px 2px 4px rgba(15, 27, 61, 0.3);
+  z-index: 9;
+}
+
+.earringLeft {
+  position: absolute;
+  bottom: -4px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #FF8A00;
+  border-radius: 50%;
+  box-shadow: 0 0 5px rgba(255, 138, 0, 0.6);
+  background: transparent;
+}
+
+.earringRight {
+  position: absolute;
+  bottom: -4px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #FF8A00;
+  border-radius: 50%;
+  box-shadow: 0 0 5px rgba(255, 138, 0, 0.6);
+  background: transparent;
+}
+
+/* ── 9. VOLUMINOUS CURLY HAIR & BUN (TOPKNOT) ───────────────────── */
+.hairLayer {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 116px;
+  height: 80px;
+  z-index: 9;
+  pointer-events: none;
+}
+
+.hairCurl {
+  position: absolute;
+  background: radial-gradient(circle at 35% 30%, #3256B8 0%, #1E3A8A 65%, #0F1B3D 100%);
+  border-radius: 50%;
+  box-shadow: 0 3px 8px rgba(15, 27, 61, 0.6), inset 0 2px 3px rgba(255, 255, 255, 0.2);
+}
+
+.curl1 { top: 6px; left: 0px; width: 28px; height: 28px; }
+.curl2 { top: -2px; left: 16px; width: 32px; height: 32px; }
+.curl3 { top: -6px; left: 40px; width: 36px; height: 36px; }
+.curl4 { top: -2px; right: 16px; width: 32px; height: 32px; }
+.curl5 { top: 6px; right: 0px; width: 28px; height: 28px; }
+.curl6 { top: 22px; left: -6px; width: 24px; height: 26px; }
+.curl7 { top: 22px; right: -6px; width: 24px; height: 26px; }
+
+/* Topknot Bun */
+.topknot {
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 44px;
+  height: 38px;
+  background: radial-gradient(circle at 40% 30%, #3B64D4 0%, #1E3A8A 60%, #0F1B3D 100%);
+  border-radius: 50% 50% 45% 45%;
+  box-shadow: 0 4px 10px rgba(15, 27, 61, 0.6), inset 0 2px 4px rgba(255, 255, 255, 0.25);
+  z-index: 14;
+}
+
+.topknotBand {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 7px;
+  border: 1.5px solid #FF8A00;
+  background: linear-gradient(90deg, #FFC83D 0%, #FF8A00 100%);
+  border-radius: 4px;
+  box-shadow: 0 0 6px rgba(255, 138, 0, 0.6);
+}
+
+/* ── 10. GOLD CROWN & HEADBAND ──────────────────────────────────── */
+.crownHeadband {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 82px;
+  height: 12px;
+  border-top: 3px solid #FF8A00;
+  border-radius: 50% 50% 0 0;
+  z-index: 15;
+  box-shadow: 0 -1px 6px rgba(255, 138, 0, 0.7);
+}
+
+.crownPeak {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 12px;
+  background: linear-gradient(135deg, #FFE07D 0%, #FF8A00 100%);
+  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+  filter: drop-shadow(0 0 4px rgba(255, 138, 0, 0.8));
+}
+
+.crownGem {
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  background: #FF3B30;
+  border-radius: 50%;
+  box-shadow: 0 0 3px #FFFFFF;
+}
+
+/* ── 11. PEACOCK FEATHER (MOR PANKH) ────────────────────────────── */
+.peacockFeather {
+  position: absolute;
+  top: -46px;
+  left: 18px;
+  width: 42px;
+  height: 58px;
+  transform: rotate(-32deg);
+  transform-origin: bottom right;
+  z-index: 16;
+  animation: featherSway 4s ease-in-out infinite alternate;
+}
+
+.featherStem {
+  position: absolute;
+  bottom: 0;
+  right: 12px;
+  width: 2.5px;
+  height: 40px;
+  background: linear-gradient(180deg, #4ADE80 0%, #16A34A 100%);
+  border-radius: 2px;
+  transform: rotate(14deg);
+}
+
+.featherVane {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 36px;
+  height: 42px;
+  background: radial-gradient(ellipse at center, #4ADE80 0%, #16A34A 60%, #14532D 100%);
+  border-radius: 50% 50% 40% 40%;
+  box-shadow: 0 2px 8px rgba(15, 27, 61, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.featherEyeOuter {
+  width: 24px;
+  height: 28px;
+  background: radial-gradient(ellipse at center, #0EA5E9 0%, #0284C7 60%, #0369A1 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 6px rgba(14, 165, 233, 0.8);
+}
+
+.featherEyeMid {
+  width: 15px;
+  height: 18px;
+  background: radial-gradient(ellipse at center, #38BDF8 0%, #1E3A8A 70%, #0F1B3D 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.featherEyeCenter {
+  width: 7px;
+  height: 9px;
+  background: radial-gradient(circle, #E0F2FE 0%, #38BDF8 60%, #0284C7 100%);
+  border-radius: 50%;
+  box-shadow: 0 0 4px #FFFFFF;
+}
+
+/* ── 12. GOLDEN FLUTE (BANSURI) ─────────────────────────────────── */
+.flute {
+  position: absolute;
+  bottom: 58px;
+  left: 14px;
+  width: 68px;
+  height: 7px;
+  background: linear-gradient(90deg, #B85900 0%, #FFC83D 20%, #FFE07D 50%, #FF8A00 85%, #B85900 100%);
+  border-radius: 4px;
+  transform: rotate(-18deg);
+  box-shadow: 0 3px 6px rgba(15, 27, 61, 0.5), 0 0 8px rgba(255, 200, 61, 0.5);
+  z-index: 8;
+}
+
+.fluteHoles {
+  position: absolute;
+  top: 2px;
+  left: 20px;
+  display: flex;
+  gap: 5px;
+}
+
+.fluteHole {
+  width: 3px;
+  height: 3px;
+  background: #0F1B3D;
+  border-radius: 50%;
+}
+
+.fluteTassel {
+  position: absolute;
+  right: -2px;
+  top: 4px;
+  width: 8px;
+  height: 16px;
+  border-left: 2px solid #FF3B30;
+  border-radius: 0 0 0 6px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   ANIMATION KEYFRAMES & MOOD STATES
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* Idle floating animation */
+.moodIdle {
+  animation: krishnaFloat 3.2s ease-in-out infinite;
+}
+
+/* Happy celebratory animation */
+.moodHappy {
+  animation: krishnaBounce 0.8s ease-in-out infinite alternate;
+}
+
+.moodHappy .eye {
+  height: 26px;
+  box-shadow: 0 0 8px rgba(255, 200, 61, 0.6);
+}
+
+.moodHappy .mouth {
+  height: 14px;
+  border-radius: 0 0 18px 18px;
+}
+
+.moodHappy .cheekLeft,
+.moodHappy .cheekRight {
+  filter: blur(0.5px);
+  background: radial-gradient(circle, rgba(255, 75, 120, 0.75) 0%, rgba(255, 107, 107, 0) 75%);
+}
+
+/* Wave gesture */
+.moodWave .armRight {
+  animation: waveArm 1s ease-in-out infinite alternate;
+}
+
+/* Hover effects */
+.krishnaContainer:hover .krishna {
+  transform: scale(calc(var(--k-scale, 1) * 1.04));
+}
+
+.krishnaContainer:hover .iris {
+  transform: scale(1.08);
+}
+
+.krishnaContainer:hover .mouth {
+  height: 13px;
+  border-radius: 0 0 16px 16px;
+}
+
+/* Keyframes */
+@keyframes krishnaFloat {
+  0% {
+    transform: translateY(0px) scale(var(--k-scale, 1));
+  }
+  50% {
+    transform: translateY(-5px) scale(var(--k-scale, 1));
+  }
+  100% {
+    transform: translateY(0px) scale(var(--k-scale, 1));
+  }
+}
+
+@keyframes krishnaBounce {
+  0% {
+    transform: translateY(0px) scale(var(--k-scale, 1));
+  }
+  100% {
+    transform: translateY(-9px) scale(var(--k-scale, 1));
+  }
+}
+
+@keyframes waveArm {
+  0% {
+    transform: rotate(-15deg);
+  }
+  100% {
+    transform: rotate(-45deg) translateY(-3px);
+  }
+}
+
+@keyframes featherSway {
+  0% {
+    transform: rotate(-3deg);
+  }
+  100% {
+    transform: rotate(3deg);
+  }
+}
+
+@keyframes shadowPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scale(0.88);
+    opacity: 0.35;
+  }
+}
+
+@keyframes auraGlow {
+  0% {
+    transform: translateX(-50%) scale(0.95);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateX(-50%) scale(1.1);
+    opacity: 1;
+  }
+}
+
+@keyframes bubbleFloat {
+  0%, 100% {
+    transform: translateX(-50%) translateY(0px);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-3px);
+  }
+}
+
+/* ── Sudarshana Chakra Divine Spinning Animation ────────────────── */
+.moodChakra {
+  animation: krishnaChakraGlow 2.5s ease-in-out infinite alternate;
+}
+
+.chakraDisc {
+  transform-origin: 244px 62px;
+  animation: spinChakra 2.5s linear infinite;
+}
+
+@keyframes spinChakra {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes krishnaChakraGlow {
+  0% {
+    transform: translateY(0px) scale(var(--k-scale, 1));
+  }
+  100% {
+    transform: translateY(-4px) scale(var(--k-scale, 1));
+  }
+}

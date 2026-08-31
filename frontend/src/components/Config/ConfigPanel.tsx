@@ -54,18 +54,22 @@ interface ConfigPanelProps {
   currentBuddyType?: string;
   currentBuddyName?: string;
   currentColor?: string;
+  currentPose?: string;
   onColorChange?: (color: string) => void;
   onNameChange?: (name: string) => void;
   onBuddyTypeChange?: (type: string) => void;
+  onPoseChange?: (pose: string) => void;
 }
 
 export default function ConfigPanel({
   currentBuddyType: propBuddyType,
   currentBuddyName: propBuddyName,
   currentColor: propColor,
+  currentPose: propPose,
   onColorChange,
   onNameChange,
   onBuddyTypeChange,
+  onPoseChange,
 }: ConfigPanelProps) {
   const [config, setConfig] = useState<AppConfig>(DEFAULT_CONFIG);
   const [isLoading, setIsLoading] = useState(true);
@@ -229,7 +233,7 @@ export default function ConfigPanel({
       {/* ── Choose Desktop Buddy Character ── */}
       <div className="config-section">
         <div className="config-section-title">🐾 Choose Your Desktop Buddy</div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', marginTop: '6px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: '10px', marginTop: '6px' }}>
           {Object.values(BUDDY_REGISTRY).map((buddy) => {
             const isSelected = currentBuddyType === buddy.id;
             return (
@@ -278,6 +282,51 @@ export default function ConfigPanel({
               placeholder={currentBuddyDef.defaultName}
             />
           </div>
+          {currentBuddyType === 'krishna' && (
+            <div className="config-row">
+              <span className="config-label">Pose</span>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    updateConfig('hamster.pose', 'crossed');
+                    onPoseChange?.('crossed');
+                  }}
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: '8px',
+                    fontSize: '12px',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    background: (config.hamster?.pose || propPose || 'chakra') === 'crossed' ? 'rgba(255, 200, 61, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                    border: (config.hamster?.pose || propPose || 'chakra') === 'crossed' ? '1.5px solid #FFC83D' : '1px solid rgba(255, 255, 255, 0.1)',
+                    color: (config.hamster?.pose || propPose || 'chakra') === 'crossed' ? '#FFC83D' : 'var(--text-secondary)',
+                  }}
+                >
+                  🧘 Cross-Handed
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    updateConfig('hamster.pose', 'chakra');
+                    onPoseChange?.('chakra');
+                  }}
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: '8px',
+                    fontSize: '12px',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    background: (config.hamster?.pose || propPose || 'chakra') === 'chakra' ? 'rgba(255, 138, 0, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                    border: (config.hamster?.pose || propPose || 'chakra') === 'chakra' ? '1.5px solid #FF8A00' : '1px solid rgba(255, 255, 255, 0.1)',
+                    color: (config.hamster?.pose || propPose || 'chakra') === 'chakra' ? '#FF8A00' : 'var(--text-secondary)',
+                  }}
+                >
+                  ☸️ Sudarshana Chakra
+                </button>
+              </div>
+            </div>
+          )}
           <div className="config-row">
             <span className="config-label">Color Theme</span>
             <div className="color-picker-wrapper">

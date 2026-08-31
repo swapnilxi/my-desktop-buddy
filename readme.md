@@ -71,7 +71,7 @@ Open your Terminal (macOS/Linux) or Command Prompt (Windows) and run:
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/swapnilxi/my-desktop-pet.git my-desktop-buddy
+git clone https://github.com/swapnilxi/my-desktop-buddy.git
 cd my-desktop-buddy
 
 # 2. Run the 1-click startup script

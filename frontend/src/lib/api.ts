@@ -53,6 +53,7 @@ export interface RAGConfig {
 
 export interface HamsterConfig {
   buddy_type?: string;
+  pose?: string;
   name: string;
   skin: string;
   color: string;

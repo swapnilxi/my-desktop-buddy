@@ -105,8 +105,14 @@ body {
 }
 
 /* ── Custom Scrollbar ──────────────────────────────────────────── */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
+  height: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -114,12 +120,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--text-muted);
+  background: rgba(255, 255, 255, 0.16);
   border-radius: var(--radius-full);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.32);
 }
 
 /* ── App Shell ─────────────────────────────────────────────────── */
@@ -510,8 +516,473 @@ body {
   height: 100%;
 }
 
+/* ── Focus / Pomodoro Timer Card ── */
+.todo-timer-card {
+  margin: 6px var(--space-md) 0;
+  padding: 10px 12px;
+  background: linear-gradient(135deg, rgba(245, 168, 75, 0.08) 0%, rgba(30, 20, 14, 0.8) 100%);
+  border: 1px solid rgba(245, 168, 75, 0.22);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  transition: all var(--transition-base);
+  flex-shrink: 0;
+}
+
+.todo-timer-card.timer-running {
+  border-color: var(--accent-primary);
+  box-shadow: 0 4px 22px rgba(0, 0, 0, 0.35), 0 0 16px var(--accent-glow);
+}
+
+.todo-timer-card.mode-break {
+  border-color: rgba(102, 215, 154, 0.3);
+  background: linear-gradient(135deg, rgba(102, 215, 154, 0.08) 0%, rgba(14, 25, 20, 0.8) 100%);
+}
+
+.todo-timer-card.mode-break.timer-running {
+  border-color: var(--success);
+  box-shadow: 0 4px 22px rgba(0, 0, 0, 0.35), 0 0 16px var(--success-glow);
+}
+
+.todo-timer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.todo-timer-title-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.todo-timer-icon-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-sm);
+  background: rgba(245, 168, 75, 0.15);
+  font-size: 12px;
+}
+
+.todo-timer-card.mode-break .todo-timer-icon-badge {
+  background: rgba(102, 215, 154, 0.2);
+}
+
+.todo-timer-title {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.1px;
+}
+
+.todo-timer-compact-preview {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.todo-timer-mini-time {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent-primary);
+  background: rgba(0, 0, 0, 0.25);
+  padding: 1px 6px;
+  border-radius: 5px;
+  border: 1px solid rgba(245, 168, 75, 0.2);
+}
+
+.todo-timer-card.mode-break .todo-timer-mini-time {
+  color: var(--success);
+  border-color: rgba(102, 215, 154, 0.3);
+}
+
+.todo-timer-toggle-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 11px;
+  cursor: pointer;
+  padding: 3px 5px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.todo-timer-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+}
+
+/* Timer Body */
+.todo-timer-body {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  animation: fadeIn 0.2s ease;
+}
+
+/* Compact Preset Grid (No Horizontal Scrollbar!) */
+.todo-timer-presets {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+  padding: 0;
+}
+
+.timer-preset-chip {
+  padding: 4px 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+
+.timer-preset-chip:hover {
+  background: rgba(245, 168, 75, 0.15);
+  color: var(--text-primary);
+  border-color: rgba(245, 168, 75, 0.3);
+}
+
+.timer-preset-chip.active {
+  background: var(--gradient-primary);
+  color: #1a1a2e;
+  border-color: transparent;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(245, 168, 75, 0.3);
+}
+
+.timer-preset-chip.break-chip.active {
+  background: linear-gradient(135deg, #66d79a 0%, #20bf6b 100%);
+  color: #0d2217;
+  box-shadow: 0 2px 8px var(--success-glow);
+}
+
+/* Ultra-Compact Activity Selector Row */
+.todo-timer-activity-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+}
+
+.todo-activity-icon-indicator {
+  font-size: 13px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.todo-activity-select {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 11.5px;
+  font-weight: 500;
+  outline: none;
+  cursor: pointer;
+  min-width: 0;
+  padding: 1px 0;
+}
+
+.todo-activity-select:focus {
+  color: var(--accent-primary);
+}
+
+.todo-activity-select optgroup {
+  background: #1e130d;
+  color: var(--accent-primary);
+  font-weight: 700;
+}
+
+.todo-activity-select option {
+  background: #140d09;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.todo-activity-custom-input {
+  flex: 1;
+  padding: 2px 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 11px;
+  outline: none;
+  min-width: 0;
+}
+
+.todo-activity-custom-input:focus {
+  border-color: var(--accent-primary);
+}
+
+.todo-activity-btn-mode {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 11px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  transition: color var(--transition-fast);
+}
+
+.todo-activity-btn-mode:hover {
+  color: var(--accent-primary);
+}
+
+.todo-activity-btn-save {
+  padding: 2px 6px;
+  background: rgba(245, 168, 75, 0.18);
+  border: 1px solid rgba(245, 168, 75, 0.35);
+  border-radius: 4px;
+  color: var(--accent-primary);
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.todo-activity-btn-save:hover {
+  background: var(--gradient-primary);
+  color: #140d09;
+}
+
+.todo-activity-btn-todo {
+  padding: 2px 6px;
+  background: rgba(102, 215, 154, 0.18);
+  border: 1px solid rgba(102, 215, 154, 0.35);
+  border-radius: 4px;
+  color: var(--success);
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.todo-activity-btn-todo:hover {
+  background: var(--success);
+  color: #140d09;
+}
+
+/* Big Clock Display & Main Controls */
+.todo-timer-display-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: 2px 0;
+}
+
+.todo-timer-digits {
+  font-family: var(--font-mono);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+  line-height: 1;
+  text-shadow: 0 0 10px rgba(245, 168, 75, 0.2);
+}
+
+.timer-running .todo-timer-digits {
+  color: var(--accent-primary);
+  text-shadow: 0 0 14px var(--accent-glow);
+}
+
+.todo-timer-card.mode-break .todo-timer-digits {
+  color: var(--success);
+  text-shadow: 0 0 14px var(--success-glow);
+}
+
+.todo-timer-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.timer-main-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
+  border: none;
+  font-family: var(--font-body);
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.timer-main-btn.start-btn {
+  background: var(--gradient-primary);
+  color: #140d09;
+  box-shadow: 0 2px 10px var(--accent-glow);
+}
+
+.timer-main-btn.start-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px var(--accent-glow);
+}
+
+.timer-main-btn.pause-btn {
+  background: rgba(254, 211, 48, 0.2);
+  color: #fed330;
+  border: 1px solid rgba(254, 211, 48, 0.4);
+}
+
+.timer-main-btn.pause-btn:hover {
+  background: rgba(254, 211, 48, 0.3);
+}
+
+.timer-sub-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.timer-sub-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text-primary);
+}
+
+/* Progress Bar */
+.todo-timer-progress-track {
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  overflow: hidden;
+  position: relative;
+}
+
+.todo-timer-progress-fill {
+  height: 100%;
+  background: var(--gradient-primary);
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+.todo-timer-card.mode-break .todo-timer-progress-fill {
+  background: linear-gradient(135deg, #66d79a 0%, #20bf6b 100%);
+  box-shadow: 0 0 8px var(--success-glow);
+}
+
+/* Linked Task Badge */
+.todo-timer-linked-task {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(245, 168, 75, 0.1);
+  border: 1px dashed rgba(245, 168, 75, 0.3);
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+  font-size: 10.5px;
+  color: var(--accent-primary);
+}
+
+.todo-timer-linked-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.todo-timer-unlink-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 10.5px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: color var(--transition-fast);
+}
+
+.todo-timer-unlink-btn:hover {
+  color: var(--danger);
+}
+
+/* Completion Toast */
+.todo-timer-completion-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(102, 215, 154, 0.15);
+  border: 1px solid rgba(102, 215, 154, 0.4);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  font-size: 11px;
+  color: var(--success);
+  animation: slideIn 0.3s ease;
+}
+
+.completion-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.completion-btn {
+  padding: 3px 7px;
+  background: var(--success);
+  color: #140d09;
+  border: none;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+}
+
+.completion-btn:hover {
+  opacity: 0.9;
+}
+
 .todo-input-area {
-  padding: var(--space-lg);
+  padding: var(--space-md) var(--space-lg) var(--space-sm);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   flex-shrink: 0;
 }
@@ -575,11 +1046,18 @@ body {
   margin-bottom: var(--space-sm);
   transition: all var(--transition-base);
   animation: slideIn 0.3s var(--transition-spring);
+  position: relative;
 }
 
 .todo-item:hover {
   background: var(--bg-glass-hover);
   border-color: rgba(255, 255, 255, 0.08);
+}
+
+.todo-item.in-focus {
+  background: rgba(245, 168, 75, 0.12);
+  border-color: rgba(245, 168, 75, 0.45);
+  box-shadow: 0 0 12px var(--accent-glow);
 }
 
 .todo-item.completed {
@@ -624,9 +1102,48 @@ body {
   line-height: 1.4;
 }
 
+.todo-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.todo-focus-btn {
+  padding: 3px 7px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  opacity: 0.7;
+}
+
+.todo-item:hover .todo-focus-btn,
+.todo-item.in-focus .todo-focus-btn {
+  opacity: 1;
+}
+
+.todo-item.in-focus .todo-focus-btn {
+  background: rgba(245, 168, 75, 0.25);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+.todo-focus-btn:hover {
+  background: var(--accent-glow);
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
+}
+
 .todo-delete {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1263,6 +1780,92 @@ body {
   position: relative;
   z-index: 2;
   cursor: grab;
+}
+
+/* ── Floating Pet Mode Focus Timer Chip ─────────────────────────── */
+.pet-timer-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 90%;
+  padding: 3px 10px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  background: rgba(22, 14, 10, 0.92);
+  border: 1px solid rgba(245, 168, 75, 0.4);
+  border-radius: var(--radius-full);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), 0 0 10px rgba(245, 168, 75, 0.2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  cursor: pointer;
+  z-index: 25;
+  transition: all var(--transition-fast);
+  animation: slideIn 0.25s ease;
+  -webkit-app-region: no-drag;
+}
+
+.pet-timer-chip:hover {
+  transform: translateY(-1px) scale(1.03);
+  border-color: var(--accent-primary);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6), 0 0 14px var(--accent-glow);
+  background: rgba(30, 18, 12, 0.96);
+}
+
+.pet-timer-chip.timer-running {
+  border-color: var(--accent-primary);
+}
+
+.pet-timer-chip.mode-break {
+  border-color: rgba(102, 215, 154, 0.45);
+  background: rgba(10, 22, 16, 0.92);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5), 0 0 10px rgba(102, 215, 154, 0.25);
+}
+
+.pet-timer-chip.mode-break:hover {
+  border-color: var(--success);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6), 0 0 14px var(--success-glow);
+}
+
+.pet-timer-chip.mode-break.timer-running {
+  border-color: var(--success);
+}
+
+.pet-timer-icon {
+  font-size: 11px;
+  line-height: 1;
+}
+
+.pet-timer-digits {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--accent-primary);
+  letter-spacing: -0.3px;
+}
+
+.pet-timer-chip.mode-break .pet-timer-digits {
+  color: var(--success);
+}
+
+.pet-timer-task-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pet-timer-arrow {
+  font-size: 11px;
+  color: var(--text-muted);
+  transition: transform var(--transition-fast);
+}
+
+.pet-timer-chip:hover .pet-timer-arrow {
+  color: var(--accent-primary);
+  transform: translateX(2px);
 }
 
 /* ── Floating Controls Pill ────────────────────────────────────── */

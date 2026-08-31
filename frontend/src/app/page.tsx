@@ -12,6 +12,7 @@ import { speak } from '@/lib/speech';
 import { useVoiceRecorder } from '@/lib/useVoiceRecorder';
 import { BUDDY_REGISTRY, getBuddyDefinition } from '@/components/Buddies/registry';
 import type { BuddyType } from '@/components/Buddies/types';
+import { useFocusTimer } from '@/lib/useFocusTimer';
 
 export type WindowMode = 'pet' | 'compact' | 'fullscreen';
 type TabId = 'chat' | 'todo' | 'config' | 'speech';
@@ -53,6 +54,7 @@ export default function Home() {
   const [hamsterMood, setHamsterMood] = useState<HamsterMood>('idle');
   const [hamsterColor, setHamsterColor] = useState('#F4A460');
   const [hamsterName, setHamsterName] = useState('Hammy');
+  const [krishnaPose, setKrishnaPose] = useState<'crossed' | 'chakra'>('chakra');
   const [hamsterGreeting, setHamsterGreeting] = useState("Squeak! Let's build together! 🚀");
   const [backendOnline, setBackendOnline] = useState(false);
   const [isListening, setIsListening] = useState(false);
@@ -108,11 +110,14 @@ export default function Home() {
   useEffect(() => {
     // Load local client preferences
     const saved = getClientSavedConfig();
-    if (saved?.hamster?.buddy_type && (saved.hamster.buddy_type === 'hamster' || saved.hamster.buddy_type === 'panda')) {
+    if (saved?.hamster?.buddy_type && ['hamster', 'panda', 'krishna'].includes(saved.hamster.buddy_type)) {
       setBuddyType(saved.hamster.buddy_type as BuddyType);
     }
     if (saved?.hamster?.color) setHamsterColor(saved.hamster.color);
     if (saved?.hamster?.name) setHamsterName(saved.hamster.name);
+    if (saved?.hamster?.pose && ['crossed', 'chakra', 'standing'].includes(saved.hamster.pose)) {
+      setKrishnaPose(saved.hamster.pose === 'chakra' ? 'chakra' : 'crossed');
+    }
     if (saved?.startup?.default_tab && ['chat', 'todo', 'config', 'speech'].includes(saved.startup.default_tab)) {
       setActiveTab(saved.startup.default_tab as TabId);
     }
@@ -202,8 +207,17 @@ export default function Home() {
     }, 3000);
   };
 
+  const BUDDY_CYCLE: BuddyType[] = ['hamster', 'panda', 'krishna'];
+  const nextBuddyType = BUDDY_CYCLE[(BUDDY_CYCLE.indexOf(buddyType) + 1) % BUDDY_CYCLE.length];
+  const nextBuddyDef = BUDDY_REGISTRY[nextBuddyType];
+
   const switchBuddy = (nextType?: BuddyType) => {
-    const targetType = nextType || (buddyType === 'hamster' ? 'panda' : 'hamster');
+    let targetType = nextType;
+    if (!targetType) {
+      const currentIndex = BUDDY_CYCLE.indexOf(buddyType);
+      const nextIndex = (currentIndex + 1) % BUDDY_CYCLE.length;
+      targetType = BUDDY_CYCLE[nextIndex];
+    }
     const targetDef = BUDDY_REGISTRY[targetType];
     setBuddyType(targetType);
     setHamsterName(targetDef.defaultName);
@@ -266,8 +280,16 @@ export default function Home() {
     voiceRecorder.toggle();
   };
 
-  const handleMoodChange = (mood: HamsterMood) => {
+  const handleMoodChange = useCallback((mood: HamsterMood) => {
     setHamsterMood(mood);
+  }, []);
+
+  const timer = useFocusTimer({ onMoodChange: handleMoodChange });
+
+  const formatTimerDigits = (seconds: number) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
   // ── Pointer Drag Handler for Smooth Window Movement ─────────────
@@ -366,6 +388,7 @@ export default function Home() {
           <BuddyRenderer
             type={buddyType}
             mood={hamsterMood}
+            pose={buddyType === 'krishna' ? krishnaPose : undefined}
             color={hamsterColor}
             name={hamsterName}
             greeting={hamsterGreeting}
@@ -376,15 +399,36 @@ export default function Home() {
           />
         </div>
 
+        {/* Floating Focus Timer Chip in Pet Mode (active when timer running or in progress) */}
+        {(timer.isRunning || (timer.timeLeft > 0 && timer.timeLeft < timer.totalSeconds) || timer.sessionCompleted) && (
+          <div
+            className={`pet-timer-chip ${timer.isRunning ? 'timer-running' : ''} ${timer.sessionType === 'break' ? 'mode-break' : ''}`}
+            onClick={() => setWindowMode('compact', 'todo')}
+            onPointerDown={(e) => e.stopPropagation()}
+            title="Click to open To-Do & Focus Timer controls"
+          >
+            <span className="pet-timer-icon">
+              {timer.sessionType === 'break' ? '☕' : timer.isRunning ? '🔥' : '⏱️'}
+            </span>
+            <span className="pet-timer-digits">{formatTimerDigits(timer.timeLeft)}</span>
+            {timer.currentActivity && (
+              <span className="pet-timer-task-label" title={timer.currentActivity}>
+                {timer.currentActivity}
+              </span>
+            )}
+            <span className="pet-timer-arrow">›</span>
+          </div>
+        )}
+
         {/* Floating Quick Icon Toolbar */}
         <div className="floating-controls" onPointerDown={(e) => e.stopPropagation()}>
           {/* Quick Buddy Switcher */}
           <button
             className="floating-btn"
             onClick={() => switchBuddy()}
-            title={`Switch Buddy (Current: ${currentBuddyDef.emoji} ${currentBuddyDef.name})`}
+            title={`Switch Buddy (Next: ${nextBuddyDef.emoji} ${nextBuddyDef.name})`}
           >
-            {buddyType === 'hamster' ? '🐼' : '🐹'}
+            {nextBuddyDef.emoji}
           </button>
           {/* Tap to Talk — Stays in Pet Mode! */}
           <button
@@ -454,9 +498,9 @@ export default function Home() {
             <button
               className="win-btn collapse"
               onClick={() => switchBuddy()}
-              title={`Switch Buddy (Current: ${currentBuddyDef.emoji} ${currentBuddyDef.name})`}
+              title={`Switch Buddy (Next: ${nextBuddyDef.emoji} ${nextBuddyDef.name})`}
             >
-              {buddyType === 'hamster' ? '🐼' : '🐹'}
+              {nextBuddyDef.emoji}
             </button>
             {/* Mode Switchers */}
             <button
@@ -495,6 +539,7 @@ export default function Home() {
           <BuddyRenderer
             type={buddyType}
             mood={hamsterMood}
+            pose={buddyType === 'krishna' ? krishnaPose : undefined}
             color={hamsterColor}
             name={hamsterName}
             greeting={hamsterGreeting}
@@ -535,6 +580,7 @@ export default function Home() {
               buddyType={buddyType}
               buddyName={hamsterName}
               buddyDef={currentBuddyDef}
+              timer={timer}
             />
           </div>
           <div style={{ display: activeTab === 'config' ? 'contents' : 'none' }}>
@@ -542,9 +588,11 @@ export default function Home() {
               currentBuddyType={buddyType}
               currentBuddyName={hamsterName}
               currentColor={hamsterColor}
+              currentPose={krishnaPose}
               onColorChange={setHamsterColor}
               onNameChange={setHamsterName}
               onBuddyTypeChange={(type) => setBuddyType(type as BuddyType)}
+              onPoseChange={(pose) => setKrishnaPose(pose as 'crossed' | 'chakra')}
             />
           </div>
           <div style={{ display: activeTab === 'speech' ? 'contents' : 'none' }}>
@@ -594,6 +642,7 @@ export default function Home() {
           <BuddyRenderer
             type={buddyType}
             mood={hamsterMood}
+            pose={buddyType === 'krishna' ? krishnaPose : undefined}
             color={hamsterColor}
             name={hamsterName}
             greeting={hamsterGreeting}
@@ -634,7 +683,7 @@ export default function Home() {
               gap: '6px',
             }}
           >
-            Switch to {buddyType === 'hamster' ? '🐼 Bambu the Panda' : '🐹 Hammy the Hamster'}
+            Switch to {nextBuddyDef.emoji} {nextBuddyDef.name}
           </button>
         </div>
 
@@ -741,6 +790,7 @@ export default function Home() {
               buddyType={buddyType}
               buddyName={hamsterName}
               buddyDef={currentBuddyDef}
+              timer={timer}
             />
           </div>
           <div style={{ display: activeTab === 'config' ? 'contents' : 'none' }}>
@@ -748,9 +798,11 @@ export default function Home() {
               currentBuddyType={buddyType}
               currentBuddyName={hamsterName}
               currentColor={hamsterColor}
+              currentPose={krishnaPose}
               onColorChange={setHamsterColor}
               onNameChange={setHamsterName}
               onBuddyTypeChange={(type) => setBuddyType(type as BuddyType)}
+              onPoseChange={(pose) => setKrishnaPose(pose as 'crossed' | 'chakra')}
             />
           </div>
           <div style={{ display: activeTab === 'speech' ? 'contents' : 'none' }}>

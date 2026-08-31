@@ -1,4 +1,4 @@
-export type BuddyType = 'hamster' | 'panda';
+export type BuddyType = 'hamster' | 'panda' | 'krishna';
 
 export type BuddyMood =
   | 'idle'
@@ -10,7 +10,8 @@ export type BuddyMood =
   | 'eating'
   | 'waving'
   | 'excited'
-  | 'dragged';
+  | 'dragged'
+  | 'chakra';
 
 export interface ColorOption {
   name: string;
@@ -39,6 +40,7 @@ export interface BuddyDefinition {
 export interface BuddySpriteProps {
   mood: BuddyMood;
   color?: string;
+  pose?: 'crossed' | 'chakra' | 'standing' | string;
   name?: string;
   greeting?: string;
   isDragging?: boolean;
