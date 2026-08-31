@@ -97,19 +97,19 @@ export function LittleKrishna({
           style={{ width: '100%', height: '100%', overflow: 'visible' }}
         >
           <defs>
-            {/* 3D Skin Shading (#6BA7FF) */}
+            {/* Base Skin (Rich Blue, stylized flat aesthetic) */}
             <radialGradient id="kSkinHead" cx="35%" cy="30%" r="65%">
-              <stop offset="0%" stopColor="#B2D4FF" />
-              <stop offset="35%" stopColor="#6BA7FF" />
-              <stop offset="75%" stopColor="#4578D4" />
-              <stop offset="100%" stopColor="#2A529B" />
+              <stop offset="0%" stopColor="#96C8FF" />
+              <stop offset="40%" stopColor="#6BA7FF" />
+              <stop offset="85%" stopColor="#2A5CA8" />
+              <stop offset="100%" stopColor="#0F1B3D" />
             </radialGradient>
 
             <radialGradient id="kSkinBody" cx="38%" cy="28%" r="62%">
-              <stop offset="0%" stopColor="#A4CDFF" />
-              <stop offset="50%" stopColor="#6BA7FF" />
-              <stop offset="85%" stopColor="#3E6EC4" />
-              <stop offset="100%" stopColor="#25488C" />
+              <stop offset="0%" stopColor="#85BBFF" />
+              <stop offset="45%" stopColor="#6BA7FF" />
+              <stop offset="85%" stopColor="#254F99" />
+              <stop offset="100%" stopColor="#0F1B3D" />
             </radialGradient>
 
             {/* Hair Curls (Rich Black-Brown Gradient) */}
@@ -144,12 +144,12 @@ export function LittleKrishna({
               <stop offset="100%" stopColor="#9C4400" />
             </linearGradient>
 
-            {/* Gold Jewelry (#FF8A00 / #FFC83D) */}
+            {/* Gold Jewelry (#F2C14E) */}
             <linearGradient id="kGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#FFFBD9" />
-              <stop offset="25%" stopColor="#FFDE6A" />
-              <stop offset="65%" stopColor="#FF8A00" />
-              <stop offset="100%" stopColor="#A84E00" />
+              <stop offset="0%" stopColor="#FFF1B8" />
+              <stop offset="35%" stopColor="#F2C14E" />
+              <stop offset="80%" stopColor="#D99F24" />
+              <stop offset="100%" stopColor="#A67008" />
             </linearGradient>
 
             {/* Eye Iris (#4A2800) */}
@@ -447,14 +447,14 @@ export function LittleKrishna({
             <circle cx="177" cy="140" r="3" fill="#FF3B30" />
 
             {/* Eyebrows */}
-            <path d="M 132 134 C 144 126, 157 129, 162 134" fill="none" stroke="#1E3A8A" strokeWidth="4.5" strokeLinecap="round" />
-            <path d="M 222 134 C 210 126, 197 129, 192 134" fill="none" stroke="#1E3A8A" strokeWidth="4.5" strokeLinecap="round" />
+            <path d="M 132 134 C 144 126, 157 129, 162 134" fill="none" stroke="#25130A" strokeWidth="4.5" strokeLinecap="round" />
+            <path d="M 222 134 C 210 126, 197 129, 192 134" fill="none" stroke="#25130A" strokeWidth="4.5" strokeLinecap="round" />
 
             {/* Left Eye */}
             <g transform="translate(132, 138)">
               {/* White Sclera */}
               <ellipse cx="17" cy="15" rx="17" ry="16" fill="#FFFFFF" />
-              <path d="M 0 13 C 7 4, 27 4, 34 13" fill="none" stroke="#1E3A8A" strokeWidth="4" strokeLinecap="round" />
+              <path d="M 0 13 C 7 4, 27 4, 34 13" fill="none" stroke="#25130A" strokeWidth="4" strokeLinecap="round" />
               {/* Deep Brown Iris */}
               <circle cx="17" cy="15" r="12" fill="url(#kIrisGrad)" />
               {/* Pupil */}
@@ -468,7 +468,7 @@ export function LittleKrishna({
             <g transform="translate(188, 138)">
               {/* White Sclera */}
               <ellipse cx="17" cy="15" rx="17" ry="16" fill="#FFFFFF" />
-              <path d="M 0 13 C 7 4, 27 4, 34 13" fill="none" stroke="#1E3A8A" strokeWidth="4" strokeLinecap="round" />
+              <path d="M 0 13 C 7 4, 27 4, 34 13" fill="none" stroke="#25130A" strokeWidth="4" strokeLinecap="round" />
               {/* Deep Brown Iris */}
               <circle cx="17" cy="15" r="12" fill="url(#kIrisGrad)" />
               {/* Pupil */}
@@ -614,30 +614,36 @@ export function LittleKrishna({
                 <ellipse cx="236" cy="178" rx="8" ry="3.5" fill="url(#kGoldGrad)" />
               </g>
 
-              {/* Glowing Divine Aura Behind Chakra */}
-              <circle cx="244" cy="62" r="44" fill="url(#kCheekBlush)" opacity="0.85" />
-              <circle cx="244" cy="62" r="30" fill="url(#kGoldGrad)" opacity="0.4" />
+              {/* Glowing Divine Aura Behind Chakra (Elliptical for 3D perspective) */}
+              <ellipse cx="244" cy="82" rx="44" ry="18" fill="url(#kCheekBlush)" opacity="0.85" />
+              <ellipse cx="244" cy="82" rx="30" ry="12" fill="url(#kGoldGrad)" opacity="0.6" />
 
-              {/* Spinning Sudarshana Chakra Disc Directly on Finger Tip */}
-              <g className={styles.chakraDisc}>
-                <circle cx="244" cy="62" r="32" fill="none" stroke="url(#kGoldGrad)" strokeWidth="4.5" />
-                <circle cx="244" cy="62" r="25" fill="none" stroke="#FF8A00" strokeWidth="2.5" strokeDasharray="4 2" />
-                <circle cx="244" cy="62" r="16" fill="none" stroke="#FFF5C2" strokeWidth="3" />
-                <circle cx="244" cy="62" r="8" fill="url(#kGoldGrad)" stroke="#B85900" strokeWidth="1.2" />
-                <circle cx="244" cy="62" r="3.5" fill="#FFFFFF" />
+              {/* 3D Perspective Group for the Chakra */}
+              <g transform="translate(244, 82) scale(1, 0.35) translate(-244, -82)">
+                {/* Spinning Sudarshana Chakra Disc Directly on Finger Tip */}
+                <g className={styles.chakraDisc}>
+                  {/* Thick Outer Ring */}
+                  <circle cx="244" cy="82" r="32" fill="none" stroke="url(#kGoldGrad)" strokeWidth="6" />
+                  <circle cx="244" cy="82" r="28" fill="none" stroke="#FF8A00" strokeWidth="2" strokeDasharray="6 3" />
+                  
+                  {/* Inner Rings */}
+                  <circle cx="244" cy="82" r="12" fill="none" stroke="url(#kGoldGrad)" strokeWidth="3" />
+                  <circle cx="244" cy="82" r="6" fill="#FFC83D" stroke="#B85900" strokeWidth="1.5" />
+                  <circle cx="244" cy="82" r="2.5" fill="#FFFFFF" />
 
-                {/* 12 Radiating Sudarshana Diamond Spokes */}
-                {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((angle) => (
-                  <g key={angle} transform={`rotate(${angle} 244 62)`}>
-                    <line x1="252" y1="62" x2="270" y2="62" stroke="url(#kGoldGrad)" strokeWidth="2.2" />
-                    <path
-                      d="M 270 62 L 276 58 L 282 62 L 276 66 Z"
-                      fill="url(#kGoldGrad)"
-                      stroke="#FF3B30"
-                      strokeWidth="0.8"
-                    />
-                  </g>
-                ))}
+                  {/* 8 Radiating Sudarshana Diamond Spokes */}
+                  {[0, 45, 90, 135, 180, 225, 270, 315].map((angle) => (
+                    <g key={angle} transform={`rotate(${angle} 244 82)`}>
+                      <line x1="250" y1="82" x2="274" y2="82" stroke="url(#kGoldGrad)" strokeWidth="3" />
+                      <path
+                        d="M 272 82 L 278 77 L 284 82 L 278 87 Z"
+                        fill="url(#kGoldGrad)"
+                        stroke="#FF3B30"
+                        strokeWidth="1"
+                      />
+                    </g>
+                  ))}
+                </g>
               </g>
             </g>
           )}

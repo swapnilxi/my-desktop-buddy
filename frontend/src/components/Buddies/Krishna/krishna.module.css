@@ -943,7 +943,7 @@
 }
 
 .chakraDisc {
-  transform-origin: 244px 62px;
+  transform-origin: 244px 82px;
   animation: spinChakra 2.5s linear infinite;
 }
 
