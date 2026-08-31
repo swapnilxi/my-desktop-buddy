@@ -4,12 +4,26 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import type { ChatMessage, HamsterMood } from '@/lib/api';
 import { sendChatMessage, transcribeAudio } from '@/lib/api';
 import { speak, stopSpeaking } from '@/lib/speech';
+import type { BuddyDefinition, BuddyType } from '../Buddies/types';
+import { getBuddyDefinition } from '../Buddies/registry';
 
 interface ChatPanelProps {
   onMoodChange: (mood: HamsterMood) => void;
+  buddyType?: BuddyType | string;
+  buddyName?: string;
+  buddyDef?: BuddyDefinition;
 }
 
-export default function ChatPanel({ onMoodChange }: ChatPanelProps) {
+export default function ChatPanel({
+  onMoodChange,
+  buddyType = 'hamster',
+  buddyName,
+  buddyDef,
+}: ChatPanelProps) {
+  const effectiveDef = buddyDef || getBuddyDefinition(buddyType);
+  const effectiveName = buddyName || effectiveDef.defaultName;
+  const effectiveEmoji = effectiveDef.emoji;
+
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -181,15 +195,15 @@ export default function ChatPanel({ onMoodChange }: ChatPanelProps) {
       <div className="chat-messages">
         {messages.length === 0 ? (
           <div className="chat-empty">
-            <span className="chat-empty-emoji">🐹</span>
-            <h3>Hey there! I&apos;m Hammy!</h3>
-            <p>Your personal AI hamster assistant. Ask me anything, or tell me about your day!</p>
+            <span className="chat-empty-emoji">{effectiveEmoji}</span>
+            <h3>Hey there! I&apos;m {effectiveName}!</h3>
+            <p>Your personal AI {effectiveDef.name.toLowerCase()} companion. Ask me anything, or tell me about your day!</p>
           </div>
         ) : (
           messages.map((msg, idx) => (
             <div key={idx} className={`message message-${msg.role}`}>
               <div className="message-avatar">
-                {msg.role === 'user' ? '👤' : '🐹'}
+                {msg.role === 'user' ? '👤' : effectiveEmoji}
               </div>
               <div className="message-bubble">
                 {msg.content}
@@ -200,7 +214,7 @@ export default function ChatPanel({ onMoodChange }: ChatPanelProps) {
 
         {isLoading && (
           <div className="message message-assistant">
-            <div className="message-avatar">🐹</div>
+            <div className="message-avatar">{effectiveEmoji}</div>
             <div className="message-bubble">
               <div className="typing-indicator">
                 <div className="typing-dots">
@@ -215,7 +229,7 @@ export default function ChatPanel({ onMoodChange }: ChatPanelProps) {
 
         {error && (
           <div className="message message-assistant">
-            <div className="message-avatar">🐹</div>
+            <div className="message-avatar">{effectiveEmoji}</div>
             <div className="message-bubble" style={{ borderColor: 'var(--danger)', color: 'var(--danger)' }}>
               Oops! {error}
             </div>
@@ -250,7 +264,7 @@ export default function ChatPanel({ onMoodChange }: ChatPanelProps) {
               ref={inputRef}
               className="chat-input"
               placeholder={
-                isRecording ? 'Listening…' : isTranscribing ? 'Transcribing…' : 'Talk to Hammy...'
+                isRecording ? 'Listening…' : isTranscribing ? 'Transcribing…' : `Talk to ${effectiveName}...`
               }
               value={input}
               onChange={(e) => setInput(e.target.value)}

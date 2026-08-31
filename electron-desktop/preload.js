@@ -16,6 +16,7 @@ contextBridge.exposeInMainWorld('hamsterDesk', {
     setMode: (mode) => ipcRenderer.send('window:set-mode', mode), // 'compact' | 'expanded'
     moveBy: (deltaX, deltaY) => ipcRenderer.send('window:move-by', { deltaX, deltaY }),
     startDrag: () => ipcRenderer.send('window:start-drag'),
+    updateBuddy: (buddyInfo) => ipcRenderer.send('buddy:update', buddyInfo),
   },
 
   // Platform info

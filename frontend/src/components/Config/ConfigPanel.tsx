@@ -51,12 +51,18 @@ const DEFAULT_CONFIG: AppConfig = {
 };
 
 interface ConfigPanelProps {
+  currentBuddyType?: string;
+  currentBuddyName?: string;
+  currentColor?: string;
   onColorChange?: (color: string) => void;
   onNameChange?: (name: string) => void;
   onBuddyTypeChange?: (type: string) => void;
 }
 
 export default function ConfigPanel({
+  currentBuddyType: propBuddyType,
+  currentBuddyName: propBuddyName,
+  currentColor: propColor,
   onColorChange,
   onNameChange,
   onBuddyTypeChange,
@@ -67,7 +73,7 @@ export default function ConfigPanel({
   const [showKeys, setShowKeys] = useState({ gemini: false, deepseek: false, deepgram: false });
   const [clearedNotice, setClearedNotice] = useState(false);
 
-  const currentBuddyType = (config.hamster?.buddy_type || 'hamster') as BuddyType;
+  const currentBuddyType = (propBuddyType || config.hamster?.buddy_type || 'hamster') as BuddyType;
   const currentBuddyDef = getBuddyDefinition(currentBuddyType);
 
   const loadConfig = useCallback(async () => {
@@ -82,7 +88,9 @@ export default function ConfigPanel({
         hamster: {
           ...serverConfig.hamster,
           ...(localSaved?.hamster || {}),
-          buddy_type: localSaved?.hamster?.buddy_type || serverConfig.hamster?.buddy_type || 'hamster',
+          buddy_type: propBuddyType || localSaved?.hamster?.buddy_type || serverConfig.hamster?.buddy_type || 'hamster',
+          name: propBuddyName || localSaved?.hamster?.name || serverConfig.hamster?.name || 'Hammy',
+          color: propColor || localSaved?.hamster?.color || serverConfig.hamster?.color || '#F4A460',
         },
         api_keys: {
           gemini_key: localKeys.gemini_key || '',
@@ -103,6 +111,9 @@ export default function ConfigPanel({
         hamster: {
           ...DEFAULT_CONFIG.hamster,
           ...(localSaved?.hamster || {}),
+          buddy_type: propBuddyType || localSaved?.hamster?.buddy_type || DEFAULT_CONFIG.hamster.buddy_type,
+          name: propBuddyName || localSaved?.hamster?.name || DEFAULT_CONFIG.hamster.name,
+          color: propColor || localSaved?.hamster?.color || DEFAULT_CONFIG.hamster.color,
         },
         api_keys: localKeys,
       };
@@ -113,7 +124,7 @@ export default function ConfigPanel({
     } finally {
       setIsLoading(false);
     }
-  }, [onColorChange, onNameChange, onBuddyTypeChange]);
+  }, [onColorChange, onNameChange, onBuddyTypeChange, propBuddyType, propBuddyName, propColor]);
 
   useEffect(() => {
     loadConfig();
@@ -141,6 +152,15 @@ export default function ConfigPanel({
     onBuddyTypeChange?.(buddyId);
     onNameChange?.(def.defaultName);
     onColorChange?.(def.defaultColor);
+
+    const saved = getClientSavedConfig() || ({} as any);
+    saved.hamster = {
+      ...(saved.hamster || {}),
+      buddy_type: buddyId,
+      name: def.defaultName,
+      color: def.defaultColor,
+    };
+    saveClientSavedConfig(saved);
   };
 
   const handleSave = async () => {

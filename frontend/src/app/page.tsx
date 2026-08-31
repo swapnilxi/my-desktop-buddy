@@ -32,6 +32,20 @@ const TABS: Tab[] = [
 // Idle variety sub-animations that cycle randomly
 const IDLE_VARIETIES: HamsterMood[] = ['idle', 'waving', 'idle', 'idle', 'idle'];
 
+function updateFavicon(emoji: string) {
+  if (typeof document === 'undefined') return;
+  try {
+    let link = document.querySelector<HTMLLinkElement>("link[rel~='icon']");
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'icon';
+      document.head.appendChild(link);
+    }
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">${emoji}</text></svg>`;
+    link.href = `data:image/svg+xml,${encodeURIComponent(svg)}`;
+  } catch { }
+}
+
 export default function Home() {
   const [windowMode, setWindowModeState] = useState<WindowMode>('pet');
   const [activeTab, setActiveTab] = useState<TabId>('chat');
@@ -53,6 +67,21 @@ export default function Home() {
   const lastClickTime = useRef(0);
 
   const currentBuddyDef = getBuddyDefinition(buddyType);
+
+  // Synchronize document title, favicon, and electron tray/dock when buddy changes
+  useEffect(() => {
+    const title = `${currentBuddyDef.emoji} ${hamsterName} — Desktop Buddy`;
+    document.title = title;
+    updateFavicon(currentBuddyDef.emoji);
+
+    if (typeof window !== 'undefined' && window.hamsterDesk?.window?.updateBuddy) {
+      window.hamsterDesk.window.updateBuddy({
+        type: buddyType,
+        name: hamsterName,
+        emoji: currentBuddyDef.emoji,
+      });
+    }
+  }, [buddyType, hamsterName, currentBuddyDef.emoji]);
 
   const checkBackend = useCallback(async () => {
     try {
@@ -493,20 +522,37 @@ export default function Home() {
         {/* Tab Content */}
         <main className="tab-content">
           <div style={{ display: activeTab === 'chat' ? 'contents' : 'none' }}>
-            <ChatPanel onMoodChange={handleMoodChange} />
+            <ChatPanel
+              onMoodChange={handleMoodChange}
+              buddyType={buddyType}
+              buddyName={hamsterName}
+              buddyDef={currentBuddyDef}
+            />
           </div>
           <div style={{ display: activeTab === 'todo' ? 'contents' : 'none' }}>
-            <TodoPanel onMoodChange={handleMoodChange} />
+            <TodoPanel
+              onMoodChange={handleMoodChange}
+              buddyType={buddyType}
+              buddyName={hamsterName}
+              buddyDef={currentBuddyDef}
+            />
           </div>
           <div style={{ display: activeTab === 'config' ? 'contents' : 'none' }}>
             <ConfigPanel
+              currentBuddyType={buddyType}
+              currentBuddyName={hamsterName}
+              currentColor={hamsterColor}
               onColorChange={setHamsterColor}
               onNameChange={setHamsterName}
               onBuddyTypeChange={(type) => setBuddyType(type as BuddyType)}
             />
           </div>
           <div style={{ display: activeTab === 'speech' ? 'contents' : 'none' }}>
-            <SpeechTrainingPanel />
+            <SpeechTrainingPanel
+              buddyType={buddyType}
+              buddyName={hamsterName}
+              buddyDef={currentBuddyDef}
+            />
           </div>
         </main>
 
@@ -682,20 +728,37 @@ export default function Home() {
         {/* Tab View */}
         <div className="dashboard-workspace-body">
           <div style={{ display: activeTab === 'chat' ? 'contents' : 'none' }}>
-            <ChatPanel onMoodChange={handleMoodChange} />
+            <ChatPanel
+              onMoodChange={handleMoodChange}
+              buddyType={buddyType}
+              buddyName={hamsterName}
+              buddyDef={currentBuddyDef}
+            />
           </div>
           <div style={{ display: activeTab === 'todo' ? 'contents' : 'none' }}>
-            <TodoPanel onMoodChange={handleMoodChange} />
+            <TodoPanel
+              onMoodChange={handleMoodChange}
+              buddyType={buddyType}
+              buddyName={hamsterName}
+              buddyDef={currentBuddyDef}
+            />
           </div>
           <div style={{ display: activeTab === 'config' ? 'contents' : 'none' }}>
             <ConfigPanel
+              currentBuddyType={buddyType}
+              currentBuddyName={hamsterName}
+              currentColor={hamsterColor}
               onColorChange={setHamsterColor}
               onNameChange={setHamsterName}
               onBuddyTypeChange={(type) => setBuddyType(type as BuddyType)}
             />
           </div>
           <div style={{ display: activeTab === 'speech' ? 'contents' : 'none' }}>
-            <SpeechTrainingPanel />
+            <SpeechTrainingPanel
+              buddyType={buddyType}
+              buddyName={hamsterName}
+              buddyDef={currentBuddyDef}
+            />
           </div>
         </div>
       </main>

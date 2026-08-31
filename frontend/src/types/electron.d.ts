@@ -7,6 +7,7 @@ export interface HamsterDeskAPI {
     setMode: (mode: 'minimized' | 'pet' | 'compact' | 'fullscreen') => void;
     moveBy: (deltaX: number, deltaY: number) => void;
     startDrag: () => void;
+    updateBuddy?: (info: { type: string; name: string; emoji: string }) => void;
   };
   platform: string;
   isElectron: boolean;
