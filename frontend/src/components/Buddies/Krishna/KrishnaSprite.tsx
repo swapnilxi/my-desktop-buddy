@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import type { BuddySpriteProps, BuddyMood } from '../types';
 import styles from './krishna.module.css';
+import KrishnaCowCompanion from './KrishnaCowCompanion';
 
 export type KrishnaPose = 'crossed' | 'chakra' | 'standing';
 
@@ -258,6 +259,9 @@ export function LittleKrishna({
 
       {/* Divine Golden Aura */}
       <div className={styles.divineAura} id="divineAuraGlow" />
+
+      {/* Cute Sacred Surabhi Cow Companion */}
+      <KrishnaCowCompanion />
 
       {/* ════════════════════ PIXAR 3D HYBRID VECTOR MODEL ════════════════════ */}
       <div className={`${styles.krishna} ${getStateClass()}`}>
