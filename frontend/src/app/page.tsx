@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import BuddyRenderer from '@/components/Buddies/BuddyRenderer';
+import KrishnaCard from '@/components/Buddies/Krishna/KrishnaCard';
 import ChatPanel from '@/components/Chat/ChatPanel';
 import TodoPanel from '@/components/TodoList/TodoPanel';
 import ConfigPanel from '@/components/Config/ConfigPanel';
@@ -536,18 +537,21 @@ export default function Home() {
 
         {/* Buddy Character (Clickable to pet or collapse to pet mode) */}
         <div className="hamster-section">
-          <BuddyRenderer
-            type={buddyType}
-            mood={hamsterMood}
-            pose={buddyType === 'krishna' ? krishnaPose : undefined}
-            color={hamsterColor}
-            name={hamsterName}
-            greeting={hamsterGreeting}
-            onClick={petHamster}
-            petStreak={petStreak}
-            onRefreshGreeting={refreshGreeting}
-            onFeed={feedHamster}
-          />
+          {buddyType === 'krishna' ? (
+            <KrishnaCard pose={krishnaPose} onPoseChange={(p) => setKrishnaPose(p as 'crossed' | 'chakra')} />
+          ) : (
+            <BuddyRenderer
+              type={buddyType}
+              mood={hamsterMood}
+              color={hamsterColor}
+              name={hamsterName}
+              greeting={hamsterGreeting}
+              onClick={petHamster}
+              petStreak={petStreak}
+              onRefreshGreeting={refreshGreeting}
+              onFeed={feedHamster}
+            />
+          )}
         </div>
 
         {/* Tab Navigation */}

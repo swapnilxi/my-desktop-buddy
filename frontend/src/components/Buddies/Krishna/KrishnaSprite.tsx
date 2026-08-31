@@ -97,28 +97,23 @@ export function LittleKrishna({
           style={{ width: '100%', height: '100%', overflow: 'visible' }}
         >
           <defs>
-            {/* Base Skin (Rich Blue, stylized flat aesthetic) */}
-            <radialGradient id="kSkinHead" cx="35%" cy="30%" r="65%">
-              <stop offset="0%" stopColor="#96C8FF" />
-              <stop offset="40%" stopColor="#6BA7FF" />
-              <stop offset="85%" stopColor="#2A5CA8" />
-              <stop offset="100%" stopColor="#0F1B3D" />
+            <radialGradient id="kSkinHead" cx="40%" cy="30%" r="70%">
+              <stop offset="0%" stopColor="#9BC7FF" />
+              <stop offset="70%" stopColor="#6BA7FF" />
+              <stop offset="100%" stopColor="#3B82F6" />
             </radialGradient>
 
-            <radialGradient id="kSkinBody" cx="38%" cy="28%" r="62%">
-              <stop offset="0%" stopColor="#85BBFF" />
-              <stop offset="45%" stopColor="#6BA7FF" />
-              <stop offset="85%" stopColor="#254F99" />
-              <stop offset="100%" stopColor="#0F1B3D" />
+            <radialGradient id="kSkinBody" cx="40%" cy="30%" r="70%">
+              <stop offset="0%" stopColor="#8ABFFF" />
+              <stop offset="70%" stopColor="#6BA7FF" />
+              <stop offset="100%" stopColor="#3B82F6" />
             </radialGradient>
 
-            {/* Hair Curls (Rich Black-Brown Gradient) */}
+            {/* Hair Curls (Rich Black-Brown) */}
             <radialGradient id="kHairGrad" cx="35%" cy="25%" r="75%">
-              <stop offset="0%" stopColor="#4A2E1B" />
-              <stop offset="35%" stopColor="#301A0E" />
-              <stop offset="70%" stopColor="#170A04" />
-              <stop offset="92%" stopColor="#0B0402" />
-              <stop offset="100%" stopColor="#000000" />
+              <stop offset="0%" stopColor="#2A1C14" />
+              <stop offset="60%" stopColor="#1E140E" />
+              <stop offset="100%" stopColor="#110A07" />
             </radialGradient>
 
             {/* Nose 3D Lighting */}
@@ -251,16 +246,16 @@ export function LittleKrishna({
           <g id="dhoti" filter="url(#kSoftShadow)">
             {/* Main Dhoti Wrapped Pants (#FFC83D) */}
             <path
-              d="M 112 258 C 102 295, 108 368, 144 368 C 160 368, 168 325, 174 290 C 182 325, 192 370, 214 370 C 242 370, 252 295, 242 258 Z"
+              d="M 112 258 C 102 295, 108 385, 144 385 C 160 385, 168 335, 174 290 C 182 335, 192 385, 214 385 C 242 385, 252 295, 242 258 Z"
               fill="url(#kDhotiGrad)"
               stroke="#B37300"
               strokeWidth="1.2"
             />
             {/* 3D Fabric Fold Lines */}
-            <path d="M 132 262 C 126 295, 130 355, 142 364" fill="none" stroke="#D99600" strokeWidth="3" opacity="0.65" />
-            <path d="M 152 264 C 148 295, 150 340, 158 360" fill="none" stroke="#D99600" strokeWidth="2" opacity="0.5" />
-            <path d="M 198 264 C 204 295, 202 345, 208 364" fill="none" stroke="#D99600" strokeWidth="3" opacity="0.65" />
-            <path d="M 218 262 C 224 295, 222 340, 228 358" fill="none" stroke="#D99600" strokeWidth="2" opacity="0.5" />
+            <path d="M 132 262 C 126 295, 130 365, 142 378" fill="none" stroke="#D99600" strokeWidth="3" opacity="0.65" />
+            <path d="M 152 264 C 148 295, 150 350, 158 375" fill="none" stroke="#D99600" strokeWidth="2" opacity="0.5" />
+            <path d="M 198 264 C 204 295, 202 360, 208 378" fill="none" stroke="#D99600" strokeWidth="3" opacity="0.65" />
+            <path d="M 218 262 C 224 295, 222 350, 228 375" fill="none" stroke="#D99600" strokeWidth="2" opacity="0.5" />
 
             {/* Orange Waist Sash (#FF8A00) */}
             <path
@@ -278,19 +273,19 @@ export function LittleKrishna({
 
             {/* Draped Sash Tail Hanging Down Right */}
             <path
-              d="M 210 282 C 204 310, 220 365, 244 365 C 254 365, 242 315, 226 282 Z"
+              d="M 210 282 C 204 310, 220 375, 244 375 C 254 375, 242 315, 226 282 Z"
               fill="url(#kSashGrad)"
               stroke="#9C4400"
               strokeWidth="1"
             />
             {/* Detailed Sash Trim Pattern */}
-            <path d="M 210 356 L 242 356" stroke="#FFF2A3" strokeWidth="2" strokeDasharray="3 2" />
+            <path d="M 210 366 L 242 366" stroke="#FFF2A3" strokeWidth="2" strokeDasharray="3 2" />
           </g>
 
           {/* ════════════════ 3. TORSO & CHEST ════════════════ */}
           <g id="torso">
             <path
-              d="M 126 186 C 120 210, 120 248, 130 260 C 158 265, 196 265, 224 260 C 234 248, 234 210, 228 186 Z"
+              d="M 126 166 C 120 200, 120 248, 130 260 C 158 265, 196 265, 224 260 C 234 248, 234 200, 228 166 Z"
               fill="url(#kSkinBody)"
             />
           </g>
@@ -395,187 +390,218 @@ export function LittleKrishna({
           )}
 
           {/* ════════════════ 6. VOLUMINOUS CURLY HAIR (BACK) ════════════════ */}
-          <g id="hairBack">
-            {/* Outer Fluffy Curls Layer */}
-            <circle cx="112" cy="126" r="32" fill="url(#kHairGrad)" />
-            <circle cx="100" cy="154" r="30" fill="url(#kHairGrad)" />
-            <circle cx="102" cy="182" r="28" fill="url(#kHairGrad)" />
+          <g id="headGroup" transform="translate(0, -18)">
+            <g id="hairBack">
+              {/* Outer Fluffy Curls Layer */}
+              <circle cx="112" cy="126" r="32" fill="url(#kHairGrad)" />
+              <circle cx="100" cy="154" r="30" fill="url(#kHairGrad)" />
+              <circle cx="102" cy="182" r="28" fill="url(#kHairGrad)" />
 
-            <circle cx="242" cy="126" r="32" fill="url(#kHairGrad)" />
-            <circle cx="254" cy="154" r="30" fill="url(#kHairGrad)" />
-            <circle cx="252" cy="182" r="28" fill="url(#kHairGrad)" />
+              <circle cx="242" cy="126" r="32" fill="url(#kHairGrad)" />
+              <circle cx="254" cy="154" r="30" fill="url(#kHairGrad)" />
+              <circle cx="252" cy="182" r="28" fill="url(#kHairGrad)" />
 
-            <circle cx="132" cy="96" r="36" fill="url(#kHairGrad)" />
-            <circle cx="177" cy="84" r="40" fill="url(#kHairGrad)" />
-            <circle cx="222" cy="96" r="36" fill="url(#kHairGrad)" />
-          </g>
-
-          {/* ════════════════ 7. HEAD & EARS ════════════════ */}
-          <g id="headBase">
-            {/* Left Ear */}
-            <g transform="translate(110, 160)">
-              <ellipse cx="0" cy="0" rx="12" ry="16" fill="url(#kSkinHead)" />
-              {/* Gold Hoop Earring */}
-              <ellipse cx="-4" cy="10" rx="9" ry="9" fill="none" stroke="url(#kGoldGrad)" strokeWidth="3.5" />
+              <circle cx="132" cy="96" r="36" fill="url(#kHairGrad)" />
+              <circle cx="177" cy="84" r="40" fill="url(#kHairGrad)" />
+              <circle cx="222" cy="96" r="36" fill="url(#kHairGrad)" />
             </g>
 
-            {/* Right Ear */}
-            <g transform="translate(244, 160)">
-              <ellipse cx="0" cy="0" rx="12" ry="16" fill="url(#kSkinHead)" />
-              {/* Gold Hoop Earring */}
-              <ellipse cx="4" cy="10" rx="9" ry="9" fill="none" stroke="url(#kGoldGrad)" strokeWidth="3.5" />
+            {/* ════════════════ 7. HEAD & EARS ════════════════ */}
+            <g id="headBase">
+              {/* Left Ear */}
+              <g transform="translate(110, 160)">
+                <ellipse cx="0" cy="0" rx="12" ry="16" fill="url(#kSkinHead)" />
+                {/* Gold Hoop Earring */}
+                <ellipse cx="-4" cy="10" rx="9" ry="9" fill="none" stroke="url(#kGoldGrad)" strokeWidth="3.5" />
+              </g>
+
+              {/* Right Ear */}
+              <g transform="translate(244, 160)">
+                <ellipse cx="0" cy="0" rx="12" ry="16" fill="url(#kSkinHead)" />
+                {/* Gold Hoop Earring */}
+                <ellipse cx="4" cy="10" rx="9" ry="9" fill="none" stroke="url(#kGoldGrad)" strokeWidth="3.5" />
+              </g>
+
+              {/* Chubby Pixar Head Sphere */}
+              <ellipse cx="177" cy="150" rx="63" ry="56" fill="url(#kSkinHead)" />
+
+              {/* Soft Rosy-Coral Chubby Cheeks */}
+              <ellipse cx="132" cy="168" rx="20" ry="13" fill="url(#kCheekBlush)" transform="rotate(-6 132 168)" />
+              <ellipse cx="222" cy="168" rx="20" ry="13" fill="url(#kCheekBlush)" transform="rotate(6 222 168)" />
             </g>
 
-            {/* Chubby Pixar Head Sphere */}
-            <ellipse cx="177" cy="150" rx="63" ry="56" fill="url(#kSkinHead)" />
-
-            {/* Soft Rosy-Coral Chubby Cheeks */}
-            <ellipse cx="132" cy="168" rx="20" ry="13" fill="url(#kCheekBlush)" transform="rotate(-6 132 168)" />
-            <ellipse cx="222" cy="168" rx="20" ry="13" fill="url(#kCheekBlush)" transform="rotate(6 222 168)" />
-          </g>
-
-          {/* ════════════════ 8. EXPRESSIVE FACE DETAILS ════════════════ */}
-          <g id="faceDetails">
-            {/* Forehead White U-Tilak & Red Bindi */}
-            <path
-              d="M 168 108 L 168 132 C 168 140, 186 140, 186 132 L 186 108 Z"
-              fill="none"
-              stroke="#F8F9FF"
-              strokeWidth="4"
-              strokeLinecap="round"
-            />
-            <circle cx="177" cy="140" r="3" fill="#FF3B30" />
-
-            {/* Eyebrows */}
-            <path d="M 132 134 C 144 126, 157 129, 162 134" fill="none" stroke="#25130A" strokeWidth="4.5" strokeLinecap="round" />
-            <path d="M 222 134 C 210 126, 197 129, 192 134" fill="none" stroke="#25130A" strokeWidth="4.5" strokeLinecap="round" />
-
-            {/* Left Eye */}
-            <g transform="translate(132, 138)">
-              {/* White Sclera */}
-              <ellipse cx="17" cy="15" rx="17" ry="16" fill="#FFFFFF" />
-              <path d="M 0 13 C 7 4, 27 4, 34 13" fill="none" stroke="#25130A" strokeWidth="4" strokeLinecap="round" />
-              {/* Deep Brown Iris */}
-              <circle cx="17" cy="15" r="12" fill="url(#kIrisGrad)" />
-              {/* Pupil */}
-              <circle cx="17" cy="15" r="6.5" fill="#0B1530" />
-              {/* Glossy Sparkle Highlights */}
-              <circle cx="21" cy="11" r="4" fill="#FFFFFF" />
-              <circle cx="13" cy="19" r="1.8" fill="#FFFFFF" opacity="0.85" />
-            </g>
-
-            {/* Right Eye */}
-            <g transform="translate(188, 138)">
-              {/* White Sclera */}
-              <ellipse cx="17" cy="15" rx="17" ry="16" fill="#FFFFFF" />
-              <path d="M 0 13 C 7 4, 27 4, 34 13" fill="none" stroke="#25130A" strokeWidth="4" strokeLinecap="round" />
-              {/* Deep Brown Iris */}
-              <circle cx="17" cy="15" r="12" fill="url(#kIrisGrad)" />
-              {/* Pupil */}
-              <circle cx="17" cy="15" r="6.5" fill="#0B1530" />
-              {/* Glossy Sparkle Highlights */}
-              <circle cx="21" cy="11" r="4" fill="#FFFFFF" />
-              <circle cx="13" cy="19" r="1.8" fill="#FFFFFF" opacity="0.85" />
-            </g>
-
-            {/* 3D Pixar Cute Button Nose (Matched to Face Close-up) */}
-            <g id="noseGroup" transform="translate(177, 163)">
-              {/* Subtle Nose Bridge Contour */}
-              <path d="M 0 -7 L 0 -1" stroke="#548CD9" strokeWidth="1.8" strokeLinecap="round" opacity="0.3" />
-              {/* Base Nose Bulb Shadow */}
-              <ellipse cx="0" cy="2" rx="6.5" ry="4" fill="#3B67B5" opacity="0.45" />
-              {/* Main Skin Nose Tip Bulb */}
-              <ellipse cx="0" cy="0" rx="5.5" ry="3.6" fill="url(#kSkinHead)" />
-              {/* Underside Nostril Shadow Spots */}
-              <ellipse cx="-3.2" cy="2.5" rx="1.8" ry="1" fill="#204280" opacity="0.4" />
-              <ellipse cx="3.2" cy="2.5" rx="1.8" ry="1" fill="#204280" opacity="0.4" />
-              {/* Glossy Tip Highlight Spot */}
-              <ellipse cx="-1" cy="-0.8" rx="2.5" ry="1.4" fill="#E2EFFF" opacity="0.95" />
-              <circle cx="1.2" cy="-0.5" r="0.8" fill="#FFFFFF" opacity="0.9" />
-            </g>
-
-            {/* 3D Pixar Lips & Confident Smile (Matched to Model Sheet) */}
-            <g id="lipsGroup" transform="translate(177, 178)">
-              {/* Dimple Corner Curves */}
-              <path d="M -19 -2 C -18 1, -17 3, -18 5" fill="none" stroke="#7A241C" strokeWidth="1.6" strokeLinecap="round" opacity="0.6" />
-              <path d="M 19 -2 C 18 1, 17 3, 18 5" fill="none" stroke="#7A241C" strokeWidth="1.6" strokeLinecap="round" opacity="0.6" />
-
-              {/* Upper Lip Cupid's Bow Curve */}
+            {/* ════════════════ 8. EXPRESSIVE FACE DETAILS ════════════════ */}
+            <g id="faceDetails">
+              {/* Forehead White U-Tilak & Red Bindi */}
               <path
-                d="M -17 -2 C -9 -7, -4 -3, 0 -5 C 4 -3, 9 -7, 17 -2 C 11 2, -11 2, -17 -2 Z"
-                fill="#942E39"
-                opacity="0.95"
-              />
-
-              {/* Smile Mouth Interior */}
-              <path
-                d="M -17 -2 C -9 11, 9 11, 17 -2 C 9 5, -9 5, -17 -2 Z"
-                fill="url(#kLipGrad)"
-                stroke="#7A241C"
-                strokeWidth="1.5"
-              />
-
-              {/* Chubby 3D Lower Lip */}
-              <path
-                d="M -12 2 C -7 9.5, 7 9.5, 12 2 C 7 6.5, -7 6.5, -12 2 Z"
-                fill="#F07D88"
-                opacity="0.9"
-              />
-
-              {/* Glossy Lower Lip Shine Highlight */}
-              <path
-                d="M -6.5 5 C -2.5 7, 2.5 7, 6.5 5"
+                d="M 168 108 L 168 132 C 168 140, 186 140, 186 132 L 186 108 Z"
                 fill="none"
-                stroke="#FFFFFF"
-                strokeWidth="1.6"
+                stroke="#F8F9FF"
+                strokeWidth="4"
                 strokeLinecap="round"
-                opacity="0.85"
               />
+              <circle cx="177" cy="140" r="3" fill="#FF3B30" />
+
+              {/* Eyebrows */}
+              <path d="M 132 134 C 144 126, 157 129, 162 134" fill="none" stroke="#25130A" strokeWidth="4.5" strokeLinecap="round" />
+              <path d="M 222 134 C 210 126, 197 129, 192 134" fill="none" stroke="#25130A" strokeWidth="4.5" strokeLinecap="round" />
+
+              {/* Left Eye */}
+              <g transform="translate(132, 138)">
+                {/* White Sclera */}
+                <ellipse cx="17" cy="15" rx="17" ry="16" fill="#FFFFFF" />
+                <path d="M 0 13 C 7 4, 27 4, 34 13" fill="none" stroke="#25130A" strokeWidth="4" strokeLinecap="round" />
+                {/* Deep Brown Iris */}
+                <circle cx="17" cy="15" r="12" fill="url(#kIrisGrad)" />
+                {/* Pupil */}
+                <circle cx="17" cy="15" r="6.5" fill="#0B1530" />
+                {/* Glossy Sparkle Highlights */}
+                <circle cx="21" cy="11" r="4" fill="#FFFFFF" />
+                <circle cx="13" cy="19" r="1.8" fill="#FFFFFF" opacity="0.85" />
+              </g>
+
+              {/* Right Eye */}
+              <g transform="translate(188, 138)">
+                {/* White Sclera */}
+                <ellipse cx="17" cy="15" rx="17" ry="16" fill="#FFFFFF" />
+                <path d="M 0 13 C 7 4, 27 4, 34 13" fill="none" stroke="#25130A" strokeWidth="4" strokeLinecap="round" />
+                {/* Deep Brown Iris */}
+                <circle cx="17" cy="15" r="12" fill="url(#kIrisGrad)" />
+                {/* Pupil */}
+                <circle cx="17" cy="15" r="6.5" fill="#0B1530" />
+                {/* Glossy Sparkle Highlights */}
+                <circle cx="21" cy="11" r="4" fill="#FFFFFF" />
+                <circle cx="13" cy="19" r="1.8" fill="#FFFFFF" opacity="0.85" />
+              </g>
+
+              {/* 3D Pixar Cute Button Nose (Matched to Face Close-up) */}
+              <g id="noseGroup" transform="translate(177, 163)">
+                {/* Subtle Nose Bridge Contour */}
+                <path d="M 0 -7 L 0 -1" stroke="#548CD9" strokeWidth="1.8" strokeLinecap="round" opacity="0.3" />
+                {/* Base Nose Bulb Shadow */}
+                <ellipse cx="0" cy="2" rx="6.5" ry="4" fill="#3B67B5" opacity="0.45" />
+                {/* Main Skin Nose Tip Bulb */}
+                <ellipse cx="0" cy="0" rx="5.5" ry="3.6" fill="url(#kSkinHead)" />
+                {/* Underside Nostril Shadow Spots */}
+                <ellipse cx="-3.2" cy="2.5" rx="1.8" ry="1" fill="#204280" opacity="0.4" />
+                <ellipse cx="3.2" cy="2.5" rx="1.8" ry="1" fill="#204280" opacity="0.4" />
+                {/* Glossy Tip Highlight Spot */}
+                <ellipse cx="-1" cy="-0.8" rx="2.5" ry="1.4" fill="#E2EFFF" opacity="0.95" />
+                <circle cx="1.2" cy="-0.5" r="0.8" fill="#FFFFFF" opacity="0.9" />
+              </g>
+
+              {/* 3D Pixar Lips & Confident Smile (Matched to Model Sheet) */}
+              <g id="lipsGroup" transform="translate(177, 178)">
+                {/* Dimple Corner Curves */}
+                <path d="M -19 -2 C -18 1, -17 3, -18 5" fill="none" stroke="#7A241C" strokeWidth="1.6" strokeLinecap="round" opacity="0.6" />
+                <path d="M 19 -2 C 18 1, 17 3, 18 5" fill="none" stroke="#7A241C" strokeWidth="1.6" strokeLinecap="round" opacity="0.6" />
+
+                {/* Upper Lip Cupid's Bow Curve */}
+                <path
+                  d="M -17 -2 C -9 -7, -4 -3, 0 -5 C 4 -3, 9 -7, 17 -2 C 11 2, -11 2, -17 -2 Z"
+                  fill="#942E39"
+                  opacity="0.95"
+                />
+
+                {/* Smile Mouth Interior */}
+                <path
+                  d="M -17 -2 C -9 11, 9 11, 17 -2 C 9 5, -9 5, -17 -2 Z"
+                  fill="url(#kLipGrad)"
+                  stroke="#7A241C"
+                  strokeWidth="1.5"
+                />
+
+                {/* Chubby 3D Lower Lip */}
+                <path
+                  d="M -12 2 C -7 9.5, 7 9.5, 12 2 C 7 6.5, -7 6.5, -12 2 Z"
+                  fill="#F07D88"
+                  opacity="0.9"
+                />
+
+                {/* Glossy Lower Lip Shine Highlight */}
+                <path
+                  d="M -6.5 5 C -2.5 7, 2.5 7, 6.5 5"
+                  fill="none"
+                  stroke="#FFFFFF"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  opacity="0.85"
+                />
+              </g>
             </g>
-          </g>
 
-          {/* ════════════════ 9. CROWN & TOPKNOT BUN ════════════════ */}
-          <g id="crownTopknot">
-            {/* Topknot Bun */}
-            <ellipse cx="177" cy="78" rx="26" ry="22" fill="url(#kHairGrad)" />
-            {/* Bun Gold Band */}
-            <ellipse cx="177" cy="90" rx="20" ry="6" fill="url(#kGoldGrad)" stroke="#A84E00" strokeWidth="1" />
+            {/* ════════════════ 9. CROWN & TOPKNOT BUN ════════════════ */}
+            <g id="crownTopknot">
+              {/* Topknot Bun */}
+              <ellipse cx="177" cy="78" rx="26" ry="22" fill="url(#kHairGrad)" />
+              {/* Bun Gold Band */}
+              <ellipse cx="177" cy="90" rx="20" ry="6" fill="url(#kGoldGrad)" stroke="#A84E00" strokeWidth="1" />
 
-            {/* Forehead Gold Crown / Headband */}
-            <path d="M 124 118 C 150 106, 204 106, 230 118" fill="none" stroke="url(#kGoldGrad)" strokeWidth="4.5" />
-            {/* Crown Center Peak */}
-            <path d="M 170 112 L 177 100 L 184 112 Z" fill="url(#kGoldGrad)" stroke="#A84E00" strokeWidth="1" />
-            <circle cx="177" cy="107" r="2.5" fill="#FF3B30" />
-          </g>
+              {/* Forehead Gold Crown / Headband */}
+              <path d="M 124 118 C 150 106, 204 106, 230 118" fill="none" stroke="url(#kGoldGrad)" strokeWidth="4.5" />
+              {/* Crown Center Peak */}
+              <path d="M 170 112 L 177 100 L 184 112 Z" fill="url(#kGoldGrad)" stroke="#A84E00" strokeWidth="1" />
+              <circle cx="177" cy="107" r="2.5" fill="#FF3B30" />
+            </g>
 
-          {/* ════════════════ 10. PEACOCK FEATHER (MOR PANKH DIRECTLY ABOVE HEAD) ════════════════ */}
-          <g id="peacockFeather" transform="translate(165, -8) rotate(0)">
-            {/* Slender Curved Green Stem */}
-            <path d="M 34 78 C 28 50, 20 22, 12 0" fill="none" stroke="url(#kFeatherStem)" strokeWidth="3.5" strokeLinecap="round" />
+            {/* ════════════════ 10. PEACOCK FEATHER (MOR PANKH) ════════════════ */}
+            <g id="peacockFeather" transform="translate(145, -45) rotate(-18) scale(1.4)">
+              {/* Slender Curved Green Stem */}
+              <path d="M 34 78 C 30 50, 24 22, 12 0" fill="none" stroke="url(#kFeatherStem)" strokeWidth="2.5" strokeLinecap="round" />
 
-            {/* Lush Outer Green Feather Fronds with Strands */}
-            <path
-              d="M 12 0 C -22 -12, -22 -55, 12 -65 C 46 -55, 46 -12, 12 0 Z"
-              fill="url(#kFeatherOuter)"
-              stroke="#14532D"
-              strokeWidth="1.2"
-            />
-            {/* Fine Feather Fibres */}
-            <path d="M 12 -60 L -14 -40 M 12 -50 L -18 -32 M 12 -40 L -18 -20 M 12 -30 L -16 -8" stroke="#4ADE80" strokeWidth="1" opacity="0.6" />
-            <path d="M 12 -60 L 38 -40 M 12 -50 L 42 -32 M 12 -40 L 42 -20 M 12 -30 L 40 -8" stroke="#4ADE80" strokeWidth="1" opacity="0.6" />
+              {/* Lush Background Shadow Frond */}
+              <path
+                d="M 12 0 C -40 -15, -50 -65, 12 -85 C 75 -65, 60 -15, 12 0 Z"
+                fill="#0B2B16"
+                opacity="0.5"
+                filter="blur(2px)"
+              />
 
-            {/* Peacock Ocellus Ring 1 (Teal/Electric Blue) */}
-            <ellipse cx="12" cy="-32" rx="19" ry="23" fill="url(#kFeatherTeal)" stroke="#0284C7" strokeWidth="1" />
+              {/* Main Green Feather Fronds */}
+              <path
+                d="M 12 0 C -32 -12, -40 -60, 12 -75 C 65 -60, 55 -12, 12 0 Z"
+                fill="url(#kFeatherOuter)"
+                stroke="#14532D"
+                strokeWidth="0.8"
+              />
 
-            {/* Peacock Ocellus Ring 2 (Deep Indigo Navy) */}
-            <ellipse cx="12" cy="-32" rx="13" ry="16" fill="#1E3A8A" />
+              {/* Voluminous Feather Fibres (Detailed V-Shape lines) */}
+              <g stroke="#4ADE80" strokeWidth="0.7" opacity="0.8" strokeLinecap="round">
+                {/* Primary dense hairs */}
+                <path d="M 12 -68 L -20 -48 M 12 -58 L -24 -38 M 12 -48 L -26 -28 M 12 -38 L -24 -18 M 12 -28 L -20 -8 M 12 -18 L -14 2" />
+                <path d="M 12 -68 L 44 -48 M 12 -58 L 48 -38 M 12 -48 L 50 -28 M 12 -38 L 48 -18 M 12 -28 L 44 -8 M 12 -18 L 38 2" />
+                {/* Secondary fine hairs */}
+                <path d="M 12 -63 L -14 -53 M 12 -53 L -18 -43 M 12 -43 L -20 -33 M 12 -33 L -18 -23" strokeWidth="0.4" opacity="0.9" />
+                <path d="M 12 -63 L 38 -53 M 12 -53 L 42 -43 M 12 -43 L 44 -33 M 12 -33 L 42 -23" strokeWidth="0.4" opacity="0.9" />
+              </g>
 
-            {/* Peacock Ocellus Ring 3 (Golden Amber Heart - Matching Model Sheet Closeup) */}
-            <ellipse cx="12" cy="-32" rx="8" ry="10" fill="url(#kGoldGrad)" />
+              {/* Peacock Ocellus Ring 1 (Vibrant Teal/Cyan glow base) */}
+              <ellipse cx="12" cy="-35" rx="24" ry="28" fill="url(#kFeatherTeal)" stroke="#0EA5E9" strokeWidth="0.5" />
 
-            {/* Peacock Ocellus Center Spot (Glowing Cyan/White Specular) */}
-            <ellipse cx="12" cy="-33" rx="4.5" ry="6" fill="url(#kFeatherCyan)" />
-            <circle cx="12" cy="-35" r="2.5" fill="#FFFFFF" />
+              {/* Peacock Ocellus Ring 2 (Deep Royal Blue/Indigo) */}
+              <ellipse cx="12" cy="-34" rx="17" ry="21" fill="#1E3A8A" stroke="#312E81" strokeWidth="1" />
+
+              {/* Peacock Ocellus Ring 3 (Bright Turquoise/Green transition) */}
+              <ellipse cx="12" cy="-33" rx="13" ry="17" fill="#0D9488" />
+
+              {/* Peacock Ocellus Ring 4 (Golden Amber Heart) */}
+              <ellipse cx="12" cy="-32" rx="10" ry="13" fill="url(#kGoldGrad)" />
+
+              {/* Peacock Ocellus Ring 5 (Deep Ruby/Brown core for contrast) */}
+              <ellipse cx="12" cy="-32" rx="5.5" ry="8.5" fill="#78350F" />
+
+              {/* Peacock Ocellus Center Spot (Glowing Cyan/White Specular) */}
+              <ellipse cx="11.5" cy="-34" rx="3.5" ry="6" fill="url(#kFeatherCyan)" />
+              <circle cx="11" cy="-36" r="1.5" fill="#FFFFFF" />
+
+              {/* Extra Magical Sparkles & Orbs around the feather */}
+              <circle cx="-12" cy="-65" r="1.5" fill="#FFEAA7" opacity="0.8" />
+              <circle cx="38" cy="-55" r="1.2" fill="#FFEAA7" opacity="0.7" />
+              <circle cx="22" cy="-80" r="1.5" fill="#FFEAA7" opacity="0.9" />
+              <circle cx="5" cy="-82" r="0.8" fill="#FFEAA7" opacity="0.6" />
+              <circle cx="-18" cy="-45" r="1" fill="#FFEAA7" opacity="0.7" />
+              <circle cx="45" cy="-35" r="1.5" fill="#FFEAA7" opacity="0.5" />
+            </g>
           </g>
 
           {/* ════════════════ 11. SUDARSHANA CHAKRA HEROIC POSE ════════════════ */}
