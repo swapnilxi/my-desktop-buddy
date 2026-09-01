@@ -676,13 +676,31 @@ export function LittleKrishna({
               <path d="M 172 108 L 172 128 C 172 134, 182 134, 182 128 L 182 108" fill="none" stroke="#FEF08A" strokeWidth="1.5" opacity="0.8" />
               <circle cx="177" cy="140" r="3.2" fill="#EF4444" stroke="#991B1B" strokeWidth="0.5" />
 
-              <path d="M 128 133 C 142 123, 158 126, 164 133" fill="none" stroke="#1E100A" strokeWidth="4.2" strokeLinecap="round" />
-              <path d="M 226 133 C 212 123, 196 126, 190 133" fill="none" stroke="#1E100A" strokeWidth="4.2" strokeLinecap="round" />
+              {/* Refined Eyebrows - Clean 2px curved strokes without heavy black blobs */}
+              <path d="M 128 133 C 142 123, 158 126, 164 133" fill="none" stroke="#1E293B" strokeWidth="2.0" strokeLinecap="round" />
+              <path d="M 226 133 C 212 123, 196 126, 190 133" fill="none" stroke="#1E293B" strokeWidth="2.0" strokeLinecap="round" />
+
+              {/* Devotional Small White Decorative Dots Above Eyebrows */}
+              <g id="eyebrowWhiteDots" fill="#FFFFFF" opacity="0.95">
+                {/* Left Eyebrow Dots */}
+                <circle cx="130" cy="126" r="1.2" />
+                <circle cx="138" cy="122" r="1.3" />
+                <circle cx="146" cy="120" r="1.4" />
+                <circle cx="154" cy="122" r="1.3" />
+                <circle cx="162" cy="126" r="1.2" />
+
+                {/* Right Eyebrow Dots */}
+                <circle cx="192" cy="126" r="1.2" />
+                <circle cx="200" cy="122" r="1.3" />
+                <circle cx="208" cy="120" r="1.4" />
+                <circle cx="216" cy="122" r="1.3" />
+                <circle cx="224" cy="126" r="1.2" />
+              </g>
 
               {/* Left Eye */}
               <g transform="translate(130, 137)">
                 <ellipse cx="18" cy="16" rx="18.5" ry="17.5" fill="#FFFFFF" />
-                <path d="M 0 14 C 7 3, 29 3, 36 14" fill="none" stroke="#1E100A" strokeWidth="4.2" strokeLinecap="round" />
+                <path d="M 0 14 C 7 3, 29 3, 36 14" fill="none" stroke="#1E293B" strokeWidth="2.5" strokeLinecap="round" />
                 <path d="M 2 13 C 8 5, 28 5, 34 13" fill="none" stroke="#78350F" strokeWidth="1.2" opacity="0.6" />
                 <circle cx="18" cy="16" r="13" fill="url(#kIrisGrad)" className={styles.iris} />
                 <circle cx="18" cy="16" r="13" fill="none" stroke="#2D0F02" strokeWidth="1" opacity="0.7" />
@@ -701,7 +719,7 @@ export function LittleKrishna({
               {/* Right Eye */}
               <g transform="translate(188, 137)">
                 <ellipse cx="18" cy="16" rx="18.5" ry="17.5" fill="#FFFFFF" />
-                <path d="M 0 14 C 7 3, 29 3, 36 14" fill="none" stroke="#1E100A" strokeWidth="4.2" strokeLinecap="round" />
+                <path d="M 0 14 C 7 3, 29 3, 36 14" fill="none" stroke="#1E293B" strokeWidth="2.5" strokeLinecap="round" />
                 <path d="M 2 13 C 8 5, 28 5, 34 13" fill="none" stroke="#78350F" strokeWidth="1.2" opacity="0.6" />
                 <circle cx="18" cy="16" r="13" fill="url(#kIrisGrad)" className={styles.iris} />
                 <circle cx="18" cy="16" r="13" fill="none" stroke="#2D0F02" strokeWidth="1" opacity="0.7" />
@@ -765,13 +783,6 @@ export function LittleKrishna({
               <ellipse cx="190" cy="68" rx="11" ry="10" fill="url(#kHairCurl3D)" />
               <ellipse cx="177" cy="58" rx="12" ry="10" fill="url(#kHairCurl3D)" />
               <ellipse cx="172" cy="62" rx="16" ry="11" fill="url(#kHairCurlHighlight)" />
-
-              <g id="foreheadCurls">
-                <path d="M 134 114 C 128 104, 142 98, 148 108 C 152 115, 140 120, 134 114 Z" fill="url(#kHairCurl3D)" />
-                <path d="M 220 114 C 226 104, 212 98, 206 108 C 202 115, 214 120, 220 114 Z" fill="url(#kHairCurl3D)" />
-                <ellipse cx="158" cy="106" rx="9" ry="7" fill="url(#kHairCurl3D)" />
-                <ellipse cx="196" cy="106" rx="9" ry="7" fill="url(#kHairCurl3D)" />
-              </g>
             </g>
 
             {/* ════════════════ 10. PEACOCK FEATHER (MOR PANKH — LUSH & DENSE) ════════════════ */}
