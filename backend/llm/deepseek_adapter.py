@@ -1,8 +1,10 @@
 """
 DeepSeek LLM Adapter using the OpenAI-compatible API.
+Supports dynamic per-request API keys (client LocalStorage) and server .env fallback.
 """
 from __future__ import annotations
 
+import os
 from typing import Optional
 from openai import AsyncOpenAI
 from llm import LLMAdapter
@@ -12,16 +14,23 @@ from config_manager import get_config
 class DeepSeekAdapter(LLMAdapter):
     """Adapter for DeepSeek models via OpenAI-compatible API."""
 
-    def __init__(self):
+    def __init__(self, api_key: Optional[str] = None, model: Optional[str] = None):
         config = get_config()
-        api_key = config.api_keys.deepseek_key
-        if not api_key:
-            raise ValueError("DeepSeek API key not configured. Set it in Config → API Keys.")
-        self.client = AsyncOpenAI(
-            api_key=api_key,
-            base_url="https://api.deepseek.com/v1",
+        resolved_key = (
+            api_key
+            or config.api_keys.deepseek_key
+            or os.getenv("DEEPSEEK_API_KEY")
+            or os.getenv("DEEPSEEK_KEY")
         )
-        self.model = config.llm.deepseek_model
+        if not resolved_key:
+            raise ValueError(
+                "DeepSeek API key not configured. Add your key in Config → API Keys (stored locally in browser) or set DEEPSEEK_API_KEY in .env."
+            )
+        self.client = AsyncOpenAI(
+            api_key=resolved_key,
+            base_url="https://api.deepseek.com",
+        )
+        self.model = model or config.llm.deepseek_model or "deepseek-chat"
 
     async def generate(
         self,
@@ -50,3 +59,4 @@ class DeepSeekAdapter(LLMAdapter):
 
     def get_model_name(self) -> str:
         return f"DeepSeek ({self.model})"
+

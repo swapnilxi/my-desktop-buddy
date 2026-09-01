@@ -5,7 +5,7 @@
  * right edge of the macOS screen. Manages tray icon and FastAPI sidecar.
  */
 
-const { app, BrowserWindow, Tray, Menu, screen, nativeImage, ipcMain } = require('electron');
+const { app, BrowserWindow, Tray, Menu, screen, nativeImage, ipcMain, session, systemPreferences } = require('electron');
 const path = require('path');
 const { spawn } = require('child_process');
 
@@ -14,12 +14,13 @@ let tray = null;
 let backendProcess = null;
 
 const IS_DEV = process.env.ELECTRON_DEV === 'true';
-const FRONTEND_URL = IS_DEV ? 'http://localhost:3000' : `file://${path.join(__dirname, '../frontend/out/index.html')}`;
-const BACKEND_PORT = 8000;
+const BACKEND_PORT = parseInt(process.env.BACKEND_PORT || '8000', 10);
+const FRONTEND_PORT = parseInt(process.env.FRONTEND_PORT || '3000', 10);
+const FRONTEND_URL = IS_DEV ? `http://localhost:${FRONTEND_PORT}` : `file://${path.join(__dirname, '../frontend/out/index.html')}`;
 
 // Dimensions for modes
-const PET_WIDTH = 200;
-const PET_HEIGHT = 225;
+const PET_WIDTH = 240;
+const PET_HEIGHT = 360;
 const COMPACT_WIDTH = 380;
 const COMPACT_HEIGHT = 680;
 const DASHBOARD_WIDTH = 1100;
@@ -64,6 +65,18 @@ function createWindow() {
 
   // Make Hammy float across all macOS spaces/desktops
   mainWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+
+  // Forward renderer console logs & errors directly to the terminal stdout/stderr
+  mainWindow.webContents.on('console-message', (_event, level, message, line, sourceId) => {
+    const srcBasename = sourceId ? path.basename(sourceId) : '';
+    if (level >= 2) {
+      console.error(`[Renderer ERROR] ${message} (${srcBasename}:${line})`);
+    } else if (level === 1) {
+      console.warn(`[Renderer WARN] ${message}`);
+    } else {
+      console.log(`[Renderer LOG] ${message}`);
+    }
+  });
 
   mainWindow.loadURL(FRONTEND_URL);
 
@@ -182,10 +195,56 @@ function setupIPC() {
       }, true);
     }
   });
+
+  ipcMain.on('buddy:update', (_event, buddyInfo) => {
+    if (!buddyInfo) return;
+    const { name, emoji } = buddyInfo;
+    updateTrayMenu(name, emoji);
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.setTitle(`${emoji || '🐾'} ${name || 'Desktop Buddy'}`);
+    }
+  });
 }
 
 let trayAnimTimer = null;
 let dockAnimTimer = null;
+let currentBuddyName = 'Hammy';
+let currentBuddyEmoji = '🐹';
+
+function updateTrayMenu(name, emoji) {
+  if (name) currentBuddyName = name;
+  if (emoji) currentBuddyEmoji = emoji;
+  if (!tray || tray.isDestroyed()) return;
+
+  tray.setToolTip(`${currentBuddyName} — Desktop Buddy ${currentBuddyEmoji}`);
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: `Show ${currentBuddyName} ${currentBuddyEmoji}`,
+      click: () => {
+        if (mainWindow) {
+          if (mainWindow.isMinimized()) mainWindow.restore();
+          mainWindow.show();
+          mainWindow.focus();
+        }
+      },
+    },
+    {
+      label: 'Hide',
+      click: () => {
+        if (mainWindow) mainWindow.hide();
+      },
+    },
+    { type: 'separator' },
+    {
+      label: `Quit ${currentBuddyName}`,
+      click: () => {
+        app.isQuitting = true;
+        app.quit();
+      },
+    },
+  ]);
+  tray.setContextMenu(contextMenu);
+}
 
 function loadIconFrames(size) {
   const assetsDir = path.join(__dirname, 'assets');
@@ -210,7 +269,7 @@ function createTray() {
   const baseIcon = trayFrames[0] || nativeImage.createFromPath(path.join(__dirname, 'assets', 'icon.png')).resize({ width: 20, height: 20 });
 
   tray = new Tray(baseIcon);
-  tray.setToolTip('Hammy — HamsterDesk 🐹');
+  updateTrayMenu(currentBuddyName, currentBuddyEmoji);
 
   // Animated Menu Bar Tray Icon Loop (Realistic 3D breathing, blinking & ear flicks)
   let step = 0;
@@ -239,35 +298,6 @@ function createTray() {
       }, 300);
     }
   }, 800);
-
-  const contextMenu = Menu.buildFromTemplate([
-    {
-      label: 'Show Hammy 🐹',
-      click: () => {
-        if (mainWindow) {
-          if (mainWindow.isMinimized()) mainWindow.restore();
-          mainWindow.show();
-          mainWindow.focus();
-        }
-      },
-    },
-    {
-      label: 'Hide',
-      click: () => {
-        if (mainWindow) mainWindow.hide();
-      },
-    },
-    { type: 'separator' },
-    {
-      label: 'Quit Hammy',
-      click: () => {
-        app.isQuitting = true;
-        app.quit();
-      },
-    },
-  ]);
-
-  tray.setContextMenu(contextMenu);
 
   tray.on('click', () => {
     if (mainWindow) {
@@ -365,10 +395,40 @@ function setupDock() {
   }
 }
 
+function setupMediaPermissions() {
+  const allowed = new Set(['media', 'audioCapture', 'microphone']);
+
+  session.defaultSession.setPermissionRequestHandler((_wc, permission, callback) => {
+    callback(allowed.has(permission));
+  });
+
+  session.defaultSession.setPermissionCheckHandler((_wc, permission) => {
+    return allowed.has(permission);
+  });
+
+  if (process.platform === 'darwin' && systemPreferences) {
+    try {
+      const status = systemPreferences.getMediaAccessStatus ? systemPreferences.getMediaAccessStatus('microphone') : 'unknown';
+      console.log(`[Mic] Current macOS microphone status: ${status}`);
+      if (status !== 'granted' && systemPreferences.askForMediaAccess) {
+        systemPreferences.askForMediaAccess('microphone').then((granted) => {
+          console.log(`[Mic] macOS microphone access request result: ${granted ? 'GRANTED ✅' : 'DENIED ❌'}`);
+        }).catch((err) => {
+          console.error('[Mic] macOS microphone request error:', err);
+        });
+      }
+    } catch (err) {
+      console.error('[Mic] Error checking systemPreferences:', err);
+    }
+  }
+}
+
 app.whenReady().then(() => {
   if (IS_DEV) {
     console.log('🐹 Starting HamsterDesk in development mode...');
   }
+
+  setupMediaPermissions();
 
   setupIPC();
   setupDock();

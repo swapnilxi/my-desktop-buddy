@@ -1,12 +1,14 @@
 """
-Chat route — handles LLM conversation with context injection.
+Chat route — handles LLM conversation with context injection and dynamic client credentials.
 """
-from typing import List
+from typing import List, Optional
+import re
+import random
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request, Header
 from pydantic import BaseModel
 from context import get_full_context
-from llm.router import get_llm_adapter
+from llm.router import generate_with_fallback
 from config_manager import get_config
 
 router = APIRouter(tags=["chat"])
@@ -29,16 +31,42 @@ class ChatResponse(BaseModel):
     hamster_mood: str  # idle, thinking, speaking, happy
 
 
-@router.post("/chat", response_model=ChatResponse)
-async def chat(request: ChatRequest):
-    """Send a message and get an LLM response with hamster context."""
-    try:
-        adapter = get_llm_adapter()
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+def _extract_client_context(
+    x_gemini_key: Optional[str] = None,
+    x_deepseek_key: Optional[str] = None,
+    x_llm_provider: Optional[str] = None,
+    x_gemini_model: Optional[str] = None,
+    x_deepseek_model: Optional[str] = None,
+):
+    client_keys = {}
+    if x_gemini_key:
+        client_keys["gemini_key"] = x_gemini_key.strip()
+    if x_deepseek_key:
+        client_keys["deepseek_key"] = x_deepseek_key.strip()
 
+    client_models = {}
+    if x_gemini_model:
+        client_models["gemini_model"] = x_gemini_model.strip()
+    if x_deepseek_model:
+        client_models["deepseek_model"] = x_deepseek_model.strip()
+
+    return client_keys, client_models, x_llm_provider
+
+
+@router.post("/chat", response_model=ChatResponse)
+async def chat(
+    request: ChatRequest,
+    x_gemini_key: Optional[str] = Header(None),
+    x_deepseek_key: Optional[str] = Header(None),
+    x_llm_provider: Optional[str] = Header(None),
+    x_gemini_model: Optional[str] = Header(None),
+    x_deepseek_model: Optional[str] = Header(None),
+    x_buddy_type: Optional[str] = Header(None),
+    x_buddy_name: Optional[str] = Header(None),
+):
+    """Send a message and get an LLM response with buddy context and client-side keys."""
     # Build system prompt from context
-    system_prompt = get_full_context()
+    system_prompt = get_full_context(buddy_type=x_buddy_type, buddy_name=x_buddy_name)
 
     # Add RAG context if enabled
     if request.use_rag:
@@ -56,16 +84,28 @@ async def chat(request: ChatRequest):
     messages = [{"role": m.role, "content": m.content} for m in request.history]
     messages.append({"role": "user", "content": request.message})
 
+    client_keys, client_models, client_provider = _extract_client_context(
+        x_gemini_key, x_deepseek_key, x_llm_provider, x_gemini_model, x_deepseek_model
+    )
+
     try:
-        response_text = await adapter.generate(
+        response_text, adapter = await generate_with_fallback(
             messages=messages,
             system_prompt=system_prompt,
+            client_provider=client_provider,
+            client_keys=client_keys,
+            client_models=client_models,
         )
+
+        # Clean any unwanted internal thinking or action prefixes
+        response_text = re.sub(r'<think>.*?</think>', '', response_text, flags=re.DOTALL)
+        response_text = re.sub(r'^(Thought|Action|Thinking):\s*', '', response_text, flags=re.IGNORECASE | re.MULTILINE)
+        response_text = response_text.strip()
 
         # Determine hamster mood based on response
         mood = "speaking"
         lower_response = response_text.lower()
-        if any(w in lower_response for w in ["great job", "well done", "congrat", "awesome", "🎉"]):
+        if any(w in lower_response for w in ["great job", "well done", "congrat", "awesome", "🎉", "peaceful", "zen"]):
             mood = "happy"
 
         return ChatResponse(
@@ -83,11 +123,20 @@ class GreetingResponse(BaseModel):
 
 
 @router.get("/greeting", response_model=GreetingResponse)
-async def get_greeting():
-    """Generate a cute 2-6 word AI greeting or thought from Hammy."""
-    import random
-    
-    fallback_greetings = [
+async def get_greeting(
+    x_gemini_key: Optional[str] = Header(None),
+    x_deepseek_key: Optional[str] = Header(None),
+    x_llm_provider: Optional[str] = Header(None),
+    x_gemini_model: Optional[str] = Header(None),
+    x_deepseek_model: Optional[str] = Header(None),
+    x_buddy_type: Optional[str] = Header(None),
+    x_buddy_name: Optional[str] = Header(None),
+):
+    """Generate a cute 2-6 word AI greeting or thought from the Desktop Buddy."""
+    is_panda = (x_buddy_type or "").lower() == "panda"
+    buddy_title = x_buddy_name or ("Bambu" if is_panda else "Hammy")
+
+    hamster_greetings = [
         "Squeak! Let's code together! 🚀",
         "Crunching sunflower seeds! 🌻",
         "You've got this! ✨",
@@ -100,28 +149,51 @@ async def get_greeting():
         "Ready when you are! ⚡",
     ]
 
+    panda_greetings = [
+        "Peaceful focus mode on! 🎋",
+        "Crunching fresh bamboo! 🐼",
+        "Take a breath, you got this! 🌿",
+        "Stay calm and keep building! 💚",
+        "Sending big panda hugs! 🐼✨",
+        "One step at a time! 🐾",
+        "Zen vibes for your day! 🧘",
+        "Bamboo power activated! 🎋⚡",
+        "Chilling right beside you! 🍃",
+        "Happy moments ahead! 🌟",
+    ]
+
+    fallback_greetings = panda_greetings if is_panda else hamster_greetings
+
+    client_keys, client_models, client_provider = _extract_client_context(
+        x_gemini_key, x_deepseek_key, x_llm_provider, x_gemini_model, x_deepseek_model
+    )
+
     try:
-        adapter = get_llm_adapter()
+        animal = "panda pet who loves bamboo" if is_panda else "hamster pet who loves sunflower seeds"
         prompt = (
-            "You are Hammy, a cheerful, cute desktop hamster pet. "
+            f"You are {buddy_title}, a cute desktop {animal}. "
             "Generate a single adorable, encouraging thought or greeting for the user. "
             "It MUST be strictly between 2 to 6 words long. "
             "Include 1 cute emoji. Output ONLY the 2-6 words."
         )
-        text = await adapter.generate(
+        text, adapter = await generate_with_fallback(
             messages=[{"role": "user", "content": prompt}],
-            system_prompt="You are a tiny, cheerful pet hamster. Respond in strictly 2 to 6 words only.",
+            system_prompt=f"You are a tiny, cheerful pet {animal}. Respond in strictly 2 to 6 words only.",
+            client_provider=client_provider,
+            client_keys=client_keys,
+            client_models=client_models,
         )
         cleaned = text.strip().strip('"').strip("'")
-        # Ensure it's reasonably short
         words = cleaned.split()
         if len(words) > 8:
-            cleaned = " ".join(words[:6]) + " 🐹"
+            emoji = " 🎋" if is_panda else " 🐹"
+            cleaned = " ".join(words[:6]) + emoji
         return GreetingResponse(greeting=cleaned, model=adapter.get_model_name())
     except Exception:
-        # Graceful fallback to curated greetings if LLM is offline or no API key set
         return GreetingResponse(
             greeting=random.choice(fallback_greetings),
             model="local-preset"
         )
+
+
 

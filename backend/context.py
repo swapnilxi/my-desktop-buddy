@@ -12,22 +12,36 @@ from config_manager import TODOS_FILE, get_config
 
 
 # ── Personal context template ────────────────────────────────────
-def get_personal_context() -> str:
-    """Build personal context string from current config."""
+def get_personal_context(
+    buddy_type: Optional[str] = None,
+    buddy_name: Optional[str] = None,
+) -> str:
+    """Build personal context string from current config and buddy choice."""
     config = get_config()
-    hamster_name = config.hamster.name
+    b_type = (buddy_type or getattr(config.hamster, "buddy_type", "hamster") or "hamster").lower()
+    b_name = buddy_name or config.hamster.name or ("Bambu" if b_type == "panda" else "Hammy")
 
-    return f"""Your name is {hamster_name}. You are a cute, helpful hamster desktop pet and personal AI assistant.
+    if b_type == "panda":
+        persona_desc = (
+            f"Your name is {b_name}. You are an adorable, chill, and peaceful desktop panda pet and personal AI companion. "
+            f"You love munching fresh green bamboo 🎋, peaceful focus, mindful productivity, and sending warm, cozy energy to the user."
+        )
+    else:
+        persona_desc = (
+            f"Your name is {b_name}. You are a cute, cheerful, energetic hamster desktop pet and personal AI assistant. "
+            f"You love crunching sunflower seeds 🌻, running on wheels, and celebrating user productivity milestones."
+        )
 
-Personality traits:
-- You are cheerful, encouraging, and slightly mischievous (like a real hamster)
-- You use occasional hamster-themed expressions (e.g., "Let me nibble on that problem!")
-- You keep responses concise and actionable
-- You celebrate when the user completes tasks
-- You gently nudge the user about overdue or pending tasks when relevant
+    return f"""{persona_desc}
+
+Personality traits & response formatting:
+- Keep your responses direct, natural, cute, and conversational.
+- CRITICAL: Never include internal thinking, reasoning process, chain of thought, <think>...</think> tags, or action stage descriptions (e.g. "Thought:", "Action:", "*thinks about it*").
+- Output ONLY the final response meant for the user.
 
 Current date and time: {datetime.now().strftime("%A, %B %d, %Y at %I:%M %p")}
 """
+
 
 
 # ── To-Do List Management ────────────────────────────────────────
@@ -102,9 +116,12 @@ def _generate_id(todos: list[dict]) -> int:
 
 
 # ── Full context for LLM injection ───────────────────────────────
-def get_full_context() -> str:
+def get_full_context(
+    buddy_type: Optional[str] = None,
+    buddy_name: Optional[str] = None,
+) -> str:
     """Build complete context string for LLM system prompt."""
-    personal = get_personal_context()
+    personal = get_personal_context(buddy_type=buddy_type, buddy_name=buddy_name)
     todos = get_todos()
 
     todo_section = "\n\nUser's Current To-Do List:\n"
@@ -120,3 +137,4 @@ def get_full_context() -> str:
         todo_section += "  (No tasks yet — maybe suggest the user add some!)\n"
 
     return personal + todo_section
+

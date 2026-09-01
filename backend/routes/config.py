@@ -1,32 +1,39 @@
 """
-Config routes — load and save application configuration.
+Config routes — load and save application configuration safely for public/shared use.
 """
 
 from fastapi import APIRouter
-from config_manager import AppConfig, get_config, get_masked_config, save_config
+from config_manager import AppConfig, get_config, get_masked_config, get_server_capabilities, save_config
 
 router = APIRouter(prefix="/config", tags=["config"])
 
 
 @router.get("")
 async def load_config():
-    """Get current config with masked API keys."""
+    """Get current config with masked API keys and server capability indicators."""
     return get_masked_config()
+
+
+@router.get("/reveal-keys")
+async def reveal_keys():
+    """
+    In public / multi-user mode, server environment secrets are NEVER leaked to the client.
+    Clients store their own keys in their browser LocalStorage.
+    """
+    return {
+        "gemini_key": "",
+        "deepseek_key": "",
+        "deepgram_key": "",
+        "capabilities": get_server_capabilities(),
+    }
 
 
 @router.post("")
 async def update_config(config: AppConfig):
-    """Save updated configuration."""
-    # Merge API keys — if masked (contains •), keep the old value
-    current = get_config()
-    keys = config.api_keys
-
-    if "•" in keys.gemini_key:
-        config.api_keys.gemini_key = current.api_keys.gemini_key
-    if "•" in keys.deepseek_key:
-        config.api_keys.deepseek_key = current.api_keys.deepseek_key
-    if "•" in keys.deepgram_key:
-        config.api_keys.deepgram_key = current.api_keys.deepgram_key
-
-    save_config(config)
+    """
+    Save updated non-secret configuration (appearance, theme, voice mode preferences).
+    Client API keys stay safely in the user's LocalStorage and are not written to shared server disk.
+    """
+    save_config(config, persist_secrets=False)
     return {"status": "ok", "message": "Configuration saved successfully 🐹"}
+

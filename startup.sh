@@ -2,7 +2,7 @@
 
 # ══════════════════════════════════════════════════════════════════
 # 🐹 HamsterDesk — Desktop App Startup Script
-# Kills existing processes on ports 8000 & 3000, starts BE & FE,
+# Finds free ports (base + up to 2 fallbacks), starts BE & FE,
 # and launches the Electron Desktop Widget.
 # ══════════════════════════════════════════════════════════════════
 
@@ -14,11 +14,13 @@ BACKEND_DIR="$PROJECT_ROOT/backend"
 FRONTEND_DIR="$PROJECT_ROOT/frontend"
 ELECTRON_DIR="$PROJECT_ROOT/electron-desktop"
 
-BACKEND_PORT=8000
-FRONTEND_PORT=3000
+BASE_BACKEND_PORT=8000
+BASE_FRONTEND_PORT=3000
+PORT_ATTEMPTS=3   # try base port + 2 fallbacks
 
 # Add user-installed Node and Python binaries to PATH if present
 export PATH="$HOME/.local/node/bin:$HOME/Library/Python/3.9/bin:$HOME/Library/Python/3.10/bin:$HOME/Library/Python/3.11/bin:$HOME/Library/Python/3.12/bin:$PATH"
+export PYTHONWARNINGS="ignore"
 
 # Color helpers
 BOLD='\033[1m'
@@ -44,10 +46,37 @@ kill_port() {
   fi
 }
 
-# 1. Clean up existing ports
-echo -e "\n${BOLD}[1/5] Checking and clearing ports...${NC}"
-kill_port $BACKEND_PORT
-kill_port $FRONTEND_PORT
+# Find the first free port starting at $1, trying up to $PORT_ATTEMPTS ports
+find_free_port() {
+  local base=$1
+  local port=$base
+  local attempt=1
+  while [ $attempt -le $PORT_ATTEMPTS ]; do
+    if [ -z "$(lsof -ti :$port 2>/dev/null)" ]; then
+      echo "$port"
+      return 0
+    fi
+    echo -e "${YELLOW}⚠️  Port $port is busy, trying next...${NC}" >&2
+    port=$((port + 1))
+    attempt=$((attempt + 1))
+  done
+  # All candidate ports busy — fall back to clearing the base port
+  echo -e "${RED}❌ All ports ${base}-$((base + PORT_ATTEMPTS - 1)) busy. Clearing port ${base}...${NC}" >&2
+  kill_port $base >&2
+  echo "$base"
+}
+
+# 1. Pick free ports
+echo -e "\n${BOLD}[1/5] Checking ports...${NC}"
+BACKEND_PORT=$(find_free_port $BASE_BACKEND_PORT)
+FRONTEND_PORT=$(find_free_port $BASE_FRONTEND_PORT)
+echo -e "${GREEN}✓ Backend port:  $BACKEND_PORT${NC}"
+echo -e "${GREEN}✓ Frontend port: $FRONTEND_PORT${NC}"
+
+# Make sure the frontend talks to whichever backend port was picked
+export NEXT_PUBLIC_API_URL="http://localhost:$BACKEND_PORT"
+export BACKEND_PORT
+export FRONTEND_PORT
 
 # 2. Check dependencies
 echo -e "\n${BOLD}[2/5] Verifying runtimes...${NC}"
@@ -119,8 +148,8 @@ cd "$ELECTRON_DIR"
 echo -e "\n${BOLD}${GREEN}====================================================${NC}"
 echo -e "${BOLD}${GREEN}✨ HamsterDesk Desktop App is running!${NC}"
 echo -e "  🖥️  Desktop:   Floating right-edge widget + Menu Bar Tray"
-echo -e "  🌐 Web Mirror: ${CYAN}http://localhost:3000${NC}"
-echo -e "  🧠 Backend:    ${CYAN}http://localhost:8000${NC}"
+echo -e "  🌐 Web Mirror: ${CYAN}http://localhost:$FRONTEND_PORT${NC}"
+echo -e "  🧠 Backend:    ${CYAN}http://localhost:$BACKEND_PORT${NC}"
 echo -e "${BOLD}${GREEN}====================================================${NC}\n"
 echo -e "${YELLOW}Closing the Electron window or pressing Ctrl+C will exit.${NC}\n"
 

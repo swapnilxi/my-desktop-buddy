@@ -3,12 +3,26 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { TodoItem, HamsterMood } from '@/lib/api';
 import { fetchTodos, createTodo, toggleTodo, deleteTodo } from '@/lib/api';
+import type { BuddyDefinition, BuddyType } from '../Buddies/types';
+import { getBuddyDefinition } from '../Buddies/registry';
 
 interface TodoPanelProps {
   onMoodChange: (mood: HamsterMood) => void;
+  buddyType?: BuddyType | string;
+  buddyName?: string;
+  buddyDef?: BuddyDefinition;
 }
 
-export default function TodoPanel({ onMoodChange }: TodoPanelProps) {
+export default function TodoPanel({
+  onMoodChange,
+  buddyType = 'hamster',
+  buddyName,
+  buddyDef,
+}: TodoPanelProps) {
+  const effectiveDef = buddyDef || getBuddyDefinition(buddyType);
+  const effectiveName = buddyName || effectiveDef.defaultName;
+  const effectiveEmoji = effectiveDef.emoji;
+
   const [todos, setTodos] = useState<TodoItem[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -117,7 +131,7 @@ export default function TodoPanel({ onMoodChange }: TodoPanelProps) {
             <span className="todo-empty-emoji">📋</span>
             <p>No tasks yet! Add one above.</p>
             <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
-              Hammy will help you stay on track 🐹
+              {effectiveName} will help you stay on track {effectiveEmoji}
             </p>
           </div>
         ) : (
