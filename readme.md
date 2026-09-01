@@ -2,10 +2,12 @@
 
 <div align="center">
 
+<img src="public/assets/hero-banner.jpg" alt="Desktop Buddies Banner" width="100%" style="border-radius: 12px; margin-bottom: 16px;" />
+
 <h3>✨ Your Adorable AI Desktop Companions & Productivity Pets ✨</h3>
 
 <p>
-  <strong>Hammy the Hamster</strong> 🐹 &bull; <strong>Bambu the Panda</strong> 🐼
+  <strong>Hammy the Hamster</strong> 🐹 &bull; <strong>Bambu the Panda</strong> 🐼 &bull; <strong>Little Krishna</strong> 🪶
 </p>
 
 [![Next.js 15](https://img.shields.io/badge/Next.js-15.x-black?style=flat&logo=next.js)](https://nextjs.org/)
@@ -21,88 +23,153 @@
 
 **Desktop Buddy** is a delightful, open-source AI desktop companion that floats on your screen as a responsive animated character. Whether you need a focus partner, an encouraging voice, an AI assistant to answer questions, or simply an adorable buddy munching snacks by your side while you work, Desktop Buddy is here for you!
 
-```
-       🐹 Hammy the Hamster                  🐼 Bambu the Panda
-   "Squeak! Let's build together!"        "Peaceful focus mode on! 🎋"
-        [🌻 Sunflower Seeds]                   [🎋 Fresh Bamboo]
-```
+---
+
+## 🎭 Character Guide
+
+Your companion's personality, favorite snacks, and interactive reactions change based on who you choose.
+
+### The Buddies
+
+| Buddy | Character | Snack | Personality & Vibe | Special Features |
+| :--- | :--- | :--- | :--- | :--- |
+| 🐹 **Hammy** | Golden Hamster | 🌻 Sunflower Seeds | Energetic, cheerful, celebratory, and always ready to cheer you on! | Wiggle animations, seed munching, victory cheers |
+| 🐼 **Bambu** | Kawaii Panda | 🎋 Fresh Bamboo | Calm, peaceful, zen, mindful, and loves cozy focus sessions. | Bamboo crunching, zen meditation vibes |
+| 🪶 **Little Krishna** | Divine Companion | 🧈 Sweet Butter (Makhan) | Playful, loving, wise, and radiates uplifting cosmic joy & warmth. | Sweet bansuri flute music 🪈, dynamic poses & mudras, peacock feather crown |
+
+### 🪶 Spotlight: Little Krishna — The Enchanting Companion
+
+<div align="center">
+  <img src="public/assets/krishna-showcase.jpg" alt="Little Krishna Desktop Buddy" width="380" style="border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.15);" />
+  <br/>
+  <em>"Work with joy in your heart and let your creativity dance like a sweet flute melody!"</em>
+</div>
+
+- **🪈 Flute Melodies**: Tap to listen to soothing bansuri flute melodies right on your desktop.
+- **🧈 Makhan Feeding**: Double-click to feed freshly churned sweet butter with joyful eating reactions!
+- **🧘 Multi-Pose State Engine**: Switch smoothly between dynamic poses: `Idle` &bull; `Protector` &bull; `Thinking` &bull; `Happy` &bull; `Motivation` &bull; `Relax` &bull; `Greeting` &bull; `Clicked`
+- **🎨 6 Sacred Color Palettes**: Customize his look with *Shyam Sundar Blue*, *Peacock Teal*, *Golden Glow*, *Warm Amber*, *Midnight Navy*, or *Emerald Forest*.
 
 ---
 
-## 🐾 Meet the Buddies
+## 📖 User Guide
 
-| Buddy | Character | Snack | Personality & Vibe |
-| :--- | :--- | :--- | :--- |
-| 🐹 **Hammy** | Golden Hamster | 🌻 Sunflower Seeds | Energetic, cheerful, celebratory, and always ready to cheer you on! |
-| 🐼 **Bambu** | Kawaii Panda | 🎋 Fresh Bamboo | Calm, peaceful, zen, mindful, and loves cozy focus sessions. |
+### 👆 Interacting with Your Buddy
+- **Single Click**: Pet your buddy to trigger happiness hearts, cheerful greetings, and positive affirmations.
+- **Double Click**: Feed your buddy their favorite snack (e.g. Makhan 🧈, Sunflower Seeds 🌻) and watch them happily eat!
+- **Click & Drag**: Click on the widget's drag handle to move your buddy anywhere across your desktop.
+- **Tap to Talk 🎙️**: Click the microphone icon to speak naturally to your buddy. They will transcribe your speech and reply with a synthesized voice.
 
-> 💡 **Extensible Buddy System**: Each character lives in its own folder with its own `.tsx` sprite and `.css` animation engine. You can customize colors, names, and themes anytime!
+### 🪟 Window Modes
+Desktop Buddy adapts to your workflow with 3 unique layout modes:
 
----
+<div align="center">
+  <img src="public/assets/ui-modes.jpg" alt="3 Window Modes Overview" width="100%" style="border-radius: 12px; margin-bottom: 16px;" />
+</div>
 
-## ✨ Features
+1. **🐾 Floating Pet Widget**: A minimal, transparent overlay that sits on your desktop with quick actions and speech bubbles.
+2. **💬 Compact Sidebar**: A sleek side panel featuring the AI chat window and your quick To-Do list.
+3. **🖥️ Full Dashboard**: A comprehensive productivity workspace with project tracking, task management, and full chat history.
 
-- 💬 **Intelligent AI Companion**: Chat naturally using Google Gemini (Free Tier supported), DeepSeek, or local Ollama.
-- 🎙️ **Voice Interaction (Tap to Talk)**: Talk directly to your buddy with real-time speech recognition and voice replies.
-- 🍎 **Interactive Care & Play**:
-  - **Single Click**: Pet your buddy to trigger happiness hearts and cheerful animations.
-  - **Double Click**: Feed your buddy their favorite snack (Sunflower seeds for Hammy, fresh crunchy bamboo for Bambu).
-  - **Click & Drag**: Pick up and move your buddy anywhere across your desktop.
-- 🪟 **3 Window Modes**:
-  1. **🐾 Pet / Small Mode**: Floating transparent widget with speech bubble and quick toolbar.
-  2. **💬 Compact Sidebar Mode**: Sleek side panel with chat, tasks, and settings.
-  3. **🖥️ Dashboard Workspace Mode**: Full productivity workspace with co-pilot sidebar and task management.
-- 🔒 **Privacy-First (LocalStorage BYOK)**:
-  - Your API keys are saved exclusively in your browser's `LocalStorage`.
-  - Keys are sent directly with your requests and **never permanently stored on the server**.
-  - One-click **"🗑️ Clear Keys"** button to instantly wipe credentials on shared devices.
+### ✅ Productivity & Tasks
+- Open the To-Do list from the widget toolbar.
+- Add tasks you want to accomplish today.
+- Your buddy will actually **know what's on your To-Do list**! If you ask, *"What should I do next?"*, they will read your tasks and encourage you to complete them.
 
 ---
 
-## 🚀 Quick Start Guide (For Everyone!)
+## 🚀 Installation Guide
 
-### Step 1: Install Prerequisites
-Make sure you have:
-- [Node.js](https://nodejs.org/) (version 18 or newer)
-- [Python](https://www.python.org/) (version 3.10 or newer)
+### Prerequisites
+- **[Node.js](https://nodejs.org/)** (v18 or newer)
+- **[Python](https://www.python.org/)** (v3.10 or newer)
+- **Git**
 
-### Step 2: Clone and Start
-Open your Terminal (macOS/Linux) or Command Prompt (Windows) and run:
+### Option A: Quick Setup via Scripts (Recommended)
 
+**For macOS / Linux (Terminal):**
 ```bash
 # 1. Clone the repository
 git clone https://github.com/swapnilxi/my-desktop-buddy.git
+git clone https://github.com/swapnilxi/my-desktop-buddy.git
 cd my-desktop-buddy
 
-# 2. Run the 1-click startup script
-./startup.sh
+# 1. First-Time Setup (Installs all dependencies)
+./start_mac.sh
+
+# 2. Starting the App (After setup is done)
+./startup_mac.sh
 ```
 
-- 🌐 **Web Interface**: Open [http://localhost:3000](http://localhost:3000)
-- 🔌 **Backend API**: Running on [http://localhost:8000](http://localhost:8000)
+**For Windows (Command Prompt / PowerShell):**
+```cmd
+git clone https://github.com/swapnilxi/my-desktop-buddy.git
+cd my-desktop-buddy
+
+:: 1. First-Time Setup (Installs all dependencies)
+start_windows.bat
+
+:: 2. Starting the App (After setup is done)
+startup_windows.bat
+```
+
+### Option B: Manual Startup
+
+If the startup script doesn't work for you, you can run the backend and frontend separately:
+
+**1. Start the FastAPI Backend:**
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate  # Or `venv\Scripts\activate` on Windows
+pip install -r requirements.txt
+uvicorn main:app --reload --port 8000
+```
+
+**2. Start the Next.js Frontend:**
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+### Accessing the App
+Once running:
+- **Web Interface**: Open [http://localhost:3000](http://localhost:3000)
+- **API Documentation**: Open [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ---
 
-## 🔑 How to Get a Free AI API Key (30 Seconds)
+## ⚙️ Configuration Guide
 
-You can use Desktop Buddy with **Google Gemini 2.5 Flash for free**:
+Desktop Buddy is highly customizable. Open the **⚙️ Config Tab** in the app to access these settings.
 
+### 1. Connecting an AI Model
+You need an LLM API key for your buddy to talk to you. The app supports Gemini, DeepSeek, and local Ollama.
+
+**To get a FREE Google Gemini Key:**
 1. Go to [Google AI Studio](https://aistudio.google.com/).
 2. Click **"Get API Key"** and create a free key.
-3. In Desktop Buddy, click the **⚙️ Config** tab.
-4. Paste your key into **Gemini API Key** and click **💾 Save Configuration**.
-5. *Done! Your key is saved locally in your browser and your buddy will start talking!*
+3. In Desktop Buddy, paste your key into the **Gemini API Key** field.
+4. Click **💾 Save Configuration**.
 
----
+*Want privacy?* You can use **Ollama** to run models locally on your machine for zero-latency, 100% private interactions.
 
-## 🎮 How to Switch Buddies & Customize
+### 2. Customizing Your Buddy
+In the Config Tab, you can:
+- **Select your Character**: Switch between Hamster, Panda, or Little Krishna.
+- **Rename your Buddy**: Give them a unique name (e.g., *Nibbles*, *Pan-Pan*).
+- **Change the Color Theme**: Pick from beautifully curated color palettes for each character.
+- **Select UI Theme**: Toggle Dark/Light mode or System Preference.
 
-1. **Quick Switch**: Click the **🐼 / 🐹 button** in the floating toolbar to toggle between Hammy and Bambu instantly.
-2. **In Config Panel**:
-   - Go to **⚙️ Config**.
-   - Click the buddy card you want (🐹 Hamster or 🐼 Panda).
-   - Choose a custom name (e.g. *Nibbles*, *Pan-Pan*, *Bambu*).
-   - Pick from 8 signature color themes!
+### 3. Server-Side Configuration (Optional)
+If you don't want to paste keys into the browser, you can provide them at the server level:
+1. Copy `.env.example` to `.env` in the root folder.
+2. Add your keys to the `.env` file (e.g., `GEMINI_API_KEY=your_key_here`).
+3. Restart the backend.
+
+### 🔒 Security Note
+Keys entered in the web UI are stored **locally in your browser's LocalStorage** and passed per request. They are **never stored on the server**. You can use the **"🗑️ Clear Keys"** button at any time to wipe credentials.
 
 ---
 
@@ -110,43 +177,27 @@ You can use Desktop Buddy with **Google Gemini 2.5 Flash for free**:
 
 ```
 my-desktop-buddy/
+├── public/                       # Media Assets & Generated Images
+│   └── assets/                   
 ├── frontend/                     # Next.js 15 Web & Desktop Interface
 │   └── src/
-│       ├── app/                  # Main page, multi-mode controller, layout
+│       ├── app/                  # Main page, multi-mode layout
 │       ├── components/
-│       │   ├── Buddies/          # 🐾 Multi-Buddy Engine
-│       │   │   ├── types.ts      # Shared Buddy interfaces & mood definitions
-│       │   │   ├── registry.ts   # Character definitions & color palettes
-│       │   │   ├── BuddyRenderer.tsx # Unified character switcher component
-│       │   │   ├── Hamster/      # 🐹 Hamster Character Module
-│       │   │   │   ├── HamsterSprite.tsx
-│       │   │   │   └── hamster.css
-│       │   │   └── Panda/        # 🐼 Panda Character Module
-│       │   │       ├── PandaSprite.tsx
-│       │   │       └── panda.css
+│       │   ├── Buddies/          # 🐾 Multi-Buddy Engine (Hamster, Panda, Krishna)
 │       │   ├── Chat/             # AI chat conversation panel
 │       │   ├── TodoList/         # Productivity tasks & checklists
-│       │   └── Config/           # Multi-buddy & API keys configuration
-│       └── lib/
-│           ├── api.ts            # LocalStorage key manager & typed API client
-│           └── speech.ts         # TTS voice synthesis engine
-│
+│       │   └── Config/           # Settings & API keys configuration
+│       └── lib/                  # LocalStorage API manager & TTS speech engine
 ├── backend/                      # FastAPI Python Backend
-│   ├── main.py                   # App lifecycle, CORS, routing
-│   ├── context.py                # Buddy persona injection (Hamster vs Panda)
-│   ├── config_manager.py         # Config schema & .env fallbacks
-│   ├── routes/
-│   │   ├── chat.py               # AI Chat & greeting generator
-│   │   ├── todos.py              # Todo CRUD routes
-│   │   ├── config.py             # Safe configuration endpoints
-│   │   └── voice.py              # STT transcription & TTS audio
-│   └── llm/
-│       ├── router.py             # Multi-provider router with fallback
-│       ├── gemini_adapter.py     # Google Gemini SDK adapter
-│       └── deepseek_adapter.py   # DeepSeek OpenAI-compatible adapter
-│
+│   ├── main.py                   # App lifecycle, routing
+│   ├── context.py                # Buddy persona & Todo-list injection
+│   ├── routes/                   # Chat, Todos, Voice endpoints
+│   └── llm/                      # Multi-provider routers (Gemini, DeepSeek, Ollama)
 ├── electron-desktop/             # Optional native desktop wrapper
-├── startup.sh                    # 1-click launcher for frontend + backend
+├── start_mac.sh                  # 1-click installer (Mac/Linux)
+├── startup_mac.sh                # 1-click launcher (Mac/Linux)
+├── start_windows.bat             # 1-click installer (Windows)
+├── startup_windows.bat           # 1-click launcher (Windows)
 └── .env.example                  # Server-level environment template
 ```
 
@@ -158,16 +209,9 @@ Creating a new character is clean and modular:
 
 1. Create a folder in `frontend/src/components/Buddies/<YourBuddyName>/`.
 2. Add your sprite component (`<YourBuddyName>Sprite.tsx`) implementing `BuddySpriteProps`.
-3. Add your styles and animations (`<yourbuddy>.css`).
+3. Add your styles and animations (`<yourbuddy>.css` or `.module.css`).
 4. Register your character in `frontend/src/components/Buddies/registry.ts`.
-5. Add the persona in `backend/context.py`.
-
----
-
-## 🔒 Security & Privacy
-
-- **No Remote Credential Storage**: User API keys are stored in client `LocalStorage` and passed per-request.
-- **Server `.env` Fallback**: Hosts can optionally configure default server keys in `.env` without exposing them to public clients.
+5. Add the persona template in `frontend/src/components/Buddies/<YourBuddyName>/<yourbuddy>_prompt.txt` or `backend/context.py`.
 
 ---
 
