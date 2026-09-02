@@ -1921,50 +1921,50 @@ export function LittleKrishna({
               <ellipse cx="0" cy="4" rx="7.5" ry="1.8" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.75" />
             </g>
 
-            {/* 3D Toddler Hand Resting Naturally on Hip */}
-            <g id="sculptedHipHand" transform="translate(232, 278) rotate(-12)">
-              {/* Smooth Forearm → Wrist → Dorsal Hand Transition */}
+            {/* 3D Toddler Hand Holding Waist (Thumb Back, Curved Gripping Fingers) */}
+            <g id="sculptedHipHand" transform="translate(236, 276) rotate(-8)">
+              {/* Thumb (Wrapping around to the BACK of the waist/hip) */}
               <path
-                d="M 10 -8 C 12 -4, 14 0, 14 6 C 14 12, 10 16, 4 17 C -4 17, -10 12, -11 5 C -11 -3, -5 -9, 3 -9 C 6 -9, 8 -9, 10 -8 Z"
+                d="M 6 -4 C 13 -8, 19 -4, 20 2 C 20 7, 15 8, 9 2 Z"
                 fill="url(#kSkinBody)"
               />
-              {/* Soft 3D Dorsal Hand Cushion Highlight */}
-              <ellipse cx="2" cy="3" rx="8" ry="6" fill="url(#kHandVolume)" />
+              <circle cx="19" cy="0.5" r="1.6" fill="url(#kSkinBody)" />
 
-              {/* Thumb (Clearly separated, curving back toward the waist) */}
+              {/* Smooth Dorsal Hand & Palm Volume Base */}
               <path
-                d="M -8 -2 C -14 -5, -18 -1, -17 4 C -16 8, -10 9, -7 5 Z"
+                d="M -8 -6 C -2 -9, 8 -7, 12 -2 C 14 4, 11 12, 4 14 C -4 14, -10 9, -11 2 C -11 -3, -9 -5, -8 -6 Z"
                 fill="url(#kSkinBody)"
               />
-              <circle cx="-13" cy="2.5" r="1.4" fill="url(#kSkinBody)" />
+              {/* Soft 3D Dorsal Hand Cushion Volume */}
+              <ellipse cx="1" cy="2" rx="7.5" ry="6.5" fill="url(#kHandVolume)" />
 
-              {/* Index Finger (Closest to navel, gracefully curving down over hip) */}
+              {/* Index Finger (Curving inward, gripping around front of waistband) */}
               <path
-                d="M -9 7 C -11 13, -11 19, -8 24 C -6.5 26.5, -3 26.5, -2 24 C 0 19, 0 13, -2 7 Z"
+                d="M -8 4 C -13 9, -15 16, -12 22 C -10 25, -6 25, -5 22 C -6 16, -4 10, -1 5 Z"
                 fill="url(#kSkinBody)"
               />
-              <circle cx="-5" cy="24" r="2.1" fill="url(#kSkinBody)" />
+              <circle cx="-10.5" cy="22.5" r="2.1" fill="url(#kSkinBody)" />
 
-              {/* Middle Finger (Longest, centered and plump) */}
+              {/* Middle Finger (Curving strongly around hip waist) */}
               <path
-                d="M -2 9 C -4 15, -4 21, -1 27 C 0.5 29.5, 4 29.5, 5 27 C 7 21, 7 15, 5 9 Z"
+                d="M -2 6 C -7 11, -9 18, -6 25 C -4 28, 0 28, 1 25 C -1 18, 1 11, 4 7 Z"
                 fill="url(#kSkinBody)"
               />
-              <circle cx="2" cy="27" r="2.2" fill="url(#kSkinBody)" />
+              <circle cx="-4" cy="25.5" r="2.2" fill="url(#kSkinBody)" />
 
-              {/* Ring Finger (Softly following middle finger curve) */}
+              {/* Ring Finger (Following middle finger waist grip curve) */}
               <path
-                d="M 5 9 C 3 15, 3 20, 5 25 C 6.5 27.5, 10 27.5, 11 25 C 13 20, 13 15, 12 9 Z"
+                d="M 4 6 C 0 11, -2 17, 1 23 C 3 26, 7 26, 8 23 C 6 17, 7 11, 9 6 Z"
                 fill="url(#kSkinBody)"
               />
-              <circle cx="8" cy="25" r="2.1" fill="url(#kSkinBody)" />
+              <circle cx="3" cy="23.5" r="2.1" fill="url(#kSkinBody)" />
 
-              {/* Pinky Finger (Cute, short, delicate toddler outer finger) */}
+              {/* Pinky Finger (Delicate outer finger wrapping side of hip) */}
               <path
-                d="M 12 7 C 11 12, 11 16, 12 20 C 13.2 22, 16 22, 17 20 C 18 16, 18 12, 17 7 Z"
+                d="M 9 4 C 6 8, 5 14, 7 19 C 9 22, 12 21, 13 18 C 11 14, 11 9, 12 4 Z"
                 fill="url(#kSkinBody)"
               />
-              <circle cx="14.5" cy="20" r="1.8" fill="url(#kSkinBody)" />
+              <circle cx="9.5" cy="18.5" r="1.8" fill="url(#kSkinBody)" />
             </g>
           </g>
 
