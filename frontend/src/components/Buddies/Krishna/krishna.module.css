@@ -70,11 +70,9 @@
   width: 100%;
   height: 100%;
   overflow: visible !important;
-  /* A clean illustrated edge, rather than a heavy rendered shadow. */
-  filter: drop-shadow(0 7px 14px rgba(15, 27, 61, 0.38));
+  filter: drop-shadow(0 7px 14px rgba(15, 27, 61, 0.38)) drop-shadow(0 0 28px rgba(255, 200, 61, 0.45));
   transition: filter 0.3s ease;
 }
-
 .krishnaContainer:hover .krishnaSvg {
   filter: drop-shadow(0 9px 18px rgba(15, 27, 61, 0.46)) drop-shadow(0 0 9px rgba(255, 200, 61, 0.18));
 }
@@ -381,42 +379,84 @@
 }
 
 /* ── 6. HEAD & FACE ─────────────────────────────────────────────── */
+/* =========================================================
+   KRISHNA — HEAD SHAPE V2
+   Stronger child-like head volume
+   ========================================================= */
+
 .head {
   position: absolute;
-  top: 30px;
+
+  width: 112px;
+  height: 104px;
+
   left: 50%;
+  top: 0;
   transform: translateX(-50%);
-  width: 110px;
-  height: 88px;
-  background: radial-gradient(circle at 40% 32%, #A1C8FF 0%, #6BA7FF 55%, #4275BF 100%);
-  border-radius: 55px 55px 40px 40px / 50px 50px 40px 40px;
-  box-shadow: 0 8px 22px rgba(15, 27, 61, 0.5), inset 0 2px 5px rgba(255, 255, 255, 0.5);
+
+  border-radius: 50% 50% 48% 48% / 48% 48% 52% 52%;
+
+  /* One continuous blue facial surface */
+  background:
+    /* soft forehead light */
+    radial-gradient(
+      ellipse 55% 42% at 38% 23%,
+      rgba(255, 255, 255, 0.24) 0%,
+      rgba(255, 255, 255, 0.10) 32%,
+      transparent 70%
+    ),
+
+    /* subtle cheek warmth integrated into the face */
+    radial-gradient(
+      ellipse 30% 23% at 23% 66%,
+      rgba(255, 145, 165, 0.16) 0%,
+      rgba(255, 145, 165, 0.07) 42%,
+      transparent 75%
+    ),
+
+    radial-gradient(
+      ellipse 30% 23% at 77% 66%,
+      rgba(255, 145, 165, 0.16) 0%,
+      rgba(255, 145, 165, 0.07) 42%,
+      transparent 75%
+    ),
+
+    /* main skin volume */
+    radial-gradient(
+      ellipse 90% 88% at 48% 42%,
+      #9bc8ff 0%,
+      #72adf5 46%,
+      #5790dc 72%,
+      #3e70bd 100%
+    );
+
+  /* soft dimensional edge */
+  box-shadow:
+    0 7px 15px rgba(20, 50, 110, 0.28),
+    inset 6px 5px 10px rgba(255, 255, 255, 0.15),
+    inset -8px -10px 16px rgba(25, 65, 135, 0.16);
+
+  overflow: hidden;
   z-index: 10;
 }
 
-/* Rosy Cheeks */
+/* Remove the old separate oval cheeks */
 .cheekLeft {
-  position: absolute;
-  bottom: 20px;
-  left: 8px;
-  width: 18px;
-  height: 12px;
-  background: radial-gradient(circle, rgba(255, 95, 135, 0.45) 0%, rgba(255, 107, 107, 0) 75%);
-  border-radius: 50%;
-  filter: blur(1.5px);
+  display: none;
+}
+
+
+/* =========================================================
+   FULLER BABY CHEEKS
+   ========================================================= */
+
+/* .cheekLeft {
+  left: 2px;
 }
 
 .cheekRight {
-  position: absolute;
-  bottom: 20px;
-  right: 8px;
-  width: 18px;
-  height: 12px;
-  background: radial-gradient(circle, rgba(255, 95, 135, 0.45) 0%, rgba(255, 107, 107, 0) 75%);
-  border-radius: 50%;
-  filter: blur(1.5px);
-}
-
+  right: 2px;
+} */
 /* ── 7. FACE DETAILS ────────────────────────────────────────────── */
 /* Eyebrows */
 .eyebrows {
@@ -457,39 +497,62 @@
   justify-content: space-between;
   z-index: 12;
 }
-
 .eye {
   position: relative;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 30px;
   background: #FFFFFF;
   border-radius: 50%;
   overflow: hidden;
-  box-shadow: inset 0 2px 4px rgba(15, 27, 61, 0.35), 0 2px 5px rgba(15, 27, 61, 0.2);
-  border-top: 2px solid #1E3A8A;
+  box-shadow: 
+    inset 0 2px 6px rgba(15, 27, 61, 0.18),
+    0 3px 6px rgba(15, 27, 61, 0.20);
+  border-top: 2.5px solid #1E3A8A;
+  border-bottom: 1px solid rgba(15, 27, 61, 0.10);
 }
 
 .iris {
   position: absolute;
-  top: 2px;
+  top: 3px;
   left: 3px;
-  width: 18px;
-  height: 18px;
-  background: radial-gradient(circle at 40% 35%, #784508 0%, #4A2800 65%, #1F0F00 100%);
+  width: 19px;
+  height: 19px;
+
+  /* Rich warm-brown stylized 3D iris */
+  background:
+    radial-gradient(
+      circle at 38% 30%,
+      #D88922 0%,
+      #A85C12 28%,
+      #6F3708 58%,
+      #3B1A04 82%,
+      #1C0901 100%
+    );
+
   border-radius: 50%;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
+  box-shadow:
+    inset 0 1px 2px rgba(255, 236, 180, 0.18),
+    inset 0 -2px 3px rgba(0, 0, 0, 0.18);
+
   transition: transform 0.2s ease;
 }
 
 .pupil {
-  width: 10px;
-  height: 10px;
+  width: 9px;
+  height: 9px;
   background: #0F1B3D;
   border-radius: 50%;
   position: relative;
+
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.08);
 }
+
 
 /* Glossy Eye Sparkle Highlights */
 .sparklePrimary {
@@ -779,8 +842,13 @@
 }
 
 #peacockFeather {
-  transform-origin: 160px 68px;
+  transform-origin: 168px 44px;
   transform-box: view-box;
+}
+
+.featherSvgAnim {
+  filter: drop-shadow(0 2px 6px rgba(4, 120, 87, 0.45)) drop-shadow(0 1px 2px rgba(15, 27, 61, 0.4));
+  transform-origin: 168px 44px;
 }
 
 #canonicalChakraArms,
@@ -1173,7 +1241,6 @@
 }
 
 @keyframes bubbleFloat {
-
   0%,
   100% {
     transform: translateX(-50%) translateY(0px);
@@ -1181,6 +1248,18 @@
 
   50% {
     transform: translateX(-50%) translateY(-3px);
+  }
+}
+
+@keyframes featherSwayAnim {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(2.2deg) translateY(-0.5px);
+  }
+  100% {
+    transform: rotate(-1.5deg) translateY(0.5px);
   }
 }
 
