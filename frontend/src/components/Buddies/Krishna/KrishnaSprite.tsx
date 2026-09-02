@@ -1783,47 +1783,34 @@ export function LittleKrishna({
           {/* ════════════════ LAYER 8: SCULPTED ORGANIC 3D ARMS & HANDS ════════════════ */}
           <g id="canonicalChakraArms" filter="url(#kSoftShadow)">
             {/* ── A. RAISED RIGHT ARM (Viewer's Left - Character's Right) ── */}
-            {/* Seamless 3D Plump Toddler Bicep & Shoulder (Deep Arched Deltoid Cap) */}
-            <ellipse cx="132" cy="198" rx="16" ry="20" fill="url(#kSkinBody)" />
+            {/* Single Continuous Organic 3D Right Arm (Shoulder → Bicep → Elbow Bend → Forearm) */}
             <path
-              d="M 130 180 C 110 170, 90 162, 80 160 L 86 182 C 105 195, 120 208, 130 216 Z"
-              fill="url(#kSkinBody)"
-            />
-            {/* Soft Childlike Elbow Joint */}
-            <circle cx="82" cy="172" r="14" fill="url(#kSkinBody)" />
-            {/* Seamless 3D Plump Toddler Forearm (Overlapping Elbow Joint → Wrist) */}
-            <path
-              d="M 70 168 C 75 150, 80 140, 85 128 L 101 128 C 98 145, 95 155, 94 175 Z"
+              d="M 134 214
+                 C 126 208, 105 194, 94 176
+                 L 101 128
+                 L 85 128
+                 C 74 142, 70 156, 76 166
+                 C 88 162, 110 168, 132 180
+                 C 142 190, 142 206, 134 214 Z"
               fill="url(#kSkinBody)"
             />
             {/* Under-Armpit Ambient Shadow */}
             <path
-              d="M 125 212 C 115 205, 105 195, 95 185"
+              d="M 128 214 C 118 206, 106 195, 95 185"
               fill="none"
               stroke="#1E3A8A"
               strokeWidth="2.5"
               strokeLinecap="round"
               opacity="0.18"
             />
-            {/* Volumetric Bicep & Shoulder Highlight Sheen */}
+            {/* Continuous Volumetric Arm Highlight Sheen (Shoulder → Bicep → Elbow Bend → Forearm) */}
             <path
-              d="M 125 183 C 108 172, 92 165, 80 165"
+              d="M 130 184 C 112 174, 90 164, 78 165 C 74 167, 78 152, 88 132"
               fill="none"
               stroke="#FFFFFF"
-              strokeWidth="3.5"
+              strokeWidth="3.0"
               strokeLinecap="round"
               opacity="0.25"
-            />
-            {/* Soft Childlike Elbow Dimple / Apex Highlight */}
-            <ellipse cx="76" cy="170" rx="3.0" ry="4.0" fill="#EBF5FF" opacity="0.3" transform="rotate(-30 76 170)" />
-            {/* Forearm Cylindrical Highlight Sheen */}
-            <path
-              d="M 76 162 C 80 150, 83 140, 88 132"
-              fill="none"
-              stroke="#FFFFFF"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              opacity="0.22"
             />
 
             {/* Polished 3D Gold Armlet (Bajuband) on Right Bicep */}
@@ -1913,58 +1900,34 @@ export function LittleKrishna({
             </g>
 
             {/* ── B. TARGET LEFT ARM & HAND ON HIP (Viewer's Right - Character's Left) ── */}
-            {/*
-               Target Specifications:
-               - Continuous, uncut 3D arm from SHOULDER → UPPER ARM → ELBOW → FOREARM → WRIST → HAND
-               - Complete rounded shoulder cap (deltoid) seamlessly connected to the torso
-               - Arm creates pleasant outward curve with rounded, plump toddler proportions
-               - Soft childlike elbow pointing slightly outward
-               - Forearm gently curved and thicker (~35% proportion), wrist aligned flush with waist curve
-               - Palm resting comfortably against the side hip
-               - Thumb tucked behind the waistband
-               - 4 cute toddler fingers naturally curving around the front of the waist over belt & sash
-            */}
-            {/* Continuous Organic 3D Toddler Left Arm (Shoulder → Deltoid → Elbow → Wrist) */}
-            <ellipse cx="235" cy="195" rx="16" ry="18" fill="url(#kSkinBody)" />
+            {/* Single Continuous Organic 3D Left Arm (Shoulder → Upper Arm → Elbow → Forearm → Wrist) */}
             <path
-              d="M 235 178 C 260 188, 280 210, 292 232 L 274 250 C 260 230, 245 220, 230 212 Z"
-              fill="url(#kSkinBody)"
-            />
-            {/* Soft Childlike Elbow Joint */}
-            <circle cx="285" cy="242" r="13" fill="url(#kSkinBody)" />
-            {/* Forearm gently curved towards waist */}
-            <path
-              d="M 258 280 L 241 271 C 250 260, 262 252, 275 248 L 295 242 C 285 260, 270 272, 258 280 Z"
+              d="M 242 202
+                 C 234 190, 248 180, 260 188
+                 C 280 210, 294 236, 298 244
+                 C 292 254, 282 262, 258 280
+                 L 241 271
+                 C 252 260, 266 250, 274 246
+                 C 260 230, 245 220, 234 212 Z"
               fill="url(#kSkinBody)"
             />
             {/* Under-Armpit Ambient Occlusion Shadow */}
             <path
-              d="M 230 214 C 245 220, 255 228, 265 240"
+              d="M 234 214 C 248 220, 258 230, 268 244"
               fill="none"
               stroke="#1E3A8A"
               strokeWidth="2.5"
               strokeLinecap="round"
               opacity="0.18"
             />
-            {/* Volumetric Shoulder & Upper Arm Highlight Sheen (Soft Highlight on Upper-Left) */}
+            {/* Continuous Volumetric Arm Highlight Sheen (Shoulder → Upper Arm → Elbow Bend → Forearm) */}
             <path
-              d="M 240 185 C 260 195, 278 212, 288 230"
+              d="M 244 186 C 262 196, 280 212, 291 234 C 294 242, 288 254, 255 275"
               fill="none"
               stroke="#FFFFFF"
-              strokeWidth="3.5"
+              strokeWidth="3.2"
               strokeLinecap="round"
               opacity="0.25"
-            />
-            {/* Soft Childlike Elbow Dimple / Apex Highlight */}
-            <ellipse cx="292" cy="240" rx="3.5" ry="2.5" fill="#EBF5FF" opacity="0.3" transform="rotate(45 292 240)" />
-            {/* Forearm Cylindrical Volumetric Highlight Sheen */}
-            <path
-              d="M 288 245 C 278 258, 268 268, 255 275"
-              fill="none"
-              stroke="#FFFFFF"
-              strokeWidth="2.6"
-              strokeLinecap="round"
-              opacity="0.22"
             />
 
             {/* Polished 3D Gold Armlet (Bajuband) on Left Bicep */}
