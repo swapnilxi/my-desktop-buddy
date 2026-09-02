@@ -1767,7 +1767,7 @@ export function LittleKrishna({
           {/* ════════════════ LAYER 8: ARMS & SCULPTED HANDS (IN FRONT OF HEAD & BODY) ════════════════ */}
           <g id="canonicalChakraArms" filter="url(#kSoftShadow)">
             {/* ── A. RAISED RIGHT ARM (Viewer's Left - Character's Right) ── */}
-            {/* Seamless Deltoid / Shoulder Joint Blend with Torso */}
+            {/* Seamless Upper Arm & Deltoid Blend with Torso */}
             <path
               d="M 142 198
                  C 134 196, 118 198, 102 210
@@ -1783,41 +1783,25 @@ export function LittleKrishna({
               stroke="#1E3A8A"
               strokeWidth="2.5"
               strokeLinecap="round"
-              opacity="0.22"
+              opacity="0.2"
             />
 
-            {/* Upper Arm Segment */}
+            {/* Upper Arm Base Segment */}
             <path
               d="M 140 200 C 116 196, 94 204, 94 220 L 94 150"
               fill="none"
               stroke="url(#kSkinBody)"
-              strokeWidth="26"
-              strokeLinecap="round"
-            />
-            <path
-              d="M 140 200 C 116 196, 94 204, 94 220"
-              fill="none"
-              stroke="#D9ECFF"
-              strokeWidth="4"
-              strokeLinecap="round"
-              opacity="0.45"
-            />
-
-            {/* Forearm rising vertically from elbow to wrist */}
-            <path
-              d="M 94 220 L 94 146"
-              fill="none"
-              stroke="url(#kSkinHand)"
               strokeWidth="24"
               strokeLinecap="round"
             />
+
+            {/* Forearm Base Segment rising vertically from elbow to wrist */}
             <path
-              d="M 92 212 L 92 148"
+              d="M 94 220 L 94 144"
               fill="none"
-              stroke="#FFFFFF"
-              strokeWidth="3.0"
+              stroke="url(#kSkinHand)"
+              strokeWidth="22"
               strokeLinecap="round"
-              opacity="0.4"
             />
 
             {/* Polished 3D Gold Armlet (Bajuband) on Right Bicep */}
@@ -1832,12 +1816,12 @@ export function LittleKrishna({
 
             {/* Polished 3D Gold Bangles (Kadas) on Raised Wrist */}
             <g id="raisedWristBangles" transform="translate(94, 142)">
-              <ellipse cx="0" cy="-5" rx="12.5" ry="3.8" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
-              <ellipse cx="0" cy="-6" rx="9" ry="2.0" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.75" />
-              <ellipse cx="0" cy="0" rx="12.5" ry="3.8" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
-              <ellipse cx="0" cy="-1" rx="9" ry="2.0" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.75" />
-              <ellipse cx="0" cy="5" rx="12.5" ry="3.8" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
-              <ellipse cx="0" cy="4" rx="9" ry="2.0" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.75" />
+              <ellipse cx="0" cy="-5" rx="12" ry="3.8" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
+              <ellipse cx="0" cy="-6" rx="8.5" ry="2.0" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.75" />
+              <ellipse cx="0" cy="0" rx="12" ry="3.8" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
+              <ellipse cx="0" cy="-1" rx="8.5" ry="2.0" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.75" />
+              <ellipse cx="0" cy="5" rx="12" ry="3.8" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
+              <ellipse cx="0" cy="4" rx="8.5" ry="2.0" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.75" />
             </g>
 
             {/* ── 3D SCULPTED TODDLER FIST WITH ERECT INDEX FINGER (Cheek / Ear Level) ── */}
@@ -1909,7 +1893,7 @@ export function LittleKrishna({
               stroke="#1E3A8A"
               strokeWidth="2.5"
               strokeLinecap="round"
-              opacity="0.22"
+              opacity="0.2"
             />
 
             {/* Upper Arm Segment */}
@@ -1917,16 +1901,8 @@ export function LittleKrishna({
               d="M 240 200 C 264 222, 276 244, 268 270"
               fill="none"
               stroke="url(#kSkinBody)"
-              strokeWidth="26"
+              strokeWidth="24"
               strokeLinecap="round"
-            />
-            <path
-              d="M 240 200 C 264 222, 276 244, 268 270"
-              fill="none"
-              stroke="#D9ECFF"
-              strokeWidth="4"
-              strokeLinecap="round"
-              opacity="0.45"
             />
 
             {/* Forearm Segment to Wrist */}
@@ -1934,16 +1910,8 @@ export function LittleKrishna({
               d="M 268 270 C 262 286, 248 294, 234 294"
               fill="none"
               stroke="url(#kSkinHand)"
-              strokeWidth="24"
+              strokeWidth="22"
               strokeLinecap="round"
-            />
-            <path
-              d="M 266 272 C 260 286, 246 292, 234 292"
-              fill="none"
-              stroke="#FFFFFF"
-              strokeWidth="3.0"
-              strokeLinecap="round"
-              opacity="0.4"
             />
 
             {/* Polished 3D Gold Armlet (Bajuband) on Left Bicep */}
@@ -1958,12 +1926,12 @@ export function LittleKrishna({
 
             {/* Polished 3D Gold Bangles (Kadas) on Left Wrist */}
             <g id="hipWristBangles" transform="translate(236, 290) rotate(-28)">
-              <ellipse cx="0" cy="-5" rx="12.5" ry="3.8" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
-              <ellipse cx="0" cy="-6" rx="9" ry="2.0" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.75" />
-              <ellipse cx="0" cy="0" rx="12.5" ry="3.8" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
-              <ellipse cx="0" cy="-1" rx="9" ry="2.0" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.75" />
-              <ellipse cx="0" cy="5" rx="12.5" ry="3.8" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
-              <ellipse cx="0" cy="4" rx="9" ry="2.0" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.75" />
+              <ellipse cx="0" cy="-5" rx="12" ry="3.8" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
+              <ellipse cx="0" cy="-6" rx="8.5" ry="2.0" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.75" />
+              <ellipse cx="0" cy="0" rx="12" ry="3.8" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
+              <ellipse cx="0" cy="-1" rx="8.5" ry="2.0" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.75" />
+              <ellipse cx="0" cy="5" rx="12" ry="3.8" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
+              <ellipse cx="0" cy="4" rx="8.5" ry="2.0" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.75" />
             </g>
 
             {/* 3D Toddler Hand Resting Naturally on Hip */}
