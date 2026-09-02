@@ -1052,135 +1052,250 @@ export function LittleKrishna({
                 {/* Bridge of Nose Dot */}
                 <circle cx="190" cy="145" r="1.8" fill="#DC2626" />
 
-                {/* Gentle Arched Eyebrows Framing the Large Eyes */}
-                <path
-                  d="M 132 126 C 146 114, 166 114, 178 124"
-                  fill="none"
-                  stroke="#0E1728"
-                  strokeWidth="3.8"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M 202 124 C 214 114, 234 114, 248 126"
-                  fill="none"
-                  stroke="#0E1728"
-                  strokeWidth="3.8"
-                  strokeLinecap="round"
-                />
-
-                {/* ── Left Eye (Soft Almond/Oval 3D Child Eye - Natural Position & Inward Focus) ── */}
-                <g transform="translate(125, 140) rotate(-1.5 24 22)">
-                  {/* Soft Almond/Oval Sclera Base */}
+                {/* ── Expressive Pixar Eyebrows (Cohesive Eye Framing & Natkhat Charm) ── */}
+                <g id="eyebrowLeft" className={styles.eyebrowLeft}>
+                  {/* Left Eyebrow Arch — positioned naturally 9px above upper lid */}
                   <path
-                    d="M 2 22 C 10 -4, 32 -5, 48 18 C 42 44, 18 43, 2 22 Z"
-                    fill="#F8FBFF"
-                  />
-                  {/* Dimensional Upper-Eye Ambient Shadow */}
-                  <path
-                    d="M 2 22 C 10 -4, 32 -5, 48 18 C 36 10, 14 10, 2 22 Z"
-                    fill="#1E3A8A"
-                    opacity="0.14"
-                  />
-
-                  {/* Soft Eyelid Crease Line */}
-                  <path d="M 6 -5 C 16 -12, 34 -12, 44 -5" fill="none" stroke="#255BB5" strokeWidth="1.2" strokeLinecap="round" opacity="0.32" />
-
-                  {/* Warm Chocolate / Honey Amber Iris (Subtle Inward Gaze Focus) */}
-                  <circle cx="26.2" cy="21.5" r="16.5" fill="url(#kIrisGrad)" className={styles.iris} />
-                  <circle cx="26.2" cy="21.5" r="16.5" fill="none" stroke="#100300" strokeWidth="1.6" />
-
-                  {/* Soft Feathered Large Vertical Dark Pupil (52% Iris Diameter) */}
-                  <ellipse cx="26.2" cy="21.5" rx="9.2" ry="10.4" fill="url(#kPupilGrad)" />
-                  <ellipse cx="26.2" cy="21.5" rx="7.8" ry="9.0" fill="#0B0402" />
-
-                  {/* Warm Amber Iris Reflection Arc */}
-                  <ellipse cx="26.2" cy="30.5" rx="9" ry="3" fill="#FBBF24" opacity="0.5" />
-
-                  {/* Glossy 3D Catchlights */}
-                  <ellipse cx="31.2" cy="15.5" rx="5.2" ry="4.5" fill="#FFFFFF" />
-                  <circle cx="20.2" cy="27" r="2.2" fill="#FFFFFF" opacity="0.88" />
-
-                  {/* Gentle Curved Upper Lash Line */}
-                  <path
-                    d="M 1 22 C 10 -4, 32 -5, 48 18"
+                    d="M 118 123 C 132 110, 158 110, 174 121"
                     fill="none"
-                    stroke="#0A0F1D"
-                    strokeWidth="3.6"
+                    stroke="#0F172A"
+                    strokeWidth="2.8"
                     strokeLinecap="round"
                   />
-                  {/* Soft Lower Lash Line Contour */}
+                  {/* Subtle Tapered Inner Brow Depth */}
                   <path
-                    d="M 2 22 C 18 43, 42 44, 48 18"
+                    d="M 162 114 C 168 116, 172 119, 174 121"
                     fill="none"
-                    stroke="#1E293B"
+                    stroke="#0F172A"
+                    strokeWidth="3.4"
+                    strokeLinecap="round"
+                    opacity="0.5"
+                  />
+                  {/* Delicate Devotional Sandalwood Dots */}
+                  <circle cx="124" cy="118" r="1.1" fill="#FFFFFF" opacity="0.85" />
+                  <circle cx="136" cy="112" r="1.2" fill="#FFFFFF" opacity="0.9" />
+                  <circle cx="149" cy="111" r="1.2" fill="#FFFFFF" opacity="0.9" />
+                  <circle cx="162" cy="114" r="1.1" fill="#FFFFFF" opacity="0.85" />
+                </g>
+
+                <g id="eyebrowRight" className={styles.eyebrowRight}>
+                  {/* Right Eyebrow with Charming Playful Inquisitive Lift */}
+                  <path
+                    d="M 206 121 C 222 110, 248 109, 262 123"
+                    fill="none"
+                    stroke="#0F172A"
+                    strokeWidth="2.8"
+                    strokeLinecap="round"
+                  />
+                  {/* Subtle Tapered Inner Brow Accent */}
+                  <path
+                    d="M 206 121 C 208 119, 212 115, 218 114"
+                    fill="none"
+                    stroke="#0F172A"
+                    strokeWidth="3.4"
+                    strokeLinecap="round"
+                    opacity="0.5"
+                  />
+                  {/* Delicate Devotional Sandalwood Dots */}
+                  <circle cx="218" cy="114" r="1.1" fill="#FFFFFF" opacity="0.85" />
+                  <circle cx="231" cy="111" r="1.2" fill="#FFFFFF" opacity="0.9" />
+                  <circle cx="244" cy="112" r="1.2" fill="#FFFFFF" opacity="0.9" />
+                  <circle cx="256" cy="118" r="1.1" fill="#FFFFFF" opacity="0.85" />
+                </g>
+
+                {/* ── Left Eye (Large, Expressive 3D Lotus-Petal Eye) ── */}
+                <g id="leftEyeGroup" transform="translate(116, 124)">
+                  <clipPath id="kLeftEyeClip">
+                    <path d="M 2 24 C 15 3, 44 4, 60 26 C 46 40, 16 39, 2 24 Z" />
+                  </clipPath>
+
+                  {/* Eye Socket Ambient Shadow */}
+                  <path
+                    d="M 0 23 C 14 1, 45 2, 62 25 C 47 42, 14 41, 0 23 Z"
+                    fill="#1E3A8A"
+                    opacity="0.12"
+                  />
+
+                  {/* Sclera (Natural Organic Eye White) */}
+                  <path
+                    d="M 2 24 C 15 3, 44 4, 60 26 C 46 40, 16 39, 2 24 Z"
+                    fill="#F6F9FC"
+                  />
+
+                  {/* Eyeball Core (Clipped to Eyelids so iris is naturally tucked) */}
+                  <g clipPath="url(#kLeftEyeClip)">
+                    {/* Upper Eyeball Eyelid Drop Shadow */}
+                    <path
+                      d="M 2 24 C 15 3, 44 4, 60 26 C 46 17, 16 16, 2 24 Z"
+                      fill="#1E3A8A"
+                      opacity="0.20"
+                    />
+
+                    {/* Iris (Large 28px diameter, tucked ~15% under upper lid) */}
+                    <g className={styles.iris}>
+                      {/* Rich Warm Amber/Chocolate Iris */}
+                      <circle cx="31.5" cy="23.5" r="14.2" fill="url(#kIrisGrad)" />
+                      {/* Soft Limbal Ring */}
+                      <circle cx="31.5" cy="23.5" r="14.2" fill="none" stroke="#1A0802" strokeWidth="1.1" opacity="0.75" />
+
+                      {/* Deep Velvety Circular Pupil */}
+                      <circle cx="31.5" cy="23.5" r="8.2" fill="url(#kPupilGrad)" />
+                      <circle cx="31.5" cy="23.5" r="7.0" fill="#0A0402" />
+
+                      {/* Warm Amber Iris Caustic Reflection Arc */}
+                      <ellipse cx="31.5" cy="30.5" rx="8.0" ry="2.6" fill="#FBBF24" opacity="0.48" />
+
+                      {/* Natural Pixar Catchlights */}
+                      <circle cx="35.5" cy="19.0" r="3.2" fill="#FFFFFF" opacity="0.95" />
+                      <circle cx="26.0" cy="28.0" r="1.6" fill="#FFFFFF" opacity="0.65" />
+                    </g>
+
+                    {/* Inner Corner Tear Duct (Caruncle) Warmth */}
+                    <circle cx="58" cy="25.5" r="2.6" fill="#FDA4AF" opacity="0.35" />
+
+                    {/* Animated Upper Eyelid for Blinking */}
+                    <path
+                      d="M 0 0 H 62 V 42 H 0 Z"
+                      fill="#5B9AFA"
+                      className={`${styles.eyelidUpper} ${isBlinking ? styles.blinkActive : ''}`}
+                    />
+                  </g>
+
+                  {/* Soft Double-Eyelid Crease */}
+                  <path
+                    d="M 8 13 C 20 2, 42 3, 54 18"
+                    fill="none"
+                    stroke="#255BB5"
                     strokeWidth="1.1"
                     strokeLinecap="round"
-                    opacity="0.35"
+                    opacity="0.32"
                   />
 
-                  {/* Animated Upper Eyelid for Blinking */}
+                  {/* Gentle Lower Lid Smiling Crinkle */}
                   <path
-                    d="M 2 22 C 10 -4, 32 -5, 48 18 C 38 8, 12 8, 2 22 Z"
-                    fill="#5B9AFA"
-                    className={`${styles.eyelidUpper} ${isBlinking ? styles.blinkActive : ''}`}
+                    d="M 14 43 C 26 46, 40 46, 52 42"
+                    fill="none"
+                    stroke="#255BB5"
+                    strokeWidth="0.9"
+                    opacity="0.22"
+                    strokeLinecap="round"
+                  />
+
+                  {/* Elegant Tapered Upper Lash Line */}
+                  <path
+                    d="M 1 24 C 15 3, 44 4, 61 26"
+                    fill="none"
+                    stroke="#0F172A"
+                    strokeWidth="3.2"
+                    strokeLinecap="round"
+                  />
+
+                  {/* Delicate Soft Lower Lash Contour */}
+                  <path
+                    d="M 60 26 C 46 40, 16 39, 2 24"
+                    fill="none"
+                    stroke="#1E293B"
+                    strokeWidth="1.0"
+                    strokeLinecap="round"
+                    opacity="0.35"
                   />
                 </g>
 
-                {/* ── Right Eye (Soft Almond/Oval 3D Child Eye - Natural Position & Inward Focus) ── */}
-                <g transform="translate(205, 140) rotate(1.5 24 22)">
-                  {/* Soft Almond/Oval Sclera Base */}
+                {/* ── Right Eye (Large, Expressive 3D Lotus-Petal Eye) ── */}
+                <g id="rightEyeGroup" transform="translate(204, 124)">
+                  <clipPath id="kRightEyeClip">
+                    <path d="M 0 26 C 16 4, 45 3, 58 24 C 44 39, 14 40, 0 26 Z" />
+                  </clipPath>
+
+                  {/* Eye Socket Ambient Shadow */}
                   <path
-                    d="M 0 18 C 16 -5, 38 -4, 46 22 C 40 43, 16 44, 0 18 Z"
-                    fill="#F8FBFF"
-                  />
-                  {/* Dimensional Upper-Eye Ambient Shadow */}
-                  <path
-                    d="M 0 18 C 16 -5, 38 -4, 46 22 C 34 10, 12 10, 0 18 Z"
+                    d="M -2 25 C 15 2, 46 1, 60 23 C 46 41, 13 42, -2 25 Z"
                     fill="#1E3A8A"
-                    opacity="0.14"
+                    opacity="0.12"
                   />
 
-                  {/* Soft Eyelid Crease Line */}
-                  <path d="M 4 -5 C 14 -12, 32 -12, 42 -5" fill="none" stroke="#255BB5" strokeWidth="1.2" strokeLinecap="round" opacity="0.32" />
-
-                  {/* Warm Chocolate / Honey Amber Iris (Subtle Inward Gaze Focus) */}
-                  <circle cx="22.3" cy="21.5" r="16.5" fill="url(#kIrisGrad)" className={styles.iris} />
-                  <circle cx="22.3" cy="21.5" r="16.5" fill="none" stroke="#100300" strokeWidth="1.6" />
-
-                  {/* Soft Feathered Large Vertical Dark Pupil (52% Iris Diameter) */}
-                  <ellipse cx="22.3" cy="21.5" rx="9.2" ry="10.4" fill="url(#kPupilGrad)" />
-                  <ellipse cx="22.3" cy="21.5" rx="7.8" ry="9.0" fill="#0B0402" />
-
-                  {/* Warm Amber Iris Reflection Arc */}
-                  <ellipse cx="22.3" cy="30.5" rx="9" ry="3" fill="#FBBF24" opacity="0.5" />
-
-                  {/* Glossy 3D Catchlights */}
-                  <ellipse cx="27.3" cy="15.5" rx="5.2" ry="4.5" fill="#FFFFFF" />
-                  <circle cx="16.3" cy="27" r="2.2" fill="#FFFFFF" opacity="0.88" />
-
-                  {/* Gentle Curved Upper Lash Line */}
+                  {/* Sclera (Natural Organic Eye White) */}
                   <path
-                    d="M 0 18 C 16 -5, 38 -4, 46 22"
-                    fill="none"
-                    stroke="#0A0F1D"
-                    strokeWidth="3.6"
-                    strokeLinecap="round"
+                    d="M 0 26 C 16 4, 45 3, 58 24 C 44 39, 14 40, 0 26 Z"
+                    fill="#F6F9FC"
                   />
-                  {/* Soft Lower Lash Line Contour */}
+
+                  {/* Eyeball Core (Clipped to Eyelids) */}
+                  <g clipPath="url(#kRightEyeClip)">
+                    {/* Upper Eyeball Eyelid Drop Shadow */}
+                    <path
+                      d="M 0 26 C 16 4, 45 3, 58 24 C 44 17, 14 16, 0 26 Z"
+                      fill="#1E3A8A"
+                      opacity="0.20"
+                    />
+
+                    {/* Iris (Large 28px diameter, tucked ~15% under upper lid) */}
+                    <g className={styles.iris}>
+                      {/* Rich Warm Amber/Chocolate Iris */}
+                      <circle cx="26.5" cy="23.5" r="14.2" fill="url(#kIrisGrad)" />
+                      {/* Soft Limbal Ring */}
+                      <circle cx="26.5" cy="23.5" r="14.2" fill="none" stroke="#1A0802" strokeWidth="1.1" opacity="0.75" />
+
+                      {/* Deep Velvety Circular Pupil */}
+                      <circle cx="26.5" cy="23.5" r="8.2" fill="url(#kPupilGrad)" />
+                      <circle cx="26.5" cy="23.5" r="7.0" fill="#0A0402" />
+
+                      {/* Warm Amber Iris Caustic Reflection Arc */}
+                      <ellipse cx="26.5" cy="30.5" rx="8.0" ry="2.6" fill="#FBBF24" opacity="0.48" />
+
+                      {/* Natural Pixar Catchlights */}
+                      <circle cx="30.5" cy="19.0" r="3.2" fill="#FFFFFF" opacity="0.95" />
+                      <circle cx="21.0" cy="28.0" r="1.6" fill="#FFFFFF" opacity="0.65" />
+                    </g>
+
+                    {/* Inner Corner Tear Duct (Caruncle) Warmth */}
+                    <circle cx="1.5" cy="25.5" r="2.6" fill="#FDA4AF" opacity="0.35" />
+
+                    {/* Animated Upper Eyelid for Blinking */}
+                    <path
+                      d="M -2 0 H 62 V 42 H -2 Z"
+                      fill="#5B9AFA"
+                      className={`${styles.eyelidUpper} ${isBlinking ? styles.blinkActive : ''}`}
+                    />
+                  </g>
+
+                  {/* Soft Double-Eyelid Crease */}
                   <path
-                    d="M 0 18 C 16 44, 40 43, 46 22"
+                    d="M 4 18 C 16 3, 38 2, 50 13"
                     fill="none"
-                    stroke="#1E293B"
+                    stroke="#255BB5"
                     strokeWidth="1.1"
                     strokeLinecap="round"
-                    opacity="0.35"
+                    opacity="0.32"
                   />
 
-                  {/* Animated Upper Eyelid for Blinking */}
+                  {/* Gentle Lower Lid Smiling Crinkle */}
                   <path
-                    d="M 0 18 C 16 -5, 38 -4, 46 22 C 36 8, 10 8, 0 18 Z"
-                    fill="#5B9AFA"
-                    className={`${styles.eyelidUpper} ${isBlinking ? styles.blinkActive : ''}`}
+                    d="M 6 42 C 18 46, 32 46, 44 43"
+                    fill="none"
+                    stroke="#255BB5"
+                    strokeWidth="0.9"
+                    opacity="0.22"
+                    strokeLinecap="round"
+                  />
+
+                  {/* Elegant Tapered Upper Lash Line */}
+                  <path
+                    d="M -1 26 C 16 4, 45 3, 59 24"
+                    fill="none"
+                    stroke="#0F172A"
+                    strokeWidth="3.2"
+                    strokeLinecap="round"
+                  />
+
+                  {/* Delicate Soft Lower Lash Contour */}
+                  <path
+                    d="M 0 26 C 14 40, 44 39, 58 24"
+                    fill="none"
+                    stroke="#1E293B"
+                    strokeWidth="1.0"
+                    strokeLinecap="round"
+                    opacity="0.35"
                   />
                 </g>
 
