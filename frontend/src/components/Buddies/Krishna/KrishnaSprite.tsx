@@ -1772,9 +1772,9 @@ export function LittleKrishna({
               d="M 142 198
                  C 128 196, 110 202, 94 214
                  C 82 224, 76 230, 76 220
-                 C 76 200, 80 162, 80 144
-                 L 98 144
-                 C 98 162, 96 204, 104 214
+                 C 76 190, 85 150, 85 128
+                 L 102 128
+                 C 102 150, 96 204, 104 214
                  C 112 220, 128 214, 142 206 Z"
               fill="url(#kSkinBody)"
             />
@@ -1808,7 +1808,7 @@ export function LittleKrishna({
             </g>
 
             {/* Polished 3D Gold Bangles (Kadas) Wrapping Narrowed Wrist */}
-            <g id="raisedWristBangles" transform="translate(89, 142)">
+            <g id="raisedWristBangles" transform="translate(93.5, 126)">
               <ellipse cx="0" cy="-5" rx="10.5" ry="3.5" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
               <ellipse cx="0" cy="-6" rx="7.5" ry="1.8" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.75" />
               <ellipse cx="0" cy="0" rx="10.5" ry="3.5" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
@@ -1817,8 +1817,8 @@ export function LittleKrishna({
               <ellipse cx="0" cy="4" rx="7.5" ry="1.8" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.75" />
             </g>
 
-            {/* ── 3D SCULPTED TODDLER FIST WITH ERECT INDEX FINGER (Cheek / Ear Level) ── */}
-            <g id="sculptedChakraHand" transform="translate(89, 126)">
+            {/* ── 3D SCULPTED TODDLER FIST WITH ERECT INDEX FINGER (Positioned Directly Beneath Chakra) ── */}
+            <g id="sculptedChakraHand" transform="translate(93.5, 110)">
               {/* Chubby Toddler Fist Palm Base */}
               <path
                 d="M -9 14
@@ -1874,12 +1874,12 @@ export function LittleKrishna({
             <path
               d="M 238 198
                  C 248 198, 264 206, 276 220
-                 C 284 232, 282 246, 268 264
-                 C 256 278, 246 286, 230 288
-                 L 230 272
-                 C 242 270, 252 264, 260 252
-                 C 266 242, 266 232, 258 224
-                 C 248 214, 240 208, 238 206 Z"
+                 C 284 232, 282 246, 268 262
+                 C 256 274, 246 278, 238 276
+                 L 230 262
+                 C 242 260, 252 254, 260 244
+                 C 266 234, 266 226, 258 218
+                 C 248 210, 240 206, 238 204 Z"
               fill="url(#kSkinBody)"
             />
             {/* Soft Under-Armpit Ambient Shadow */}
@@ -1912,7 +1912,7 @@ export function LittleKrishna({
             </g>
 
             {/* Polished 3D Gold Bangles (Kadas) Wrapping Left Wrist */}
-            <g id="hipWristBangles" transform="translate(230, 280) rotate(-18)">
+            <g id="hipWristBangles" transform="translate(238, 274) rotate(-18)">
               <ellipse cx="0" cy="-5" rx="10.5" ry="3.5" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
               <ellipse cx="0" cy="-6" rx="7.5" ry="1.8" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.75" />
               <ellipse cx="0" cy="0" rx="10.5" ry="3.5" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
@@ -1922,7 +1922,7 @@ export function LittleKrishna({
             </g>
 
             {/* 3D Toddler Hand Resting Naturally on Hip */}
-            <g id="sculptedHipHand" transform="translate(222, 284)">
+            <g id="sculptedHipHand" transform="translate(232, 278) rotate(-12)">
               {/* Smooth Forearm → Wrist → Dorsal Hand Transition */}
               <path
                 d="M 10 -8 C 12 -4, 14 0, 14 6 C 14 12, 10 16, 4 17 C -4 17, -10 12, -11 5 C -11 -3, -5 -9, 3 -9 C 6 -9, 8 -9, 10 -8 Z"
