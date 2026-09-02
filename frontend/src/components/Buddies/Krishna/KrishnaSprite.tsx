@@ -304,6 +304,21 @@ export function LittleKrishna({
               <stop offset="100%" stopColor="#5B9AFA" stopOpacity="0" />
             </radialGradient>
 
+            {/* ── 3D Cylindrical Neck Shaders ── */}
+            <linearGradient id="kSkinNeck" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#2A64C2" />
+              <stop offset="22%" stopColor="#5391F0" />
+              <stop offset="55%" stopColor="#87BDFF" />
+              <stop offset="85%" stopColor="#5391F0" />
+              <stop offset="100%" stopColor="#1E52B0" />
+            </linearGradient>
+
+            <linearGradient id="kNeckOcclusionShadow" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#0B1938" stopOpacity="0.45" />
+              <stop offset="60%" stopColor="#1E3A8A" stopOpacity="0.2" />
+              <stop offset="100%" stopColor="#1E3A8A" stopOpacity="0" />
+            </linearGradient>
+
             <radialGradient id="kSkinBody" cx="40%" cy="30%" r="70%">
               <stop offset="0%" stopColor="#CCE3FF" />
               <stop offset="32%" stopColor="#87BDFF" />
@@ -514,7 +529,7 @@ export function LittleKrishna({
 
           {/* ════════════════ LAYER 1: BACK HAIR (BEHIND BODY) ════════════════ */}
           {/* Scaled down around the chin anchor (190,217) to reduce oversized-head / chibi look */}
-          <g id="hairBackBehind" transform="translate(0,-20) translate(190,217) scale(0.85) translate(-190,-217)">
+          <g id="hairBackBehind" transform="translate(0,-36) translate(190,217) scale(0.85) translate(-190,-217)">
             <circle cx="120" cy="116" r="38" fill="url(#kHairCurl)" />
             <ellipse cx="112" cy="110" rx="28" ry="22" fill="url(#kHairHl)" />
             <circle cx="102" cy="148" r="32" fill="url(#kHairCurl)" />
@@ -910,15 +925,34 @@ export function LittleKrishna({
             </g>
           </g>
 
-          {/* ════════════════ LAYER 5: TORSO ════════════════ */}
+          {/* ════════════════ LAYER 5: TORSO & NECK ════════════════ */}
           <g id="torso">
+            {/* 3D Cylindrical Toddler Neck */}
+            <g id="neck">
+              {/* Main Neck Pillar connecting chest to chin */}
+              <path
+                d="M 174 158 C 173 176, 172 194, 168 206 C 178 210, 202 210, 212 206 C 208 194, 207 176, 206 158 Z"
+                fill="url(#kSkinNeck)"
+              />
+              {/* Soft Cylindrical Volume Light */}
+              <ellipse cx="190" cy="186" rx="10" ry="16" fill="#D9ECFF" opacity="0.3" />
+              {/* Deep Ambient Occlusion Drop Shadow Under Chin */}
+              <path
+                d="M 172 168 C 182 184, 198 184, 208 168 C 204 190, 176 190, 172 168 Z"
+                fill="url(#kNeckOcclusionShadow)"
+              />
+              {/* Subtle Suprasternal Notch (Base of neck hollow) */}
+              <ellipse cx="190" cy="204" rx="3.5" ry="1.8" fill="#1E3A8A" opacity="0.25" />
+            </g>
+
+            {/* Torso Body */}
             <path
-              d="M 136 172 C 124 214, 136 268, 148 286 C 174 290, 206 290, 232 286
-                 C 244 268, 256 214, 244 172 Z"
+              d="M 136 192 C 124 226, 136 268, 148 286 C 174 290, 206 290, 232 286
+                 C 244 268, 256 226, 244 192 C 228 198, 212 204, 190 205 C 168 204, 152 198, 136 192 Z"
               fill="url(#kSkinBody)"
             />
-            <ellipse cx="190" cy="206" rx="36" ry="28" fill="#D9ECFF" opacity="0.22" />
-            <ellipse cx="190" cy="256" rx="24" ry="18" fill="#CCE3FF" opacity="0.18" />
+            <ellipse cx="190" cy="222" rx="36" ry="28" fill="#D9ECFF" opacity="0.22" />
+            <ellipse cx="190" cy="262" rx="24" ry="18" fill="#CCE3FF" opacity="0.18" />
           </g>
 
           {/* ════════════════ LAYER 6: HEAD & FACE ════════════════ */}
@@ -926,19 +960,32 @@ export function LittleKrishna({
               Outer wrapper carries the persistent scale so CSS head-tilt animations on #headGroup
               (which override the transform attribute) do not wipe it out. */}
           <g transform="translate(190,217) scale(0.85) translate(-190,-217)">
-            <g id="headGroup" transform="translate(0, -20)">
+            <g id="headGroup" transform="translate(0, -36)">
+              {/* Front Side Wisps (Original Hair) */}
+              <g id="hairSides">
+                <path d="M 116 148 C 104 164, 110 186, 126 190 C 134 192, 138 182, 130 174 C 124 168, 128 158, 134 156"
+                  fill="url(#kHairCurl)" stroke="#20304C" strokeWidth="0.8" />
+                <path d="M 116 148 C 104 164, 110 186, 126 190"
+                  fill="none" stroke="#6CA0E8" strokeWidth="1.5" strokeLinecap="round" opacity="0.45" />
+
+                <path d="M 264 148 C 276 164, 270 186, 254 190 C 246 192, 242 182, 250 174 C 256 168, 252 158, 246 156"
+                  fill="url(#kHairCurl)" stroke="#20304C" strokeWidth="0.8" />
+                <path d="M 264 148 C 276 164, 270 186, 254 190"
+                  fill="none" stroke="#6CA0E8" strokeWidth="1.5" strokeLinecap="round" opacity="0.45" />
+              </g>
+
               {/* Ears + Thick 3D Gold Hoop Earrings (Balis) */}
               <g id="headBase">
-                <g transform="translate(136, 156)">
-                  <ellipse cx="0" cy="0" rx="9" ry="13" fill="url(#kSkinFace)" />
+                <g transform="translate(130, 156)">
+                  <ellipse cx="0" cy="0" rx="9.5" ry="13.5" fill="url(#kSkinFace)" />
                   {/* Thick Polished 3D Gold Bali / Hoop */}
                   <circle cx="-1.5" cy="9.5" r="7.5" fill="none" stroke="url(#kGoldGrad)" strokeWidth="3.4" strokeLinecap="round" />
                   <circle cx="-2.5" cy="8.5" r="5.8" fill="none" stroke="#FFFFFF" strokeWidth="1.1" opacity="0.8" strokeLinecap="round" />
                   <circle cx="-0.5" cy="10.5" r="6.8" fill="none" stroke="#78350F" strokeWidth="0.9" opacity="0.6" strokeLinecap="round" />
                 </g>
 
-                <g transform="translate(244, 156)">
-                  <ellipse cx="0" cy="0" rx="9" ry="13" fill="url(#kSkinFace)" />
+                <g transform="translate(250, 156)">
+                  <ellipse cx="0" cy="0" rx="9.5" ry="13.5" fill="url(#kSkinFace)" />
                   {/* Thick Polished 3D Gold Bali / Hoop */}
                   <circle cx="1.5" cy="9.5" r="7.5" fill="none" stroke="url(#kGoldGrad)" strokeWidth="3.4" strokeLinecap="round" />
                   <circle cx="2.5" cy="8.5" r="5.8" fill="none" stroke="#FFFFFF" strokeWidth="1.1" opacity="0.8" strokeLinecap="round" />
@@ -1009,52 +1056,6 @@ export function LittleKrishna({
                 {/* Subtle Rosy Toddler Blush on Cheek Apples */}
                 <ellipse cx="152" cy="163" rx="14" ry="10" fill="url(#kCheekBlush)" transform="rotate(-4 152 163)" />
                 <ellipse cx="228" cy="163" rx="14" ry="10" fill="url(#kCheekBlush)" transform="rotate(4 228 163)" />
-              </g>
-
-              {/* Front Curls & Framing Locks (Rendered ON TOP of HeadBase to Hug & Slim Cheeks and Forehead) */}
-              <g id="hairSides">
-                {/* Left Temple & Cheek Overlapping Curls */}
-                <circle cx="134" cy="120" r="16" fill="url(#kHairCurl)" />
-                <ellipse cx="129" cy="116" rx="11" ry="8" fill="url(#kHairHl)" opacity="0.75" />
-
-                <circle cx="130" cy="146" r="15" fill="url(#kHairCurl)" />
-                <ellipse cx="126" cy="142" rx="10" ry="8" fill="url(#kHairHl)" opacity="0.75" />
-
-                <circle cx="133" cy="170" r="13" fill="url(#kHairCurl)" />
-                <ellipse cx="130" cy="166" rx="8" ry="6" fill="url(#kHairHl)" opacity="0.7" />
-
-                <path d="M 136 136 C 128 150, 130 170, 144 174 C 150 176, 152 168, 146 162 C 140 156, 142 146, 148 142"
-                  fill="url(#kHairCurl)" stroke="#20304C" strokeWidth="0.8" />
-                <path d="M 136 136 C 128 150, 130 170, 144 174"
-                  fill="none" stroke="#6CA0E8" strokeWidth="1.4" strokeLinecap="round" opacity="0.45" />
-
-                {/* Right Temple & Cheek Overlapping Curls */}
-                <circle cx="246" cy="120" r="16" fill="url(#kHairCurl)" />
-                <ellipse cx="251" cy="116" rx="11" ry="8" fill="url(#kHairHl)" opacity="0.75" />
-
-                <circle cx="250" cy="146" r="15" fill="url(#kHairCurl)" />
-                <ellipse cx="254" cy="142" rx="10" ry="8" fill="url(#kHairHl)" opacity="0.75" />
-
-                <circle cx="247" cy="170" r="13" fill="url(#kHairCurl)" />
-                <ellipse cx="250" cy="166" rx="8" ry="6" fill="url(#kHairHl)" opacity="0.7" />
-
-                <path d="M 244 136 C 252 150, 250 170, 236 174 C 230 176, 228 168, 234 162 C 240 156, 238 146, 232 142"
-                  fill="url(#kHairCurl)" stroke="#20304C" strokeWidth="0.8" />
-                <path d="M 244 136 C 252 150, 250 170, 236 174"
-                  fill="none" stroke="#6CA0E8" strokeWidth="1.4" strokeLinecap="round" opacity="0.45" />
-
-                {/* Forehead Curls Hugging the Hairline */}
-                <circle cx="152" cy="86" r="14" fill="url(#kHairCurl)" />
-                <ellipse cx="149" cy="83" rx="9" ry="6" fill="url(#kHairHl)" opacity="0.8" />
-
-                <circle cx="172" cy="80" r="13" fill="url(#kHairCurl)" />
-                <ellipse cx="170" cy="77" rx="8" ry="5" fill="url(#kHairHl)" opacity="0.8" />
-
-                <circle cx="208" cy="80" r="13" fill="url(#kHairCurl)" />
-                <ellipse cx="210" cy="77" rx="8" ry="5" fill="url(#kHairHl)" opacity="0.8" />
-
-                <circle cx="228" cy="86" r="14" fill="url(#kHairCurl)" />
-                <ellipse cx="231" cy="83" rx="9" ry="6" fill="url(#kHairHl)" opacity="0.8" />
               </g>
 
               {/* Master Face Details — Stylized, Expressive & High Fidelity */}
@@ -1482,30 +1483,13 @@ export function LittleKrishna({
 
               {/* Topknot Bun */}
               <g id="crownTopknot">
-                <ellipse cx="190" cy="66" rx="28" ry="24" fill="url(#kHairBase)" />
-                <ellipse cx="178" cy="60" rx="12" ry="11" fill="url(#kHairCurl)" />
-                <ellipse cx="202" cy="60" rx="12" ry="11" fill="url(#kHairCurl)" />
-                <ellipse cx="190" cy="52" rx="13" ry="10" fill="url(#kHairCurl)" />
-                <ellipse cx="186" cy="56" rx="16" ry="10" fill="url(#kHairHl)" />
-                {/* Curved 3D Gold Circlet Band Wrapping the Topknot Bun Base */}
-                <path
-                  d="M 176 64 C 184 67.5, 196 67.5, 204 64 L 202.5 59 C 195 62.5, 185 62.5, 177.5 59 Z"
-                  fill="url(#kGoldGrad)"
-                  stroke="#92400E"
-                  strokeWidth="0.8"
-                />
-                <path
-                  d="M 178 63 C 185 66, 195 66, 202 63"
-                  fill="none"
-                  stroke="#FEF08A"
-                  strokeWidth="1.2"
-                  opacity="0.8"
-                />
-                {/* Soft Hair Cascade Below the Band */}
-                <ellipse cx="180" cy="74" rx="11" ry="9" fill="url(#kHairCurl)" />
-                <ellipse cx="200" cy="74" rx="11" ry="9" fill="url(#kHairCurl)" />
-                <ellipse cx="190" cy="76" rx="12" ry="8" fill="url(#kHairCurl)" />
-                <ellipse cx="190" cy="75" rx="8" ry="5" fill="url(#kHairHl)" opacity="0.75" />
+                <ellipse cx="190" cy="74" rx="30" ry="26" fill="url(#kHairBase)" />
+                <ellipse cx="176" cy="68" rx="13" ry="12" fill="url(#kHairCurl)" />
+                <ellipse cx="204" cy="68" rx="13" ry="12" fill="url(#kHairCurl)" />
+                <ellipse cx="190" cy="56" rx="14" ry="11" fill="url(#kHairCurl)" />
+                <ellipse cx="184" cy="62" rx="18" ry="12" fill="url(#kHairHl)" />
+                <rect x="166" y="86" width="48" height="8" rx="4" fill="url(#kGoldGrad)" stroke="#92400E" strokeWidth="0.8" />
+                <rect x="174" y="87" width="32" height="3" rx="1.5" fill="#FEF08A" opacity="0.6" />
               </g>
 
               {/* ════════════════ PEACOCK FEATHER HEADDRESS (REFERENCE FIDELITY) ════════════════ */}
@@ -1643,26 +1627,26 @@ export function LittleKrishna({
           {/* ════════════════ LAYER 7: MULTI-STRAND GOLD NECKLACES ════════════════ */}
           <g id="necklace" filter="url(#kSoftShadow)">
             {/* Upper Choker-Style Gold Chain */}
-            <path d="M 154 188 C 168 214, 212 214, 226 188" fill="none" stroke="url(#kGoldGrad)" strokeWidth="3.2" />
-            <circle cx="166" cy="199" r="3.2" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
-            <circle cx="178" cy="206" r="3.4" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
-            <circle cx="190" cy="208" r="3.8" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
-            <circle cx="202" cy="206" r="3.4" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
-            <circle cx="214" cy="199" r="3.2" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
+            <path d="M 154 196 C 168 222, 212 222, 226 196" fill="none" stroke="url(#kGoldGrad)" strokeWidth="3.2" />
+            <circle cx="166" cy="207" r="3.2" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
+            <circle cx="178" cy="214" r="3.4" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
+            <circle cx="190" cy="216" r="3.8" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
+            <circle cx="202" cy="214" r="3.4" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
+            <circle cx="214" cy="207" r="3.2" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
 
             {/* Lower Longer Curved Gold Bead Chain */}
-            <path d="M 148 188 C 164 236, 216 236, 232 188" fill="none" stroke="url(#kGoldGrad)" strokeWidth="4.2" />
-            <circle cx="158" cy="204" r="3.8" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
-            <circle cx="158" cy="204" r="1.2" fill="#FFFFFF" opacity="0.9" />
-            <circle cx="172" cy="216" r="4.2" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
-            <circle cx="172" cy="216" r="1.3" fill="#FFFFFF" opacity="0.9" />
-            <circle cx="208" cy="216" r="4.2" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
-            <circle cx="208" cy="216" r="1.3" fill="#FFFFFF" opacity="0.9" />
-            <circle cx="222" cy="204" r="3.8" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
-            <circle cx="222" cy="204" r="1.2" fill="#FFFFFF" opacity="0.9" />
+            <path d="M 148 196 C 164 244, 216 244, 232 196" fill="none" stroke="url(#kGoldGrad)" strokeWidth="4.2" />
+            <circle cx="158" cy="212" r="3.8" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
+            <circle cx="158" cy="212" r="1.2" fill="#FFFFFF" opacity="0.9" />
+            <circle cx="172" cy="224" r="4.2" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
+            <circle cx="172" cy="224" r="1.3" fill="#FFFFFF" opacity="0.9" />
+            <circle cx="208" cy="224" r="4.2" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
+            <circle cx="208" cy="224" r="1.3" fill="#FFFFFF" opacity="0.9" />
+            <circle cx="222" cy="212" r="3.8" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
+            <circle cx="222" cy="212" r="1.2" fill="#FFFFFF" opacity="0.9" />
 
             {/* Ornate Gold & Ruby Medallion Pendant */}
-            <g transform="translate(190, 226)">
+            <g transform="translate(190, 234)">
               {/* Petal Accents */}
               {[0, 45, 90, 135, 180, 225, 270, 315].map((ang) => (
                 <circle
