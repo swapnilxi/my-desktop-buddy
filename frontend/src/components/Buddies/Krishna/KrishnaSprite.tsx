@@ -518,7 +518,8 @@ export function LittleKrishna({
           </defs>
 
           {/* ════════════════ LAYER 1: BACK HAIR (BEHIND BODY) ════════════════ */}
-          <g id="hairBackBehind" transform="translate(0, -20)">
+          {/* Scaled down around the chin anchor (190,217) to reduce oversized-head / chibi look */}
+          <g id="hairBackBehind" transform="translate(0,-20) translate(190,217) scale(0.85) translate(-190,-217)">
             <circle cx="120" cy="116" r="38" fill="url(#kHairCurl)" />
             <ellipse cx="112" cy="110" rx="28" ry="22" fill="url(#kHairHl)" />
             <circle cx="102" cy="148" r="32" fill="url(#kHairCurl)" />
@@ -542,7 +543,9 @@ export function LittleKrishna({
           </g>
 
           {/* ════════════════ LAYER 2: FEET & ANKLETS ════════════════ */}
-          <g id="feet" filter="url(#kSoftShadow)">
+          {/* Lower body (feet/legs/dhoti) vertically lengthened around the waist (y=290) so the
+              body reads taller and better balances the reduced head — child, not chibi. */}
+          <g id="feet" filter="url(#kSoftShadow)" transform="translate(190,290) scale(1,1.10) translate(-190,-290)">
             {/* Grounding Golden Bar right under the dhoti */}
             <path
               d="M 138 442 C 190 446, 242 442, 256 438"
@@ -592,7 +595,7 @@ export function LittleKrishna({
           </g>
 
           {/* ════════════════ LAYER 3: LEGS ════════════════ */}
-          <g id="legs">
+          <g id="legs" transform="translate(190,290) scale(1,1.10) translate(-190,-290)">
             <path
               d="M 152 322 C 142 360, 140 400, 148 432"
               fill="none"
@@ -626,7 +629,7 @@ export function LittleKrishna({
           </g>
 
           {/* ════════════════ LAYER 4: REFERENCE 3D WRAPPED DHOTI, STUDDED BELT & SILK SASH ════════════════ */}
-          <g id="dhoti" filter="url(#kSoftShadow)">
+          <g id="dhoti" filter="url(#kSoftShadow)" transform="translate(190,290) scale(1,1.10) translate(-190,-290)">
             {/* ── A. MAIN SAFFRON YELLOW DHOTI (TWO DRAPED WRAP LEGS) ── */}
             {/* Left Leg Wrap Base */}
             <path
@@ -924,41 +927,45 @@ export function LittleKrishna({
           </g>
 
           {/* ════════════════ LAYER 6: HEAD & FACE ════════════════ */}
-          <g id="headGroup" transform="translate(0, -20)">
-            {/* Front Side Wisps */}
-            <g id="hairSides">
-              <path d="M 116 148 C 104 164, 110 186, 126 190 C 134 192, 138 182, 130 174 C 124 168, 128 158, 134 156"
-                fill="url(#kHairCurl)" stroke="#20304C" strokeWidth="0.8" />
-              <path d="M 116 148 C 104 164, 110 186, 126 190"
-                fill="none" stroke="#6CA0E8" strokeWidth="1.5" strokeLinecap="round" opacity="0.45" />
+          {/* Scaled down around the chin anchor (190,217) to reduce oversized-head / chibi look.
+              Outer wrapper carries the persistent scale so CSS head-tilt animations on #headGroup
+              (which override the transform attribute) do not wipe it out. */}
+          <g transform="translate(190,217) scale(0.85) translate(-190,-217)">
+            <g id="headGroup" transform="translate(0, -20)">
+              {/* Front Side Wisps */}
+              <g id="hairSides">
+                <path d="M 116 148 C 104 164, 110 186, 126 190 C 134 192, 138 182, 130 174 C 124 168, 128 158, 134 156"
+                  fill="url(#kHairCurl)" stroke="#20304C" strokeWidth="0.8" />
+                <path d="M 116 148 C 104 164, 110 186, 126 190"
+                  fill="none" stroke="#6CA0E8" strokeWidth="1.5" strokeLinecap="round" opacity="0.45" />
 
-              <path d="M 264 148 C 276 164, 270 186, 254 190 C 246 192, 242 182, 250 174 C 256 168, 252 158, 246 156"
-                fill="url(#kHairCurl)" stroke="#20304C" strokeWidth="0.8" />
-              <path d="M 264 148 C 276 164, 270 186, 254 190"
-                fill="none" stroke="#6CA0E8" strokeWidth="1.5" strokeLinecap="round" opacity="0.45" />
-            </g>
-
-            {/* Ears + Thick 3D Gold Hoop Earrings (Balis) */}
-            <g id="headBase">
-              <g transform="translate(118, 162)">
-                <ellipse cx="0" cy="0" rx="14" ry="18" fill="url(#kSkinFace)" />
-                {/* Thick Polished 3D Gold Bali / Hoop */}
-                <circle cx="-3" cy="12" r="10.5" fill="none" stroke="url(#kGoldGrad)" strokeWidth="4.8" strokeLinecap="round" />
-                <circle cx="-4.5" cy="10.5" r="8.5" fill="none" stroke="#FFFFFF" strokeWidth="1.4" opacity="0.8" strokeLinecap="round" />
-                <circle cx="-1.5" cy="13.5" r="9.5" fill="none" stroke="#78350F" strokeWidth="1.2" opacity="0.6" strokeLinecap="round" />
+                <path d="M 264 148 C 276 164, 270 186, 254 190 C 246 192, 242 182, 250 174 C 256 168, 252 158, 246 156"
+                  fill="url(#kHairCurl)" stroke="#20304C" strokeWidth="0.8" />
+                <path d="M 264 148 C 276 164, 270 186, 254 190"
+                  fill="none" stroke="#6CA0E8" strokeWidth="1.5" strokeLinecap="round" opacity="0.45" />
               </g>
 
-              <g transform="translate(262, 162)">
-                <ellipse cx="0" cy="0" rx="14" ry="18" fill="url(#kSkinFace)" />
-                {/* Thick Polished 3D Gold Bali / Hoop */}
-                <circle cx="3" cy="12" r="10.5" fill="none" stroke="url(#kGoldGrad)" strokeWidth="4.8" strokeLinecap="round" />
-                <circle cx="4.5" cy="10.5" r="8.5" fill="none" stroke="#FFFFFF" strokeWidth="1.4" opacity="0.8" strokeLinecap="round" />
-                <circle cx="1.5" cy="13.5" r="9.5" fill="none" stroke="#78350F" strokeWidth="1.2" opacity="0.6" strokeLinecap="round" />
-              </g>
+              {/* Ears + Thick 3D Gold Hoop Earrings (Balis) */}
+              <g id="headBase">
+                <g transform="translate(118, 162)">
+                  <ellipse cx="0" cy="0" rx="14" ry="18" fill="url(#kSkinFace)" />
+                  {/* Thick Polished 3D Gold Bali / Hoop */}
+                  <circle cx="-3" cy="12" r="10.5" fill="none" stroke="url(#kGoldGrad)" strokeWidth="4.8" strokeLinecap="round" />
+                  <circle cx="-4.5" cy="10.5" r="8.5" fill="none" stroke="#FFFFFF" strokeWidth="1.4" opacity="0.8" strokeLinecap="round" />
+                  <circle cx="-1.5" cy="13.5" r="9.5" fill="none" stroke="#78350F" strokeWidth="1.2" opacity="0.6" strokeLinecap="round" />
+                </g>
 
-              {/* 3D Sculpted Head Base: Reference-Matched Cherubic Little Krishna Silhouette (Width:Height ~ 1.2:1) */}
-              <path
-                d="M 190 84
+                <g transform="translate(262, 162)">
+                  <ellipse cx="0" cy="0" rx="14" ry="18" fill="url(#kSkinFace)" />
+                  {/* Thick Polished 3D Gold Bali / Hoop */}
+                  <circle cx="3" cy="12" r="10.5" fill="none" stroke="url(#kGoldGrad)" strokeWidth="4.8" strokeLinecap="round" />
+                  <circle cx="4.5" cy="10.5" r="8.5" fill="none" stroke="#FFFFFF" strokeWidth="1.4" opacity="0.8" strokeLinecap="round" />
+                  <circle cx="1.5" cy="13.5" r="9.5" fill="none" stroke="#78350F" strokeWidth="1.2" opacity="0.6" strokeLinecap="round" />
+                </g>
+
+                {/* 3D Sculpted Head Base: Reference-Matched Cherubic Little Krishna Silhouette (Width:Height ~ 1.2:1) */}
+                <path
+                  d="M 190 84
                    C 236 84, 262 98, 266 118
                    C 270 138, 271 154, 265 170
                    C 257 186, 238 204, 208 214
@@ -967,12 +974,12 @@ export function LittleKrishna({
                    C 142 204, 123 186, 115 170
                    C 109 154, 110 138, 114 118
                    C 118 98, 144 84, 190 84 Z"
-                fill="url(#kSkinFace)"
-              />
+                  fill="url(#kSkinFace)"
+                />
 
-              {/* Soft Lower Face & Jawline Depth Shading */}
-              <path
-                d="M 190 84
+                {/* Soft Lower Face & Jawline Depth Shading */}
+                <path
+                  d="M 190 84
                    C 236 84, 262 98, 266 118
                    C 270 138, 271 154, 265 170
                    C 257 186, 238 204, 208 214
@@ -981,434 +988,435 @@ export function LittleKrishna({
                    C 142 204, 123 186, 115 170
                    C 109 154, 110 138, 114 118
                    C 118 98, 144 84, 190 84 Z"
-                fill="url(#kJawlineShadow)"
-              />
-
-              {/* Volumetric Chubby Cheeks (Wide & Cherubic 3D Fullness) */}
-              <ellipse
-                cx="134"
-                cy="166"
-                rx="28"
-                ry="24"
-                fill="url(#kCheekVolumeLeft)"
-                opacity="0.65"
-              />
-              <ellipse
-                cx="246"
-                cy="166"
-                rx="28"
-                ry="24"
-                fill="url(#kCheekVolumeRight)"
-                opacity="0.55"
-              />
-
-              {/* 3D Forehead Dome Volume Highlight */}
-              <ellipse cx="190" cy="114" rx="44" ry="18" fill="url(#kForeheadGlow)" />
-
-              {/* Soft Pillowy Chin Volume & Shortened Separation Shadow */}
-              <ellipse cx="190" cy="204" rx="15" ry="7.5" fill="url(#kChinVolume)" />
-              <ellipse cx="190" cy="214" rx="18" ry="4" fill="#152758" opacity="0.2" />
-
-              {/* Subtle Rosy Toddler Blush on Cheek Apples */}
-              <ellipse cx="134" cy="168" rx="22" ry="15" fill="url(#kCheekBlush)" transform="rotate(-5 134 168)" />
-              <ellipse cx="246" cy="168" rx="22" ry="15" fill="url(#kCheekBlush)" transform="rotate(5 246 168)" />
-            </g>
-
-            {/* Master Face Details — Stylized, Expressive & High Fidelity */}
-            <g id="faceDetails">
-              {/* Vaishnava U-Tilak with Central Red Kumkum Teardrop */}
-              <path
-                d="M 183 94 L 183 130 C 183 139, 197 139, 197 130 L 197 94"
-                fill="none"
-                stroke="#FFFFFF"
-                strokeWidth="4.2"
-                strokeLinecap="round"
-              />
-              <path
-                d="M 185.2 96 L 185.2 129 C 185.2 134.5, 194.8 134.5, 194.8 129 L 194.8 96"
-                fill="none"
-                stroke="#FEF9C3"
-                strokeWidth="1.2"
-                opacity="0.8"
-              />
-              {/* Central Red Kumkum Teardrop Bindu inside the U */}
-              <path
-                d="M 190 118 C 187 123, 186 128, 186 131 C 186 135.5, 194 135.5, 194 131 C 194 128, 193 123, 190 118 Z"
-                fill="#DC2626"
-                stroke="#991B1B"
-                strokeWidth="0.5"
-              />
-              <circle cx="189" cy="130" r="1.1" fill="#FFA8A8" opacity="0.85" />
-              {/* Bridge of Nose Dot */}
-              <circle cx="190" cy="145" r="1.8" fill="#DC2626" />
-
-              {/* Gentle Arched Eyebrows Framing the Large Eyes */}
-              <path
-                d="M 132 126 C 146 114, 166 114, 178 124"
-                fill="none"
-                stroke="#0E1728"
-                strokeWidth="3.8"
-                strokeLinecap="round"
-              />
-              <path
-                d="M 202 124 C 214 114, 234 114, 248 126"
-                fill="none"
-                stroke="#0E1728"
-                strokeWidth="3.8"
-                strokeLinecap="round"
-              />
-
-              {/* ── Left Eye (Soft Almond/Oval 3D Child Eye - Natural Position & Inward Focus) ── */}
-              <g transform="translate(125, 140) rotate(-1.5 24 22)">
-                {/* Soft Almond/Oval Sclera Base */}
-                <path
-                  d="M 2 22 C 10 -4, 32 -5, 48 18 C 42 44, 18 43, 2 22 Z"
-                  fill="#F8FBFF"
-                />
-                {/* Dimensional Upper-Eye Ambient Shadow */}
-                <path
-                  d="M 2 22 C 10 -4, 32 -5, 48 18 C 36 10, 14 10, 2 22 Z"
-                  fill="#1E3A8A"
-                  opacity="0.14"
+                  fill="url(#kJawlineShadow)"
                 />
 
-                {/* Soft Eyelid Crease Line */}
-                <path d="M 6 -5 C 16 -12, 34 -12, 44 -5" fill="none" stroke="#255BB5" strokeWidth="1.2" strokeLinecap="round" opacity="0.32" />
-
-                {/* Warm Chocolate / Honey Amber Iris (Subtle Inward Gaze Focus) */}
-                <circle cx="26.2" cy="21.5" r="16.5" fill="url(#kIrisGrad)" className={styles.iris} />
-                <circle cx="26.2" cy="21.5" r="16.5" fill="none" stroke="#100300" strokeWidth="1.6" />
-
-                {/* Soft Feathered Large Vertical Dark Pupil (52% Iris Diameter) */}
-                <ellipse cx="26.2" cy="21.5" rx="9.2" ry="10.4" fill="url(#kPupilGrad)" />
-                <ellipse cx="26.2" cy="21.5" rx="7.8" ry="9.0" fill="#0B0402" />
-
-                {/* Warm Amber Iris Reflection Arc */}
-                <ellipse cx="26.2" cy="30.5" rx="9" ry="3" fill="#FBBF24" opacity="0.5" />
-
-                {/* Glossy 3D Catchlights */}
-                <ellipse cx="31.2" cy="15.5" rx="5.2" ry="4.5" fill="#FFFFFF" />
-                <circle cx="20.2" cy="27" r="2.2" fill="#FFFFFF" opacity="0.88" />
-
-                {/* Gentle Curved Upper Lash Line */}
-                <path
-                  d="M 1 22 C 10 -4, 32 -5, 48 18"
-                  fill="none"
-                  stroke="#0A0F1D"
-                  strokeWidth="3.6"
-                  strokeLinecap="round"
-                />
-                {/* Soft Lower Lash Line Contour */}
-                <path
-                  d="M 2 22 C 18 43, 42 44, 48 18"
-                  fill="none"
-                  stroke="#1E293B"
-                  strokeWidth="1.1"
-                  strokeLinecap="round"
-                  opacity="0.35"
-                />
-
-                {/* Animated Upper Eyelid for Blinking */}
-                <path
-                  d="M 2 22 C 10 -4, 32 -5, 48 18 C 38 8, 12 8, 2 22 Z"
-                  fill="#5B9AFA"
-                  className={`${styles.eyelidUpper} ${isBlinking ? styles.blinkActive : ''}`}
-                />
-              </g>
-
-              {/* ── Right Eye (Soft Almond/Oval 3D Child Eye - Natural Position & Inward Focus) ── */}
-              <g transform="translate(205, 140) rotate(1.5 24 22)">
-                {/* Soft Almond/Oval Sclera Base */}
-                <path
-                  d="M 0 18 C 16 -5, 38 -4, 46 22 C 40 43, 16 44, 0 18 Z"
-                  fill="#F8FBFF"
-                />
-                {/* Dimensional Upper-Eye Ambient Shadow */}
-                <path
-                  d="M 0 18 C 16 -5, 38 -4, 46 22 C 34 10, 12 10, 0 18 Z"
-                  fill="#1E3A8A"
-                  opacity="0.14"
-                />
-
-                {/* Soft Eyelid Crease Line */}
-                <path d="M 4 -5 C 14 -12, 32 -12, 42 -5" fill="none" stroke="#255BB5" strokeWidth="1.2" strokeLinecap="round" opacity="0.32" />
-
-                {/* Warm Chocolate / Honey Amber Iris (Subtle Inward Gaze Focus) */}
-                <circle cx="22.3" cy="21.5" r="16.5" fill="url(#kIrisGrad)" className={styles.iris} />
-                <circle cx="22.3" cy="21.5" r="16.5" fill="none" stroke="#100300" strokeWidth="1.6" />
-
-                {/* Soft Feathered Large Vertical Dark Pupil (52% Iris Diameter) */}
-                <ellipse cx="22.3" cy="21.5" rx="9.2" ry="10.4" fill="url(#kPupilGrad)" />
-                <ellipse cx="22.3" cy="21.5" rx="7.8" ry="9.0" fill="#0B0402" />
-
-                {/* Warm Amber Iris Reflection Arc */}
-                <ellipse cx="22.3" cy="30.5" rx="9" ry="3" fill="#FBBF24" opacity="0.5" />
-
-                {/* Glossy 3D Catchlights */}
-                <ellipse cx="27.3" cy="15.5" rx="5.2" ry="4.5" fill="#FFFFFF" />
-                <circle cx="16.3" cy="27" r="2.2" fill="#FFFFFF" opacity="0.88" />
-
-                {/* Gentle Curved Upper Lash Line */}
-                <path
-                  d="M 0 18 C 16 -5, 38 -4, 46 22"
-                  fill="none"
-                  stroke="#0A0F1D"
-                  strokeWidth="3.6"
-                  strokeLinecap="round"
-                />
-                {/* Soft Lower Lash Line Contour */}
-                <path
-                  d="M 0 18 C 16 44, 40 43, 46 22"
-                  fill="none"
-                  stroke="#1E293B"
-                  strokeWidth="1.1"
-                  strokeLinecap="round"
-                  opacity="0.35"
-                />
-
-                {/* Animated Upper Eyelid for Blinking */}
-                <path
-                  d="M 0 18 C 16 -5, 38 -4, 46 22 C 36 8, 10 8, 0 18 Z"
-                  fill="#5B9AFA"
-                  className={`${styles.eyelidUpper} ${isBlinking ? styles.blinkActive : ''}`}
-                />
-              </g>
-
-              {/* ── Cute Soft Stylized 3D Toddler Nose ── */}
-              <g transform="translate(190, 172)">
-                {/* Soft Vertically Defined Nose Bridge */}
-                <path
-                  d="M -0.5 -10 C -1.6 -5, -1.6 -1, 0 1"
-                  fill="none"
-                  stroke="#E2F0FF"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  opacity="0.45"
-                />
-
-                {/* Soft Underside Shadow */}
+                {/* Volumetric Chubby Cheeks (Wide & Cherubic 3D Fullness) */}
                 <ellipse
-                  cx="0"
-                  cy="4.5"
-                  rx="5.2"
-                  ry="1.6"
-                  fill="#1E3A8A"
-                  opacity="0.15"
+                  cx="134"
+                  cy="166"
+                  rx="28"
+                  ry="24"
+                  fill="url(#kCheekVolumeLeft)"
+                  opacity="0.65"
                 />
-
-                {/* Soft 3D Blended Nose Bulb */}
                 <ellipse
-                  cx="0"
-                  cy="1.5"
-                  rx="6.8"
-                  ry="5.2"
-                  fill="url(#kNoseVolume)"
-                />
-
-                {/* Soft Rounded Nose Tip Highlight */}
-                <ellipse
-                  cx="0"
-                  cy="1.0"
-                  rx="4.2"
-                  ry="3.2"
-                  fill="url(#kForeheadGlow)"
-                  opacity="0.6"
-                />
-
-                {/* Extremely Subtle Nostril Shading */}
-                <circle cx="-3.2" cy="3.6" r="1.3" fill="#152B68" opacity="0.2" />
-                <circle cx="3.2" cy="3.6" r="1.3" fill="#152B68" opacity="0.2" />
-
-                {/* Specular Tip Highlight */}
-                <ellipse
-                  cx="-1.2"
-                  cy="0.4"
-                  rx="2.2"
-                  ry="1.5"
-                  fill="#FFFFFF"
-                  opacity="0.8"
-                />
-              </g>
-
-              {/* ── Cute & Innocent Little Krishna Smile (Soft Pink/Coral Child Lips) ── */}
-              <g id="lipsGroup" transform="translate(190, 188)">
-                {/* Soft Corner Dimples */}
-                <circle cx="-12.5" cy="-2.5" r="1.3" fill="#9F1239" opacity="0.35" />
-                <circle cx="12.5" cy="-2.5" r="1.3" fill="#9F1239" opacity="0.35" />
-
-                {/* Gentle Upward "M" Upper Lip */}
-                <path
-                  d="M -11.5 -2.2 C -7 -4.2, -3 -3.5, 0 -1.5 C 3 -3.5, 7 -4.2, 11.5 -2.2 C 8 0.5, 4 1, 0 0.2 C -4 1, -8 0.5, -11.5 -2.2 Z"
-                  fill="url(#kLipUpperGrad)"
-                />
-
-                {/* Soft Fuller Lower Lip Arc */}
-                <path
-                  d="M -10 -1 C -6 2.2, 6 2.2, 10 -1 C 8 7.5, 3 8.8, 0 8.8 C -3 8.8, -8 7.5, -10 -1 Z"
-                  fill="url(#kLipGrad)"
-                  className={styles.mouth}
-                />
-
-                {/* Gentle Upward Smile Seam Line */}
-                <path
-                  d="M -11.5 -2.2 C -6 2.2, 6 2.2, 11.5 -2.2"
-                  fill="none"
-                  stroke="#881337"
-                  strokeWidth="1.2"
-                  strokeLinecap="round"
+                  cx="246"
+                  cy="166"
+                  rx="28"
+                  ry="24"
+                  fill="url(#kCheekVolumeRight)"
                   opacity="0.55"
                 />
 
-                {/* Soft Gloss Highlight on Lower Lip Center */}
-                <ellipse
-                  cx="0"
-                  cy="4.8"
-                  rx="4.2"
-                  ry="2.0"
-                  fill="#FFFFFF"
-                  opacity="0.65"
-                />
+                {/* 3D Forehead Dome Volume Highlight */}
+                <ellipse cx="190" cy="114" rx="44" ry="18" fill="url(#kForeheadGlow)" />
+
+                {/* Soft Pillowy Chin Volume & Shortened Separation Shadow */}
+                <ellipse cx="190" cy="204" rx="15" ry="7.5" fill="url(#kChinVolume)" />
+                <ellipse cx="190" cy="214" rx="18" ry="4" fill="#152758" opacity="0.2" />
+
+                {/* Subtle Rosy Toddler Blush on Cheek Apples */}
+                <ellipse cx="134" cy="168" rx="22" ry="15" fill="url(#kCheekBlush)" transform="rotate(-5 134 168)" />
+                <ellipse cx="246" cy="168" rx="22" ry="15" fill="url(#kCheekBlush)" transform="rotate(5 246 168)" />
               </g>
-            </g>
 
-            {/* Topknot Bun */}
-            <g id="crownTopknot">
-              <ellipse cx="190" cy="74" rx="30" ry="26" fill="url(#kHairBase)" />
-              <ellipse cx="176" cy="68" rx="13" ry="12" fill="url(#kHairCurl)" />
-              <ellipse cx="204" cy="68" rx="13" ry="12" fill="url(#kHairCurl)" />
-              <ellipse cx="190" cy="56" rx="14" ry="11" fill="url(#kHairCurl)" />
-              <ellipse cx="184" cy="62" rx="18" ry="12" fill="url(#kHairHl)" />
-              <rect x="166" y="86" width="48" height="8" rx="4" fill="url(#kGoldGrad)" stroke="#92400E" strokeWidth="0.8" />
-              <rect x="174" y="87" width="32" height="3" rx="1.5" fill="#FEF08A" opacity="0.6" />
-            </g>
-
-            {/* ════════════════ PEACOCK FEATHER HEADDRESS (REFERENCE FIDELITY) ════════════════ */}
-            <g id="peacockFeather" className={styles.featherSvgAnim}>
-              {/* Soft Ambient Contact Shadow Underneath Feather Base on Hair */}
-              <ellipse cx="168" cy="48" rx="14" ry="6" fill="#0A1128" opacity="0.65" />
-
-              {/* Feather Main Container (Root at 168, 44 with natural -9° upward lean) */}
-              <g transform="translate(168, 44) rotate(-9)">
-                {/* ── A. Plume Background Shadow / Silhouette Definition ── */}
+              {/* Master Face Details — Stylized, Expressive & High Fidelity */}
+              <g id="faceDetails">
+                {/* Vaishnava U-Tilak with Central Red Kumkum Teardrop */}
                 <path
-                  d="M 0 -8
+                  d="M 183 94 L 183 130 C 183 139, 197 139, 197 130 L 197 94"
+                  fill="none"
+                  stroke="#FFFFFF"
+                  strokeWidth="4.2"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M 185.2 96 L 185.2 129 C 185.2 134.5, 194.8 134.5, 194.8 129 L 194.8 96"
+                  fill="none"
+                  stroke="#FEF9C3"
+                  strokeWidth="1.2"
+                  opacity="0.8"
+                />
+                {/* Central Red Kumkum Teardrop Bindu inside the U */}
+                <path
+                  d="M 190 118 C 187 123, 186 128, 186 131 C 186 135.5, 194 135.5, 194 131 C 194 128, 193 123, 190 118 Z"
+                  fill="#DC2626"
+                  stroke="#991B1B"
+                  strokeWidth="0.5"
+                />
+                <circle cx="189" cy="130" r="1.1" fill="#FFA8A8" opacity="0.85" />
+                {/* Bridge of Nose Dot */}
+                <circle cx="190" cy="145" r="1.8" fill="#DC2626" />
+
+                {/* Gentle Arched Eyebrows Framing the Large Eyes */}
+                <path
+                  d="M 132 126 C 146 114, 166 114, 178 124"
+                  fill="none"
+                  stroke="#0E1728"
+                  strokeWidth="3.8"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M 202 124 C 214 114, 234 114, 248 126"
+                  fill="none"
+                  stroke="#0E1728"
+                  strokeWidth="3.8"
+                  strokeLinecap="round"
+                />
+
+                {/* ── Left Eye (Soft Almond/Oval 3D Child Eye - Natural Position & Inward Focus) ── */}
+                <g transform="translate(125, 140) rotate(-1.5 24 22)">
+                  {/* Soft Almond/Oval Sclera Base */}
+                  <path
+                    d="M 2 22 C 10 -4, 32 -5, 48 18 C 42 44, 18 43, 2 22 Z"
+                    fill="#F8FBFF"
+                  />
+                  {/* Dimensional Upper-Eye Ambient Shadow */}
+                  <path
+                    d="M 2 22 C 10 -4, 32 -5, 48 18 C 36 10, 14 10, 2 22 Z"
+                    fill="#1E3A8A"
+                    opacity="0.14"
+                  />
+
+                  {/* Soft Eyelid Crease Line */}
+                  <path d="M 6 -5 C 16 -12, 34 -12, 44 -5" fill="none" stroke="#255BB5" strokeWidth="1.2" strokeLinecap="round" opacity="0.32" />
+
+                  {/* Warm Chocolate / Honey Amber Iris (Subtle Inward Gaze Focus) */}
+                  <circle cx="26.2" cy="21.5" r="16.5" fill="url(#kIrisGrad)" className={styles.iris} />
+                  <circle cx="26.2" cy="21.5" r="16.5" fill="none" stroke="#100300" strokeWidth="1.6" />
+
+                  {/* Soft Feathered Large Vertical Dark Pupil (52% Iris Diameter) */}
+                  <ellipse cx="26.2" cy="21.5" rx="9.2" ry="10.4" fill="url(#kPupilGrad)" />
+                  <ellipse cx="26.2" cy="21.5" rx="7.8" ry="9.0" fill="#0B0402" />
+
+                  {/* Warm Amber Iris Reflection Arc */}
+                  <ellipse cx="26.2" cy="30.5" rx="9" ry="3" fill="#FBBF24" opacity="0.5" />
+
+                  {/* Glossy 3D Catchlights */}
+                  <ellipse cx="31.2" cy="15.5" rx="5.2" ry="4.5" fill="#FFFFFF" />
+                  <circle cx="20.2" cy="27" r="2.2" fill="#FFFFFF" opacity="0.88" />
+
+                  {/* Gentle Curved Upper Lash Line */}
+                  <path
+                    d="M 1 22 C 10 -4, 32 -5, 48 18"
+                    fill="none"
+                    stroke="#0A0F1D"
+                    strokeWidth="3.6"
+                    strokeLinecap="round"
+                  />
+                  {/* Soft Lower Lash Line Contour */}
+                  <path
+                    d="M 2 22 C 18 43, 42 44, 48 18"
+                    fill="none"
+                    stroke="#1E293B"
+                    strokeWidth="1.1"
+                    strokeLinecap="round"
+                    opacity="0.35"
+                  />
+
+                  {/* Animated Upper Eyelid for Blinking */}
+                  <path
+                    d="M 2 22 C 10 -4, 32 -5, 48 18 C 38 8, 12 8, 2 22 Z"
+                    fill="#5B9AFA"
+                    className={`${styles.eyelidUpper} ${isBlinking ? styles.blinkActive : ''}`}
+                  />
+                </g>
+
+                {/* ── Right Eye (Soft Almond/Oval 3D Child Eye - Natural Position & Inward Focus) ── */}
+                <g transform="translate(205, 140) rotate(1.5 24 22)">
+                  {/* Soft Almond/Oval Sclera Base */}
+                  <path
+                    d="M 0 18 C 16 -5, 38 -4, 46 22 C 40 43, 16 44, 0 18 Z"
+                    fill="#F8FBFF"
+                  />
+                  {/* Dimensional Upper-Eye Ambient Shadow */}
+                  <path
+                    d="M 0 18 C 16 -5, 38 -4, 46 22 C 34 10, 12 10, 0 18 Z"
+                    fill="#1E3A8A"
+                    opacity="0.14"
+                  />
+
+                  {/* Soft Eyelid Crease Line */}
+                  <path d="M 4 -5 C 14 -12, 32 -12, 42 -5" fill="none" stroke="#255BB5" strokeWidth="1.2" strokeLinecap="round" opacity="0.32" />
+
+                  {/* Warm Chocolate / Honey Amber Iris (Subtle Inward Gaze Focus) */}
+                  <circle cx="22.3" cy="21.5" r="16.5" fill="url(#kIrisGrad)" className={styles.iris} />
+                  <circle cx="22.3" cy="21.5" r="16.5" fill="none" stroke="#100300" strokeWidth="1.6" />
+
+                  {/* Soft Feathered Large Vertical Dark Pupil (52% Iris Diameter) */}
+                  <ellipse cx="22.3" cy="21.5" rx="9.2" ry="10.4" fill="url(#kPupilGrad)" />
+                  <ellipse cx="22.3" cy="21.5" rx="7.8" ry="9.0" fill="#0B0402" />
+
+                  {/* Warm Amber Iris Reflection Arc */}
+                  <ellipse cx="22.3" cy="30.5" rx="9" ry="3" fill="#FBBF24" opacity="0.5" />
+
+                  {/* Glossy 3D Catchlights */}
+                  <ellipse cx="27.3" cy="15.5" rx="5.2" ry="4.5" fill="#FFFFFF" />
+                  <circle cx="16.3" cy="27" r="2.2" fill="#FFFFFF" opacity="0.88" />
+
+                  {/* Gentle Curved Upper Lash Line */}
+                  <path
+                    d="M 0 18 C 16 -5, 38 -4, 46 22"
+                    fill="none"
+                    stroke="#0A0F1D"
+                    strokeWidth="3.6"
+                    strokeLinecap="round"
+                  />
+                  {/* Soft Lower Lash Line Contour */}
+                  <path
+                    d="M 0 18 C 16 44, 40 43, 46 22"
+                    fill="none"
+                    stroke="#1E293B"
+                    strokeWidth="1.1"
+                    strokeLinecap="round"
+                    opacity="0.35"
+                  />
+
+                  {/* Animated Upper Eyelid for Blinking */}
+                  <path
+                    d="M 0 18 C 16 -5, 38 -4, 46 22 C 36 8, 10 8, 0 18 Z"
+                    fill="#5B9AFA"
+                    className={`${styles.eyelidUpper} ${isBlinking ? styles.blinkActive : ''}`}
+                  />
+                </g>
+
+                {/* ── Cute Soft Stylized 3D Toddler Nose ── */}
+                <g transform="translate(190, 172)">
+                  {/* Soft Vertically Defined Nose Bridge */}
+                  <path
+                    d="M -0.5 -10 C -1.6 -5, -1.6 -1, 0 1"
+                    fill="none"
+                    stroke="#E2F0FF"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    opacity="0.45"
+                  />
+
+                  {/* Soft Underside Shadow */}
+                  <ellipse
+                    cx="0"
+                    cy="4.5"
+                    rx="5.2"
+                    ry="1.6"
+                    fill="#1E3A8A"
+                    opacity="0.15"
+                  />
+
+                  {/* Soft 3D Blended Nose Bulb */}
+                  <ellipse
+                    cx="0"
+                    cy="1.5"
+                    rx="6.8"
+                    ry="5.2"
+                    fill="url(#kNoseVolume)"
+                  />
+
+                  {/* Soft Rounded Nose Tip Highlight */}
+                  <ellipse
+                    cx="0"
+                    cy="1.0"
+                    rx="4.2"
+                    ry="3.2"
+                    fill="url(#kForeheadGlow)"
+                    opacity="0.6"
+                  />
+
+                  {/* Extremely Subtle Nostril Shading */}
+                  <circle cx="-3.2" cy="3.6" r="1.3" fill="#152B68" opacity="0.2" />
+                  <circle cx="3.2" cy="3.6" r="1.3" fill="#152B68" opacity="0.2" />
+
+                  {/* Specular Tip Highlight */}
+                  <ellipse
+                    cx="-1.2"
+                    cy="0.4"
+                    rx="2.2"
+                    ry="1.5"
+                    fill="#FFFFFF"
+                    opacity="0.8"
+                  />
+                </g>
+
+                {/* ── Cute & Innocent Little Krishna Smile (Soft Pink/Coral Child Lips) ── */}
+                <g id="lipsGroup" transform="translate(190, 188)">
+                  {/* Soft Corner Dimples */}
+                  <circle cx="-12.5" cy="-2.5" r="1.3" fill="#9F1239" opacity="0.35" />
+                  <circle cx="12.5" cy="-2.5" r="1.3" fill="#9F1239" opacity="0.35" />
+
+                  {/* Gentle Upward "M" Upper Lip */}
+                  <path
+                    d="M -11.5 -2.2 C -7 -4.2, -3 -3.5, 0 -1.5 C 3 -3.5, 7 -4.2, 11.5 -2.2 C 8 0.5, 4 1, 0 0.2 C -4 1, -8 0.5, -11.5 -2.2 Z"
+                    fill="url(#kLipUpperGrad)"
+                  />
+
+                  {/* Soft Fuller Lower Lip Arc */}
+                  <path
+                    d="M -10 -1 C -6 2.2, 6 2.2, 10 -1 C 8 7.5, 3 8.8, 0 8.8 C -3 8.8, -8 7.5, -10 -1 Z"
+                    fill="url(#kLipGrad)"
+                    className={styles.mouth}
+                  />
+
+                  {/* Gentle Upward Smile Seam Line */}
+                  <path
+                    d="M -11.5 -2.2 C -6 2.2, 6 2.2, 11.5 -2.2"
+                    fill="none"
+                    stroke="#881337"
+                    strokeWidth="1.2"
+                    strokeLinecap="round"
+                    opacity="0.55"
+                  />
+
+                  {/* Soft Gloss Highlight on Lower Lip Center */}
+                  <ellipse
+                    cx="0"
+                    cy="4.8"
+                    rx="4.2"
+                    ry="2.0"
+                    fill="#FFFFFF"
+                    opacity="0.65"
+                  />
+                </g>
+              </g>
+
+              {/* Topknot Bun */}
+              <g id="crownTopknot">
+                <ellipse cx="190" cy="74" rx="30" ry="26" fill="url(#kHairBase)" />
+                <ellipse cx="176" cy="68" rx="13" ry="12" fill="url(#kHairCurl)" />
+                <ellipse cx="204" cy="68" rx="13" ry="12" fill="url(#kHairCurl)" />
+                <ellipse cx="190" cy="56" rx="14" ry="11" fill="url(#kHairCurl)" />
+                <ellipse cx="184" cy="62" rx="18" ry="12" fill="url(#kHairHl)" />
+                <rect x="166" y="86" width="48" height="8" rx="4" fill="url(#kGoldGrad)" stroke="#92400E" strokeWidth="0.8" />
+                <rect x="174" y="87" width="32" height="3" rx="1.5" fill="#FEF08A" opacity="0.6" />
+              </g>
+
+              {/* ════════════════ PEACOCK FEATHER HEADDRESS (REFERENCE FIDELITY) ════════════════ */}
+              <g id="peacockFeather" className={styles.featherSvgAnim}>
+                {/* Soft Ambient Contact Shadow Underneath Feather Base on Hair */}
+                <ellipse cx="168" cy="48" rx="14" ry="6" fill="#0A1128" opacity="0.65" />
+
+                {/* Feather Main Container (Root at 168, 44 with natural -9° upward lean) */}
+                <g transform="translate(168, 44) rotate(-9)">
+                  {/* ── A. Plume Background Shadow / Silhouette Definition ── */}
+                  <path
+                    d="M 0 -8
                      C -18 -20, -28 -44, -26 -68
                      C -24 -86, -12 -98, -4 -103
                      C 0 -105, 4 -103, 8 -98
                      C 20 -86, 28 -68, 26 -44
                      C 24 -20, 14 -8, 0 -8 Z"
-                  fill="#022C22"
-                  opacity="0.5"
-                  transform="translate(0, 1.5)"
-                />
+                    fill="#022C22"
+                    opacity="0.5"
+                    transform="translate(0, 1.5)"
+                  />
 
-                {/* ── B. Main Vibrant 3D Emerald Feather Plume ── */}
-                <path
-                  d="M 0 -8
+                  {/* ── B. Main Vibrant 3D Emerald Feather Plume ── */}
+                  <path
+                    d="M 0 -8
                      C -17 -20, -26 -44, -25 -68
                      C -23 -86, -11 -98, -3 -102
                      C 0 -103.5, 3 -102, 7 -98
                      C 19 -86, 27 -68, 25 -44
                      C 23 -20, 13 -8, 0 -8 Z"
-                  fill="url(#kFeatherPlume)"
-                  stroke="#047857"
-                  strokeWidth="1.2"
-                />
+                    fill="url(#kFeatherPlume)"
+                    stroke="#047857"
+                    strokeWidth="1.2"
+                  />
 
-                {/* ── C. Iridescent Shimmer Overlay (Teal / Lime Transitions) ── */}
-                <path
-                  d="M 0 -12
+                  {/* ── C. Iridescent Shimmer Overlay (Teal / Lime Transitions) ── */}
+                  <path
+                    d="M 0 -12
                      C -14 -22, -21 -42, -20 -64
                      C -18 -80, -9 -92, -2 -96
                      C 0 -97, 2 -96, 5 -92
                      C 15 -80, 22 -64, 20 -42
                      C 18 -22, 11 -12, 0 -12 Z"
-                  fill="url(#kFeatherEyeCyan)"
-                  opacity="0.32"
-                />
+                    fill="url(#kFeatherEyeCyan)"
+                    opacity="0.32"
+                  />
 
-                {/* ── D. Layered Feather Barbs (Left & Right Lateral Striations) ── */}
-                <g id="featherBarbs" opacity="0.85">
-                  {/* Left Barbs */}
-                  <path d="M -1 -18 C -10 -24, -18 -32, -22 -36" fill="none" stroke="#6EE7B7" strokeWidth="1.2" strokeLinecap="round" />
-                  <path d="M -2 -28 C -12 -34, -20 -44, -25 -50" fill="none" stroke="#34D399" strokeWidth="1.3" strokeLinecap="round" />
-                  <path d="M -2 -40 C -14 -48, -23 -58, -26 -66" fill="none" stroke="#22C55E" strokeWidth="1.4" strokeLinecap="round" />
-                  <path d="M -2 -52 C -15 -62, -23 -72, -25 -82" fill="none" stroke="#4ADE80" strokeWidth="1.3" strokeLinecap="round" />
-                  <path d="M -2 -66 C -14 -76, -18 -86, -18 -94" fill="none" stroke="#86EFAC" strokeWidth="1.2" strokeLinecap="round" />
-                  <path d="M -1 -80 C -10 -90, -11 -96, -7 -100" fill="none" stroke="#BEF264" strokeWidth="1.1" strokeLinecap="round" />
+                  {/* ── D. Layered Feather Barbs (Left & Right Lateral Striations) ── */}
+                  <g id="featherBarbs" opacity="0.85">
+                    {/* Left Barbs */}
+                    <path d="M -1 -18 C -10 -24, -18 -32, -22 -36" fill="none" stroke="#6EE7B7" strokeWidth="1.2" strokeLinecap="round" />
+                    <path d="M -2 -28 C -12 -34, -20 -44, -25 -50" fill="none" stroke="#34D399" strokeWidth="1.3" strokeLinecap="round" />
+                    <path d="M -2 -40 C -14 -48, -23 -58, -26 -66" fill="none" stroke="#22C55E" strokeWidth="1.4" strokeLinecap="round" />
+                    <path d="M -2 -52 C -15 -62, -23 -72, -25 -82" fill="none" stroke="#4ADE80" strokeWidth="1.3" strokeLinecap="round" />
+                    <path d="M -2 -66 C -14 -76, -18 -86, -18 -94" fill="none" stroke="#86EFAC" strokeWidth="1.2" strokeLinecap="round" />
+                    <path d="M -1 -80 C -10 -90, -11 -96, -7 -100" fill="none" stroke="#BEF264" strokeWidth="1.1" strokeLinecap="round" />
 
-                  {/* Right Barbs */}
-                  <path d="M 1 -18 C 10 -24, 18 -32, 22 -36" fill="none" stroke="#6EE7B7" strokeWidth="1.2" strokeLinecap="round" />
-                  <path d="M 2 -28 C 12 -34, 20 -44, 25 -50" fill="none" stroke="#34D399" strokeWidth="1.3" strokeLinecap="round" />
-                  <path d="M 2 -40 C 14 -48, 23 -58, 26 -66" fill="none" stroke="#22C55E" strokeWidth="1.4" strokeLinecap="round" />
-                  <path d="M 2 -52 C 15 -62, 23 -72, 25 -82" fill="none" stroke="#4ADE80" strokeWidth="1.3" strokeLinecap="round" />
-                  <path d="M 2 -66 C 14 -76, 18 -86, 18 -94" fill="none" stroke="#86EFAC" strokeWidth="1.2" strokeLinecap="round" />
-                  <path d="M 1 -80 C 10 -90, 11 -96, 7 -100" fill="none" stroke="#BEF264" strokeWidth="1.1" strokeLinecap="round" />
+                    {/* Right Barbs */}
+                    <path d="M 1 -18 C 10 -24, 18 -32, 22 -36" fill="none" stroke="#6EE7B7" strokeWidth="1.2" strokeLinecap="round" />
+                    <path d="M 2 -28 C 12 -34, 20 -44, 25 -50" fill="none" stroke="#34D399" strokeWidth="1.3" strokeLinecap="round" />
+                    <path d="M 2 -40 C 14 -48, 23 -58, 26 -66" fill="none" stroke="#22C55E" strokeWidth="1.4" strokeLinecap="round" />
+                    <path d="M 2 -52 C 15 -62, 23 -72, 25 -82" fill="none" stroke="#4ADE80" strokeWidth="1.3" strokeLinecap="round" />
+                    <path d="M 2 -66 C 14 -76, 18 -86, 18 -94" fill="none" stroke="#86EFAC" strokeWidth="1.2" strokeLinecap="round" />
+                    <path d="M 1 -80 C 10 -90, 11 -96, 7 -100" fill="none" stroke="#BEF264" strokeWidth="1.1" strokeLinecap="round" />
 
-                  {/* Delicate Crown Feather Strands (Top Radiating Tips) */}
-                  <path d="M -2 -98 C -5 -106, -8 -112, -12 -116" fill="none" stroke="#86EFAC" strokeWidth="1.2" strokeLinecap="round" opacity="0.9" />
-                  <path d="M -1 -102 C -2 -110, -3 -116, -4 -121" fill="none" stroke="#BEF264" strokeWidth="1.3" strokeLinecap="round" />
-                  <path d="M 1 -102 C 2 -110, 4 -116, 5 -121" fill="none" stroke="#BEF264" strokeWidth="1.3" strokeLinecap="round" />
-                  <path d="M 2 -98 C 5 -106, 9 -112, 13 -116" fill="none" stroke="#86EFAC" strokeWidth="1.2" strokeLinecap="round" opacity="0.9" />
+                    {/* Delicate Crown Feather Strands (Top Radiating Tips) */}
+                    <path d="M -2 -98 C -5 -106, -8 -112, -12 -116" fill="none" stroke="#86EFAC" strokeWidth="1.2" strokeLinecap="round" opacity="0.9" />
+                    <path d="M -1 -102 C -2 -110, -3 -116, -4 -121" fill="none" stroke="#BEF264" strokeWidth="1.3" strokeLinecap="round" />
+                    <path d="M 1 -102 C 2 -110, 4 -116, 5 -121" fill="none" stroke="#BEF264" strokeWidth="1.3" strokeLinecap="round" />
+                    <path d="M 2 -98 C 5 -106, 9 -112, 13 -116" fill="none" stroke="#86EFAC" strokeWidth="1.2" strokeLinecap="round" opacity="0.9" />
+                  </g>
+
+                  {/* ── E. The Iconic Peacock "Eye" (Ocellus) ── */}
+                  <g id="featherEye" transform="translate(0, -62)">
+                    {/* 1. Golden/Bronze Iridescent Halo Rim */}
+                    <ellipse cx="0" cy="0" rx="19" ry="24" fill="url(#kFeatherEyeGold)" stroke="#78350F" strokeWidth="1.2" />
+                    <ellipse cx="0" cy="0" rx="17.5" ry="22.5" fill="none" stroke="#FEF08A" strokeWidth="0.8" opacity="0.85" />
+
+                    {/* 2. Vibrant Turquoise / Peacock Cyan Ring */}
+                    <ellipse cx="0" cy="-0.5" rx="14" ry="18" fill="url(#kFeatherEyeCyan)" stroke="#0369A1" strokeWidth="1.0" />
+
+                    {/* 3. Deep Royal Cobalt Blue Ring */}
+                    <ellipse cx="0" cy="-1" rx="9.5" ry="12.5" fill="url(#kFeatherEyeNavy)" />
+
+                    {/* 4. Velvety Midnight Indigo / Violet Pupil Center */}
+                    <ellipse cx="-0.5" cy="-2" rx="5.5" ry="7.5" fill="url(#kFeatherEyeViolet)" />
+
+                    {/* 5. 3D Specular Arc Catchlight */}
+                    <path d="M -5 -6 C -2 -9.5, 3 -9.5, 6 -6" fill="none" stroke="#FFFFFF" strokeWidth="1.8" strokeLinecap="round" opacity="0.95" />
+                    <circle cx="-3" cy="-4" r="1.5" fill="#FFFFFF" opacity="0.9" />
+                  </g>
+
+                  {/* ── F. 3D Golden / Bronze Central Shaft (Rachis) ── */}
+                  <path
+                    d="M 0 0 C -0.4 -26, -0.8 -62, -0.2 -98"
+                    fill="none"
+                    stroke="url(#kFeatherStem)"
+                    strokeWidth="3.4"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    d="M 0 0 C -0.4 -26, -0.8 -62, -0.2 -98"
+                    fill="none"
+                    stroke="#FEF08A"
+                    strokeWidth="1.0"
+                    strokeLinecap="round"
+                    opacity="0.85"
+                  />
+
+                  {/* ── G. Elegant Golden Attachment / Base Clip on Hair ── */}
+                  <g id="featherGoldBase" transform="translate(0, 0)">
+                    {/* Base Occlusion Shadow */}
+                    <ellipse cx="0" cy="2.5" rx="10" ry="4" fill="#0A1128" opacity="0.7" />
+                    {/* Outer Gold Ring */}
+                    <ellipse cx="0" cy="0" rx="8.5" ry="4.5" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.8" />
+                    <ellipse cx="0" cy="-0.8" rx="6.5" ry="2.8" fill="none" stroke="#FEF08A" strokeWidth="0.8" opacity="0.9" />
+                    {/* Central Inset Ruby Gem Cabochon */}
+                    <circle cx="0" cy="0" r="3.0" fill="#DC2626" stroke="#7F1D1D" strokeWidth="0.5" />
+                    <circle cx="-0.8" cy="-0.8" r="0.9" fill="#FFFFFF" opacity="0.85" />
+                    {/* Small Lower Gold Beaded Droplet */}
+                    <circle cx="0" cy="4.2" r="1.5" fill="url(#kGoldBead)" stroke="#78350F" strokeWidth="0.4" />
+                  </g>
                 </g>
 
-                {/* ── E. The Iconic Peacock "Eye" (Ocellus) ── */}
-                <g id="featherEye" transform="translate(0, -62)">
-                  {/* 1. Golden/Bronze Iridescent Halo Rim */}
-                  <ellipse cx="0" cy="0" rx="19" ry="24" fill="url(#kFeatherEyeGold)" stroke="#78350F" strokeWidth="1.2" />
-                  <ellipse cx="0" cy="0" rx="17.5" ry="22.5" fill="none" stroke="#FEF08A" strokeWidth="0.8" opacity="0.85" />
-
-                  {/* 2. Vibrant Turquoise / Peacock Cyan Ring */}
-                  <ellipse cx="0" cy="-0.5" rx="14" ry="18" fill="url(#kFeatherEyeCyan)" stroke="#0369A1" strokeWidth="1.0" />
-
-                  {/* 3. Deep Royal Cobalt Blue Ring */}
-                  <ellipse cx="0" cy="-1" rx="9.5" ry="12.5" fill="url(#kFeatherEyeNavy)" />
-
-                  {/* 4. Velvety Midnight Indigo / Violet Pupil Center */}
-                  <ellipse cx="-0.5" cy="-2" rx="5.5" ry="7.5" fill="url(#kFeatherEyeViolet)" />
-
-                  {/* 5. 3D Specular Arc Catchlight */}
-                  <path d="M -5 -6 C -2 -9.5, 3 -9.5, 6 -6" fill="none" stroke="#FFFFFF" strokeWidth="1.8" strokeLinecap="round" opacity="0.95" />
-                  <circle cx="-3" cy="-4" r="1.5" fill="#FFFFFF" opacity="0.9" />
+                {/* ── H. Forefront Hair Curl Overlap (Anchors Clasp Physically Into Hair) ── */}
+                <g id="featherHairAnchor">
+                  <ellipse cx="163" cy="48" rx="7.5" ry="6" fill="url(#kHairCurl)" />
+                  <ellipse cx="162" cy="46" rx="4.5" ry="3" fill="url(#kHairHl)" opacity="0.8" />
+                  <ellipse cx="173" cy="48" rx="6.5" ry="5.5" fill="url(#kHairCurl)" />
                 </g>
-
-                {/* ── F. 3D Golden / Bronze Central Shaft (Rachis) ── */}
-                <path
-                  d="M 0 0 C -0.4 -26, -0.8 -62, -0.2 -98"
-                  fill="none"
-                  stroke="url(#kFeatherStem)"
-                  strokeWidth="3.4"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M 0 0 C -0.4 -26, -0.8 -62, -0.2 -98"
-                  fill="none"
-                  stroke="#FEF08A"
-                  strokeWidth="1.0"
-                  strokeLinecap="round"
-                  opacity="0.85"
-                />
-
-                {/* ── G. Elegant Golden Attachment / Base Clip on Hair ── */}
-                <g id="featherGoldBase" transform="translate(0, 0)">
-                  {/* Base Occlusion Shadow */}
-                  <ellipse cx="0" cy="2.5" rx="10" ry="4" fill="#0A1128" opacity="0.7" />
-                  {/* Outer Gold Ring */}
-                  <ellipse cx="0" cy="0" rx="8.5" ry="4.5" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.8" />
-                  <ellipse cx="0" cy="-0.8" rx="6.5" ry="2.8" fill="none" stroke="#FEF08A" strokeWidth="0.8" opacity="0.9" />
-                  {/* Central Inset Ruby Gem Cabochon */}
-                  <circle cx="0" cy="0" r="3.0" fill="#DC2626" stroke="#7F1D1D" strokeWidth="0.5" />
-                  <circle cx="-0.8" cy="-0.8" r="0.9" fill="#FFFFFF" opacity="0.85" />
-                  {/* Small Lower Gold Beaded Droplet */}
-                  <circle cx="0" cy="4.2" r="1.5" fill="url(#kGoldBead)" stroke="#78350F" strokeWidth="0.4" />
-                </g>
-              </g>
-
-              {/* ── H. Forefront Hair Curl Overlap (Anchors Clasp Physically Into Hair) ── */}
-              <g id="featherHairAnchor">
-                <ellipse cx="163" cy="48" rx="7.5" ry="6" fill="url(#kHairCurl)" />
-                <ellipse cx="162" cy="46" rx="4.5" ry="3" fill="url(#kHairHl)" opacity="0.8" />
-                <ellipse cx="173" cy="48" rx="6.5" ry="5.5" fill="url(#kHairCurl)" />
               </g>
             </g>
           </g>
