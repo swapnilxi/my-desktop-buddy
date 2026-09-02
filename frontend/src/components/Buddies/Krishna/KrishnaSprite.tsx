@@ -600,22 +600,7 @@ export function LittleKrishna({
           {/* Lower body (feet/legs/dhoti) vertically lengthened around the waist (y=290) so the
               body reads taller and better balances the reduced head — child, not chibi. */}
           <g id="feet" filter="url(#kSoftShadow)" transform="translate(190,290) scale(1,1.06) translate(-190,-290)">
-            {/* Grounding Golden Bar right under the dhoti */}
-            <path
-              d="M 138 442 C 190 446, 242 442, 256 438"
-              fill="none"
-              stroke="url(#kGoldGrad)"
-              strokeWidth="3.2"
-              strokeLinecap="round"
-            />
-            <path
-              d="M 138 441 C 190 445, 242 441, 256 437"
-              fill="none"
-              stroke="#FFFBEB"
-              strokeWidth="1.2"
-              strokeLinecap="round"
-              opacity="0.8"
-            />
+            {/* (Floor stick removed — character stands on background with only a soft contact shadow.) */}
 
             {/* Left Foot (Cute Bare Toddler Foot with Defined Toes) */}
             <g transform="translate(136, 426)">
@@ -700,195 +685,337 @@ export function LittleKrishna({
             />
           </g>
 
-          {/* ════════════════ LAYER 4: REFERENCE 3D WRAPPED DHOTI, STUDDED BELT & SILK SASH ════════════════ */}
+          {/* ════════════════ LAYER 4: 3D WRAPPED LAYERED DHOTI, STUDDED BELT & SILK SASH ════════════════ */}
           <g id="dhoti" filter="url(#kSoftShadow)" transform="translate(190,290) scale(1,1.06) translate(-190,-290)">
-            {/* ── A. MAIN SAFFRON YELLOW DHOTI (TWO DRAPED WRAP LEGS) ── */}
-            {/* Left Leg Wrap Base */}
-            <path
-              d="M 130 286
-                 C 114 316, 114 372, 134 422
-                 C 142 434, 158 436, 172 432
-                 C 182 426, 186 400, 188 320 Z"
-              fill="url(#kDhotiGrad)"
-              stroke="#B37300"
-              strokeWidth="1.2"
-            />
-            {/* Right Leg Wrap Base */}
-            <path
-              d="M 250 286
-                 C 266 316, 266 372, 246 422
-                 C 238 434, 222 436, 208 432
-                 C 198 426, 194 400, 192 320 Z"
-              fill="url(#kDhotiGrad)"
-              stroke="#B37300"
-              strokeWidth="1.2"
-            />
 
-            {/* Deep Center Inseam Shadow dividing the two legs */}
-            <path
-              d="M 190 304 C 189 344, 189 396, 190 432"
-              fill="none"
-              stroke="#78350F"
-              strokeWidth="3.2"
-              strokeLinecap="round"
-              opacity="0.85"
-            />
-            <path
-              d="M 190 304 C 189 344, 189 396, 190 432"
-              fill="none"
-              stroke="#B45309"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              opacity="0.7"
-            />
+            {/* ── Soft Pelvic Drape Volume (Under-fabric that hugs the waist + thighs) ── */}
+            <g id="dhotiPelvicVolume">
+              {/* Subtle ambient occlusion under the waistband */}
+              <ellipse cx="190" cy="288" rx="64" ry="10" fill="#7C2D12" opacity="0.28" />
 
-            {/* ── B. CONCENTRIC CRESCENT DRAPE FOLDS (LEFT LEG) ── */}
-            {/* Fold 1 (Top Sweep) */}
-            <path
-              d="M 132 308 C 148 332, 172 344, 188 346"
-              fill="none"
-              stroke="#854D0E"
-              strokeWidth="2.8"
-              strokeLinecap="round"
-              opacity="0.65"
-            />
-            <path
-              d="M 133 306 C 149 330, 172 342, 188 344"
-              fill="none"
-              stroke="#FEF08A"
-              strokeWidth="2.0"
-              strokeLinecap="round"
-              opacity="0.85"
-            />
+              {/* Large soft pelvic mass: visible fabric rolling over the hips & upper thighs */}
+              <path
+                d="M 122 300
+                   C 116 332, 116 360, 124 388
+                   C 132 412, 150 430, 174 434
+                   C 184 436, 196 436, 206 434
+                   C 230 430, 248 412, 256 388
+                   C 264 360, 264 332, 258 300
+                   C 246 290, 226 286, 190 286
+                   C 154 286, 134 290, 122 300 Z"
+                fill="url(#kDhotiGrad)"
+                stroke="#B37300"
+                strokeWidth="1.2"
+              />
 
-            {/* Fold 2 (Mid-High Sweep) */}
-            <path
-              d="M 126 338 C 144 366, 170 380, 188 382"
-              fill="none"
-              stroke="#854D0E"
-              strokeWidth="3.2"
-              strokeLinecap="round"
-              opacity="0.7"
-            />
-            <path
-              d="M 127 336 C 145 364, 170 378, 188 380"
-              fill="none"
-              stroke="#FFF9D6"
-              strokeWidth="2.4"
-              strokeLinecap="round"
-              opacity="0.9"
-            />
+              {/* Pelvic mass soft highlight (key light from upper-left) */}
+              <path
+                d="M 128 304
+                   C 124 332, 128 358, 138 380
+                   C 148 400, 166 414, 184 416
+                   C 184 400, 176 388, 170 372
+                   C 158 350, 146 332, 138 314
+                   C 134 308, 130 304, 128 304 Z"
+                fill="#FFF4AD"
+                opacity="0.35"
+              />
 
-            {/* Fold 3 (Mid-Low Sweep) */}
-            <path
-              d="M 122 374 C 138 404, 166 418, 186 418"
-              fill="none"
-              stroke="#78350F"
-              strokeWidth="3.4"
-              strokeLinecap="round"
-              opacity="0.75"
-            />
-            <path
-              d="M 123 372 C 139 402, 166 416, 186 416"
-              fill="none"
-              stroke="#FFF9D6"
-              strokeWidth="2.4"
-              strokeLinecap="round"
-              opacity="0.9"
-            />
+              {/* Pelvic mass warm shadow (right side, ambient occlusion) */}
+              <path
+                d="M 252 304
+                   C 256 332, 252 358, 242 380
+                   C 232 400, 214 414, 196 416
+                   C 196 400, 204 388, 210 372
+                   C 222 350, 234 332, 242 314
+                   C 246 308, 250 304, 252 304 Z"
+                fill="#7C2D12"
+                opacity="0.18"
+              />
+            </g>
 
-            {/* Fold 4 (Lower Hem Crescent) */}
-            <path
-              d="M 132 408 C 144 430, 166 434, 182 432"
-              fill="none"
-              stroke="#78350F"
-              strokeWidth="3.0"
-              strokeLinecap="round"
-              opacity="0.8"
-            />
-            <path
-              d="M 133 406 C 145 428, 166 432, 182 430"
-              fill="none"
-              stroke="#FEF08A"
-              strokeWidth="2.0"
-              strokeLinecap="round"
-              opacity="0.85"
-            />
+            {/* ── Side Drapes: curving around each leg (asymmetric organic edges) ── */}
+            <g id="dhotiSideDrapes">
+              {/* Left Side Drape (curves around the left leg, sweeps inward at knee) */}
+              <path
+                d="M 124 304
+                   C 116 338, 116 374, 124 406
+                   C 130 422, 142 432, 158 432
+                   C 168 432, 174 426, 176 416
+                   C 174 400, 168 384, 160 368
+                   C 152 348, 144 328, 138 312
+                   C 134 306, 128 304, 124 304 Z"
+                fill="url(#kDhotiGrad)"
+                stroke="#B37300"
+                strokeWidth="1.1"
+                opacity="0.96"
+              />
+              {/* Left side drape inner soft shadow */}
+              <path
+                d="M 156 318
+                   C 150 342, 148 372, 156 402
+                   C 160 414, 166 422, 172 422
+                   C 172 408, 168 392, 162 376
+                   C 156 358, 152 340, 150 322
+                   C 152 318, 154 318, 156 318 Z"
+                fill="#7C2D12"
+                opacity="0.22"
+              />
 
-            {/* ── C. CONCENTRIC CRESCENT DRAPE FOLDS (RIGHT LEG) ── */}
-            {/* Fold 1 (Top Sweep) */}
-            <path
-              d="M 248 308 C 232 332, 208 344, 192 346"
-              fill="none"
-              stroke="#854D0E"
-              strokeWidth="2.8"
-              strokeLinecap="round"
-              opacity="0.65"
-            />
-            <path
-              d="M 247 306 C 231 330, 208 342, 192 344"
-              fill="none"
-              stroke="#FEF08A"
-              strokeWidth="2.0"
-              strokeLinecap="round"
-              opacity="0.85"
-            />
+              {/* Right Side Drape (curves around the right leg, slightly different curve) */}
+              <path
+                d="M 256 304
+                   C 264 338, 264 374, 256 406
+                   C 250 422, 238 432, 222 432
+                   C 212 432, 206 426, 204 416
+                   C 206 400, 212 384, 220 368
+                   C 228 348, 236 328, 242 312
+                   C 246 306, 252 304, 256 304 Z"
+                fill="url(#kDhotiGrad)"
+                stroke="#B37300"
+                strokeWidth="1.1"
+                opacity="0.96"
+              />
+              {/* Right side drape inner soft shadow */}
+              <path
+                d="M 224 318
+                   C 230 342, 232 372, 224 402
+                   C 220 414, 214 422, 208 422
+                   C 208 408, 212 392, 218 376
+                   C 224 358, 228 340, 230 322
+                   C 228 318, 226 318, 224 318 Z"
+                fill="#7C2D12"
+                opacity="0.22"
+              />
+            </g>
 
-            {/* Fold 2 (Mid-High Sweep) */}
-            <path
-              d="M 254 338 C 236 366, 210 380, 192 382"
-              fill="none"
-              stroke="#854D0E"
-              strokeWidth="3.2"
-              strokeLinecap="round"
-              opacity="0.7"
-            />
-            <path
-              d="M 253 336 C 235 364, 210 378, 192 380"
-              fill="none"
-              stroke="#FFF9D6"
-              strokeWidth="2.4"
-              strokeLinecap="round"
-              opacity="0.9"
-            />
+            {/* ── Front Left Fold (front-left fabric panel overlapping toward center) ── */}
+            <g id="dhotiFrontLeftFold">
+              <path
+                d="M 142 286
+                   C 138 304, 136 320, 142 338
+                   C 150 360, 164 380, 180 392
+                   C 188 396, 192 392, 190 384
+                   C 184 360, 174 336, 162 312
+                   C 156 300, 148 290, 142 286 Z"
+                fill="url(#kDhotiGrad)"
+                stroke="#B37300"
+                strokeWidth="1.0"
+              />
+              {/* Front-left fold soft highlight */}
+              <path
+                d="M 148 294
+                   C 146 310, 148 326, 154 344
+                   C 162 364, 174 380, 184 386
+                   C 184 378, 178 366, 172 352
+                   C 164 332, 156 312, 150 298
+                   C 148 296, 148 294, 148 294 Z"
+                fill="#FFF9D6"
+                opacity="0.55"
+              />
+              {/* Front-left fold inner shadow (gives the fabric depth) */}
+              <path
+                d="M 178 314
+                   C 174 332, 176 354, 184 376
+                   C 188 384, 190 388, 188 392
+                   C 184 388, 178 380, 172 368
+                   C 166 354, 162 338, 162 322
+                   C 162 316, 168 312, 178 314 Z"
+                fill="#B37300"
+                opacity="0.30"
+              />
+            </g>
 
-            {/* Fold 3 (Mid-Low Sweep) */}
-            <path
-              d="M 258 374 C 242 404, 214 418, 194 418"
-              fill="none"
-              stroke="#78350F"
-              strokeWidth="3.4"
-              strokeLinecap="round"
-              opacity="0.75"
-            />
-            <path
-              d="M 257 372 C 241 402, 214 416, 194 416"
-              fill="none"
-              stroke="#FFF9D6"
-              strokeWidth="2.4"
-              strokeLinecap="round"
-              opacity="0.9"
-            />
+            {/* ── Front Right Fold (front-right fabric panel overlapping toward center) ── */}
+            <g id="dhotiFrontRightFold">
+              <path
+                d="M 238 286
+                   C 242 304, 244 320, 238 338
+                   C 230 360, 216 380, 200 392
+                   C 192 396, 188 392, 190 384
+                   C 196 360, 206 336, 218 312
+                   C 224 300, 232 290, 238 286 Z"
+                fill="url(#kDhotiGrad)"
+                stroke="#B37300"
+                strokeWidth="1.0"
+              />
+              {/* Front-right fold soft highlight */}
+              <path
+                d="M 232 294
+                   C 234 310, 232 326, 226 344
+                   C 218 364, 206 380, 196 386
+                   C 196 378, 202 366, 208 352
+                   C 216 332, 224 312, 230 298
+                   C 232 296, 232 294, 232 294 Z"
+                fill="#FFF9D6"
+                opacity="0.55"
+              />
+              {/* Front-right fold inner shadow */}
+              <path
+                d="M 202 314
+                   C 206 332, 204 354, 196 376
+                   C 192 384, 190 388, 192 392
+                   C 196 388, 202 380, 208 368
+                   C 214 354, 218 338, 218 322
+                   C 218 316, 212 312, 202 314 Z"
+                fill="#B37300"
+                opacity="0.30"
+              />
+            </g>
 
-            {/* Fold 4 (Lower Hem Crescent) */}
-            <path
-              d="M 248 408 C 236 430, 214 434, 198 432"
-              fill="none"
-              stroke="#78350F"
-              strokeWidth="3.0"
-              strokeLinecap="round"
-              opacity="0.8"
-            />
-            <path
-              d="M 247 406 C 235 428, 214 432, 198 430"
-              fill="none"
-              stroke="#FEF08A"
-              strokeWidth="2.0"
-              strokeLinecap="round"
-              opacity="0.85"
-            />
+            {/* ── Central Pleat / Tucked Fold (the iconic dhoti fold in front-center) ── */}
+            <g id="dhotiCentralPleat">
+              {/* Soft pleat shadow (vertical, subtle, not a hard line) */}
+              <path
+                d="M 184 304
+                   C 182 326, 182 358, 184 388
+                   C 186 398, 190 402, 194 398
+                   C 196 388, 196 358, 194 326
+                   C 194 314, 192 306, 190 304 Z"
+                fill="#7C2D12"
+                opacity="0.45"
+              />
+              {/* Pleat highlight (bright adjacent fold) */}
+              <path
+                d="M 178 308
+                   C 176 332, 178 360, 182 386
+                   C 184 394, 186 394, 188 386
+                   C 190 360, 188 332, 184 308 Z"
+                fill="#FFF9D6"
+                opacity="0.85"
+              />
+              {/* Soft inner pleat shadow (blends, no hard line) */}
+              <path
+                d="M 188 308 C 187 332, 187 362, 188 388"
+                fill="none"
+                stroke="#7C2D12"
+                strokeWidth="3.5"
+                strokeLinecap="round"
+                opacity="0.20"
+              />
+            </g>
 
-            {/* ── D. DRAPED VERTICAL ORANGE SILK SASH (VIEWER'S RIGHT) ── */}
+            {/* ── Lower Hem: Soft, Uneven, Slightly Curved Bottom Edge ── */}
+            <g id="dhotiLowerHem">
+              {/* Soft hem shadow (under the dhoti) */}
+              <path
+                d="M 130 422
+                   C 146 436, 170 440, 190 438
+                   C 210 440, 234 436, 250 422
+                   C 248 432, 232 442, 208 444
+                   C 184 446, 168 444, 152 438
+                   C 142 434, 134 428, 130 422 Z"
+                fill="#7C2D12"
+                opacity="0.32"
+              />
+              {/* Hem gold trim highlight (warm golden accent at the bottom edge) */}
+              <path
+                d="M 134 424
+                   C 150 436, 172 438, 190 436
+                   C 208 438, 230 436, 246 424"
+                fill="none"
+                stroke="#FEF08A"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                opacity="0.55"
+              />
+              {/* Hem darker crease (gives hem depth) */}
+              <path
+                d="M 138 426
+                   C 154 434, 172 434, 190 432
+                   C 208 434, 226 434, 242 426"
+                fill="none"
+                stroke="#5B2C00"
+                strokeWidth="1.2"
+                strokeLinecap="round"
+                opacity="0.55"
+              />
+            </g>
+
+            {/* ── Leg Separation Hint: subtle inseam shading between legs ── */}
+            {/* Soft inseam shadow between legs (no hard line) */}
+            <g id="dhotiLegSeparation">
+              <ellipse cx="190" cy="386" rx="4" ry="26" fill="#7C2D12" opacity="0.22" />
+            </g>
+
+            {/* ── Broad Overlapping Fabric Folds (large ribbons of shadow + highlight, not thin lines) ── */}
+            <g id="dhotiLargeFolds">
+              {/* Left Leg Fold Ribbon 1 (Top-Sweep): shadow band + adjacent highlight */}
+              <path
+                d="M 124 314 C 144 344, 170 374, 188 386 L 188 396 C 168 388, 142 360, 122 326 Z"
+                fill="#7C2D12"
+                opacity="0.18"
+              />
+              <path
+                d="M 130 314 C 150 344, 174 374, 188 384"
+                fill="none"
+                stroke="#FFF9D6"
+                strokeWidth="3.4"
+                strokeLinecap="round"
+                opacity="0.55"
+              />
+
+              {/* Left Leg Fold Ribbon 2 (Mid): shadow band + adjacent highlight */}
+              <path
+                d="M 120 372 C 138 402, 166 422, 186 426 L 186 434 C 162 432, 134 414, 118 384 Z"
+                fill="#7C2D12"
+                opacity="0.20"
+              />
+              <path
+                d="M 124 374 C 144 402, 168 420, 186 424"
+                fill="none"
+                stroke="#FFF9D6"
+                strokeWidth="3.2"
+                strokeLinecap="round"
+                opacity="0.5"
+              />
+
+              {/* Right Leg Fold Ribbon 1 (Top-Sweep): shadow band + adjacent highlight */}
+              <path
+                d="M 256 314 C 236 344, 210 374, 192 386 L 192 396 C 212 388, 238 360, 258 326 Z"
+                fill="#7C2D12"
+                opacity="0.18"
+              />
+              <path
+                d="M 250 314 C 230 344, 206 374, 192 384"
+                fill="none"
+                stroke="#FFF9D6"
+                strokeWidth="3.4"
+                strokeLinecap="round"
+                opacity="0.55"
+              />
+
+              {/* Right Leg Fold Ribbon 2 (Mid): shadow band + adjacent highlight */}
+              <path
+                d="M 260 372 C 242 402, 214 422, 194 426 L 194 434 C 218 432, 246 414, 262 384 Z"
+                fill="#7C2D12"
+                opacity="0.20"
+              />
+              <path
+                d="M 256 374 C 236 402, 212 420, 194 424"
+                fill="none"
+                stroke="#FFF9D6"
+                strokeWidth="3.2"
+                strokeLinecap="round"
+                opacity="0.5"
+              />
+
+              {/* Center waist-tuck fold (small ribbon just under the belt, joining the pleat) */}
+              <path
+                d="M 174 290 C 178 304, 180 318, 184 332 L 196 332 C 200 318, 202 304, 206 290 Z"
+                fill="#7C2D12"
+                opacity="0.28"
+              />
+              <path
+                d="M 178 292 C 182 306, 184 318, 188 330"
+                fill="none"
+                stroke="#FFF9D6"
+                strokeWidth="2.4"
+                strokeLinecap="round"
+                opacity="0.7"
+              />
+            </g>
+
+            {/* ── DRAPED VERTICAL ORANGE SILK SASH (VIEWER'S RIGHT) ── */}
             <g id="orangeSashVertical">
               {/* Outer Shadow of Sash */}
               <path
@@ -926,8 +1053,11 @@ export function LittleKrishna({
               <path d="M 233 304 C 233 344, 234 388, 235 418" fill="none" stroke="#FED7AA" strokeWidth="1.8" opacity="0.8" strokeLinecap="round" />
             </g>
 
-            {/* ── E. WIDE ORANGE WAISTBAND WITH 5 LARGE 3D GOLD DOME RIVETS ── */}
+            {/* ── WIDE ORANGE WAISTBAND WITH 5 LARGE 3D GOLD DOME RIVETS ── */}
             <g id="studdedBeltGroup">
+              {/* Soft contact shadow cast by belt onto fabric */}
+              <ellipse cx="190" cy="306" rx="62" ry="6" fill="#5B2C00" opacity="0.45" />
+
               {/* Main Wide Orange Belt */}
               <path
                 d="M 128 276
