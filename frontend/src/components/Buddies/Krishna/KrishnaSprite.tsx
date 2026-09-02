@@ -392,13 +392,6 @@ export function LittleKrishna({
               <stop offset="100%" stopColor="rgba(255, 180, 205, 0)" />
             </radialGradient>
 
-            {/* ── Soft Toddler Lips ── */}
-            <linearGradient id="kLipGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#FB7185" />
-              <stop offset="45%" stopColor="#E11D48" />
-              <stop offset="100%" stopColor="#9F1239" />
-            </linearGradient>
-
             {/* ── Metallic Gold Shaders (#F2C14E) ── */}
             <linearGradient id="kGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="#FFF9D6" />
@@ -545,7 +538,7 @@ export function LittleKrishna({
           {/* ════════════════ LAYER 2: FEET & ANKLETS ════════════════ */}
           {/* Lower body (feet/legs/dhoti) vertically lengthened around the waist (y=290) so the
               body reads taller and better balances the reduced head — child, not chibi. */}
-          <g id="feet" filter="url(#kSoftShadow)" transform="translate(190,290) scale(1,1.10) translate(-190,-290)">
+          <g id="feet" filter="url(#kSoftShadow)" transform="translate(190,290) scale(1,1.06) translate(-190,-290)">
             {/* Grounding Golden Bar right under the dhoti */}
             <path
               d="M 138 442 C 190 446, 242 442, 256 438"
@@ -595,7 +588,7 @@ export function LittleKrishna({
           </g>
 
           {/* ════════════════ LAYER 3: LEGS ════════════════ */}
-          <g id="legs" transform="translate(190,290) scale(1,1.10) translate(-190,-290)">
+          <g id="legs" transform="translate(190,290) scale(1,1.06) translate(-190,-290)">
             <path
               d="M 152 322 C 142 360, 140 400, 148 432"
               fill="none"
@@ -629,7 +622,7 @@ export function LittleKrishna({
           </g>
 
           {/* ════════════════ LAYER 4: REFERENCE 3D WRAPPED DHOTI, STUDDED BELT & SILK SASH ════════════════ */}
-          <g id="dhoti" filter="url(#kSoftShadow)" transform="translate(190,290) scale(1,1.10) translate(-190,-290)">
+          <g id="dhoti" filter="url(#kSoftShadow)" transform="translate(190,290) scale(1,1.06) translate(-190,-290)">
             {/* ── A. MAIN SAFFRON YELLOW DHOTI (TWO DRAPED WRAP LEGS) ── */}
             {/* Left Leg Wrap Base */}
             <path
@@ -1240,40 +1233,39 @@ export function LittleKrishna({
                 {/* ── Cute & Innocent Little Krishna Smile (Soft Pink/Coral Child Lips) ── */}
                 <g id="lipsGroup" transform="translate(190, 188)">
                   {/* Soft Corner Dimples */}
-                  <circle cx="-12.5" cy="-2.5" r="1.3" fill="#9F1239" opacity="0.35" />
-                  <circle cx="12.5" cy="-2.5" r="1.3" fill="#9F1239" opacity="0.35" />
+                  <circle cx="-8.5" cy="-1.5" r="1.2" fill="#9F1239" opacity="0.3" />
+                  <circle cx="8.5" cy="-1.5" r="1.2" fill="#9F1239" opacity="0.3" />
 
-                  {/* Gentle Upward "M" Upper Lip */}
+                  {/* Gentle Subtle Cupid-Bow Upper Lip (small, youthful — not a wide "M") */}
                   <path
-                    d="M -11.5 -2.2 C -7 -4.2, -3 -3.5, 0 -1.5 C 3 -3.5, 7 -4.2, 11.5 -2.2 C 8 0.5, 4 1, 0 0.2 C -4 1, -8 0.5, -11.5 -2.2 Z"
+                    d="M -8.5 -1.2 C -5.5 -3, -2.5 -2.4, 0 -0.6 C 2.5 -2.4, 5.5 -3, 8.5 -1.2 C 6 0.8, 3 1.1, 0 0.4 C -3 1.1, -6 0.8, -8.5 -1.2 Z"
                     fill="url(#kLipUpperGrad)"
                   />
 
-                  {/* Soft Fuller Lower Lip Arc */}
+                  {/* Softly Fuller But Compact Lower Lip */}
                   <path
-                    d="M -10 -1 C -6 2.2, 6 2.2, 10 -1 C 8 7.5, 3 8.8, 0 8.8 C -3 8.8, -8 7.5, -10 -1 Z"
+                    d="M -7.5 -0.4 C -4.5 2.6, 4.5 2.6, 7.5 -0.4 C 6 5.8, 3 6.8, 0 6.8 C -3 6.8, -6 5.8, -7.5 -0.4 Z"
                     fill="url(#kLipGrad)"
-                    className={styles.mouth}
                   />
 
                   {/* Gentle Upward Smile Seam Line */}
                   <path
-                    d="M -11.5 -2.2 C -6 2.2, 6 2.2, 11.5 -2.2"
+                    d="M -8.5 -1.2 C -4.5 1.8, 4.5 1.8, 8.5 -1.2"
                     fill="none"
                     stroke="#881337"
-                    strokeWidth="1.2"
+                    strokeWidth="1.1"
                     strokeLinecap="round"
-                    opacity="0.55"
+                    opacity="0.5"
                   />
 
                   {/* Soft Gloss Highlight on Lower Lip Center */}
                   <ellipse
                     cx="0"
-                    cy="4.8"
-                    rx="4.2"
-                    ry="2.0"
+                    cy="3.6"
+                    rx="3.2"
+                    ry="1.5"
                     fill="#FFFFFF"
-                    opacity="0.65"
+                    opacity="0.6"
                   />
                 </g>
               </g>
@@ -1637,60 +1629,72 @@ export function LittleKrishna({
               <ellipse cx="10" cy="9" rx="7" ry="1.2" fill="#FFFFFF" opacity="0.6" />
             </g>
 
-            {/* 3D Toddler Hand on Hip */}
+            {/* 3D Toddler Hand Resting Naturally on Hip */}
+            {/* Wrist connects to forearm end (234,294); palm sits on the waist with
+                fingers draping down over the hip in a relaxed, natural curve. */}
             <g id="sculptedHipHand" transform="translate(224, 294)">
+              {/* Back-of-hand / palm resting on the hip */}
               <path
-                d="M 6 -6 C 14 -4, 16 6, 12 14 C 6 18, -4 16, -6 10 C -8 4, -2 -6, 6 -6 Z"
+                d="M 2 -10
+                   C 12 -8, 18 -2, 18 6
+                   C 18 14, 12 18, 4 18
+                   C -6 18, -12 12, -12 4
+                   C -12 -4, -6 -11, 2 -10 Z"
                 fill="url(#kSkinHand)"
+                stroke="#255BB5"
+                strokeWidth="0.6"
               />
-              <ellipse cx="4" cy="4" rx="6" ry="4.5" fill="#FFFFFF" opacity="0.3" />
+              {/* Soft wrist highlight blending into the forearm */}
+              <ellipse cx="12" cy="0" rx="5" ry="6" fill="#FFFFFF" opacity="0.28" />
+              <ellipse cx="-2" cy="-6" rx="6" ry="3" fill="#FFFFFF" opacity="0.18" />
 
+              {/* Thumb wrapping over the hip toward the body */}
               <path
-                d="M 8 -4 C 14 -8, 18 -6, 16 -2 C 14 2, 10 2, 6 0"
+                d="M -10 -2 C -16 -6, -19 -1, -17 5 C -15 10, -9 11, -6 7 C -4 4, -6 -1, -10 -2 Z"
                 fill="url(#kSkinFace)"
                 stroke="#255BB5"
                 strokeWidth="0.8"
               />
-              <circle cx="15" cy="-4" r="1.4" fill="#FFFFFF" opacity="0.5" />
+              <ellipse cx="-13" cy="3" rx="2.2" ry="1.6" fill="#FFFFFF" opacity="0.5" />
 
-              {/* 4 Downward Draping Fingers */}
+              {/* Index finger (inner, draping down over the waist) */}
               <path
-                d="M -2 2 C -8 4, -14 10, -12 18 C -10 22, -4 20, -1 14 C 2 8, 3 4, -2 2 Z"
+                d="M -8 6 C -10 12, -10 18, -8 24 C -7 27, -3 27, -2 24 C 0 18, 0 12, -2 6 Z"
                 fill="url(#kSkinFace)"
                 stroke="#255BB5"
                 strokeWidth="0.8"
               />
-              <circle cx="-10" cy="17" r="1.8" fill="#E8F4FF" opacity="0.85" />
-              <ellipse cx="-4" cy="8" rx="2.5" ry="1.5" fill="#FFFFFF" opacity="0.45" />
+              <circle cx="-5" cy="24" r="1.6" fill="#E8F4FF" opacity="0.85" />
+              <ellipse cx="-5" cy="12" rx="1.6" ry="3.5" fill="#FFFFFF" opacity="0.35" />
 
+              {/* Middle finger */}
               <path
-                d="M 1 4 C -3 8, -8 16, -6 24 C -4 28, 2 26, 4 20 C 6 14, 5 8, 1 4 Z"
+                d="M -1 8 C -3 14, -3 20, -1 26 C 0 29, 4 29, 5 26 C 7 20, 7 14, 5 8 Z"
                 fill="url(#kSkinFace)"
                 stroke="#255BB5"
                 strokeWidth="0.8"
               />
-              <circle cx="-3" cy="24" r="1.9" fill="#E8F4FF" opacity="0.85" />
-              <ellipse cx="0" cy="12" rx="2.5" ry="1.5" fill="#FFFFFF" opacity="0.45" />
+              <circle cx="2" cy="26" r="1.7" fill="#E8F4FF" opacity="0.85" />
+              <ellipse cx="2" cy="14" rx="1.7" ry="3.8" fill="#FFFFFF" opacity="0.35" />
 
+              {/* Ring finger */}
               <path
-                d="M 5 6 C 2 12, -2 18, 0 24 C 2 27, 7 25, 8 20 C 9 14, 9 10, 5 6 Z"
+                d="M 6 8 C 4 14, 4 19, 6 24 C 7 26, 10 26, 11 24 C 13 19, 13 14, 12 8 Z"
                 fill="url(#kSkinFace)"
                 stroke="#255BB5"
                 strokeWidth="0.8"
               />
-              <circle cx="3" cy="22" r="1.7" fill="#E8F4FF" opacity="0.85" />
-              <ellipse cx="5" cy="14" rx="2.2" ry="1.4" fill="#FFFFFF" opacity="0.45" />
+              <circle cx="9" cy="24" r="1.5" fill="#E8F4FF" opacity="0.85" />
+              <ellipse cx="9" cy="14" rx="1.5" ry="3.4" fill="#FFFFFF" opacity="0.35" />
 
+              {/* Pinky (outer, shorter) */}
               <path
-                d="M 9 8 C 7 14, 5 18, 7 22 C 9 24, 13 22, 13 18 C 13 14, 12 10, 9 8 Z"
+                d="M 12 6 C 11 11, 11 15, 12 19 C 13 21, 16 21, 17 19 C 18 15, 18 11, 17 6 Z"
                 fill="url(#kSkinFace)"
                 stroke="#255BB5"
                 strokeWidth="0.8"
               />
-              <circle cx="9" cy="19" r="1.5" fill="#E8F4FF" opacity="0.85" />
-
-              <path d="M -3 14 L 0 20" stroke="#255BB5" strokeWidth="0.6" opacity="0.3" />
-              <path d="M 2 16 L 4 20" stroke="#255BB5" strokeWidth="0.6" opacity="0.3" />
+              <circle cx="14" cy="19" r="1.3" fill="#E8F4FF" opacity="0.85" />
             </g>
           </g>
 
