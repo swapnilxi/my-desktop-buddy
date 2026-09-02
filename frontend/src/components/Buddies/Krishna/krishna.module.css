@@ -383,13 +383,13 @@
 /* ── 6. HEAD & FACE ─────────────────────────────────────────────── */
 .head {
   position: absolute;
-  top: 28px;
+  top: 30px;
   left: 50%;
   transform: translateX(-50%);
-  width: 96px;
-  height: 86px;
-  background: radial-gradient(circle at 38% 32%, #A1C8FF 0%, #6BA7FF 55%, #4275BF 100%);
-  border-radius: 46px 46px 42px 42px;
+  width: 110px;
+  height: 88px;
+  background: radial-gradient(circle at 40% 32%, #A1C8FF 0%, #6BA7FF 55%, #4275BF 100%);
+  border-radius: 55px 55px 40px 40px / 50px 50px 40px 40px;
   box-shadow: 0 8px 22px rgba(15, 27, 61, 0.5), inset 0 2px 5px rgba(255, 255, 255, 0.5);
   z-index: 10;
 }
@@ -655,13 +655,54 @@
   box-shadow: 0 3px 8px rgba(15, 27, 61, 0.6), inset 0 2px 3px rgba(255, 255, 255, 0.2);
 }
 
-.curl1 { top: 6px; left: 0px; width: 28px; height: 28px; }
-.curl2 { top: -2px; left: 16px; width: 32px; height: 32px; }
-.curl3 { top: -6px; left: 40px; width: 36px; height: 36px; }
-.curl4 { top: -2px; right: 16px; width: 32px; height: 32px; }
-.curl5 { top: 6px; right: 0px; width: 28px; height: 28px; }
-.curl6 { top: 22px; left: -6px; width: 24px; height: 26px; }
-.curl7 { top: 22px; right: -6px; width: 24px; height: 26px; }
+.curl1 {
+  top: 6px;
+  left: 0px;
+  width: 28px;
+  height: 28px;
+}
+
+.curl2 {
+  top: -2px;
+  left: 16px;
+  width: 32px;
+  height: 32px;
+}
+
+.curl3 {
+  top: -6px;
+  left: 40px;
+  width: 36px;
+  height: 36px;
+}
+
+.curl4 {
+  top: -2px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+}
+
+.curl5 {
+  top: 6px;
+  right: 0px;
+  width: 28px;
+  height: 28px;
+}
+
+.curl6 {
+  top: 22px;
+  left: -6px;
+  width: 24px;
+  height: 26px;
+}
+
+.curl7 {
+  top: 22px;
+  right: -6px;
+  width: 24px;
+  height: 26px;
+}
 
 /* Topknot Bun */
 .topknot {
@@ -958,18 +999,24 @@
 
 /* ── KEYFRAME DEFINITIONS ───────────────────────────────────────── */
 @keyframes krishnaIdleBreathing {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px) scale(var(--k-scale, 1.45));
   }
+
   50% {
     transform: translateY(-4px) scale(var(--k-scale, 1.45));
   }
 }
 
 @keyframes idleHeadTilt {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: rotate(0deg);
   }
+
   50% {
     transform: rotate(1.8deg) translateY(-1px);
   }
@@ -979,6 +1026,7 @@
   0% {
     transform: translateY(0px) scale(var(--k-scale, 1.45));
   }
+
   100% {
     transform: translateY(-3px) scale(var(--k-scale, 1.45));
   }
@@ -989,6 +1037,7 @@
     opacity: 0.6;
     transform: translateX(-50%) scale(0.98);
   }
+
   100% {
     opacity: 1;
     transform: translateX(-50%) scale(1.08);
@@ -999,6 +1048,7 @@
   0% {
     transform: translateY(0px) scale(var(--k-scale, 1.45));
   }
+
   100% {
     transform: translateY(-10px) scale(var(--k-scale, 1.45));
   }
@@ -1008,42 +1058,55 @@
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(-3deg) translateY(-2px);
   }
 }
 
 @keyframes motivationFloat {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px) scale(var(--k-scale, 1.45));
   }
+
   50% {
     transform: translateY(-5px) scale(var(--k-scale, 1.45));
   }
 }
 
 @keyframes motivationNod {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: rotate(0deg);
   }
+
   50% {
     transform: rotate(2.5deg) translateY(1px);
   }
 }
 
 @keyframes relaxDeepBreathing {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px) scale(var(--k-scale, 1.45));
   }
+
   50% {
     transform: translateY(-6px) scale(var(--k-scale, 1.45));
   }
 }
 
 @keyframes relaxHeadSway {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: rotate(-1.5deg);
   }
+
   50% {
     transform: rotate(2deg);
   }
@@ -1053,9 +1116,11 @@
   0% {
     transform: scale(var(--k-scale, 1.45));
   }
+
   50% {
     transform: scale(calc(var(--k-scale, 1.45) * 1.08)) translateY(-6px);
   }
+
   100% {
     transform: scale(var(--k-scale, 1.45));
   }
@@ -1065,6 +1130,7 @@
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -1074,16 +1140,20 @@
   0% {
     transform: rotate(-15deg);
   }
+
   100% {
     transform: rotate(-45deg) translateY(-3px);
   }
 }
 
 @keyframes shadowPulse {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
     opacity: 0.55;
   }
+
   50% {
     transform: scale(0.88);
     opacity: 0.35;
@@ -1095,6 +1165,7 @@
     transform: translateX(-50%) scale(0.95);
     opacity: 0.6;
   }
+
   100% {
     transform: translateX(-50%) scale(1.1);
     opacity: 1;
@@ -1102,9 +1173,12 @@
 }
 
 @keyframes bubbleFloat {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateX(-50%) translateY(0px);
   }
+
   50% {
     transform: translateX(-50%) translateY(-3px);
   }
@@ -1112,6 +1186,7 @@
 
 /* ── 9. ACCESSIBILITY & REDUCED MOTION SUPPORT ────────────────── */
 @media (prefers-reduced-motion: reduce) {
+
   .krishna,
   .krishnaIdle,
   .krishnaProtector,
@@ -1141,7 +1216,7 @@
   cursor: pointer;
   z-index: 10;
   transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
 }
 
 .fluteIcon:hover {

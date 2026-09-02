@@ -259,12 +259,38 @@ export function LittleKrishna({
         >
           <defs>
             {/* ── 3D Soft Skin Shaders (Periwinkle Blue #6BA7FF) ── */}
-            <radialGradient id="kSkinFace" cx="42%" cy="32%" r="68%">
-              <stop offset="0%" stopColor="#D9ECFF" />
-              <stop offset="28%" stopColor="#96C8FF" />
-              <stop offset="62%" stopColor="#6BA7FF" />
-              <stop offset="88%" stopColor="#417FD8" />
+            <radialGradient id="kSkinFace" cx="44%" cy="34%" r="66%">
+              <stop offset="0%" stopColor="#E2F0FF" />
+              <stop offset="25%" stopColor="#A8D0FF" />
+              <stop offset="60%" stopColor="#6BA7FF" />
+              <stop offset="85%" stopColor="#417FD8" />
               <stop offset="100%" stopColor="#255BB5" />
+            </radialGradient>
+
+            <radialGradient id="kCheekVolumeLeft" cx="38%" cy="36%" r="60%">
+              <stop offset="0%" stopColor="#EBF5FF" />
+              <stop offset="45%" stopColor="#8CC0FF" />
+              <stop offset="85%" stopColor="#5391F0" stopOpacity="0.8" />
+              <stop offset="100%" stopColor="#3573D6" stopOpacity="0" />
+            </radialGradient>
+
+            <radialGradient id="kCheekVolumeRight" cx="62%" cy="36%" r="60%">
+              <stop offset="0%" stopColor="#EBF5FF" />
+              <stop offset="45%" stopColor="#8CC0FF" />
+              <stop offset="85%" stopColor="#5391F0" stopOpacity="0.8" />
+              <stop offset="100%" stopColor="#3573D6" stopOpacity="0" />
+            </radialGradient>
+
+            <radialGradient id="kForeheadGlow" cx="50%" cy="35%" r="55%">
+              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.5" />
+              <stop offset="60%" stopColor="#D9ECFF" stopOpacity="0.18" />
+              <stop offset="100%" stopColor="#6BA7FF" stopOpacity="0" />
+            </radialGradient>
+
+            <radialGradient id="kChinVolume" cx="50%" cy="40%" r="50%">
+              <stop offset="0%" stopColor="#D9ECFF" stopOpacity="0.6" />
+              <stop offset="70%" stopColor="#87BDFF" stopOpacity="0.2" />
+              <stop offset="100%" stopColor="#5B9AFA" stopOpacity="0" />
             </radialGradient>
 
             <radialGradient id="kSkinBody" cx="40%" cy="30%" r="70%">
@@ -310,26 +336,27 @@ export function LittleKrishna({
               <stop offset="100%" stopColor="#1E2A3E" stopOpacity="0" />
             </radialGradient>
 
-            {/* ── 3D Eyes (Warm Brown / Chocolate / Amber) ── */}
-            <radialGradient id="kIrisGrad" cx="38%" cy="32%" r="65%">
-              <stop offset="0%" stopColor="#F59E0B" />
-              <stop offset="22%" stopColor="#B45309" />
-              <stop offset="58%" stopColor="#78350F" />
-              <stop offset="85%" stopColor="#451A03" />
+            {/* ── 3D Eyes (Warm Brown / Chocolate / Honey Amber) ── */}
+            <radialGradient id="kIrisGrad" cx="36%" cy="30%" r="68%">
+              <stop offset="0%" stopColor="#FDE047" />
+              <stop offset="18%" stopColor="#F59E0B" />
+              <stop offset="42%" stopColor="#B45309" />
+              <stop offset="72%" stopColor="#78350F" />
+              <stop offset="90%" stopColor="#451A03" />
               <stop offset="100%" stopColor="#1C0901" />
             </radialGradient>
 
-            {/* ── Cheeks Rosy Blush ── */}
+            {/* ── Cheeks Rosy Blush (Soft & Delicate) ── */}
             <radialGradient id="kCheekBlush" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="rgba(255, 95, 140, 0.62)" />
-              <stop offset="52%" stopColor="rgba(255, 125, 160, 0.26)" />
-              <stop offset="100%" stopColor="rgba(255, 125, 160, 0)" />
+              <stop offset="0%" stopColor="rgba(255, 110, 150, 0.45)" />
+              <stop offset="55%" stopColor="rgba(255, 135, 170, 0.18)" />
+              <stop offset="100%" stopColor="rgba(255, 135, 170, 0)" />
             </radialGradient>
 
             {/* ── Soft Toddler Lips ── */}
             <linearGradient id="kLipGrad" x1="0%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" stopColor="#FB7185" />
-              <stop offset="50%" stopColor="#E11D48" />
+              <stop offset="45%" stopColor="#E11D48" />
               <stop offset="100%" stopColor="#9F1239" />
             </linearGradient>
 
@@ -617,7 +644,7 @@ export function LittleKrishna({
 
             {/* Ears + Hoop Earrings */}
             <g id="headBase">
-              <g transform="translate(120, 164)">
+              <g transform="translate(118, 162)">
                 <ellipse cx="0" cy="0" rx="14" ry="18" fill="url(#kSkinFace)" />
                 <ellipse cx="-4" cy="12" rx="12" ry="12" fill="url(#kGoldGrad)" stroke="#92400E" strokeWidth="1.4" />
                 <ellipse cx="-4" cy="12" rx="6.5" ry="6.5" fill="#0A111F" />
@@ -625,7 +652,7 @@ export function LittleKrishna({
                 <circle cx="-5.5" cy="18.8" r="1.5" fill="#FFFFFF" opacity="0.9" />
               </g>
 
-              <g transform="translate(260, 164)">
+              <g transform="translate(262, 162)">
                 <ellipse cx="0" cy="0" rx="14" ry="18" fill="url(#kSkinFace)" />
                 <ellipse cx="4" cy="12" rx="12" ry="12" fill="url(#kGoldGrad)" stroke="#92400E" strokeWidth="1.4" />
                 <ellipse cx="4" cy="12" rx="6.5" ry="6.5" fill="#0A111F" />
@@ -633,166 +660,224 @@ export function LittleKrishna({
                 <circle cx="2.5" cy="18.8" r="1.5" fill="#FFFFFF" opacity="0.9" />
               </g>
 
-              <ellipse cx="190" cy="154" rx="72" ry="64" fill="url(#kSkinFace)" />
-              <ellipse cx="190" cy="130" rx="46" ry="26" fill="url(#kSkinFace)" opacity="0.8" />
-              <ellipse cx="190" cy="204" rx="42" ry="15" fill="#1E3A8A" opacity="0.24" />
+              {/* 3D Volumetric Head Base with Rounded Toddler Proportions */}
+              <ellipse cx="190" cy="154" rx="74" ry="66" fill="url(#kSkinFace)" />
 
-              <ellipse cx="138" cy="174" rx="26" ry="16" fill="url(#kCheekBlush)" transform="rotate(-6 138 174)" />
-              <ellipse cx="242" cy="174" rx="26" ry="16" fill="url(#kCheekBlush)" transform="rotate(6 242 174)" />
+              {/* Volumetric Chubby Cheeks */}
+              <ellipse cx="136" cy="168" rx="38" ry="30" fill="url(#kCheekVolumeLeft)" opacity="0.95" />
+              <ellipse cx="244" cy="168" rx="38" ry="30" fill="url(#kCheekVolumeRight)" opacity="0.95" />
+
+              {/* 3D Forehead Spherical Highlight */}
+              <ellipse cx="190" cy="124" rx="46" ry="24" fill="url(#kForeheadGlow)" />
+
+              {/* Soft Chin Volume & Lower Jaw Shadow */}
+              <ellipse cx="190" cy="200" rx="22" ry="13" fill="url(#kChinVolume)" />
+              <ellipse cx="190" cy="214" rx="38" ry="10" fill="#1E3A8A" opacity="0.18" />
+
+              {/* Subtle Rosy Toddler Blush */}
+              <ellipse cx="136" cy="172" rx="24" ry="15" fill="url(#kCheekBlush)" transform="rotate(-5 136 172)" />
+              <ellipse cx="244" cy="172" rx="24" ry="15" fill="url(#kCheekBlush)" transform="rotate(5 244 172)" />
             </g>
 
-            {/* Master Face Details */}
+            {/* Master Face Details — Stylized, Expressive & High Fidelity */}
             <g id="faceDetails">
               {/* Vaishnava U-Tilak */}
               <path
-                d="M 182 104 L 182 136 C 182 146, 198 146, 198 136 L 198 104"
+                d="M 183 104 L 183 134 C 183 143, 197 143, 197 134 L 197 104"
                 fill="none"
                 stroke="#FFFFFF"
-                strokeWidth="4.8"
+                strokeWidth="4.5"
                 strokeLinecap="round"
               />
               <path
-                d="M 185 106 L 185 134 C 185 140, 195 140, 195 134 L 195 106"
+                d="M 185.5 106 L 185.5 133 C 185.5 138.5, 194.5 138.5, 194.5 133 L 194.5 106"
                 fill="none"
                 stroke="#FEF08A"
-                strokeWidth="1.6"
-                opacity="0.8"
+                strokeWidth="1.5"
+                opacity="0.85"
               />
-              <circle cx="190" cy="148" r="4.2" fill="#EA580C" stroke="#9A3412" strokeWidth="0.6" />
-              <circle cx="190" cy="148" r="2.2" fill="#DC2626" />
-              <circle cx="188.5" cy="146.5" r="1.4" fill="#FFFFFF" opacity="0.95" />
+              <circle cx="190" cy="146" r="4.0" fill="#EA580C" stroke="#9A3412" strokeWidth="0.5" />
+              <circle cx="190" cy="146" r="2.2" fill="#DC2626" />
+              <circle cx="188.8" cy="144.8" r="1.3" fill="#FFFFFF" opacity="0.95" />
 
-              {/* Devotional White Dots */}
+              {/* Very Small, Delicate Devotional White Dots Following Eyebrow Arch */}
               <g id="eyebrowDots" fill="#FFFFFF" opacity="0.95">
-                <circle cx="140" cy="128" r="1.4" />
-                <circle cx="148" cy="124" r="1.5" />
-                <circle cx="156" cy="122" r="1.6" />
-                <circle cx="164" cy="124" r="1.5" />
-                <circle cx="172" cy="128" r="1.4" />
-                <circle cx="208" cy="128" r="1.4" />
-                <circle cx="216" cy="124" r="1.5" />
-                <circle cx="224" cy="122" r="1.6" />
-                <circle cx="232" cy="124" r="1.5" />
-                <circle cx="240" cy="128" r="1.4" />
+                {/* Left eyebrow white dots */}
+                <circle cx="136" cy="127" r="1.3" />
+                <circle cx="144" cy="123" r="1.4" />
+                <circle cx="152" cy="121" r="1.5" />
+                <circle cx="160" cy="122" r="1.4" />
+                <circle cx="168" cy="126" r="1.3" />
+
+                {/* Right eyebrow white dots */}
+                <circle cx="212" cy="126" r="1.3" />
+                <circle cx="220" cy="122" r="1.4" />
+                <circle cx="228" cy="121" r="1.5" />
+                <circle cx="236" cy="123" r="1.4" />
+                <circle cx="244" cy="127" r="1.3" />
               </g>
 
-              {/* Eyebrows */}
+              {/* Gentle Arched Eyebrows */}
               <path
-                d="M 134 136 C 150 123, 172 126, 178 136"
+                d="M 134 135 C 148 122, 168 124, 174 134"
                 fill="none"
                 stroke="#0F172A"
-                strokeWidth="3.2"
+                strokeWidth="2.8"
                 strokeLinecap="round"
               />
               <path
-                d="M 246 136 C 230 123, 208 126, 202 136"
+                d="M 246 135 C 232 122, 212 124, 206 134"
                 fill="none"
                 stroke="#0F172A"
-                strokeWidth="3.2"
+                strokeWidth="2.8"
                 strokeLinecap="round"
               />
 
-              {/* Left Eye */}
-              <g transform="translate(134, 138)">
-                <path d="M 0 18 C 4 4, 38 3, 44 16 C 38 30, 4 31, 0 18 Z" fill="#FFFFFF" />
-                <circle cx="22" cy="17" r="15.5" fill="url(#kIrisGrad)" className={styles.iris} />
-                <circle cx="22" cy="17" r="15.5" fill="none" stroke="#2D0F02" strokeWidth="1.2" opacity="0.75" />
-                <circle cx="22" cy="17" r="8" fill="#0C0502" />
-                <circle cx="28" cy="10.5" r="5.5" fill="#FFFFFF" />
-                <circle cx="15" cy="23.5" r="2.8" fill="#FFFFFF" opacity="0.88" />
-                <circle cx="29" cy="20" r="1.5" fill="#FDE047" opacity="0.6" />
+              {/* ── Left Eye (Large, Warm, Expressive 3D Focal Point) ── */}
+              <g transform="translate(133, 137)">
+                {/* Sclera / Eye Base with Soft Shadow */}
+                <path d="M 0 18 C 4 3, 40 2, 46 16 C 40 31, 4 32, 0 18 Z" fill="#FFFFFF" />
+                <path d="M 4 10 C 14 6, 34 6, 42 12 C 34 8, 14 8, 4 10 Z" fill="#1E3A8A" opacity="0.1" />
+
+                {/* Soft Eyelid Crease */}
+                <path d="M 6 4 C 18 -1, 32 -1, 40 5" fill="none" stroke="#255BB5" strokeWidth="1.2" strokeLinecap="round" opacity="0.4" />
+
+                {/* Warm Chocolate / Honey Amber Iris */}
+                <circle cx="23" cy="17" r="16.5" fill="url(#kIrisGrad)" className={styles.iris} />
+                <circle cx="23" cy="17" r="16.5" fill="none" stroke="#2D0F02" strokeWidth="1.2" opacity="0.75" />
+
+                {/* Pupil */}
+                <circle cx="23" cy="17" r="8.5" fill="#0C0502" />
+
+                {/* Warm Amber Iris Reflection Arc */}
+                <ellipse cx="23" cy="26" rx="9" ry="3" fill="#FDE047" opacity="0.5" />
+
+                {/* Glossy 3D Catchlights */}
+                <ellipse cx="29" cy="10.5" rx="6.2" ry="5.4" fill="#FFFFFF" />
+                <circle cx="16" cy="24" r="3.0" fill="#FFFFFF" opacity="0.88" />
+                <circle cx="31" cy="20" r="1.6" fill="#FFF9C4" opacity="0.7" />
+
+                {/* Delicate Upper Lash Line */}
                 <path
-                  d="M 0 18 C 4 4, 38 3, 44 16"
+                  d="M 0 18 C 4 3, 40 2, 46 16"
                   fill="none"
                   stroke="#0F172A"
-                  strokeWidth="3.2"
+                  strokeWidth="3.0"
                   strokeLinecap="round"
                 />
+                {/* Soft Lower Lash Line */}
                 <path
-                  d="M 2 20 C 8 32, 38 30, 42 18"
+                  d="M 2 20 C 8 32, 38 31, 44 18"
                   fill="none"
                   stroke="#1E293B"
-                  strokeWidth="1.4"
+                  strokeWidth="1.2"
                   strokeLinecap="round"
-                  opacity="0.6"
+                  opacity="0.5"
                 />
+
+                {/* Animated Upper Eyelid for Blinking */}
                 <path
-                  d="M 0 18 C 4 4, 38 3, 44 16 C 36 10, 4 11, 0 18 Z"
+                  d="M 0 18 C 4 3, 40 2, 46 16 C 38 9, 6 10, 0 18 Z"
                   fill="#5B9AFA"
                   className={`${styles.eyelidUpper} ${isBlinking ? styles.blinkActive : ''}`}
                 />
               </g>
 
-              {/* Right Eye */}
-              <g transform="translate(202, 138)">
-                <path d="M 0 18 C 4 4, 38 3, 44 16 C 38 30, 4 31, 0 18 Z" fill="#FFFFFF" />
-                <circle cx="22" cy="17" r="15.5" fill="url(#kIrisGrad)" className={styles.iris} />
-                <circle cx="22" cy="17" r="15.5" fill="none" stroke="#2D0F02" strokeWidth="1.2" opacity="0.75" />
-                <circle cx="22" cy="17" r="8" fill="#0C0502" />
-                <circle cx="28" cy="10.5" r="5.5" fill="#FFFFFF" />
-                <circle cx="15" cy="23.5" r="2.8" fill="#FFFFFF" opacity="0.88" />
-                <circle cx="29" cy="20" r="1.5" fill="#FDE047" opacity="0.6" />
+              {/* ── Right Eye (Large, Warm, Expressive 3D Focal Point) ── */}
+              <g transform="translate(201, 137)">
+                {/* Sclera / Eye Base with Soft Shadow */}
+                <path d="M 0 16 C 6 2, 42 3, 46 18 C 42 32, 6 31, 0 16 Z" fill="#FFFFFF" />
+                <path d="M 4 12 C 12 6, 32 6, 42 10 C 32 8, 12 8, 4 12 Z" fill="#1E3A8A" opacity="0.1" />
+
+                {/* Soft Eyelid Crease */}
+                <path d="M 6 5 C 14 -1, 28 -1, 40 4" fill="none" stroke="#255BB5" strokeWidth="1.2" strokeLinecap="round" opacity="0.4" />
+
+                {/* Warm Chocolate / Honey Amber Iris */}
+                <circle cx="23" cy="17" r="16.5" fill="url(#kIrisGrad)" className={styles.iris} />
+                <circle cx="23" cy="17" r="16.5" fill="none" stroke="#2D0F02" strokeWidth="1.2" opacity="0.75" />
+
+                {/* Pupil */}
+                <circle cx="23" cy="17" r="8.5" fill="#0C0502" />
+
+                {/* Warm Amber Iris Reflection Arc */}
+                <ellipse cx="23" cy="26" rx="9" ry="3" fill="#FDE047" opacity="0.5" />
+
+                {/* Glossy 3D Catchlights */}
+                <ellipse cx="29" cy="10.5" rx="6.2" ry="5.4" fill="#FFFFFF" />
+                <circle cx="16" cy="24" r="3.0" fill="#FFFFFF" opacity="0.88" />
+                <circle cx="31" cy="20" r="1.6" fill="#FFF9C4" opacity="0.7" />
+
+                {/* Delicate Upper Lash Line */}
                 <path
-                  d="M 0 18 C 4 4, 38 3, 44 16"
+                  d="M 0 16 C 6 2, 42 3, 46 18"
                   fill="none"
                   stroke="#0F172A"
-                  strokeWidth="3.2"
+                  strokeWidth="3.0"
                   strokeLinecap="round"
                 />
+                {/* Soft Lower Lash Line */}
                 <path
-                  d="M 2 20 C 8 32, 38 30, 42 18"
+                  d="M 2 18 C 8 31, 38 32, 44 20"
                   fill="none"
                   stroke="#1E293B"
-                  strokeWidth="1.4"
+                  strokeWidth="1.2"
                   strokeLinecap="round"
-                  opacity="0.6"
+                  opacity="0.5"
                 />
+
+                {/* Animated Upper Eyelid for Blinking */}
                 <path
-                  d="M 0 18 C 4 4, 38 3, 44 16 C 36 10, 4 11, 0 18 Z"
+                  d="M 0 16 C 6 2, 42 3, 46 18 C 40 10, 8 9, 0 16 Z"
                   fill="#5B9AFA"
                   className={`${styles.eyelidUpper} ${isBlinking ? styles.blinkActive : ''}`}
                 />
               </g>
 
-              {/* Nose */}
+              {/* ── Cute Small Rounded Button Nose ── */}
               <g transform="translate(190, 172)">
-                <path d="M 0 -8 L 0 -1" stroke="#D9ECFF" strokeWidth="1.8" strokeLinecap="round" opacity="0.4" />
-                <ellipse cx="0" cy="2" rx="6.5" ry="4.0" fill="#255BB5" opacity="0.32" />
-                <ellipse cx="0" cy="0" rx="5.8" ry="3.6" fill="url(#kSkinFace)" />
-                <circle cx="-3.2" cy="1.8" r="1.3" fill="#1E3A8A" opacity="0.38" />
-                <circle cx="3.2" cy="1.8" r="1.3" fill="#1E3A8A" opacity="0.38" />
-                <ellipse cx="-1" cy="-0.8" rx="2.4" ry="1.4" fill="#FFFFFF" opacity="0.9" />
+                <path d="M 0 -7 L 0 -1" stroke="#E0F2FE" strokeWidth="1.6" strokeLinecap="round" opacity="0.55" />
+                <ellipse cx="0" cy="3.5" rx="6.2" ry="3.0" fill="#1E40AF" opacity="0.22" />
+                <ellipse cx="0" cy="1.5" rx="5.8" ry="3.8" fill="url(#kSkinFace)" />
+                <circle cx="-3.2" cy="2.2" r="1.1" fill="#1E3A8A" opacity="0.32" />
+                <circle cx="3.2" cy="2.2" r="1.1" fill="#1E3A8A" opacity="0.32" />
+                <ellipse cx="-1.0" cy="0.6" rx="2.2" ry="1.3" fill="#FFFFFF" opacity="0.85" />
               </g>
 
-              {/* Lips & Smile */}
+              {/* ── Gentle Natural Smile (Toddler Rosy Lips) ── */}
               <g id="lipsGroup" transform="translate(190, 186)">
-                <circle cx="-18" cy="-1" r="1.8" fill="#881337" opacity="0.45" />
-                <circle cx="18" cy="-1" r="1.8" fill="#881337" opacity="0.45" />
+                {/* Corner Dimples */}
+                <circle cx="-16.5" cy="-1" r="1.4" fill="#881337" opacity="0.35" />
+                <circle cx="16.5" cy="-1" r="1.4" fill="#881337" opacity="0.35" />
+
+                {/* Upper Lip Cupid's Bow */}
                 <path
-                  d="M -16 -1 C -8 -4.5, -3 -2.5, 0 -4 C 3 -2.5, 8 -4.5, 16 -1 Z"
+                  d="M -15 -1 C -8 -4.2, -3 -2.2, 0 -3.6 C 3 -2.2, 8 -4.2, 15 -1 Z"
                   fill="url(#kLipGrad)"
-                  opacity="0.9"
+                  opacity="0.92"
                 />
+                {/* Smile Line */}
                 <path
-                  d="M -17 -1 C -8 6, 8 6, 17 -1"
+                  d="M -16 -1 C -8 5.5, 8 5.5, 16 -1"
                   fill="none"
                   stroke="#881337"
-                  strokeWidth="2.2"
+                  strokeWidth="2.0"
                   strokeLinecap="round"
                   className={styles.mouth}
                 />
+                {/* Lower Lip Fullness */}
                 <path
-                  d="M -12 0 C -6 6.5, 6 6.5, 12 0 C 6 5, -6 5, -12 0 Z"
+                  d="M -12 0 C -6 6, 6 6, 12 0 C 6 4.5, -6 4.5, -12 0 Z"
                   fill="#FDA4AF"
                   opacity="0.95"
                 />
+                {/* Lip Gloss Shine Highlight */}
                 <path
-                  d="M -6 3.2 C -2 4.8, 2 4.8, 6 3.2"
+                  d="M -5 2.8 C -1.5 4.2, 1.5 4.2, 5 2.8"
                   fill="none"
                   stroke="#FFFFFF"
-                  strokeWidth="1.5"
+                  strokeWidth="1.4"
                   strokeLinecap="round"
-                  opacity="0.88"
+                  opacity="0.85"
                 />
               </g>
             </g>
