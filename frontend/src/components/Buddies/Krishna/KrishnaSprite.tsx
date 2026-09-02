@@ -304,7 +304,7 @@ export function LittleKrishna({
               <stop offset="100%" stopColor="#5B9AFA" stopOpacity="0" />
             </radialGradient>
 
-            {/* ── 3D Cylindrical Neck Shaders ── */}
+            {/* ── 3D Cylindrical Neck & Occlusion Shaders ── */}
             <linearGradient id="kSkinNeck" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stopColor="#2A64C2" />
               <stop offset="22%" stopColor="#5391F0" />
@@ -314,11 +314,12 @@ export function LittleKrishna({
             </linearGradient>
 
             <linearGradient id="kNeckOcclusionShadow" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#0B1938" stopOpacity="0.45" />
-              <stop offset="60%" stopColor="#1E3A8A" stopOpacity="0.2" />
+              <stop offset="0%" stopColor="#0B1938" stopOpacity="0.48" />
+              <stop offset="60%" stopColor="#1E3A8A" stopOpacity="0.22" />
               <stop offset="100%" stopColor="#1E3A8A" stopOpacity="0" />
             </linearGradient>
 
+            {/* ── Unified 3D Seamless Skin Shaders ── */}
             <radialGradient id="kSkinBody" cx="40%" cy="30%" r="70%">
               <stop offset="0%" stopColor="#CCE3FF" />
               <stop offset="32%" stopColor="#87BDFF" />
@@ -328,25 +329,37 @@ export function LittleKrishna({
             </radialGradient>
 
             <radialGradient id="kSkinLimb" cx="38%" cy="28%" r="68%">
-              <stop offset="0%" stopColor="#C4E0FF" />
-              <stop offset="35%" stopColor="#82B7FF" />
-              <stop offset="72%" stopColor="#5391F0" />
+              <stop offset="0%" stopColor="#CCE3FF" />
+              <stop offset="35%" stopColor="#87BDFF" />
+              <stop offset="72%" stopColor="#5B9AFA" />
               <stop offset="100%" stopColor="#2A64C2" />
             </radialGradient>
 
             <radialGradient id="kSkinHand" cx="40%" cy="32%" r="65%">
-              <stop offset="0%" stopColor="#E0F0FF" />
-              <stop offset="38%" stopColor="#94C6FF" />
-              <stop offset="76%" stopColor="#5897F4" />
+              <stop offset="0%" stopColor="#CCE3FF" />
+              <stop offset="38%" stopColor="#87BDFF" />
+              <stop offset="76%" stopColor="#5B9AFA" />
               <stop offset="100%" stopColor="#2A66C6" />
             </radialGradient>
 
-            {/* 3D Toddler Hand & Finger Sculpting Shaders */}
+            {/* 3D Toddler Hand & Joint Sculpting Shaders */}
             <radialGradient id="kHandVolume" cx="42%" cy="32%" r="65%">
               <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.45" />
               <stop offset="38%" stopColor="#D2E7FF" stopOpacity="0.18" />
               <stop offset="100%" stopColor="#2563EB" stopOpacity="0" />
             </radialGradient>
+
+            <radialGradient id="kJointSoftBlend" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#87BDFF" stopOpacity="0.38" />
+              <stop offset="60%" stopColor="#5B9AFA" stopOpacity="0.12" />
+              <stop offset="100%" stopColor="#2A64C2" stopOpacity="0" />
+            </radialGradient>
+
+            <linearGradient id="kJewelryContactShadow" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#0B132B" stopOpacity="0.38" />
+              <stop offset="60%" stopColor="#1E3A8A" stopOpacity="0.15" />
+              <stop offset="100%" stopColor="#1E3A8A" stopOpacity="0" />
+            </linearGradient>
 
             <linearGradient id="kFingerCylinder" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stopColor="#255BB5" />
@@ -594,13 +607,22 @@ export function LittleKrishna({
                 d="M 8 -2 C 0 -4, -6 8, -4 20 C -2 28, 10 32, 26 28 C 36 24, 38 12, 28 4 C 20 0, 14 -2, 8 -2 Z"
                 fill="url(#kSkinLimb)"
               />
-              <circle cx="-1" cy="19" r="4.5" fill="url(#kSkinFace)" />
-              <ellipse cx="-2" cy="18" rx="2.0" ry="1.4" fill="#FFFFFF" opacity="0.6" />
-              <circle cx="6" cy="24" r="4.0" fill="url(#kSkinFace)" />
-              <ellipse cx="5" cy="23" rx="1.8" ry="1.2" fill="#FFFFFF" opacity="0.55" />
-              <circle cx="14" cy="26" r="3.6" fill="url(#kSkinFace)" />
-              <circle cx="21" cy="26" r="3.2" fill="url(#kSkinFace)" />
-              <circle cx="28" cy="24" r="2.8" fill="url(#kSkinFace)" />
+              {/* Soft Toes with Unified Skin Shader & Subtle Ambient Separation */}
+              <circle cx="-1" cy="19" r="4.5" fill="url(#kSkinHand)" />
+              <ellipse cx="-2" cy="18" rx="2.0" ry="1.4" fill="#FFFFFF" opacity="0.55" />
+
+              <circle cx="6" cy="24" r="4.0" fill="url(#kSkinHand)" />
+              <ellipse cx="5" cy="23" rx="1.8" ry="1.2" fill="#FFFFFF" opacity="0.5" />
+
+              <circle cx="14" cy="26" r="3.6" fill="url(#kSkinHand)" />
+              <circle cx="21" cy="26" r="3.2" fill="url(#kSkinHand)" />
+              <circle cx="28" cy="24" r="2.8" fill="url(#kSkinHand)" />
+
+              {/* Soft Ambient Shadows Between Toes */}
+              <path d="M 2.5 21.5 L 2.5 24" fill="none" stroke="#1E3A8A" strokeWidth="0.6" opacity="0.2" />
+              <path d="M 10 24.5 L 10 26.5" fill="none" stroke="#1E3A8A" strokeWidth="0.6" opacity="0.2" />
+              <path d="M 17.5 25.5 L 17.5 27" fill="none" stroke="#1E3A8A" strokeWidth="0.6" opacity="0.2" />
+              <path d="M 24.5 24.5 L 24.5 26" fill="none" stroke="#1E3A8A" strokeWidth="0.6" opacity="0.2" />
             </g>
 
             {/* Right Foot (Cute Bare Toddler Foot with Defined Toes) */}
@@ -609,13 +631,22 @@ export function LittleKrishna({
                 d="M 12 -2 C 4 -4, -2 8, 0 20 C 2 28, 14 32, 30 28 C 40 24, 40 12, 32 4 C 24 0, 18 -2, 12 -2 Z"
                 fill="url(#kSkinLimb)"
               />
-              <circle cx="2" cy="19" r="4.5" fill="url(#kSkinFace)" />
-              <ellipse cx="1" cy="18" rx="2.0" ry="1.4" fill="#FFFFFF" opacity="0.6" />
-              <circle cx="9" cy="24" r="4.0" fill="url(#kSkinFace)" />
-              <ellipse cx="8" cy="23" rx="1.8" ry="1.2" fill="#FFFFFF" opacity="0.55" />
-              <circle cx="17" cy="26" r="3.6" fill="url(#kSkinFace)" />
-              <circle cx="24" cy="26" r="3.2" fill="url(#kSkinFace)" />
-              <circle cx="31" cy="24" r="2.8" fill="url(#kSkinFace)" />
+              {/* Soft Toes with Unified Skin Shader & Subtle Ambient Separation */}
+              <circle cx="2" cy="19" r="4.5" fill="url(#kSkinHand)" />
+              <ellipse cx="1" cy="18" rx="2.0" ry="1.4" fill="#FFFFFF" opacity="0.55" />
+
+              <circle cx="9" cy="24" r="4.0" fill="url(#kSkinHand)" />
+              <ellipse cx="8" cy="23" rx="1.8" ry="1.2" fill="#FFFFFF" opacity="0.5" />
+
+              <circle cx="17" cy="26" r="3.6" fill="url(#kSkinHand)" />
+              <circle cx="24" cy="26" r="3.2" fill="url(#kSkinHand)" />
+              <circle cx="31" cy="24" r="2.8" fill="url(#kSkinHand)" />
+
+              {/* Soft Ambient Shadows Between Toes */}
+              <path d="M 5.5 21.5 L 5.5 24" fill="none" stroke="#1E3A8A" strokeWidth="0.6" opacity="0.2" />
+              <path d="M 13 24.5 L 13 26.5" fill="none" stroke="#1E3A8A" strokeWidth="0.6" opacity="0.2" />
+              <path d="M 20.5 25.5 L 20.5 27" fill="none" stroke="#1E3A8A" strokeWidth="0.6" opacity="0.2" />
+              <path d="M 27.5 24.5 L 27.5 26" fill="none" stroke="#1E3A8A" strokeWidth="0.6" opacity="0.2" />
             </g>
           </g>
 
@@ -1811,12 +1842,6 @@ export function LittleKrishna({
 
             {/* ── 3D SCULPTED TODDLER FIST WITH ERECT INDEX FINGER (Cheek / Ear Level) ── */}
             <g id="sculptedChakraHand" transform="translate(94, 126)">
-              {/* Wrist to Palm Smooth Volumetric Transition */}
-              <path
-                d="M -7 16 C -9 12, -9 6, -8 0 C -2 1, 6 1, 10 0 C 11 6, 11 12, 9 16 Z"
-                fill="url(#kSkinHand)"
-              />
-
               {/* Chubby Toddler Fist Palm Base */}
               <path
                 d="M -9 14
@@ -1835,7 +1860,6 @@ export function LittleKrishna({
                 fill="url(#kSkinHand)"
               />
               <circle cx="9.5" cy="13.5" r="2.2" fill="url(#kSkinHand)" />
-              <ellipse cx="9" cy="13" rx="1.3" ry="0.9" fill="#FFFFFF" opacity="0.45" />
 
               {/* Folded Ring Finger (Outer middle) */}
               <path
@@ -1843,7 +1867,6 @@ export function LittleKrishna({
                 fill="url(#kSkinHand)"
               />
               <circle cx="10.5" cy="8" r="2.4" fill="url(#kSkinHand)" />
-              <ellipse cx="10" cy="7.5" rx="1.4" ry="1.0" fill="#FFFFFF" opacity="0.5" />
 
               {/* Folded Middle Finger (Outer upper) */}
               <path
@@ -1851,21 +1874,13 @@ export function LittleKrishna({
                 fill="url(#kSkinHand)"
               />
               <circle cx="10.5" cy="2" r="2.5" fill="url(#kSkinHand)" />
-              <ellipse cx="10" cy="1.5" rx="1.5" ry="1.0" fill="#FFFFFF" opacity="0.55" />
-
-              {/* Soft Ambient Shadows Between Folded Fingers (No harsh outlines) */}
-              <path d="M 2 8.5 C 6 8.5, 10 9.5, 12 11" fill="none" stroke="#1E3A8A" strokeWidth="0.8" opacity="0.18" />
-              <path d="M 1 3 C 5 3, 9 4, 12 5.5" fill="none" stroke="#1E3A8A" strokeWidth="0.8" opacity="0.18" />
 
               {/* Plump Toddler Thumb (Naturally emerging across front of fist) */}
               <path
                 d="M -9 11 C -14 5, -12 -3, -5 -4 C 1 -4, 3 0, 1 5 C -1 9, -5 12, -9 11 Z"
                 fill="url(#kSkinHand)"
               />
-              {/* Thumb 3D Highlight & Pad */}
-              <ellipse cx="-4.5" cy="-0.5" rx="3.2" ry="2.2" fill="#FFFFFF" opacity="0.35" />
               <circle cx="-1" cy="2.5" r="2.0" fill="url(#kSkinHand)" />
-              <circle cx="-1.2" cy="2.2" r="1.0" fill="#FFFFFF" opacity="0.5" />
 
               {/* ── Extended Index Finger (Pointing straight up to balance chakra) ── */}
               {/* Base Finger Column */}
@@ -1875,19 +1890,6 @@ export function LittleKrishna({
               />
               {/* Soft Rounded Distal Fingertip Bulb */}
               <ellipse cx="-3.0" cy="-35" rx="4.0" ry="4.5" fill="url(#kSkinHand)" />
-              <ellipse cx="-3.0" cy="-37" rx="2.4" ry="2.8" fill="#FFFFFF" opacity="0.6" />
-              {/* Soft Dorsal Specular Light Line */}
-              <path
-                d="M -3.5 -10 L -3.5 -33"
-                fill="none"
-                stroke="#FFFFFF"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-                opacity="0.45"
-              />
-              {/* Subtle Ambient Creases at Knuckles */}
-              <path d="M -5.8 -21 C -3.5 -20.2, -1.5 -20.2, 0 -21" fill="none" stroke="#1E3A8A" strokeWidth="0.7" opacity="0.18" />
-              <path d="M -5.8 -29 C -3.5 -28.2, -1.5 -28.2, 0 -29" fill="none" stroke="#1E3A8A" strokeWidth="0.7" opacity="0.18" />
             </g>
 
             {/* ── B. LEFT ARM ON HIP (Viewer's Right) ── */}
@@ -1973,20 +1975,12 @@ export function LittleKrishna({
               />
               {/* Soft 3D Dorsal Hand Cushion Highlight */}
               <ellipse cx="2" cy="3" rx="8" ry="6" fill="url(#kHandVolume)" />
-              <ellipse cx="8" cy="-2" rx="4" ry="5" fill="#FFFFFF" opacity="0.2" />
-
-              {/* Cute Toddler Knuckle Dimple Accents (Soft ambient depressions) */}
-              <circle cx="-6" cy="7.5" r="0.9" fill="#1E3A8A" opacity="0.18" />
-              <circle cx="-1" cy="9.5" r="0.9" fill="#1E3A8A" opacity="0.18" />
-              <circle cx="4" cy="9.5" r="0.9" fill="#1E3A8A" opacity="0.18" />
-              <circle cx="9" cy="7.5" r="0.9" fill="#1E3A8A" opacity="0.18" />
 
               {/* Thumb (Clearly separated, curving back toward the waist) */}
               <path
                 d="M -8 -2 C -14 -5, -18 -1, -17 4 C -16 8, -10 9, -7 5 Z"
                 fill="url(#kSkinHand)"
               />
-              <ellipse cx="-12.5" cy="1.5" rx="2.5" ry="1.6" fill="#FFFFFF" opacity="0.35" />
               <circle cx="-13" cy="2.5" r="1.4" fill="url(#kSkinHand)" />
 
               {/* Index Finger (Closest to navel, gracefully curving down over hip) */}
@@ -1995,8 +1989,6 @@ export function LittleKrishna({
                 fill="url(#kSkinHand)"
               />
               <circle cx="-5" cy="24" r="2.1" fill="url(#kSkinHand)" />
-              <ellipse cx="-5" cy="23.5" rx="1.1" ry="0.8" fill="#FFFFFF" opacity="0.5" />
-              <ellipse cx="-5" cy="14" rx="1.2" ry="4.0" fill="#FFFFFF" opacity="0.25" />
 
               {/* Middle Finger (Longest, centered and plump) */}
               <path
@@ -2004,8 +1996,6 @@ export function LittleKrishna({
                 fill="url(#kSkinHand)"
               />
               <circle cx="2" cy="27" r="2.2" fill="url(#kSkinHand)" />
-              <ellipse cx="2" cy="26.5" rx="1.2" ry="0.8" fill="#FFFFFF" opacity="0.55" />
-              <ellipse cx="2" cy="16" rx="1.3" ry="4.5" fill="#FFFFFF" opacity="0.28" />
 
               {/* Ring Finger (Softly following middle finger curve) */}
               <path
@@ -2013,8 +2003,6 @@ export function LittleKrishna({
                 fill="url(#kSkinHand)"
               />
               <circle cx="8" cy="25" r="2.1" fill="url(#kSkinHand)" />
-              <ellipse cx="8" cy="24.5" rx="1.1" ry="0.8" fill="#FFFFFF" opacity="0.5" />
-              <ellipse cx="8" cy="15" rx="1.2" ry="4.0" fill="#FFFFFF" opacity="0.25" />
 
               {/* Pinky Finger (Cute, short, delicate toddler outer finger) */}
               <path
@@ -2022,13 +2010,6 @@ export function LittleKrishna({
                 fill="url(#kSkinHand)"
               />
               <circle cx="14.5" cy="20" r="1.8" fill="url(#kSkinHand)" />
-              <ellipse cx="14.5" cy="19.5" rx="1.0" ry="0.7" fill="#FFFFFF" opacity="0.45" />
-              <ellipse cx="14.5" cy="13" rx="1.0" ry="3.0" fill="#FFFFFF" opacity="0.2" />
-
-              {/* Soft Ambient Shadows between Fingers at Hand Base (No stroke lines) */}
-              <path d="M -5.5 8.5 L -5.5 12" fill="none" stroke="#1E3A8A" strokeWidth="0.7" opacity="0.16" />
-              <path d="M 1.5 10 L 1.5 13.5" fill="none" stroke="#1E3A8A" strokeWidth="0.7" opacity="0.16" />
-              <path d="M 8.5 9.5 L 8.5 13" fill="none" stroke="#1E3A8A" strokeWidth="0.7" opacity="0.16" />
             </g>
           </g>
 
