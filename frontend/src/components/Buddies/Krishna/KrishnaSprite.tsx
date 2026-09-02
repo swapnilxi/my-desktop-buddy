@@ -369,6 +369,22 @@ export function LittleKrishna({
               <stop offset="100%" stopColor="#1E4E9E" />
             </linearGradient>
 
+            {/* Specialized 3D Volumetric Limb & Finger Gradients */}
+            <radialGradient id="kArmVolumeShader" cx="38%" cy="28%" r="68%">
+              <stop offset="0%" stopColor="#E2F0FF" />
+              <stop offset="28%" stopColor="#96C6FF" />
+              <stop offset="65%" stopColor="#5B9AFA" />
+              <stop offset="90%" stopColor="#306FD8" />
+              <stop offset="100%" stopColor="#1E4E9E" />
+            </radialGradient>
+
+            <linearGradient id="kToddlerFingerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#CCE3FF" />
+              <stop offset="28%" stopColor="#7EBAFF" />
+              <stop offset="72%" stopColor="#488DF8" />
+              <stop offset="100%" stopColor="#2157B5" />
+            </linearGradient>
+
             {/* ── 3D Voluminous Curly Hair Shaders (#1E3A8A / Dark Blue-Black) ── */}
             <radialGradient id="kHairBase" cx="35%" cy="25%" r="75%">
               <stop offset="0%" stopColor="#283B5E" />
@@ -546,7 +562,7 @@ export function LittleKrishna({
               <feDropShadow dx="0" dy="1" stdDeviation="2.2" floodColor="#0F766E" floodOpacity="0.4" />
             </filter>
 
-            <filter id="kSoftShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <filter id="kSoftShadow" x="-50%" y="-50%" width="200%" height="200%">
               <feDropShadow dx="0" dy="4" stdDeviation="3.5" floodColor="#0F1B3D" floodOpacity="0.38" />
             </filter>
 
@@ -1767,48 +1783,61 @@ export function LittleKrishna({
           {/* ════════════════ LAYER 8: SCULPTED ORGANIC 3D ARMS & HANDS ════════════════ */}
           <g id="canonicalChakraArms" filter="url(#kSoftShadow)">
             {/* ── A. RAISED RIGHT ARM (Viewer's Left - Character's Right) ── */}
-            {/* Single Continuous Organic 3D Arm Silhouette (Shoulder → Elbow → Wrist) */}
+            {/* Seamless 3D Plump Toddler Bicep & Shoulder (Deep Arched Deltoid Cap) */}
+            <ellipse cx="132" cy="198" rx="16" ry="20" fill="url(#kSkinBody)" />
             <path
-              d="M 142 198
-                 C 128 196, 110 202, 94 214
-                 C 82 224, 76 230, 76 220
-                 C 76 190, 85 150, 85 128
-                 L 102 128
-                 C 102 150, 96 204, 104 214
-                 C 112 220, 128 214, 142 206 Z"
+              d="M 130 180 C 110 170, 90 162, 80 160 L 86 182 C 105 195, 120 208, 130 216 Z"
+              fill="url(#kSkinBody)"
+            />
+            {/* Soft Childlike Elbow Joint */}
+            <circle cx="82" cy="172" r="14" fill="url(#kSkinBody)" />
+            {/* Seamless 3D Plump Toddler Forearm (Overlapping Elbow Joint → Wrist) */}
+            <path
+              d="M 70 168 C 75 150, 80 140, 85 128 L 101 128 C 98 145, 95 155, 94 175 Z"
               fill="url(#kSkinBody)"
             />
             {/* Under-Armpit Ambient Shadow */}
             <path
-              d="M 136 210 C 130 216, 126 226, 134 230"
+              d="M 125 212 C 115 205, 105 195, 95 185"
               fill="none"
               stroke="#1E3A8A"
               strokeWidth="2.5"
               strokeLinecap="round"
-              opacity="0.2"
+              opacity="0.18"
             />
-            {/* Volumetric Bicep Highlight Sheen */}
+            {/* Volumetric Bicep & Shoulder Highlight Sheen */}
             <path
-              d="M 138 200 C 122 198, 108 204, 98 214"
+              d="M 125 183 C 108 172, 92 165, 80 165"
               fill="none"
               stroke="#FFFFFF"
               strokeWidth="3.5"
+              strokeLinecap="round"
+              opacity="0.25"
+            />
+            {/* Soft Childlike Elbow Dimple / Apex Highlight */}
+            <ellipse cx="76" cy="170" rx="3.0" ry="4.0" fill="#EBF5FF" opacity="0.3" transform="rotate(-30 76 170)" />
+            {/* Forearm Cylindrical Highlight Sheen */}
+            <path
+              d="M 76 162 C 80 150, 83 140, 88 132"
+              fill="none"
+              stroke="#FFFFFF"
+              strokeWidth="2.5"
               strokeLinecap="round"
               opacity="0.22"
             />
 
             {/* Polished 3D Gold Armlet (Bajuband) on Right Bicep */}
-            <g transform="translate(104, 202) rotate(14)">
-              <ellipse cx="0" cy="2" rx="10" ry="4.5" fill="#0F172A" opacity="0.25" />
-              <path d="M -9 -2 C -3 -4.5, 3 -4.5, 9 -2 L 9 2 C 3 -1, -3 -1, -9 2 Z" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
-              <path d="M -8 -1 C -2 -3, 2 -3, 8 -1" fill="none" stroke="#FEF08A" strokeWidth="1.0" opacity="0.8" />
-              <circle cx="0" cy="-1.5" r="2.5" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
-              <circle cx="0" cy="-1.5" r="1.5" fill="#DC2626" />
+            <g id="rightBicepBajuband" transform="translate(105, 188) rotate(-35)">
+              <ellipse cx="0" cy="1" rx="8" ry="2.5" fill="#1E3A8A" opacity="0.18" />
+              <path d="M -8 -2 C -3 -4, 3 -4, 8 -2 L 8 2 C 3 0, -3 0, -8 2 Z" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
+              <path d="M -7 -1 C -2 -3, 2 -3, 7 -1" fill="none" stroke="#FEF08A" strokeWidth="1.0" opacity="0.8" />
+              <circle cx="0" cy="-1.5" r="2.2" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
+              <circle cx="0" cy="-1.5" r="1.3" fill="#DC2626" />
               <circle cx="-0.4" cy="-1.8" r="0.5" fill="#FFFFFF" opacity="0.85" />
             </g>
 
             {/* Polished 3D Gold Bangles (Kadas) Wrapping Narrowed Wrist */}
-            <g id="raisedWristBangles" transform="translate(93.5, 126)">
+            <g id="raisedWristBangles" transform="translate(93, 126)">
               <ellipse cx="0" cy="-5" rx="10.5" ry="3.5" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
               <ellipse cx="0" cy="-6" rx="7.5" ry="1.8" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.75" />
               <ellipse cx="0" cy="0" rx="10.5" ry="3.5" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
@@ -1818,7 +1847,7 @@ export function LittleKrishna({
             </g>
 
             {/* ── 3D SCULPTED TODDLER FIST WITH ERECT INDEX FINGER (Positioned Directly Beneath Chakra) ── */}
-            <g id="sculptedChakraHand" transform="translate(93.5, 110)">
+            <g id="sculptedChakraHand" transform="translate(93, 110)">
               {/* Chubby Toddler Fist Palm Base */}
               <path
                 d="M -9 14
@@ -1883,107 +1912,187 @@ export function LittleKrishna({
               <ellipse cx="-2.5" cy="-33" rx="2.0" ry="2.2" fill="#FFFFFF" opacity="0.35" />
             </g>
 
-            {/* ── B. LEFT ARM ON HIP (Viewer's Right) ── */}
-            {/* Single Continuous Organic 3D Arm Silhouette (Shoulder → Elbow → Wrist) */}
+            {/* ── B. TARGET LEFT ARM & HAND ON HIP (Viewer's Right - Character's Left) ── */}
+            {/*
+               Target Specifications:
+               - Continuous, uncut 3D arm from SHOULDER → UPPER ARM → ELBOW → FOREARM → WRIST → HAND
+               - Complete rounded shoulder cap (deltoid) seamlessly connected to the torso
+               - Arm creates pleasant outward curve with rounded, plump toddler proportions
+               - Soft childlike elbow pointing slightly outward
+               - Forearm gently curved and thicker (~35% proportion), wrist aligned flush with waist curve
+               - Palm resting comfortably against the side hip
+               - Thumb tucked behind the waistband
+               - 4 cute toddler fingers naturally curving around the front of the waist over belt & sash
+            */}
+            {/* Continuous Organic 3D Toddler Left Arm (Shoulder → Deltoid → Elbow → Wrist) */}
+            <ellipse cx="235" cy="195" rx="16" ry="18" fill="url(#kSkinBody)" />
             <path
-              d="M 238 198
-                 C 248 198, 264 206, 276 220
-                 C 284 232, 282 246, 268 262
-                 C 256 274, 246 278, 238 276
-                 L 230 262
-                 C 242 260, 252 254, 260 244
-                 C 266 234, 266 226, 258 218
-                 C 248 210, 240 206, 238 204 Z"
+              d="M 235 178 C 260 188, 280 210, 292 232 L 274 250 C 260 230, 245 220, 230 212 Z"
               fill="url(#kSkinBody)"
             />
-            {/* Soft Under-Armpit Ambient Shadow */}
+            {/* Soft Childlike Elbow Joint */}
+            <circle cx="285" cy="242" r="13" fill="url(#kSkinBody)" />
+            {/* Forearm gently curved towards waist */}
             <path
-              d="M 244 210 C 250 216, 254 226, 246 230"
+              d="M 258 280 L 241 271 C 250 260, 262 252, 275 248 L 295 242 C 285 260, 270 272, 258 280 Z"
+              fill="url(#kSkinBody)"
+            />
+            {/* Under-Armpit Ambient Occlusion Shadow */}
+            <path
+              d="M 230 214 C 245 220, 255 228, 265 240"
               fill="none"
               stroke="#1E3A8A"
               strokeWidth="2.5"
               strokeLinecap="round"
-              opacity="0.2"
+              opacity="0.18"
             />
-            {/* Volumetric Upper Arm Highlight Sheen */}
+            {/* Volumetric Shoulder & Upper Arm Highlight Sheen (Soft Highlight on Upper-Left) */}
             <path
-              d="M 242 200 C 252 200, 266 208, 274 220"
+              d="M 240 185 C 260 195, 278 212, 288 230"
               fill="none"
               stroke="#FFFFFF"
               strokeWidth="3.5"
+              strokeLinecap="round"
+              opacity="0.25"
+            />
+            {/* Soft Childlike Elbow Dimple / Apex Highlight */}
+            <ellipse cx="292" cy="240" rx="3.5" ry="2.5" fill="#EBF5FF" opacity="0.3" transform="rotate(45 292 240)" />
+            {/* Forearm Cylindrical Volumetric Highlight Sheen */}
+            <path
+              d="M 288 245 C 278 258, 268 268, 255 275"
+              fill="none"
+              stroke="#FFFFFF"
+              strokeWidth="2.6"
               strokeLinecap="round"
               opacity="0.22"
             />
 
             {/* Polished 3D Gold Armlet (Bajuband) on Left Bicep */}
-            <g transform="translate(254, 226) rotate(-18)">
-              <ellipse cx="0" cy="2" rx="10" ry="4.5" fill="#0F172A" opacity="0.25" />
-              <path d="M -9 -2 C -3 -4.5, 3 -4.5, 9 -2 L 9 2 C 3 -1, -3 -1, -9 2 Z" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
-              <path d="M -8 -1 C -2 -3, 2 -3, 8 -1" fill="none" stroke="#FEF08A" strokeWidth="1.0" opacity="0.8" />
-              <circle cx="0" cy="-1.5" r="2.5" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
-              <circle cx="0" cy="-1.5" r="1.5" fill="#DC2626" />
-              <circle cx="-0.4" cy="-1.8" r="0.5" fill="#FFFFFF" opacity="0.85" />
+            <g id="leftBicepBajuband" transform="translate(262, 218) rotate(-45)">
+              <ellipse cx="0" cy="1" rx="9" ry="3" fill="#1E3A8A" opacity="0.18" />
+              <path d="M -11 -2.5 C -4 -5.5, 4 -5.5, 11 -2.5 L 11 2.5 C 4 -0.5, -4 -0.5, -11 2.5 Z" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.6" />
+              <path d="M -10 -1.5 C -3 -4, 3 -4, 10 -1.5" fill="none" stroke="#FEF08A" strokeWidth="1.2" opacity="0.85" />
+              <circle cx="0" cy="-2" r="3" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.6" />
+              <circle cx="0" cy="-2" r="1.8" fill="#DC2626" />
+              <circle cx="-0.5" cy="-2.4" r="0.6" fill="#FFFFFF" opacity="0.9" />
             </g>
 
-            {/* Polished 3D Gold Bangles (Kadas) Wrapping Left Wrist */}
-            <g id="hipWristBangles" transform="translate(240, 268) rotate(-28)">
-              <ellipse cx="0" cy="-5" rx="10.5" ry="3.5" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
-              <ellipse cx="0" cy="-6" rx="7.5" ry="1.8" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.75" />
-              <ellipse cx="0" cy="0" rx="10.5" ry="3.5" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
-              <ellipse cx="0" cy="-1" rx="7.5" ry="1.8" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.75" />
-              <ellipse cx="0" cy="5" rx="10.5" ry="3.8" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
-              <ellipse cx="0" cy="4" rx="7.5" ry="1.8" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.75" />
+            {/* Polished 3D Gold Bangles (Kadas) Wrapping Left Wrist Aligned With Waist Curve */}
+            <g id="hipWristBangles" transform="translate(250, 277) rotate(-32)">
+              <ellipse cx="0" cy="-4" rx="10.5" ry="3.6" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
+              <ellipse cx="0" cy="-4.8" rx="7.5" ry="1.8" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.8" />
+              <ellipse cx="0" cy="1" rx="10.5" ry="3.6" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
+              <ellipse cx="0" cy="0.2" rx="7.5" ry="1.8" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.8" />
+              <ellipse cx="0" cy="6" rx="10.5" ry="3.8" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
+              <ellipse cx="0" cy="5.2" rx="7.5" ry="1.8" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.8" />
             </g>
 
-            {/* 3D Toddler Hand Holding Waist (3D Arched Hook Fingers Wrapping Over Hip Curve) */}
-            <g id="sculptedHipHand" transform="translate(236, 272) rotate(-24)">
-              {/* Thumb (Wrapping UP and BACK around top of hip line) */}
+            {/* ── TARGET 3D TODDLER HAND ON HIP STRUCTURE ── */}
+            <g id="sculptedHipHandTarget">
+              {/* 1. Thumb Tucking Behind Waistband (Eliminating awkward floating thumb) */}
               <path
-                d="M 6 -4 C 12 -9, 18 -6, 20 0 C 20 5, 14 6, 8 2 Z"
-                fill="url(#kSkinBody)"
+                d="M 252 277 C 258 278, 262 282, 259 287 C 256 290, 252 289, 248 286"
+                fill="url(#kSkinLimb)"
+                opacity="0.85"
               />
-              <ellipse cx="14" cy="-2" rx="2.5" ry="1.5" fill="#FFFFFF" opacity="0.22" />
-              <circle cx="19" cy="0" r="1.6" fill="url(#kSkinBody)" />
 
-              {/* Smooth Dorsal Hand & Palm Volume Base */}
+              {/* 2. Soft Contact Shadow Cast by Resting Hand & Fingers on Belt */}
               <path
-                d="M -6 -5 C 0 -8, 8 -6, 12 -2 C 14 4, 10 10, 4 12 C -3 12, -8 8, -9 2 C -9 -2, -7 -4, -6 -5 Z"
-                fill="url(#kSkinBody)"
+                d="M 246 288 C 236 291, 223 297, 219 303 C 222 306, 232 305, 244 299 Z"
+                fill="#3D1302"
+                opacity="0.3"
               />
-              {/* Soft 3D Dorsal Hand Cushion Volume */}
-              <ellipse cx="1" cy="2" rx="7.0" ry="6.0" fill="url(#kHandVolume)" />
 
-              {/* Index Finger (3D Arched Hook wrapping over hip edge to front of waistband) */}
+              {/* 3. Volumetric Toddler Dorsal Hand Cushion (Resting on Side Hip) */}
               <path
-                d="M -6 2 C -12 6, -15 12, -12 18 C -10 21, -6 21, -5 18 C -7 13, -5 8, -1 3 Z"
+                d="M 244 276
+                   C 251 276, 257 280, 258 286
+                   C 259 293, 254 299, 247 298
+                   C 243 296, 241 286, 244 276 Z"
                 fill="url(#kSkinBody)"
               />
-              <circle cx="-9.5" cy="18.5" r="2.0" fill="url(#kSkinBody)" />
-              <ellipse cx="-9.5" cy="17.5" rx="1.0" ry="0.8" fill="#FFFFFF" opacity="0.3" />
+              <ellipse cx="250" cy="286" rx="5.5" ry="6.5" fill="url(#kHandVolume)" />
 
-              {/* Middle Finger (Longest Arched Hook wrapping around hip curve) */}
-              <path
-                d="M -1 4 C -6 9, -9 15, -6 22 C -4 25, 0 25, 1 22 C -2 15, 0 9, 3 4 Z"
-                fill="url(#kSkinBody)"
-              />
-              <circle cx="-4" cy="22.5" r="2.1" fill="url(#kSkinBody)" />
-              <ellipse cx="-4" cy="21.5" rx="1.1" ry="0.8" fill="#FFFFFF" opacity="0.32" />
+              {/* 4. Four Chubby Toddler Fingers Naturally Curving Around Front of Waist */}
+              {/* Digit A: Index Finger (Upper digit curving across front waistband) */}
+              <g id="hipIndexFinger">
+                <path
+                  d="M 244 278
+                     C 237 280, 228 283, 222 287
+                     C 219 289, 220 293, 224 293
+                     C 231 291, 238 287, 246 284 Z"
+                  fill="url(#kToddlerFingerGrad)"
+                />
+                <ellipse cx="223" cy="290" rx="2.4" ry="2.2" fill="url(#kSkinBody)" />
+                <path
+                  d="M 242 280 C 235 282, 228 285, 224 288"
+                  fill="none"
+                  stroke="#FFFFFF"
+                  strokeWidth="1.2"
+                  opacity="0.45"
+                  strokeLinecap="round"
+                />
+              </g>
 
-              {/* Ring Finger (Following middle finger waist wrapping arc) */}
-              <path
-                d="M 4 4 C 0 9, -2 15, 1 20 C 3 23, 7 23, 8 20 C 5 15, 6 9, 8 4 Z"
-                fill="url(#kSkinBody)"
-              />
-              <circle cx="3" cy="20.5" r="2.0" fill="url(#kSkinBody)" />
-              <ellipse cx="3" cy="19.5" rx="1.0" ry="0.8" fill="#FFFFFF" opacity="0.3" />
+              {/* Digit B: Middle Finger (Longest toddler digit curving across waistband) */}
+              <g id="hipMiddleFinger">
+                <path
+                  d="M 246 284
+                     C 237 286, 226 289, 219 294
+                     C 216 296, 218 300, 222 300
+                     C 230 297, 239 293, 248 290 Z"
+                  fill="url(#kToddlerFingerGrad)"
+                />
+                <ellipse cx="220.5" cy="297" rx="2.5" ry="2.3" fill="url(#kSkinBody)" />
+                <path
+                  d="M 244 286 C 236 288, 226 291, 222 295"
+                  fill="none"
+                  stroke="#FFFFFF"
+                  strokeWidth="1.2"
+                  opacity="0.45"
+                  strokeLinecap="round"
+                />
+              </g>
 
-              {/* Pinky Finger (Outer delicate digit wrapping side hip edge) */}
-              <path
-                d="M 9 3 C 6 7, 5 12, 7 16 C 9 18, 12 17, 13 15 C 11 11, 11 7, 12 3 Z"
-                fill="url(#kSkinBody)"
-              />
-              <circle cx="9.5" cy="15.5" r="1.7" fill="url(#kSkinBody)" />
-              <ellipse cx="9.5" cy="14.5" rx="0.9" ry="0.7" fill="#FFFFFF" opacity="0.25" />
+              {/* Digit C: Ring Finger (Curving along lower waistband edge) */}
+              <g id="hipRingFinger">
+                <path
+                  d="M 248 290
+                     C 241 292, 232 295, 224 300
+                     C 221 302, 223 306, 227 306
+                     C 234 302, 242 298, 250 296 Z"
+                  fill="url(#kToddlerFingerGrad)"
+                />
+                <ellipse cx="225.5" cy="303" rx="2.3" ry="2.1" fill="url(#kSkinBody)" />
+                <path
+                  d="M 246 292 C 240 294, 231 297, 227 302"
+                  fill="none"
+                  stroke="#FFFFFF"
+                  strokeWidth="1.1"
+                  opacity="0.4"
+                  strokeLinecap="round"
+                />
+              </g>
+
+              {/* Digit D: Pinky Finger (Curving softly along side waist / sash edge) */}
+              <g id="hipPinkyFinger">
+                <path
+                  d="M 250 295
+                     C 245 297, 238 301, 232 306
+                     C 229 308, 231 312, 235 311
+                     C 241 307, 247 304, 251 301 Z"
+                  fill="url(#kToddlerFingerGrad)"
+                />
+                <ellipse cx="233.5" cy="309" rx="2.0" ry="1.9" fill="url(#kSkinBody)" />
+                <path
+                  d="M 248 297 C 243 300, 237 303, 234 307"
+                  fill="none"
+                  stroke="#FFFFFF"
+                  strokeWidth="1.0"
+                  opacity="0.35"
+                  strokeLinecap="round"
+                />
+              </g>
             </g>
           </g>
 
