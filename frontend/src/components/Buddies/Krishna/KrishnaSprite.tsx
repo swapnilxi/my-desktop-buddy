@@ -1912,7 +1912,7 @@ export function LittleKrishna({
             </g>
 
             {/* Polished 3D Gold Bangles (Kadas) Wrapping Left Wrist */}
-            <g id="hipWristBangles" transform="translate(238, 274) rotate(-18)">
+            <g id="hipWristBangles" transform="translate(246, 264) rotate(-45)">
               <ellipse cx="0" cy="-5" rx="10.5" ry="3.5" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
               <ellipse cx="0" cy="-6" rx="7.5" ry="1.8" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.75" />
               <ellipse cx="0" cy="0" rx="10.5" ry="3.5" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
@@ -1921,9 +1921,9 @@ export function LittleKrishna({
               <ellipse cx="0" cy="4" rx="7.5" ry="1.8" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.75" />
             </g>
 
-            {/* 3D Toddler Hand Holding Waist (Thumb Back, Curved Gripping Fingers) */}
-            <g id="sculptedHipHand" transform="translate(236, 276) rotate(-8)">
-              {/* Thumb (Wrapping around to the BACK of the waist/hip) */}
+            {/* 3D Toddler Hand Holding Waist (Oriented Horizontally Across Waistband) */}
+            <g id="sculptedHipHand" transform="translate(240, 272) rotate(-55)">
+              {/* Thumb (Wrapping UP and BACK along top of hip belt) */}
               <path
                 d="M 6 -4 C 13 -8, 19 -4, 20 2 C 20 7, 15 8, 9 2 Z"
                 fill="url(#kSkinBody)"
@@ -1938,28 +1938,28 @@ export function LittleKrishna({
               {/* Soft 3D Dorsal Hand Cushion Volume */}
               <ellipse cx="1" cy="2" rx="7.5" ry="6.5" fill="url(#kHandVolume)" />
 
-              {/* Index Finger (Curving inward, gripping around front of waistband) */}
+              {/* Index Finger (Gripping INWARD across front of waistband toward navel) */}
               <path
                 d="M -8 4 C -13 9, -15 16, -12 22 C -10 25, -6 25, -5 22 C -6 16, -4 10, -1 5 Z"
                 fill="url(#kSkinBody)"
               />
               <circle cx="-10.5" cy="22.5" r="2.1" fill="url(#kSkinBody)" />
 
-              {/* Middle Finger (Curving strongly around hip waist) */}
+              {/* Middle Finger (Gripping across waist) */}
               <path
                 d="M -2 6 C -7 11, -9 18, -6 25 C -4 28, 0 28, 1 25 C -1 18, 1 11, 4 7 Z"
                 fill="url(#kSkinBody)"
               />
               <circle cx="-4" cy="25.5" r="2.2" fill="url(#kSkinBody)" />
 
-              {/* Ring Finger (Following middle finger waist grip curve) */}
+              {/* Ring Finger (Following waist grip) */}
               <path
                 d="M 4 6 C 0 11, -2 17, 1 23 C 3 26, 7 26, 8 23 C 6 17, 7 11, 9 6 Z"
                 fill="url(#kSkinBody)"
               />
               <circle cx="3" cy="23.5" r="2.1" fill="url(#kSkinBody)" />
 
-              {/* Pinky Finger (Delicate outer finger wrapping side of hip) */}
+              {/* Pinky Finger (Outer digit on hip) */}
               <path
                 d="M 9 4 C 6 8, 5 14, 7 19 C 9 22, 12 21, 13 18 C 11 14, 11 9, 12 4 Z"
                 fill="url(#kSkinBody)"
