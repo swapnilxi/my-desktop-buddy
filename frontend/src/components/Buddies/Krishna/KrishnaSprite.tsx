@@ -203,6 +203,7 @@ export function LittleKrishna({
       className={`${styles.krishnaContainer} ${getSizeClass()} ${className}`}
       data-pose="chakra"
       data-state={activeState}
+      data-mood={mood}
       onClick={handleSingleClick}
       onDoubleClick={handleDoubleClick}
       onContextMenu={handleRightClick}
@@ -271,8 +272,8 @@ export function LittleKrishna({
             {/* Jaw / Lower Face Shadow Depth for Sculpted Chin */}
             <linearGradient id="kJawlineShadow" x1="50%" y1="0%" x2="50%" y2="100%">
               <stop offset="0%" stopColor="#1E3A8A" stopOpacity="0" />
-              <stop offset="65%" stopColor="#1E3A8A" stopOpacity="0.18" />
-              <stop offset="100%" stopColor="#13265C" stopOpacity="0.32" />
+              <stop offset="70%" stopColor="#1E3A8A" stopOpacity="0.12" />
+              <stop offset="100%" stopColor="#13265C" stopOpacity="0.22" />
             </linearGradient>
 
             {/* Asymmetric Left Cheek Highlight (Key Light from Upper-Left) */}
@@ -297,9 +298,9 @@ export function LittleKrishna({
               <stop offset="100%" stopColor="#6BA7FF" stopOpacity="0" />
             </radialGradient>
 
-            <radialGradient id="kChinVolume" cx="50%" cy="40%" r="50%">
-              <stop offset="0%" stopColor="#D9ECFF" stopOpacity="0.6" />
-              <stop offset="70%" stopColor="#87BDFF" stopOpacity="0.2" />
+            <radialGradient id="kChinVolume" cx="50%" cy="38%" r="55%">
+              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.38" />
+              <stop offset="55%" stopColor="#C4E0FF" stopOpacity="0.18" />
               <stop offset="100%" stopColor="#5B9AFA" stopOpacity="0" />
             </radialGradient>
 
@@ -372,17 +373,18 @@ export function LittleKrishna({
               <stop offset="100%" stopColor="#417FD8" stopOpacity="0" />
             </radialGradient>
 
-            {/* ── Soft Pink/Coral Child Lip Gradients ── */}
-            <linearGradient id="kLipUpperGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#FDA4AF" />
-              <stop offset="100%" stopColor="#F43F5E" />
+            {/* ── Pixar Stylized Natural Lip Warmth Gradients (Child Boy Tone, Not Lipstick) ── */}
+            <linearGradient id="kPixarLipWarmth" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#D47B8C" stopOpacity="0.55" />
+              <stop offset="60%" stopColor="#B8586C" stopOpacity="0.38" />
+              <stop offset="100%" stopColor="#8C3549" stopOpacity="0.12" />
             </linearGradient>
 
-            <linearGradient id="kLipGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#FB7185" />
-              <stop offset="50%" stopColor="#F43F5E" />
-              <stop offset="100%" stopColor="#E11D48" />
-            </linearGradient>
+            <radialGradient id="kPixarLowerLip" cx="50%" cy="28%" r="62%">
+              <stop offset="0%" stopColor="#E290A0" stopOpacity="0.7" />
+              <stop offset="55%" stopColor="#C46679" stopOpacity="0.45" />
+              <stop offset="100%" stopColor="#8C3549" stopOpacity="0.05" />
+            </radialGradient>
 
             {/* ── Cheeks Rosy Blush (Soft & Delicate Airbrush Glow) ── */}
             <radialGradient id="kCheekBlush" cx="50%" cy="50%" r="50%">
@@ -961,10 +963,10 @@ export function LittleKrishna({
                   d="M 190 84
                    C 236 84, 262 98, 266 118
                    C 270 138, 271 154, 265 170
-                   C 257 186, 238 204, 208 214
-                   C 200 216.5, 195 217, 190 217
-                   C 185 217, 180 216.5, 172 214
-                   C 142 204, 123 186, 115 170
+                   C 257 186, 240 203, 214 213
+                   C 206 216, 198 217.5, 190 217.5
+                   C 182 217.5, 174 216, 166 213
+                   C 140 203, 123 186, 115 170
                    C 109 154, 110 138, 114 118
                    C 118 98, 144 84, 190 84 Z"
                   fill="url(#kSkinFace)"
@@ -975,10 +977,10 @@ export function LittleKrishna({
                   d="M 190 84
                    C 236 84, 262 98, 266 118
                    C 270 138, 271 154, 265 170
-                   C 257 186, 238 204, 208 214
-                   C 200 216.5, 195 217, 190 217
-                   C 185 217, 180 216.5, 172 214
-                   C 142 204, 123 186, 115 170
+                   C 257 186, 240 203, 214 213
+                   C 206 216, 198 217.5, 190 217.5
+                   C 182 217.5, 174 216, 166 213
+                   C 140 203, 123 186, 115 170
                    C 109 154, 110 138, 114 118
                    C 118 98, 144 84, 190 84 Z"
                   fill="url(#kJawlineShadow)"
@@ -1005,9 +1007,17 @@ export function LittleKrishna({
                 {/* 3D Forehead Dome Volume Highlight */}
                 <ellipse cx="190" cy="114" rx="44" ry="18" fill="url(#kForeheadGlow)" />
 
-                {/* Soft Pillowy Chin Volume & Shortened Separation Shadow */}
-                <ellipse cx="190" cy="204" rx="15" ry="7.5" fill="url(#kChinVolume)" />
-                <ellipse cx="190" cy="214" rx="18" ry="4" fill="#152758" opacity="0.2" />
+                {/* Soft Rounded Toddler Chin Volume (Blended seamlessly into jaw) */}
+                <ellipse cx="190" cy="205" rx="16" ry="7" fill="url(#kChinVolume)" />
+                {/* Soft Labiomental Indentation (Gently separates lower lip from chin dome) */}
+                <path
+                  d="M 184 196 Q 190 197.5 196 196"
+                  fill="none"
+                  stroke="#255BB5"
+                  strokeWidth="0.8"
+                  opacity="0.22"
+                  strokeLinecap="round"
+                />
 
                 {/* Subtle Rosy Toddler Blush on Cheek Apples */}
                 <ellipse cx="134" cy="168" rx="22" ry="15" fill="url(#kCheekBlush)" transform="rotate(-5 134 168)" />
@@ -1230,42 +1240,81 @@ export function LittleKrishna({
                   />
                 </g>
 
-                {/* ── Cute & Innocent Little Krishna Smile (Soft Pink/Coral Child Lips) ── */}
-                <g id="lipsGroup" transform="translate(190, 188)">
-                  {/* Soft Corner Dimples */}
-                  <circle cx="-8.5" cy="-1.5" r="1.2" fill="#9F1239" opacity="0.3" />
-                  <circle cx="8.5" cy="-1.5" r="1.2" fill="#9F1239" opacity="0.3" />
-
-                  {/* Gentle Subtle Cupid-Bow Upper Lip (small, youthful — not a wide "M") */}
+                {/* ── Pixar Stylized Little Krishna Smile & Expressive Mouth Group ── */}
+                <g
+                  id="lipsGroup"
+                  className={`${styles.pixarMouth} ${mood === 'speaking' ? styles.mouthSpeaking : ''}`}
+                  transform="translate(190, 188)"
+                >
+                  {/* Labiomental Soft Under-Lip Crease (blends naturally into chin) */}
                   <path
-                    d="M -8.5 -1.2 C -5.5 -3, -2.5 -2.4, 0 -0.6 C 2.5 -2.4, 5.5 -3, 8.5 -1.2 C 6 0.8, 3 1.1, 0 0.4 C -3 1.1, -6 0.8, -8.5 -1.2 Z"
-                    fill="url(#kLipUpperGrad)"
-                  />
-
-                  {/* Softly Fuller But Compact Lower Lip */}
-                  <path
-                    d="M -7.5 -0.4 C -4.5 2.6, 4.5 2.6, 7.5 -0.4 C 6 5.8, 3 6.8, 0 6.8 C -3 6.8, -6 5.8, -7.5 -0.4 Z"
-                    fill="url(#kLipGrad)"
-                  />
-
-                  {/* Gentle Upward Smile Seam Line */}
-                  <path
-                    d="M -8.5 -1.2 C -4.5 1.8, 4.5 1.8, 8.5 -1.2"
+                    d="M -7 5.5 Q 0 7.5 7 5.5"
                     fill="none"
-                    stroke="#881337"
-                    strokeWidth="1.1"
+                    stroke="#255BB5"
+                    strokeWidth="1.0"
+                    opacity="0.22"
                     strokeLinecap="round"
-                    opacity="0.5"
                   />
 
-                  {/* Soft Gloss Highlight on Lower Lip Center */}
-                  <ellipse
-                    cx="0"
-                    cy="3.6"
-                    rx="3.2"
-                    ry="1.5"
-                    fill="#FFFFFF"
-                    opacity="0.6"
+                  {/* Soft Natural Lower Lip Roll (Subtle warm skin flush, not lipstick) */}
+                  <path
+                    d="M -7.8 1.0 C -5 4.5, 5 4.5, 7.8 1.0 C 5 2.6, -5 2.6, -7.8 1.0 Z"
+                    fill="url(#kPixarLowerLip)"
+                  />
+
+                  {/* Soft Natural Upper Lip Rim (Subtle warm skin blend) */}
+                  <path
+                    d="M -8.2 0 C -4.5 -1.0, 4.5 -1.0, 8.2 0 C 5 0.5, -5 0.5, -8.2 0 Z"
+                    fill="url(#kPixarLipWarmth)"
+                  />
+
+                  {/* Speaking Mouth Cavity (smoothly opens/flexes during speech) */}
+                  <g className={styles.mouthCavity}>
+                    {/* Inner oral cavity */}
+                    <path
+                      d="M -6.5 0.8 C -5 5.2, 5 5.2, 6.5 0.8 Z"
+                      fill="#3D1022"
+                    />
+                    {/* Subtle upper teeth accent bar */}
+                    <path
+                      d="M -5 1.0 C -3 2.0, 3 2.0, 5 1.0 C 3.5 1.6, -3.5 1.6, -5 1.0 Z"
+                      fill="#FFFFFF"
+                      opacity="0.9"
+                    />
+                    {/* Soft child tongue */}
+                    <path
+                      d="M -3.8 3.8 C -2 2.8, 2 2.8, 3.8 3.8 C 2.8 5.0, -2.8 5.0, -3.8 3.8 Z"
+                      fill="#E27488"
+                      opacity="0.85"
+                    />
+                  </g>
+
+                  {/* Signature Pixar Corner Dimple Tucks */}
+                  <path
+                    d="M -9.6 -1.2 C -9.0 -0.2, -8.2 0.5, -7.2 0.3"
+                    fill="none"
+                    stroke="#3D182B"
+                    strokeWidth="1.2"
+                    strokeLinecap="round"
+                    opacity="0.65"
+                  />
+                  <path
+                    d="M 9.6 -1.2 C 9.0 -0.2, 8.2 0.5, 7.2 0.3"
+                    fill="none"
+                    stroke="#3D182B"
+                    strokeWidth="1.2"
+                    strokeLinecap="round"
+                    opacity="0.65"
+                  />
+
+                  {/* Expressive Dynamic Pixar Smile Seam Line */}
+                  <path
+                    d="M -8.8 0 C -4.5 2.8, 4.5 2.8, 8.8 0"
+                    fill="none"
+                    stroke="#3D182B"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    className={styles.smileLine}
                   />
                 </g>
               </g>

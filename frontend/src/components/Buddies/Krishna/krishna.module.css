@@ -1244,3 +1244,49 @@
 .fluteIcon:hover {
   transform: translateY(-50%) scale(1.15) rotate(5deg);
 }
+
+/* ── PIXAR EXPRESSIVE MOUTH & SPEAKING SUPPORT ────────────────── */
+.pixarMouth {
+  transform-origin: 190px 188px;
+  transition: transform 0.18s ease-out;
+}
+
+.mouthCavity {
+  opacity: 0;
+  transform-origin: 0 0;
+  transform: scaleY(0);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.mouthSpeaking .mouthCavity {
+  opacity: 1;
+  animation: pixarSpeechCavity 0.32s ease-in-out infinite alternate;
+}
+
+.mouthSpeaking .smileLine {
+  animation: pixarSpeechSeam 0.32s ease-in-out infinite alternate;
+}
+
+@keyframes pixarSpeechCavity {
+  0% {
+    transform: scale(0.7, 0.2);
+    opacity: 0.2;
+  }
+  100% {
+    transform: scale(1.05, 1.25);
+    opacity: 1;
+  }
+}
+
+@keyframes pixarSpeechSeam {
+  0% {
+    transform: scaleY(0.7);
+  }
+  100% {
+    transform: scaleY(1.2);
+  }
+}
+
+.krishnaHappy .pixarMouth {
+  transform: scale(1.06, 1.15);
+}
