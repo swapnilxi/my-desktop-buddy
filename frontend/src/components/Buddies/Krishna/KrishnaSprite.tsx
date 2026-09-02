@@ -529,7 +529,7 @@ export function LittleKrishna({
 
           {/* ════════════════ LAYER 1: BACK HAIR (BEHIND BODY) ════════════════ */}
           {/* Scaled down around the chin anchor (190,217) to reduce oversized-head / chibi look */}
-          <g id="hairBackBehind" transform="translate(0,-36) translate(190,217) scale(0.85) translate(-190,-217)">
+          <g id="hairBackBehind" transform="translate(0,-22) translate(190,217) scale(0.85) translate(-190,-217)">
             <circle cx="120" cy="116" r="38" fill="url(#kHairCurl)" />
             <ellipse cx="112" cy="110" rx="28" ry="22" fill="url(#kHairHl)" />
             <circle cx="102" cy="148" r="32" fill="url(#kHairCurl)" />
@@ -925,34 +925,78 @@ export function LittleKrishna({
             </g>
           </g>
 
-          {/* ════════════════ LAYER 5: TORSO & NECK ════════════════ */}
+          {/* ════════════════ LAYER 5: SCULPTED TODDLER TORSO & NECK ════════════════ */}
           <g id="torso">
-            {/* 3D Cylindrical Toddler Neck */}
-            <g id="neck">
-              {/* Main Neck Pillar connecting chest to chin */}
-              <path
-                d="M 174 158 C 173 176, 172 194, 168 206 C 178 210, 202 210, 212 206 C 208 194, 207 176, 206 158 Z"
-                fill="url(#kSkinNeck)"
-              />
-              {/* Soft Cylindrical Volume Light */}
-              <ellipse cx="190" cy="186" rx="10" ry="16" fill="#D9ECFF" opacity="0.3" />
-              {/* Deep Ambient Occlusion Drop Shadow Under Chin */}
-              <path
-                d="M 172 168 C 182 184, 198 184, 208 168 C 204 190, 176 190, 172 168 Z"
-                fill="url(#kNeckOcclusionShadow)"
-              />
-              {/* Subtle Suprasternal Notch (Base of neck hollow) */}
-              <ellipse cx="190" cy="204" rx="3.5" ry="1.8" fill="#1E3A8A" opacity="0.25" />
-            </g>
-
-            {/* Torso Body */}
+            {/* Organic Integrated Toddler Neck & Body Silhouette */}
             <path
-              d="M 136 192 C 124 226, 136 268, 148 286 C 174 290, 206 290, 232 286
-                 C 244 268, 256 226, 244 192 C 228 198, 212 204, 190 205 C 168 204, 152 198, 136 192 Z"
+              d="M 162 176
+                 C 156 182, 148 186, 140 190
+                 C 130 196, 134 220, 138 244
+                 C 140 258, 142 270, 148 277
+                 C 168 284, 212 284, 232 277
+                 C 238 270, 240 258, 242 244
+                 C 246 220, 250 196, 240 190
+                 C 232 186, 224 182, 218 176
+                 Z"
               fill="url(#kSkinBody)"
             />
-            <ellipse cx="190" cy="222" rx="36" ry="28" fill="#D9ECFF" opacity="0.22" />
-            <ellipse cx="190" cy="262" rx="24" ry="18" fill="#CCE3FF" opacity="0.18" />
+
+            {/* Neck Pillar & Trapezius 3D Volume */}
+            <path
+              d="M 162 176
+                 C 158 184, 150 190, 142 194
+                 C 170 200, 210 200, 238 194
+                 C 230 190, 222 184, 218 176
+                 Z"
+              fill="url(#kSkinNeck)"
+            />
+
+            {/* Soft Cylindrical Neck Center Highlight */}
+            <ellipse cx="190" cy="186" rx="14" ry="9" fill="#D9ECFF" opacity="0.32" />
+
+            {/* Soft Crescent Chin Occlusion Shadow on Neck */}
+            <path
+              d="M 166 182 C 176 195, 204 195, 214 182 C 206 199, 174 199, 166 182 Z"
+              fill="url(#kNeckOcclusionShadow)"
+            />
+
+            {/* Subtle Suprasternal Notch / Jugular Fossa */}
+            <ellipse cx="190" cy="198" rx="3.5" ry="1.8" fill="#1E3A8A" opacity="0.24" />
+
+            {/* Subtle Clavicle Bones (Collarbones) */}
+            <path
+              d="M 186 198 C 176 196, 164 194, 150 196"
+              fill="none"
+              stroke="#D9ECFF"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              opacity="0.3"
+            />
+            <path
+              d="M 194 198 C 204 196, 216 194, 230 196"
+              fill="none"
+              stroke="#D9ECFF"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              opacity="0.3"
+            />
+
+            {/* Upper Chest / Pectoral Volume Highlights */}
+            <ellipse cx="168" cy="216" rx="18" ry="13" fill="#D9ECFF" opacity="0.22" />
+            <ellipse cx="212" cy="216" rx="18" ry="13" fill="#D9ECFF" opacity="0.18" />
+
+            {/* Cute Toddler Chest Nipples (Soft Warm Accent) */}
+            <circle cx="165" cy="222" r="1.8" fill="#1E40AF" opacity="0.3" />
+            <circle cx="165" cy="222" r="0.9" fill="#93C5FD" opacity="0.6" />
+            <circle cx="215" cy="222" r="1.8" fill="#1E40AF" opacity="0.26" />
+            <circle cx="215" cy="222" r="0.9" fill="#93C5FD" opacity="0.6" />
+
+            {/* Adorable Chubby Toddler Potbelly Glow */}
+            <ellipse cx="190" cy="250" rx="32" ry="22" fill="#D9ECFF" opacity="0.28" />
+
+            {/* Cute Toddler Navel / Belly Button */}
+            <ellipse cx="190" cy="263" rx="3.0" ry="1.8" fill="#1E40AF" opacity="0.35" />
+            <ellipse cx="190" cy="262.2" rx="2.2" ry="1.0" fill="#93C5FD" opacity="0.55" />
           </g>
 
           {/* ════════════════ LAYER 6: HEAD & FACE ════════════════ */}
@@ -960,7 +1004,7 @@ export function LittleKrishna({
               Outer wrapper carries the persistent scale so CSS head-tilt animations on #headGroup
               (which override the transform attribute) do not wipe it out. */}
           <g transform="translate(190,217) scale(0.85) translate(-190,-217)">
-            <g id="headGroup" transform="translate(0, -36)">
+            <g id="headGroup" transform="translate(0, -22)">
               {/* Front Side Wisps (Original Hair) */}
               <g id="hairSides">
                 <path d="M 116 148 C 104 164, 110 186, 126 190 C 134 192, 138 182, 130 174 C 124 168, 128 158, 134 156"
@@ -995,45 +1039,45 @@ export function LittleKrishna({
                 {/* 3D Sculpted Head Base: Reference-Matched Pixar Little Krishna Silhouette */}
                 <path
                   d="M 190 82
-                   C 224 82, 240 96, 242 116
-                   C 244 134, 242 148, 238 162
-                   C 232 178, 220 195, 204 206
-                   C 199 209, 195 210.5, 190 210.5
-                   C 185 210.5, 181 209, 176 206
-                   C 160 195, 148 178, 142 162
-                   C 138 148, 136 134, 138 116
-                   C 140 96, 156 82, 190 82 Z"
+                   C 226 82, 244 98, 246 120
+                   C 248 140, 246 156, 240 170
+                   C 234 188, 220 202, 206 210
+                   C 200 213, 196 214.5, 190 214.5
+                   C 184 214.5, 180 213, 174 210
+                   C 160 202, 146 188, 140 170
+                   C 134 156, 132 140, 134 120
+                   C 136 98, 154 82, 190 82 Z"
                   fill="url(#kSkinFace)"
                 />
 
                 {/* Soft Lower Face & Jawline Depth Shading */}
                 <path
                   d="M 190 82
-                   C 224 82, 240 96, 242 116
-                   C 244 134, 242 148, 238 162
-                   C 232 178, 220 195, 204 206
-                   C 199 209, 195 210.5, 190 210.5
-                   C 185 210.5, 181 209, 176 206
-                   C 160 195, 148 178, 142 162
-                   C 138 148, 136 134, 138 116
-                   C 140 96, 156 82, 190 82 Z"
+                   C 226 82, 244 98, 246 120
+                   C 248 140, 246 156, 240 170
+                   C 234 188, 220 202, 206 210
+                   C 200 213, 196 214.5, 190 214.5
+                   C 184 214.5, 180 213, 174 210
+                   C 160 202, 146 188, 140 170
+                   C 134 156, 132 140, 134 120
+                   C 136 98, 154 82, 190 82 Z"
                   fill="url(#kJawlineShadow)"
                 />
 
                 {/* Volumetric Chubby Cheeks (Pixar-Proportioned Soft Fullness) */}
                 <ellipse
-                  cx="152"
+                  cx="149"
                   cy="162"
-                  rx="16"
-                  ry="14"
+                  rx="17"
+                  ry="15"
                   fill="url(#kCheekVolumeLeft)"
                   opacity="0.62"
                 />
                 <ellipse
-                  cx="228"
+                  cx="231"
                   cy="162"
-                  rx="16"
-                  ry="14"
+                  rx="17"
+                  ry="15"
                   fill="url(#kCheekVolumeRight)"
                   opacity="0.52"
                 />
@@ -1054,8 +1098,8 @@ export function LittleKrishna({
                 />
 
                 {/* Subtle Rosy Toddler Blush on Cheek Apples */}
-                <ellipse cx="152" cy="163" rx="14" ry="10" fill="url(#kCheekBlush)" transform="rotate(-4 152 163)" />
-                <ellipse cx="228" cy="163" rx="14" ry="10" fill="url(#kCheekBlush)" transform="rotate(4 228 163)" />
+                <ellipse cx="149" cy="163" rx="15" ry="10" fill="url(#kCheekBlush)" transform="rotate(-4 149 163)" />
+                <ellipse cx="231" cy="163" rx="15" ry="10" fill="url(#kCheekBlush)" transform="rotate(4 231 163)" />
               </g>
 
               {/* Master Face Details — Stylized, Expressive & High Fidelity */}
@@ -1148,21 +1192,21 @@ export function LittleKrishna({
                 </g>
 
                 {/* ── Left Eye (Big Doe-Like Pixar 3D Eye) ── */}
-                <g id="leftEyeGroup" transform="translate(138, 122)">
+                <g id="leftEyeGroup" transform="translate(137, 121)">
                   <clipPath id="kLeftEyeClip">
-                    <path d="M 0 16 C 8 -2, 34 -2, 42 16 C 34 32, 8 32, 0 16 Z" />
+                    <path d="M 0 17 C 7 -4, 35 -4, 42 17 C 35 38, 7 38, 0 17 Z" />
                   </clipPath>
 
                   {/* Eye Socket Ambient Shadow */}
                   <path
-                    d="M -2 15 C 7 -4, 36 -4, 44 15 C 35 34, 7 34, -2 15 Z"
+                    d="M -2 16 C 6 -5, 36 -5, 44 16 C 36 40, 6 40, -2 16 Z"
                     fill="#1E3A8A"
                     opacity="0.12"
                   />
 
                   {/* Sclera (Warm Natural White) */}
                   <path
-                    d="M 0 16 C 8 -2, 34 -2, 42 16 C 34 32, 8 32, 0 16 Z"
+                    d="M 0 17 C 7 -4, 35 -4, 42 17 C 35 38, 7 38, 0 17 Z"
                     fill="#F6F9FC"
                   />
 
@@ -1170,7 +1214,7 @@ export function LittleKrishna({
                   <g clipPath="url(#kLeftEyeClip)">
                     {/* Upper Eyeball Drop Shadow */}
                     <path
-                      d="M 0 16 C 8 -2, 34 -2, 42 16 C 34 10, 8 10, 0 16 Z"
+                      d="M 0 17 C 7 -4, 35 -4, 42 17 C 35 11, 7 11, 0 17 Z"
                       fill="#1E3A8A"
                       opacity="0.18"
                     />
@@ -1178,21 +1222,21 @@ export function LittleKrishna({
                     {/* Iris */}
                     <g className={styles.iris}>
                       {/* Huge Warm Amber/Chocolate Pixar Iris */}
-                      <circle cx="21.5" cy="16.5" r="13.5" fill="url(#kIrisGrad)" />
+                      <circle cx="21.5" cy="17" r="15.5" fill="url(#kIrisGrad)" />
                       {/* Soft Limbal Ring */}
-                      <circle cx="21.5" cy="16.5" r="13.5" fill="none" stroke="#1A0802" strokeWidth="0.95" opacity="0.75" />
+                      <circle cx="21.5" cy="17" r="15.5" fill="none" stroke="#1A0802" strokeWidth="1.0" opacity="0.8" />
 
                       {/* Deep Velvety Circular Pupil */}
-                      <circle cx="21.5" cy="16.5" r="7.8" fill="url(#kPupilGrad)" />
-                      <circle cx="21.5" cy="16.5" r="6.4" fill="#0A0402" />
+                      <circle cx="21.5" cy="17" r="9.0" fill="url(#kPupilGrad)" />
+                      <circle cx="21.5" cy="17" r="7.6" fill="#0A0402" />
 
                       {/* Warm Amber Iris Caustic Reflection Arc */}
-                      <ellipse cx="21.5" cy="23.2" rx="7.2" ry="2.4" fill="#FBBF24" opacity="0.52" />
+                      <ellipse cx="21.5" cy="24.1" rx="8.2" ry="2.7" fill="#FBBF24" opacity="0.55" />
 
                       {/* Soulful Natural Pixar Catchlights */}
-                      <circle cx="25.2" cy="12.4" r="3.2" fill="#FFFFFF" opacity="0.95" />
-                      <circle cx="16.8" cy="20.8" r="1.5" fill="#FFFFFF" opacity="0.75" />
-                      <circle cx="26.5" cy="18.5" r="0.9" fill="#FFFFFF" opacity="0.5" />
+                      <circle cx="25.8" cy="12.3" r="4.0" fill="#FFFFFF" opacity="0.98" />
+                      <circle cx="16.6" cy="21.7" r="1.8" fill="#FFFFFF" opacity="0.8" />
+                      <circle cx="27.2" cy="19.1" r="1.0" fill="#FFFFFF" opacity="0.55" />
                     </g>
 
                     {/* Inner Corner Tear Duct (Caruncle) Warmth */}
@@ -1208,7 +1252,7 @@ export function LittleKrishna({
 
                   {/* Soft Double-Eyelid Crease */}
                   <path
-                    d="M 5 6 C 14 -3, 29 -3, 38 6"
+                    d="M 4 7 C 13 -2, 29 -2, 38 7"
                     fill="none"
                     stroke="#255BB5"
                     strokeWidth="1.1"
@@ -1218,7 +1262,7 @@ export function LittleKrishna({
 
                   {/* Gentle Lower Lid Smiling Crinkle */}
                   <path
-                    d="M 8 32 C 17 35, 27 35, 36 32"
+                    d="M 7 37 C 16 40, 26 40, 35 37"
                     fill="none"
                     stroke="#255BB5"
                     strokeWidth="0.8"
@@ -1228,7 +1272,7 @@ export function LittleKrishna({
 
                   {/* Elegant Tapered Upper Lash Line */}
                   <path
-                    d="M -1 16 C 8 -2, 34 -2, 43 16"
+                    d="M -1 17 C 7 -4, 35 -4, 43 17"
                     fill="none"
                     stroke="#0F172A"
                     strokeWidth="3.2"
@@ -1237,7 +1281,7 @@ export function LittleKrishna({
 
                   {/* Delicate Soft Lower Lash Contour */}
                   <path
-                    d="M 42 16 C 34 32, 8 32, 0 16"
+                    d="M 42 17 C 35 38, 7 38, 0 17"
                     fill="none"
                     stroke="#1E293B"
                     strokeWidth="1.0"
@@ -1247,21 +1291,21 @@ export function LittleKrishna({
                 </g>
 
                 {/* ── Right Eye (Big Doe-Like Pixar 3D Eye) ── */}
-                <g id="rightEyeGroup" transform="translate(199, 122)">
+                <g id="rightEyeGroup" transform="translate(200, 121)">
                   <clipPath id="kRightEyeClip">
-                    <path d="M 0 16 C 8 -2, 34 -2, 42 16 C 34 32, 8 32, 0 16 Z" />
+                    <path d="M 0 17 C 7 -4, 35 -4, 42 17 C 35 38, 7 38, 0 17 Z" />
                   </clipPath>
 
                   {/* Eye Socket Ambient Shadow */}
                   <path
-                    d="M -2 15 C 6 -4, 35 -4, 44 15 C 36 34, 8 34, -2 15 Z"
+                    d="M -2 16 C 6 -5, 36 -5, 44 16 C 36 40, 6 40, -2 16 Z"
                     fill="#1E3A8A"
                     opacity="0.12"
                   />
 
                   {/* Sclera (Warm Natural White) */}
                   <path
-                    d="M 0 16 C 8 -2, 34 -2, 42 16 C 34 32, 8 32, 0 16 Z"
+                    d="M 0 17 C 7 -4, 35 -4, 42 17 C 35 38, 7 38, 0 17 Z"
                     fill="#F6F9FC"
                   />
 
@@ -1269,7 +1313,7 @@ export function LittleKrishna({
                   <g clipPath="url(#kRightEyeClip)">
                     {/* Upper Eyeball Drop Shadow */}
                     <path
-                      d="M 0 16 C 8 -2, 34 -2, 42 16 C 34 10, 8 10, 0 16 Z"
+                      d="M 0 17 C 7 -4, 35 -4, 42 17 C 35 11, 7 11, 0 17 Z"
                       fill="#1E3A8A"
                       opacity="0.18"
                     />
@@ -1277,21 +1321,21 @@ export function LittleKrishna({
                     {/* Iris */}
                     <g className={styles.iris}>
                       {/* Huge Warm Amber/Chocolate Pixar Iris */}
-                      <circle cx="20.5" cy="16.5" r="13.5" fill="url(#kIrisGrad)" />
+                      <circle cx="20.5" cy="17" r="15.5" fill="url(#kIrisGrad)" />
                       {/* Soft Limbal Ring */}
-                      <circle cx="20.5" cy="16.5" r="13.5" fill="none" stroke="#1A0802" strokeWidth="0.95" opacity="0.75" />
+                      <circle cx="20.5" cy="17" r="15.5" fill="none" stroke="#1A0802" strokeWidth="1.0" opacity="0.8" />
 
                       {/* Deep Velvety Circular Pupil */}
-                      <circle cx="20.5" cy="16.5" r="7.8" fill="url(#kPupilGrad)" />
-                      <circle cx="20.5" cy="16.5" r="6.4" fill="#0A0402" />
+                      <circle cx="20.5" cy="17" r="9.0" fill="url(#kPupilGrad)" />
+                      <circle cx="20.5" cy="17" r="7.6" fill="#0A0402" />
 
                       {/* Warm Amber Iris Caustic Reflection Arc */}
-                      <ellipse cx="20.5" cy="23.2" rx="7.2" ry="2.4" fill="#FBBF24" opacity="0.52" />
+                      <ellipse cx="20.5" cy="24.1" rx="8.2" ry="2.7" fill="#FBBF24" opacity="0.55" />
 
                       {/* Soulful Natural Pixar Catchlights */}
-                      <circle cx="24.2" cy="12.4" r="3.2" fill="#FFFFFF" opacity="0.95" />
-                      <circle cx="15.8" cy="20.8" r="1.5" fill="#FFFFFF" opacity="0.75" />
-                      <circle cx="25.5" cy="18.5" r="0.9" fill="#FFFFFF" opacity="0.5" />
+                      <circle cx="24.8" cy="12.3" r="4.0" fill="#FFFFFF" opacity="0.98" />
+                      <circle cx="15.6" cy="21.7" r="1.8" fill="#FFFFFF" opacity="0.8" />
+                      <circle cx="26.2" cy="19.1" r="1.0" fill="#FFFFFF" opacity="0.55" />
                     </g>
 
                     {/* Inner Corner Tear Duct (Caruncle) Warmth */}
@@ -1307,7 +1351,7 @@ export function LittleKrishna({
 
                   {/* Soft Double-Eyelid Crease */}
                   <path
-                    d="M 4 6 C 13 -3, 28 -3, 37 6"
+                    d="M 3 7 C 12 -2, 28 -2, 37 7"
                     fill="none"
                     stroke="#255BB5"
                     strokeWidth="1.1"
@@ -1317,7 +1361,7 @@ export function LittleKrishna({
 
                   {/* Gentle Lower Lid Smiling Crinkle */}
                   <path
-                    d="M 6 32 C 15 35, 25 35, 34 32"
+                    d="M 5 37 C 14 40, 24 40, 33 37"
                     fill="none"
                     stroke="#255BB5"
                     strokeWidth="0.8"
@@ -1327,7 +1371,7 @@ export function LittleKrishna({
 
                   {/* Elegant Tapered Upper Lash Line */}
                   <path
-                    d="M -1 16 C 8 -2, 34 -2, 43 16"
+                    d="M -1 17 C 7 -4, 35 -4, 43 17"
                     fill="none"
                     stroke="#0F172A"
                     strokeWidth="3.2"
@@ -1336,7 +1380,7 @@ export function LittleKrishna({
 
                   {/* Delicate Soft Lower Lash Contour */}
                   <path
-                    d="M 0 16 C 8 32, 34 32, 42 16"
+                    d="M 0 17 C 7 38, 35 38, 42 17"
                     fill="none"
                     stroke="#1E293B"
                     strokeWidth="1.0"
@@ -1346,7 +1390,7 @@ export function LittleKrishna({
                 </g>
 
                 {/* ── Cute Soft Stylized 3D Toddler Nose ── */}
-                <g transform="translate(190, 160)">
+                <g transform="translate(190, 164)">
                   {/* Soft Vertically Defined Nose Bridge */}
                   <path
                     d="M -0.5 -10 C -1.4 -5, -1.4 -1, 0 1"
@@ -1402,7 +1446,7 @@ export function LittleKrishna({
                 </g>
 
                 {/* ── Pixar Stylized Little Krishna Smile & Expressive Mouth Group ── */}
-                <g transform="translate(190, 178)">
+                <g transform="translate(190, 181)">
                   <g
                     id="lipsGroup"
                     className={`${styles.pixarMouth} ${mood === 'speaking' ? styles.mouthSpeaking : ''}`}
@@ -1627,26 +1671,26 @@ export function LittleKrishna({
           {/* ════════════════ LAYER 7: MULTI-STRAND GOLD NECKLACES ════════════════ */}
           <g id="necklace" filter="url(#kSoftShadow)">
             {/* Upper Choker-Style Gold Chain */}
-            <path d="M 154 196 C 168 222, 212 222, 226 196" fill="none" stroke="url(#kGoldGrad)" strokeWidth="3.2" />
+            <path d="M 154 198 C 168 220, 212 220, 226 198" fill="none" stroke="url(#kGoldGrad)" strokeWidth="3.2" />
             <circle cx="166" cy="207" r="3.2" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
-            <circle cx="178" cy="214" r="3.4" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
-            <circle cx="190" cy="216" r="3.8" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
-            <circle cx="202" cy="214" r="3.4" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
+            <circle cx="178" cy="213" r="3.4" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
+            <circle cx="190" cy="215" r="3.8" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
+            <circle cx="202" cy="213" r="3.4" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
             <circle cx="214" cy="207" r="3.2" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
 
             {/* Lower Longer Curved Gold Bead Chain */}
-            <path d="M 148 196 C 164 244, 216 244, 232 196" fill="none" stroke="url(#kGoldGrad)" strokeWidth="4.2" />
-            <circle cx="158" cy="212" r="3.8" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
-            <circle cx="158" cy="212" r="1.2" fill="#FFFFFF" opacity="0.9" />
-            <circle cx="172" cy="224" r="4.2" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
-            <circle cx="172" cy="224" r="1.3" fill="#FFFFFF" opacity="0.9" />
-            <circle cx="208" cy="224" r="4.2" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
-            <circle cx="208" cy="224" r="1.3" fill="#FFFFFF" opacity="0.9" />
-            <circle cx="222" cy="212" r="3.8" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
-            <circle cx="222" cy="212" r="1.2" fill="#FFFFFF" opacity="0.9" />
+            <path d="M 148 198 C 164 240, 216 240, 232 198" fill="none" stroke="url(#kGoldGrad)" strokeWidth="4.2" />
+            <circle cx="158" cy="211" r="3.8" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
+            <circle cx="158" cy="211" r="1.2" fill="#FFFFFF" opacity="0.9" />
+            <circle cx="172" cy="222" r="4.2" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
+            <circle cx="172" cy="222" r="1.3" fill="#FFFFFF" opacity="0.9" />
+            <circle cx="208" cy="222" r="4.2" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
+            <circle cx="208" cy="222" r="1.3" fill="#FFFFFF" opacity="0.9" />
+            <circle cx="222" cy="211" r="3.8" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
+            <circle cx="222" cy="211" r="1.2" fill="#FFFFFF" opacity="0.9" />
 
             {/* Ornate Gold & Ruby Medallion Pendant */}
-            <g transform="translate(190, 234)">
+            <g transform="translate(190, 230)">
               {/* Petal Accents */}
               {[0, 45, 90, 135, 180, 225, 270, 315].map((ang) => (
                 <circle
