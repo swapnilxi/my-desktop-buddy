@@ -263,13 +263,13 @@ export default function Home() {
         response.response.length > 120 ? response.response.slice(0, 117) + '…' : response.response
       );
       setHamsterMood('speaking');
-      speak(response.response, { onEnd: () => setHamsterMood('idle') });
+      speak(response.response, { onEnd: () => setHamsterMood('idle'), buddyType });
       setTimeout(() => setHamsterMood((m) => (m === 'speaking' ? 'idle' : m)), 20000);
     } catch (err) {
       setHamsterGreeting(err instanceof Error ? `😵 ${err.message}` : '😵 Something went wrong!');
       setHamsterMood('idle');
     }
-  }, []);
+  }, [buddyType]);
 
   const voiceRecorder = useVoiceRecorder({
     onTranscribed: handleVoiceTranscribed,

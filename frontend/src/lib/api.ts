@@ -40,9 +40,11 @@ export interface LLMConfig {
 
 export interface VoiceConfig {
   mode: string;
+  stt_provider?: string;
   deepgram_model: string;
   tts_voice: string;
   apple_voice: string;
+  fish_audio_model?: string;
 }
 
 export interface RAGConfig {
@@ -68,12 +70,15 @@ export interface APIKeysConfig {
   gemini_key: string;
   deepseek_key: string;
   deepgram_key: string;
+  fish_audio_key?: string;
 }
 
 export interface ServerCapabilities {
   server_has_gemini: boolean;
   server_has_deepseek: boolean;
   server_has_deepgram: boolean;
+  server_has_fish_audio?: boolean;
+  fish_audio_ids?: Record<string, boolean>;
 }
 
 export interface AppConfig {
@@ -93,13 +98,13 @@ export type BuddyMood = HamsterMood;
 
 export function getClientApiKeys(): APIKeysConfig {
   if (typeof window === 'undefined') {
-    return { gemini_key: '', deepseek_key: '', deepgram_key: '' };
+    return { gemini_key: '', deepseek_key: '', deepgram_key: '', fish_audio_key: '' };
   }
   try {
     const raw = localStorage.getItem(KEYS_STORAGE_KEY);
-    return raw ? JSON.parse(raw) : { gemini_key: '', deepseek_key: '', deepgram_key: '' };
+    return raw ? JSON.parse(raw) : { gemini_key: '', deepseek_key: '', deepgram_key: '', fish_audio_key: '' };
   } catch {
-    return { gemini_key: '', deepseek_key: '', deepgram_key: '' };
+    return { gemini_key: '', deepseek_key: '', deepgram_key: '', fish_audio_key: '' };
   }
 }
 
@@ -150,6 +155,16 @@ export function getClientAuthHeaders(): Record<string, string> {
   }
   if (keys.deepgram_key && !keys.deepgram_key.includes('•')) {
     headers['X-Deepgram-Key'] = keys.deepgram_key.trim();
+  }
+  if (keys.fish_audio_key && !keys.fish_audio_key.includes('•')) {
+    headers['X-Fish-Audio-Key'] = keys.fish_audio_key.trim();
+  }
+
+  if (savedConfig?.voice?.mode) {
+    headers['X-Voice-Mode'] = savedConfig.voice.mode;
+  }
+  if (savedConfig?.voice?.stt_provider) {
+    headers['X-STT-Provider'] = savedConfig.voice.stt_provider;
   }
 
   if (savedConfig?.llm?.provider) {
@@ -274,9 +289,10 @@ export async function fetchRevealedKeys(): Promise<{
   gemini_key: string;
   deepseek_key: string;
   deepgram_key: string;
+  fish_audio_key?: string;
 }> {
   const localKeys = getClientApiKeys();
-  if (localKeys.gemini_key || localKeys.deepseek_key || localKeys.deepgram_key) {
+  if (localKeys.gemini_key || localKeys.deepseek_key || localKeys.deepgram_key || localKeys.fish_audio_key) {
     return localKeys;
   }
   return apiRequest('/config/reveal-keys');

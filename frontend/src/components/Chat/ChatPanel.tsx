@@ -2,8 +2,9 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import type { ChatMessage, HamsterMood } from '@/lib/api';
-import { sendChatMessage, transcribeAudio } from '@/lib/api';
+import { sendChatMessage, transcribeAudio, getClientSavedConfig } from '@/lib/api';
 import { speak, stopSpeaking } from '@/lib/speech';
+import { createBrowserSpeechRecognition, isSpeechRecognitionSupported } from '@/lib/speechRecognition';
 import type { BuddyDefinition, BuddyType } from '../Buddies/types';
 import { getBuddyDefinition } from '../Buddies/registry';
 
@@ -65,6 +66,7 @@ export default function ChatPanel({
 
       // Speak the reply aloud; return to idle when speech finishes.
       speak(response.response, {
+        buddyType: buddyType as string,
         onStart: () => onMoodChange('speaking'),
         onEnd: () => onMoodChange('idle'),
       });
@@ -88,17 +90,23 @@ export default function ChatPanel({
     }
   };
 
-  // ── Voice Input: record → Deepgram STT → auto-send ──────────────
+  const recognitionRef = useRef<any>(null);
+
+  // ── Voice Input: record → Apple Speech or Gemini/Deepgram STT ──────────────
   const stopRecording = useCallback(() => {
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+      } catch { }
+      recognitionRef.current = null;
+    }
     mediaRecorderRef.current?.stop();
     streamRef.current?.getTracks().forEach((t) => t.stop());
     streamRef.current = null;
     setIsRecording(false);
   }, []);
 
-  const startRecording = async () => {
-    if (isRecording || isLoading || isTranscribing) return;
-    setError(null);
+  const startMediaRecording = async () => {
     try {
       console.log('[Voice] Requesting microphone stream...');
       let stream: MediaStream;
@@ -148,7 +156,7 @@ export default function ChatPanel({
         setIsTranscribing(true);
         onMoodChange('thinking');
         try {
-          console.log('[Voice] Transcribing audio with Deepgram STT...');
+          console.log('[Voice] Transcribing audio with STT...');
           const { transcript } = await transcribeAudio(blob);
           console.log('[Voice] Transcript result:', transcript);
           setIsTranscribing(false);
@@ -170,6 +178,48 @@ export default function ChatPanel({
       setError(`Microphone error: ${msg}. Check System Settings → Privacy & Security → Microphone.`);
       onMoodChange('idle');
     }
+  };
+
+  const startRecording = async () => {
+    if (isRecording || isLoading || isTranscribing) return;
+    setError(null);
+
+    const saved = getClientSavedConfig();
+    const sttPref = saved?.voice?.stt_provider || 'apple';
+
+    // 1. Try Apple / Browser Native Speech Recognition first if preferred
+    if (sttPref === 'apple' && isSpeechRecognitionSupported()) {
+      let receivedResult = false;
+      const rec = createBrowserSpeechRecognition({
+        onStart: () => {
+          setIsRecording(true);
+          onMoodChange('listening');
+        },
+        onResult: (transcript) => {
+          receivedResult = true;
+          setIsRecording(false);
+          handleSend(transcript);
+        },
+        onError: (err) => {
+          console.warn('[Apple Speech Recognition fallback to MediaRecorder]', err);
+          if (!receivedResult) {
+            startMediaRecording();
+          }
+        },
+        onEnd: () => {
+          setIsRecording(false);
+          recognitionRef.current = null;
+        },
+      });
+
+      if (rec) {
+        recognitionRef.current = rec;
+        return;
+      }
+    }
+
+    // 2. Fallback to MediaRecorder + backend transcription (Gemini / Deepgram)
+    await startMediaRecording();
   };
 
   const toggleRecording = () => {

@@ -1,8 +1,9 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { transcribeAudio } from '@/lib/api';
+import { transcribeAudio, getClientSavedConfig } from '@/lib/api';
 import { stopSpeaking } from '@/lib/speech';
+import { createBrowserSpeechRecognition, isSpeechRecognitionSupported } from '@/lib/speechRecognition';
 
 interface UseVoiceRecorderOptions {
     /** Called with the transcript once Deepgram STT returns. */
@@ -41,6 +42,8 @@ export function useVoiceRecorder(options: UseVoiceRecorderOptions): VoiceRecorde
     const optionsRef = useRef(options);
     optionsRef.current = options;
 
+    const recognitionRef = useRef<any>(null);
+
     const cleanupStream = useCallback(() => {
         streamRef.current?.getTracks().forEach((t) => t.stop());
         streamRef.current = null;
@@ -48,11 +51,59 @@ export function useVoiceRecorder(options: UseVoiceRecorderOptions): VoiceRecorde
     }, []);
 
     const stop = useCallback(() => {
+        if (recognitionRef.current) {
+            try {
+                recognitionRef.current.stop();
+            } catch { }
+            recognitionRef.current = null;
+        }
         mediaRecorderRef.current?.stop();
     }, []);
 
     const start = useCallback(async () => {
         setError(null);
+        const saved = getClientSavedConfig();
+        const sttPref = saved?.voice?.stt_provider || 'apple';
+
+        // 1. Try Apple / Browser Speech Recognition first if preferred
+        if (sttPref === 'apple' && isSpeechRecognitionSupported()) {
+            let receivedResult = false;
+            const rec = createBrowserSpeechRecognition({
+                onStart: () => {
+                    setIsRecording(true);
+                    optionsRef.current.onRecordingStart?.();
+                },
+                onResult: (transcript) => {
+                    receivedResult = true;
+                    setIsRecording(false);
+                    setIsTranscribing(false);
+                    optionsRef.current.onTranscribed(transcript);
+                    optionsRef.current.onDone?.();
+                },
+                onError: (err) => {
+                    console.warn('[Apple Speech Recognition fallback to MediaRecorder]', err);
+                    // If recognition fails (e.g. network error in electron), fall through to MediaRecorder
+                    if (!receivedResult) {
+                        startMediaRecorder();
+                    }
+                },
+                onEnd: () => {
+                    setIsRecording(false);
+                    recognitionRef.current = null;
+                },
+            });
+
+            if (rec) {
+                recognitionRef.current = rec;
+                return;
+            }
+        }
+
+        // 2. Otherwise use MediaRecorder + backend transcription (Gemini / Deepgram)
+        await startMediaRecorder();
+    }, [cleanupStream]);
+
+    const startMediaRecorder = async () => {
         let stream: MediaStream;
         try {
             stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -67,7 +118,7 @@ export function useVoiceRecorder(options: UseVoiceRecorderOptions): VoiceRecorde
             } else {
                 setError('Could not access the microphone.');
             }
-            optionsRef.current.onDone?.(error ?? 'microphone');
+            optionsRef.current.onDone?.('microphone');
             return;
         }
 
@@ -111,7 +162,7 @@ export function useVoiceRecorder(options: UseVoiceRecorderOptions): VoiceRecorde
         recorder.start();
         setIsRecording(true);
         optionsRef.current.onRecordingStart?.();
-    }, [cleanupStream]);
+    };
 
     const toggle = useCallback(() => {
         if (isRecording) {

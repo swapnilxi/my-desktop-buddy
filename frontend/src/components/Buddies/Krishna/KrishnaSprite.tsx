@@ -319,11 +319,11 @@ export function LittleKrishna({
               <stop offset="100%" stopColor="#1C0901" />
             </radialGradient>
 
-            {/* ── Cheeks Rosy Blush ── */}
+            {/* ── Cheeks Rosy Blush (Soft feathered dissolution into skin) ── */}
             <radialGradient id="kCheekBlush" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="rgba(255, 95, 140, 0.62)" />
-              <stop offset="52%" stopColor="rgba(255, 125, 160, 0.26)" />
-              <stop offset="100%" stopColor="rgba(255, 125, 160, 0)" />
+              <stop offset="0%" stopColor="#FF7A9E" stopOpacity="0.22" />
+              <stop offset="55%" stopColor="#FF94B2" stopOpacity="0.08" />
+              <stop offset="100%" stopColor="#6BA7FF" stopOpacity="0" />
             </radialGradient>
 
             {/* ── Soft Toddler Lips ── */}
@@ -589,15 +589,13 @@ export function LittleKrishna({
             <path d="M 226 382 L 258 382" stroke="#FDE68A" strokeWidth="2.5" strokeDasharray="3 2" opacity="0.85" />
           </g>
 
-          {/* ════════════════ LAYER 5: TORSO ════════════════ */}
+          {/* ════════════════ LAYER 5: TORSO (CLEAN UNIFIED 3D SKIN) ════════════════ */}
           <g id="torso">
             <path
               d="M 136 172 C 126 210, 126 256, 140 268 C 170 274, 210 274, 240 268
                  C 254 256, 254 210, 244 172 Z"
               fill="url(#kSkinBody)"
             />
-            <ellipse cx="190" cy="198" rx="38" ry="26" fill="#D9ECFF" opacity="0.22" />
-            <ellipse cx="190" cy="242" rx="28" ry="18" fill="#CCE3FF" opacity="0.18" />
           </g>
 
           {/* ════════════════ LAYER 6: HEAD & FACE (CLEAN FOREHEAD — NO BLACK DOTS) ════════════════ */}
@@ -633,12 +631,12 @@ export function LittleKrishna({
                 <circle cx="2.5" cy="18.8" r="1.5" fill="#FFFFFF" opacity="0.9" />
               </g>
 
+              {/* Unified Single Face Base */}
               <ellipse cx="190" cy="154" rx="72" ry="64" fill="url(#kSkinFace)" />
-              <ellipse cx="190" cy="130" rx="46" ry="26" fill="url(#kSkinFace)" opacity="0.8" />
-              <ellipse cx="190" cy="204" rx="42" ry="15" fill="#1E3A8A" opacity="0.24" />
 
-              <ellipse cx="138" cy="174" rx="26" ry="16" fill="url(#kCheekBlush)" transform="rotate(-6 138 174)" />
-              <ellipse cx="242" cy="174" rx="26" ry="16" fill="url(#kCheekBlush)" transform="rotate(6 242 174)" />
+              {/* Seamless Natural Cheeks */}
+              <ellipse cx="138" cy="174" rx="20" ry="13" fill="url(#kCheekBlush)" />
+              <ellipse cx="242" cy="174" rx="20" ry="13" fill="url(#kCheekBlush)" />
             </g>
 
             {/* Master Face Details — Clean Forehead with Crisp Vaishnava U-Tilak & White Eyebrow Dots */}
