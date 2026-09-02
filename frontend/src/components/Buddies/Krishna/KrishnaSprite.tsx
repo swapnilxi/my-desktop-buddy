@@ -1837,6 +1837,7 @@ export function LittleKrishna({
                 fill="url(#kSkinBody)"
               />
               <circle cx="9.5" cy="13.5" r="2.2" fill="url(#kSkinBody)" />
+              <ellipse cx="8.5" cy="12.5" rx="1.2" ry="0.8" fill="#FFFFFF" opacity="0.25" />
 
               {/* Folded Ring Finger (Outer middle) */}
               <path
@@ -1844,6 +1845,7 @@ export function LittleKrishna({
                 fill="url(#kSkinBody)"
               />
               <circle cx="10.5" cy="8" r="2.4" fill="url(#kSkinBody)" />
+              <ellipse cx="9.5" cy="7" rx="1.3" ry="0.9" fill="#FFFFFF" opacity="0.28" />
 
               {/* Folded Middle Finger (Outer upper) */}
               <path
@@ -1851,12 +1853,14 @@ export function LittleKrishna({
                 fill="url(#kSkinBody)"
               />
               <circle cx="10.5" cy="2" r="2.5" fill="url(#kSkinBody)" />
+              <ellipse cx="9.5" cy="1" rx="1.4" ry="0.9" fill="#FFFFFF" opacity="0.3" />
 
               {/* Plump Toddler Thumb (Naturally emerging across front of fist) */}
               <path
                 d="M -9 11 C -14 5, -12 -3, -5 -4 C 1 -4, 3 0, 1 5 C -1 9, -5 12, -9 11 Z"
                 fill="url(#kSkinBody)"
               />
+              <ellipse cx="-5" cy="0" rx="3.0" ry="2.0" fill="#FFFFFF" opacity="0.2" />
               <circle cx="-1" cy="2.5" r="2.0" fill="url(#kSkinBody)" />
 
               {/* ── Extended Index Finger (Pointing straight up to balance chakra) ── */}
@@ -1865,8 +1869,18 @@ export function LittleKrishna({
                 d="M -5.8 -8 L -5.8 -30 C -5.8 -35, 0.8 -35, 0.8 -30 L 0.8 -8 Z"
                 fill="url(#kSkinBody)"
               />
+              {/* Soft Cylindrical Light Highlight */}
+              <path
+                d="M -3.8 -10 L -3.8 -28"
+                fill="none"
+                stroke="#FFFFFF"
+                strokeWidth="1.4"
+                strokeLinecap="round"
+                opacity="0.3"
+              />
               {/* Soft Rounded Distal Fingertip Bulb */}
               <ellipse cx="-2.5" cy="-31" rx="3.8" ry="4.2" fill="url(#kSkinBody)" />
+              <ellipse cx="-2.5" cy="-33" rx="2.0" ry="2.2" fill="#FFFFFF" opacity="0.35" />
             </g>
 
             {/* ── B. LEFT ARM ON HIP (Viewer's Right) ── */}
@@ -1928,6 +1942,7 @@ export function LittleKrishna({
                 d="M 6 -4 C 12 -9, 18 -6, 20 0 C 20 5, 14 6, 8 2 Z"
                 fill="url(#kSkinBody)"
               />
+              <ellipse cx="14" cy="-2" rx="2.5" ry="1.5" fill="#FFFFFF" opacity="0.22" />
               <circle cx="19" cy="0" r="1.6" fill="url(#kSkinBody)" />
 
               {/* Smooth Dorsal Hand & Palm Volume Base */}
@@ -1944,6 +1959,7 @@ export function LittleKrishna({
                 fill="url(#kSkinBody)"
               />
               <circle cx="-9.5" cy="18.5" r="2.0" fill="url(#kSkinBody)" />
+              <ellipse cx="-9.5" cy="17.5" rx="1.0" ry="0.8" fill="#FFFFFF" opacity="0.3" />
 
               {/* Middle Finger (Longest Arched Hook wrapping around hip curve) */}
               <path
@@ -1951,6 +1967,7 @@ export function LittleKrishna({
                 fill="url(#kSkinBody)"
               />
               <circle cx="-4" cy="22.5" r="2.1" fill="url(#kSkinBody)" />
+              <ellipse cx="-4" cy="21.5" rx="1.1" ry="0.8" fill="#FFFFFF" opacity="0.32" />
 
               {/* Ring Finger (Following middle finger waist wrapping arc) */}
               <path
@@ -1958,6 +1975,7 @@ export function LittleKrishna({
                 fill="url(#kSkinBody)"
               />
               <circle cx="3" cy="20.5" r="2.0" fill="url(#kSkinBody)" />
+              <ellipse cx="3" cy="19.5" rx="1.0" ry="0.8" fill="#FFFFFF" opacity="0.3" />
 
               {/* Pinky Finger (Outer delicate digit wrapping side hip edge) */}
               <path
@@ -1965,6 +1983,7 @@ export function LittleKrishna({
                 fill="url(#kSkinBody)"
               />
               <circle cx="9.5" cy="15.5" r="1.7" fill="url(#kSkinBody)" />
+              <ellipse cx="9.5" cy="14.5" rx="0.9" ry="0.7" fill="#FFFFFF" opacity="0.25" />
             </g>
           </g>
 
