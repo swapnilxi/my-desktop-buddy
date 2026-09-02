@@ -1783,20 +1783,19 @@ export function LittleKrishna({
           {/* ════════════════ LAYER 8: SCULPTED ORGANIC 3D ARMS & HANDS ════════════════ */}
           <g id="canonicalChakraArms" filter="url(#kSoftShadow)">
             {/* ── A. RAISED RIGHT ARM (Viewer's Left - Character's Right) ── */}
-            {/* Single Continuous Organic 3D Right Arm (Shoulder → Bicep → Elbow Bend → Forearm) */}
+            {/* Seamless 3D Plump Toddler Bicep & Shoulder (Deep Arched Deltoid Cap Seamlessly Connected to Torso) */}
             <path
-              d="M 134 214
-                 C 126 208, 105 194, 94 176
-                 L 101 128
-                 L 85 128
-                 C 74 142, 70 156, 76 166
-                 C 88 162, 110 168, 132 180
-                 C 142 190, 142 206, 134 214 Z"
+              d="M 148 200 C 148 175, 130 170, 110 170 C 102 172, 88 170, 76 166 C 70 172, 76 180, 86 182 C 95 198, 112 212, 135 220 C 145 225, 148 215, 148 200 Z"
+              fill="url(#kSkinBody)"
+            />
+            {/* Seamless 3D Plump Toddler Forearm (Overlapping Upper Arm → Wrist) */}
+            <path
+              d="M 70 168 C 68 152, 74 136, 85 128 L 101 128 C 98 140, 92 158, 94 178 C 86 182, 74 178, 70 168 Z"
               fill="url(#kSkinBody)"
             />
             {/* Under-Armpit Ambient Shadow */}
             <path
-              d="M 128 214 C 118 206, 106 195, 95 185"
+              d="M 125 212 C 112 206, 102 196, 92 186"
               fill="none"
               stroke="#1E3A8A"
               strokeWidth="2.5"
@@ -1805,7 +1804,7 @@ export function LittleKrishna({
             />
             {/* Continuous Volumetric Arm Highlight Sheen (Shoulder → Bicep → Elbow Bend → Forearm) */}
             <path
-              d="M 130 184 C 112 174, 90 164, 78 165 C 74 167, 78 152, 88 132"
+              d="M 135 188 C 122 176, 106 173, 90 168 C 82 165, 78 165, 78 165 C 72 166, 75 150, 88 132"
               fill="none"
               stroke="#FFFFFF"
               strokeWidth="3.0"
@@ -1837,83 +1836,108 @@ export function LittleKrishna({
             <g id="sculptedChakraHand" transform="translate(93, 110)">
               {/* Chubby Toddler Fist Palm Base */}
               <path
-                d="M -9 14
-                   C -12 6, -11 -4, -5 -10
-                   C 2 -11, 10 -6, 12 3
-                   C 13 10, 8 16, 0 16
-                   C -5 16, -8 16, -9 14 Z"
+                d="M -8 15 C -12 8, -12 -2, -6 -7 C -2 -10, 4 -10, 10 -5 C 15 2, 14 10, 8 16 C 2 18, -4 18, -8 15 Z"
                 fill="url(#kSkinBody)"
               />
               {/* Palm 3D Volume Core Glow */}
-              <ellipse cx="1" cy="4" rx="7.5" ry="8.5" fill="url(#kHandVolume)" />
+              <ellipse cx="0" cy="4" rx="7.5" ry="8.5" fill="url(#kHandVolume)" />
 
-              {/* Folded Pinky (Outer bottom) */}
-              <path
-                d="M 1 9 C 7 8, 13 10, 13 14 C 13 17, 7 18, 1 16 Z"
-                fill="url(#kSkinBody)"
-              />
-              <circle cx="9.5" cy="13.5" r="2.2" fill="url(#kSkinBody)" />
-              <ellipse cx="8.5" cy="12.5" rx="1.2" ry="0.8" fill="#FFFFFF" opacity="0.25" />
+              {/* Plump Toddler Thumb (On left side of palm) */}
+              <g id="chakraThumb">
+                <path
+                  d="M -8 12 C -13 7, -12 -1, -6 -2 C -1 -2, 2 2, 0 6 C -2 10, -5 12, -8 12 Z"
+                  fill="url(#kSkinBody)"
+                />
+                {/* Thumb Separation Shadow */}
+                <path
+                  d="M -5 -2 C -2 1, -1 5, -3 8"
+                  fill="none"
+                  stroke="#1E3A8A"
+                  strokeWidth="1.2"
+                  strokeLinecap="round"
+                  opacity="0.25"
+                />
+                {/* Thumb Specular Highlight */}
+                <ellipse cx="-5.5" cy="2" rx="2.5" ry="1.8" fill="#FFFFFF" opacity="0.25" />
+              </g>
 
-              {/* Folded Ring Finger (Outer middle) */}
-              <path
-                d="M -1 3 C 6 2, 14 4, 14 8.5 C 14 12, 6 12.5, -1 10.5 Z"
-                fill="url(#kSkinBody)"
-              />
-              <circle cx="10.5" cy="8" r="2.4" fill="url(#kSkinBody)" />
-              <ellipse cx="9.5" cy="7" rx="1.3" ry="0.9" fill="#FFFFFF" opacity="0.28" />
+              {/* Curled Folded Fingers (Forming a compact toddler fist on right side) */}
+              {/* Digit 1: Folded Middle Finger (Upper folded digit) */}
+              <g id="chakraMiddleFinger">
+                <path
+                  d="M 1 -3 C 6 -5, 13 -3, 13 2 C 13 6, 7 7, 1 5 Z"
+                  fill="url(#kSkinBody)"
+                />
+                <circle cx="10" cy="1.5" r="2.8" fill="url(#kSkinBody)" />
+                <ellipse cx="9" cy="0.5" rx="1.4" ry="1.0" fill="#FFFFFF" opacity="0.3" />
+              </g>
 
-              {/* Folded Middle Finger (Outer upper) */}
-              <path
-                d="M -2 -3 C 6 -4, 14 -2, 14 3 C 14 6.5, 6 7.5, -2 5.5 Z"
-                fill="url(#kSkinBody)"
-              />
-              <circle cx="10.5" cy="2" r="2.5" fill="url(#kSkinBody)" />
-              <ellipse cx="9.5" cy="1" rx="1.4" ry="0.9" fill="#FFFFFF" opacity="0.3" />
+              {/* Digit 2: Folded Ring Finger (Middle folded digit) */}
+              <g id="chakraRingFinger">
+                <path d="M 2 4 C 7 3, 12 4, 12 6" fill="none" stroke="#1E3A8A" strokeWidth="1.2" opacity="0.28" />
+                <path
+                  d="M 1 3 C 6 2, 13 4, 13 8.5 C 13 12, 6 12.5, 1 10 Z"
+                  fill="url(#kSkinBody)"
+                />
+                <circle cx="10" cy="7.5" r="2.6" fill="url(#kSkinBody)" />
+                <ellipse cx="9" cy="6.5" rx="1.3" ry="0.9" fill="#FFFFFF" opacity="0.28" />
+              </g>
 
-              {/* Plump Toddler Thumb (Naturally emerging across front of fist) */}
-              <path
-                d="M -9 11 C -14 5, -12 -3, -5 -4 C 1 -4, 3 0, 1 5 C -1 9, -5 12, -9 11 Z"
-                fill="url(#kSkinBody)"
-              />
-              <ellipse cx="-5" cy="0" rx="3.0" ry="2.0" fill="#FFFFFF" opacity="0.2" />
-              <circle cx="-1" cy="2.5" r="2.0" fill="url(#kSkinBody)" />
+              {/* Digit 3: Folded Pinky Finger (Lower folded digit) */}
+              <g id="chakraPinkyFinger">
+                <path d="M 2 9 C 7 8, 12 9, 12 11" fill="none" stroke="#1E3A8A" strokeWidth="1.2" opacity="0.28" />
+                <path
+                  d="M 1 8.5 C 6 8, 12 10, 12 14 C 12 17, 6 17.5, 1 15 Z"
+                  fill="url(#kSkinBody)"
+                />
+                <circle cx="9" cy="13" r="2.3" fill="url(#kSkinBody)" />
+                <ellipse cx="8" cy="12" rx="1.2" ry="0.8" fill="#FFFFFF" opacity="0.25" />
+              </g>
 
-              {/* ── Extended Index Finger (Pointing straight up to balance chakra) ── */}
-              {/* Base Finger Column */}
-              <path
-                d="M -5.8 -8 L -5.8 -30 C -5.8 -35, 0.8 -35, 0.8 -30 L 0.8 -8 Z"
-                fill="url(#kSkinBody)"
-              />
-              {/* Soft Cylindrical Light Highlight */}
-              <path
-                d="M -3.8 -10 L -3.8 -28"
-                fill="none"
-                stroke="#FFFFFF"
-                strokeWidth="1.4"
-                strokeLinecap="round"
-                opacity="0.3"
-              />
-              {/* Soft Rounded Distal Fingertip Bulb */}
-              <ellipse cx="-2.5" cy="-31" rx="3.8" ry="4.2" fill="url(#kSkinBody)" />
-              <ellipse cx="-2.5" cy="-33" rx="2.0" ry="2.2" fill="#FFFFFF" opacity="0.35" />
+              {/* ── Extended Index Finger (Pointing vertically straight to center of Chakra) ── */}
+              <g id="chakraIndexFinger">
+                {/* Organic Tapered Column with Integrated Rounded Tip */}
+                <path
+                  d="M -6.2 -5 L -4.8 -31 C -4.8 -36, 0.8 -36, 0.8 -31 L 2.2 -5 Z"
+                  fill="url(#kSkinBody)"
+                />
+                {/* Base Joint Crease Shadow */}
+                <path
+                  d="M -6.5 -4 C -2 -7, 2 -6, 3 -4"
+                  fill="none"
+                  stroke="#1E3A8A"
+                  strokeWidth="1.2"
+                  strokeLinecap="round"
+                  opacity="0.25"
+                />
+                {/* Continuous Cylindrical Specular Highlight */}
+                <path
+                  d="M -3.5 -6 L -2.8 -32"
+                  fill="none"
+                  stroke="#FFFFFF"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  opacity="0.35"
+                />
+                {/* Fingertip Soft Light Reflection */}
+                <ellipse cx="-2" cy="-32.5" rx="1.8" ry="2.0" fill="#FFFFFF" opacity="0.4" />
+              </g>
             </g>
 
             {/* ── B. TARGET LEFT ARM & HAND ON HIP (Viewer's Right - Character's Left) ── */}
-            {/* Single Continuous Organic 3D Left Arm (Shoulder → Upper Arm → Elbow → Forearm → Wrist) */}
+            {/* Continuous Organic 3D Toddler Left Arm (Shoulder → Deltoid → Elbow → Wrist) */}
             <path
-              d="M 242 202
-                 C 234 190, 248 180, 260 188
-                 C 280 210, 294 236, 298 244
-                 C 292 254, 282 262, 258 280
-                 L 241 271
-                 C 252 260, 266 250, 274 246
-                 C 260 230, 245 220, 234 212 Z"
+              d="M 218 195 C 218 175, 240 175, 250 183 C 270 195, 280 210, 294 236 C 298 244, 293 254, 282 262 C 268 246, 245 220, 230 214 C 220 210, 218 205, 218 195 Z"
+              fill="url(#kSkinBody)"
+            />
+            {/* Forearm gently curved towards waist (Overlapping Upper Arm Seamlessly) */}
+            <path
+              d="M 294 232 C 296 244, 285 260, 258 280 L 241 271 C 252 260, 266 250, 276 230 Z"
               fill="url(#kSkinBody)"
             />
             {/* Under-Armpit Ambient Occlusion Shadow */}
             <path
-              d="M 234 214 C 248 220, 258 230, 268 244"
+              d="M 230 214 C 245 220, 255 228, 265 240"
               fill="none"
               stroke="#1E3A8A"
               strokeWidth="2.5"
@@ -1922,7 +1946,7 @@ export function LittleKrishna({
             />
             {/* Continuous Volumetric Arm Highlight Sheen (Shoulder → Upper Arm → Elbow Bend → Forearm) */}
             <path
-              d="M 244 186 C 262 196, 280 212, 291 234 C 294 242, 288 254, 255 275"
+              d="M 232 182 C 250 188, 275 208, 291 234 C 294 242, 288 254, 255 275"
               fill="none"
               stroke="#FFFFFF"
               strokeWidth="3.2"
