@@ -751,11 +751,11 @@
 }
 
 .chakraDisc {
-  transform-origin: 244px 82px;
+  transform-origin: 0px 0px;
 }
 
 #feet {
-  transform-origin: 162px 370px;
+  transform-origin: 190px 388px;
 }
 
 /* ── 1. IDLE STATE (DEFAULT BREATHING & SWAY) ──────────────────── */
@@ -769,10 +769,6 @@
 
 .krishnaIdle .featherSvgAnim {
   animation: featherSwayAnim 6s ease-in-out infinite alternate;
-}
-
-.krishnaIdle .chakraDisc {
-  animation: spinChakra 10s linear infinite;
 }
 
 /* ── 2. PROTECTOR STATE (CANONICAL CHAKRA POSE) ────────────────── */
@@ -791,10 +787,6 @@
 .krishnaProtector .divineAura {
   opacity: 0.95;
   animation: protectorAuraGlow 3s ease-in-out infinite alternate;
-}
-
-.krishnaProtector .chakraDisc {
-  animation: spinChakra 2.5s linear infinite;
 }
 
 /* ── 3. THINKING STATE (HEAD TILT & EYE SHIFT) ─────────────────── */
