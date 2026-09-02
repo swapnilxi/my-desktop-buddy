@@ -1,5 +1,5 @@
 /* ══════════════════════════════════════════════════════════════════════
-   LITTLE KRISHNA — DESKTOP BUDDY STYLING (PIXAR 3D HYBRID CSS/SVG)
+   LITTLE KRISHNA — DESKTOP BUDDY STYLING (STYLIZED SVG/CSS HYBRID)
    Color Palette:
    - Skin: #6BA7FF
    - Hair: #1E3A8A
@@ -23,6 +23,7 @@
   transform-origin: bottom center;
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   overflow: visible !important;
+  isolation: isolate;
 }
 
 .krishnaContainer:hover {
@@ -62,19 +63,20 @@
   flex-direction: column;
   align-items: center;
   overflow: visible !important;
+  z-index: 2;
 }
 
 .krishnaSvg {
   width: 100%;
   height: 100%;
   overflow: visible !important;
-  /* Ambient glow and subtle drop shadow */
-  filter: drop-shadow(0 0 28px rgba(255, 200, 61, 0.45)) drop-shadow(0 10px 26px rgba(15, 27, 61, 0.6));
+  /* A clean illustrated edge, rather than a heavy rendered shadow. */
+  filter: drop-shadow(0 7px 14px rgba(15, 27, 61, 0.38));
   transition: filter 0.3s ease;
 }
 
 .krishnaContainer:hover .krishnaSvg {
-  filter: drop-shadow(0 0 40px rgba(255, 200, 61, 0.7)) drop-shadow(0 12px 32px rgba(15, 27, 61, 0.7));
+  filter: drop-shadow(0 9px 18px rgba(15, 27, 61, 0.46)) drop-shadow(0 0 9px rgba(255, 200, 61, 0.18));
 }
 
 /* ── Ground Shadow ──────────────────────────────────────────────── */
@@ -132,7 +134,7 @@
   letter-spacing: 0.2px;
 }
 
-/* ── Floating Divine Aura Particle ──────────────────────────────── */
+/* ── Restrained Divine Aura ─────────────────────────────────────── */
 .divineAura {
   position: absolute;
   top: 15px;
@@ -140,7 +142,7 @@
   transform: translateX(-50%);
   width: 190px;
   height: 190px;
-  background: radial-gradient(circle, rgba(255, 200, 61, 0.2) 0%, rgba(255, 138, 0, 0.1) 50%, rgba(15, 27, 61, 0) 70%);
+  background: radial-gradient(circle, rgba(255, 225, 128, 0.12) 0%, rgba(82, 159, 255, 0.08) 42%, transparent 70%);
   border-radius: 50%;
   z-index: 0;
   pointer-events: none;
@@ -732,30 +734,31 @@
 
 /* ── 0. EXPLICIT TRANSFORM ORIGINS FOR LAYERED ANIMATION ────────── */
 #headGroup {
-  transform-origin: 177px 190px;
+  transform-origin: 190px 180px;
 }
 
 #peacockFeather {
-  transform-origin: 174px 80px;
+  transform-origin: 160px 68px;
+  transform-box: view-box;
 }
 
-#crossedArms,
-#chakraArms,
-#raisedArm {
-  transform-origin: 177px 192px;
+#canonicalChakraArms,
+#crossedArms {
+  transform-origin: 190px 190px;
 }
 
 #dhoti,
-#waistSash {
-  transform-origin: 176px 260px;
+#waistSashTail {
+  transform-origin: 190px 260px;
 }
 
 .chakraDisc {
-  transform-origin: 244px 82px;
+  transform-origin: 91px 56px;
+  transform-box: view-box;
 }
 
 #feet {
-  transform-origin: 162px 370px;
+  transform-origin: 190px 388px;
 }
 
 /* ── 1. IDLE STATE (DEFAULT BREATHING & SWAY) ──────────────────── */
@@ -772,7 +775,7 @@
 }
 
 .krishnaIdle .chakraDisc {
-  animation: spinChakra 10s linear infinite;
+  animation: spinChakra 12s linear infinite;
 }
 
 /* ── 2. PROTECTOR STATE (CANONICAL CHAKRA POSE) ────────────────── */
@@ -788,13 +791,21 @@
   animation: featherSwayAnim 6s ease-in-out infinite alternate;
 }
 
-.krishnaProtector .divineAura {
+.krishnaContainer[data-state='protector'] .divineAura {
   opacity: 0.95;
   animation: protectorAuraGlow 3s ease-in-out infinite alternate;
 }
 
 .krishnaProtector .chakraDisc {
-  animation: spinChakra 2.5s linear infinite;
+  animation: spinChakra 6.5s linear infinite;
+}
+
+.krishnaContainer[data-pose='chakra'] .chakraDisc {
+  animation: spinChakra 12s linear infinite;
+}
+
+.krishnaContainer[data-pose='chakra'][data-state='protector'] .chakraDisc {
+  animation-duration: 6.5s;
 }
 
 /* ── 3. THINKING STATE (HEAD TILT & EYE SHIFT) ─────────────────── */
@@ -837,9 +848,9 @@
   animation: motivationNod 2.2s ease-in-out infinite;
 }
 
-.krishnaMotivation .divineAura {
+.krishnaContainer[data-state='motivation'] .divineAura {
   opacity: 0.85;
-  background: radial-gradient(circle, rgba(255, 215, 0, 0.3) 0%, rgba(255, 138, 0, 0.15) 60%, transparent 75%);
+  background: radial-gradient(circle, rgba(255, 225, 128, 0.22) 0%, rgba(82, 159, 255, 0.12) 55%, transparent 75%);
 }
 
 /* ── 6. RELAX STATE (DEEP BREATHING & FLUTE PREPARATION) ────────── */
@@ -856,7 +867,7 @@
 }
 
 /* ── 7. GREETING STATE (WAVING GESTURE) ────────────────────────── */
-.krishnaGreeting .armRight {
+.krishnaGreeting #raisedArm {
   animation: waveArm 1s ease-in-out infinite alternate;
 }
 
