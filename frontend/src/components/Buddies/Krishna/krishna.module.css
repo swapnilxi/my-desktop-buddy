@@ -961,7 +961,7 @@
 
 /* ── LOCALIZED BLINK ANIMATION ──────────────────────────────────── */
 .eyelidUpper {
-  transform-origin: 25px 0px;
+  transform-origin: 22px 0px;
   transform: scaleY(0);
   transition: transform 0.08s ease-in-out;
 }
@@ -1278,7 +1278,7 @@
 
 /* ── PIXAR EXPRESSIVE MOUTH & SPEAKING SUPPORT ────────────────── */
 .pixarMouth {
-  transform-origin: 190px 181px;
+  transform-origin: 0px 0px;
   transition: transform 0.18s ease-out;
 }
 
