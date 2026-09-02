@@ -45,8 +45,8 @@ export default function PreviewKrishnaPage() {
                     background: 'rgba(255,255,255,0.04)',
                     border: '1px solid rgba(255,200,61,0.25)',
                     borderRadius: 20,
-                    padding: '20px 40px 10px',
-                    minHeight: 420,
+                    padding: '60px 40px 10px',
+                    minHeight: 460,
                 }}
             >
                 <LittleKrishna

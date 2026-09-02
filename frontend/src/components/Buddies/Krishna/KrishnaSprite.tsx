@@ -254,7 +254,7 @@ export function LittleKrishna({
       {/* ════════════════ LITTLE KRISHNA — MASTER 3D CHARACTER MODEL ════════════════ */}
       <div className={`${styles.krishna} ${getStateClass()}`}>
         <svg
-          viewBox="0 -90 380 570"
+          viewBox="0 -140 380 620"
           className={styles.krishnaSvg}
           style={{ width: '100%', height: '100%', overflow: 'visible' }}
         >
