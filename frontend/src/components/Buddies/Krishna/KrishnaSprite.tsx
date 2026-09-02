@@ -1736,7 +1736,26 @@ export function LittleKrishna({
           {/* ════════════════ LAYER 8: ARMS & SCULPTED HANDS (IN FRONT OF HEAD & BODY) ════════════════ */}
           <g id="canonicalChakraArms" filter="url(#kSoftShadow)">
             {/* ── A. RAISED RIGHT ARM (Viewer's Left - Character's Right) ── */}
-            {/* Upper Arm coming down and out to elbow */}
+            {/* Seamless Deltoid / Shoulder Joint Blend with Torso */}
+            <path
+              d="M 142 198
+                 C 134 196, 118 198, 102 210
+                 C 94 216, 92 222, 94 228
+                 C 96 234, 108 234, 118 226
+                 C 128 218, 138 210, 142 206 Z"
+              fill="url(#kSkinBody)"
+            />
+            {/* Soft Under-Armpit Ambient Shadow */}
+            <path
+              d="M 136 210 C 130 216, 126 226, 134 230"
+              fill="none"
+              stroke="#1E3A8A"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              opacity="0.22"
+            />
+
+            {/* Upper Arm Segment */}
             <path
               d="M 140 200 C 116 196, 94 204, 94 220 L 94 150"
               fill="none"
@@ -1748,42 +1767,46 @@ export function LittleKrishna({
               d="M 140 200 C 116 196, 94 204, 94 220"
               fill="none"
               stroke="#D9ECFF"
-              strokeWidth="5"
-              strokeLinecap="round"
-              opacity="0.5"
-            />
-
-            {/* Forearm rising vertically from elbow to wrist */}
-            <path
-              d="M 94 218 L 94 148"
-              fill="none"
-              stroke="url(#kSkinLimb)"
-              strokeWidth="24"
-              strokeLinecap="round"
-            />
-            <path
-              d="M 92 210 L 92 150"
-              fill="none"
-              stroke="#FFFFFF"
-              strokeWidth="3.2"
+              strokeWidth="4"
               strokeLinecap="round"
               opacity="0.45"
             />
 
-            {/* Gold Armlet on Bicep */}
+            {/* Forearm rising vertically from elbow to wrist */}
+            <path
+              d="M 94 220 L 94 146"
+              fill="none"
+              stroke="url(#kSkinHand)"
+              strokeWidth="24"
+              strokeLinecap="round"
+            />
+            <path
+              d="M 92 212 L 92 148"
+              fill="none"
+              stroke="#FFFFFF"
+              strokeWidth="3.0"
+              strokeLinecap="round"
+              opacity="0.4"
+            />
+
+            {/* Polished 3D Gold Armlet (Bajuband) on Right Bicep */}
             <g transform="translate(108, 196) rotate(14)">
-              <ellipse cx="0" cy="0" rx="10" ry="4.5" fill="url(#kGoldGrad)" stroke="#92400E" strokeWidth="0.8" />
-              <ellipse cx="0" cy="-1" rx="6" ry="2" fill="#FFFFFF" opacity="0.5" />
+              <ellipse cx="0" cy="2" rx="11" ry="5" fill="#0F172A" opacity="0.25" />
+              <path d="M -10 -2 C -4 -5, 4 -5, 10 -2 L 10 2 C 4 -1, -4 -1, -10 2 Z" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
+              <path d="M -9 -1 C -3 -3.5, 3 -3.5, 9 -1" fill="none" stroke="#FEF08A" strokeWidth="1.2" opacity="0.8" />
+              <circle cx="0" cy="-1.5" r="2.8" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
+              <circle cx="0" cy="-1.5" r="1.8" fill="#DC2626" />
+              <circle cx="-0.5" cy="-2.0" r="0.6" fill="#FFFFFF" opacity="0.85" />
             </g>
 
-            {/* 3 Gold Bangles on Raised Wrist */}
-            <g transform="translate(81, 138)">
-              <ellipse cx="13" cy="2" rx="13" ry="3.5" fill="url(#kGoldGrad)" stroke="#92400E" strokeWidth="0.6" />
-              <ellipse cx="10" cy="1" rx="7" ry="1.2" fill="#FFFFFF" opacity="0.65" />
-              <ellipse cx="13" cy="7" rx="13" ry="3.5" fill="url(#kGoldGrad)" stroke="#92400E" strokeWidth="0.6" />
-              <ellipse cx="10" cy="6" rx="7" ry="1.2" fill="#FFFFFF" opacity="0.65" />
-              <ellipse cx="13" cy="12" rx="13" ry="3.5" fill="url(#kGoldGrad)" stroke="#92400E" strokeWidth="0.6" />
-              <ellipse cx="10" cy="11" rx="7" ry="1.2" fill="#FFFFFF" opacity="0.65" />
+            {/* Polished 3D Gold Bangles (Kadas) on Raised Wrist */}
+            <g id="raisedWristBangles" transform="translate(94, 142)">
+              <ellipse cx="0" cy="-5" rx="12.5" ry="3.8" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
+              <ellipse cx="0" cy="-6" rx="9" ry="2.0" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.75" />
+              <ellipse cx="0" cy="0" rx="12.5" ry="3.8" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
+              <ellipse cx="0" cy="-1" rx="9" ry="2.0" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.75" />
+              <ellipse cx="0" cy="5" rx="12.5" ry="3.8" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
+              <ellipse cx="0" cy="4" rx="9" ry="2.0" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.75" />
             </g>
 
             {/* ── 3D SCULPTED TODDLER FIST WITH ERECT INDEX FINGER (Cheek / Ear Level) ── */}
@@ -1791,7 +1814,7 @@ export function LittleKrishna({
               {/* Wrist to Palm Smooth Volumetric Transition */}
               <path
                 d="M -7 16 C -9 12, -9 6, -8 0 C -2 1, 6 1, 10 0 C 11 6, 11 12, 9 16 Z"
-                fill="url(#kSkinLimb)"
+                fill="url(#kSkinHand)"
               />
 
               {/* Chubby Toddler Fist Palm Base */}
@@ -1809,77 +1832,85 @@ export function LittleKrishna({
               {/* Folded Pinky (Outer bottom) */}
               <path
                 d="M 1 9 C 7 8, 13 10, 13 14 C 13 17, 7 18, 1 16 Z"
-                fill="url(#kSkinFace)"
-                stroke="#255BB5"
-                strokeWidth="0.6"
+                fill="url(#kSkinHand)"
               />
               <circle cx="9.5" cy="13.5" r="2.2" fill="url(#kSkinHand)" />
-              <ellipse cx="9" cy="13" rx="1.3" ry="0.9" fill="#FFFFFF" opacity="0.65" />
+              <ellipse cx="9" cy="13" rx="1.3" ry="0.9" fill="#FFFFFF" opacity="0.45" />
 
               {/* Folded Ring Finger (Outer middle) */}
               <path
                 d="M -1 3 C 6 2, 14 4, 14 8.5 C 14 12, 6 12.5, -1 10.5 Z"
-                fill="url(#kSkinFace)"
-                stroke="#255BB5"
-                strokeWidth="0.6"
+                fill="url(#kSkinHand)"
               />
               <circle cx="10.5" cy="8" r="2.4" fill="url(#kSkinHand)" />
-              <ellipse cx="10" cy="7.5" rx="1.4" ry="1.0" fill="#FFFFFF" opacity="0.7" />
+              <ellipse cx="10" cy="7.5" rx="1.4" ry="1.0" fill="#FFFFFF" opacity="0.5" />
 
               {/* Folded Middle Finger (Outer upper) */}
               <path
                 d="M -2 -3 C 6 -4, 14 -2, 14 3 C 14 6.5, 6 7.5, -2 5.5 Z"
-                fill="url(#kSkinFace)"
-                stroke="#255BB5"
-                strokeWidth="0.6"
+                fill="url(#kSkinHand)"
               />
               <circle cx="10.5" cy="2" r="2.5" fill="url(#kSkinHand)" />
-              <ellipse cx="10" cy="1.5" rx="1.5" ry="1.0" fill="#FFFFFF" opacity="0.75" />
+              <ellipse cx="10" cy="1.5" rx="1.5" ry="1.0" fill="#FFFFFF" opacity="0.55" />
 
-              {/* Soft Creases Between Folded Fingers */}
-              <path d="M 2 8.5 C 6 8.5, 10 9.5, 12 11" fill="none" stroke="#1E3A8A" strokeWidth="0.7" opacity="0.25" />
-              <path d="M 1 3 C 5 3, 9 4, 12 5.5" fill="none" stroke="#1E3A8A" strokeWidth="0.7" opacity="0.25" />
+              {/* Soft Ambient Shadows Between Folded Fingers (No harsh outlines) */}
+              <path d="M 2 8.5 C 6 8.5, 10 9.5, 12 11" fill="none" stroke="#1E3A8A" strokeWidth="0.8" opacity="0.18" />
+              <path d="M 1 3 C 5 3, 9 4, 12 5.5" fill="none" stroke="#1E3A8A" strokeWidth="0.8" opacity="0.18" />
 
-              {/* Plump Toddler Thumb (Naturally emerging and folding across front of fist) */}
+              {/* Plump Toddler Thumb (Naturally emerging across front of fist) */}
               <path
                 d="M -9 11 C -14 5, -12 -3, -5 -4 C 1 -4, 3 0, 1 5 C -1 9, -5 12, -9 11 Z"
                 fill="url(#kSkinHand)"
-                stroke="#255BB5"
-                strokeWidth="0.6"
               />
               {/* Thumb 3D Highlight & Pad */}
-              <ellipse cx="-4.5" cy="-0.5" rx="3.2" ry="2.2" fill="#FFFFFF" opacity="0.45" />
-              <circle cx="-1" cy="2.5" r="2.0" fill="url(#kSkinFace)" />
-              <circle cx="-1.2" cy="2.2" r="1.0" fill="#FFFFFF" opacity="0.65" />
-              {/* Subtle Thumb Thenar Crease */}
-              <path d="M -6 4 C -3 5, 0 4, 1 2" fill="none" stroke="#255BB5" strokeWidth="0.7" opacity="0.25" />
+              <ellipse cx="-4.5" cy="-0.5" rx="3.2" ry="2.2" fill="#FFFFFF" opacity="0.35" />
+              <circle cx="-1" cy="2.5" r="2.0" fill="url(#kSkinHand)" />
+              <circle cx="-1.2" cy="2.2" r="1.0" fill="#FFFFFF" opacity="0.5" />
 
               {/* ── Extended Index Finger (Pointing straight up to balance chakra) ── */}
               {/* Base Finger Column */}
               <path
                 d="M -6.8 -8 L -6.8 -34 C -6.8 -39, 0.8 -39, 0.8 -34 L 0.8 -8 Z"
-                fill="url(#kFingerCylinder)"
-                stroke="#255BB5"
-                strokeWidth="0.6"
+                fill="url(#kSkinHand)"
               />
               {/* Soft Rounded Distal Fingertip Bulb */}
-              <ellipse cx="-3.0" cy="-35" rx="4.0" ry="4.5" fill="url(#kSkinFace)" />
-              <ellipse cx="-3.0" cy="-37" rx="2.4" ry="2.8" fill="#FFFFFF" opacity="0.85" />
+              <ellipse cx="-3.0" cy="-35" rx="4.0" ry="4.5" fill="url(#kSkinHand)" />
+              <ellipse cx="-3.0" cy="-37" rx="2.4" ry="2.8" fill="#FFFFFF" opacity="0.6" />
               {/* Soft Dorsal Specular Light Line */}
               <path
                 d="M -3.5 -10 L -3.5 -33"
                 fill="none"
                 stroke="#FFFFFF"
-                strokeWidth="1.8"
+                strokeWidth="1.6"
                 strokeLinecap="round"
-                opacity="0.6"
+                opacity="0.45"
               />
-              {/* Subtle Joint Creases at Knuckles (Gentle transitions, no harsh lines) */}
-              <path d="M -5.8 -21 C -3.5 -20.2, -1.5 -20.2, 0 -21" fill="none" stroke="#255BB5" strokeWidth="0.6" opacity="0.28" />
-              <path d="M -5.8 -29 C -3.5 -28.2, -1.5 -28.2, 0 -29" fill="none" stroke="#255BB5" strokeWidth="0.6" opacity="0.28" />
+              {/* Subtle Ambient Creases at Knuckles */}
+              <path d="M -5.8 -21 C -3.5 -20.2, -1.5 -20.2, 0 -21" fill="none" stroke="#1E3A8A" strokeWidth="0.7" opacity="0.18" />
+              <path d="M -5.8 -29 C -3.5 -28.2, -1.5 -28.2, 0 -29" fill="none" stroke="#1E3A8A" strokeWidth="0.7" opacity="0.18" />
             </g>
 
             {/* ── B. LEFT ARM ON HIP (Viewer's Right) ── */}
+            {/* Seamless Deltoid / Shoulder Joint Blend with Torso */}
+            <path
+              d="M 238 198
+                 C 246 196, 262 198, 274 210
+                 C 280 216, 282 222, 280 228
+                 C 278 234, 266 234, 256 226
+                 C 246 218, 240 210, 238 206 Z"
+              fill="url(#kSkinBody)"
+            />
+            {/* Soft Under-Armpit Ambient Shadow */}
+            <path
+              d="M 244 210 C 250 216, 254 226, 246 230"
+              fill="none"
+              stroke="#1E3A8A"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              opacity="0.22"
+            />
+
+            {/* Upper Arm Segment */}
             <path
               d="M 240 200 C 264 222, 276 244, 268 270"
               fill="none"
@@ -1891,15 +1922,16 @@ export function LittleKrishna({
               d="M 240 200 C 264 222, 276 244, 268 270"
               fill="none"
               stroke="#D9ECFF"
-              strokeWidth="5"
+              strokeWidth="4"
               strokeLinecap="round"
               opacity="0.45"
             />
 
+            {/* Forearm Segment to Wrist */}
             <path
               d="M 268 270 C 262 286, 248 294, 234 294"
               fill="none"
-              stroke="url(#kSkinLimb)"
+              stroke="url(#kSkinHand)"
               strokeWidth="24"
               strokeLinecap="round"
             />
@@ -1912,18 +1944,24 @@ export function LittleKrishna({
               opacity="0.4"
             />
 
+            {/* Polished 3D Gold Armlet (Bajuband) on Left Bicep */}
             <g transform="translate(254, 228) rotate(-18)">
-              <ellipse cx="0" cy="0" rx="10" ry="4.5" fill="url(#kGoldGrad)" stroke="#92400E" strokeWidth="0.8" />
-              <ellipse cx="0" cy="-1" rx="6" ry="2" fill="#FFFFFF" opacity="0.5" />
+              <ellipse cx="0" cy="2" rx="11" ry="5" fill="#0F172A" opacity="0.25" />
+              <path d="M -10 -2 C -4 -5, 4 -5, 10 -2 L 10 2 C 4 -1, -4 -1, -10 2 Z" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
+              <path d="M -9 -1 C -3 -3.5, 3 -3.5, 9 -1" fill="none" stroke="#FEF08A" strokeWidth="1.2" opacity="0.8" />
+              <circle cx="0" cy="-1.5" r="2.8" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
+              <circle cx="0" cy="-1.5" r="1.8" fill="#DC2626" />
+              <circle cx="-0.5" cy="-2.0" r="0.6" fill="#FFFFFF" opacity="0.85" />
             </g>
 
-            <g transform="translate(238, 290) rotate(-28)">
-              <ellipse cx="12" cy="0" rx="13" ry="3.5" fill="url(#kGoldGrad)" stroke="#92400E" strokeWidth="0.6" />
-              <ellipse cx="10" cy="-1" rx="7" ry="1.2" fill="#FFFFFF" opacity="0.6" />
-              <ellipse cx="12" cy="5" rx="13" ry="3.5" fill="url(#kGoldGrad)" stroke="#92400E" strokeWidth="0.6" />
-              <ellipse cx="10" cy="4" rx="7" ry="1.2" fill="#FFFFFF" opacity="0.6" />
-              <ellipse cx="12" cy="10" rx="13" ry="3.5" fill="url(#kGoldGrad)" stroke="#92400E" strokeWidth="0.6" />
-              <ellipse cx="10" cy="9" rx="7" ry="1.2" fill="#FFFFFF" opacity="0.6" />
+            {/* Polished 3D Gold Bangles (Kadas) on Left Wrist */}
+            <g id="hipWristBangles" transform="translate(236, 290) rotate(-28)">
+              <ellipse cx="0" cy="-5" rx="12.5" ry="3.8" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
+              <ellipse cx="0" cy="-6" rx="9" ry="2.0" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.75" />
+              <ellipse cx="0" cy="0" rx="12.5" ry="3.8" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
+              <ellipse cx="0" cy="-1" rx="9" ry="2.0" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.75" />
+              <ellipse cx="0" cy="5" rx="12.5" ry="3.8" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
+              <ellipse cx="0" cy="4" rx="9" ry="2.0" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.75" />
             </g>
 
             {/* 3D Toddler Hand Resting Naturally on Hip */}
@@ -1932,77 +1970,65 @@ export function LittleKrishna({
               <path
                 d="M 10 -8 C 12 -4, 14 0, 14 6 C 14 12, 10 16, 4 17 C -4 17, -10 12, -11 5 C -11 -3, -5 -9, 3 -9 C 6 -9, 8 -9, 10 -8 Z"
                 fill="url(#kSkinHand)"
-                stroke="#255BB5"
-                strokeWidth="0.6"
               />
               {/* Soft 3D Dorsal Hand Cushion Highlight */}
               <ellipse cx="2" cy="3" rx="8" ry="6" fill="url(#kHandVolume)" />
-              <ellipse cx="8" cy="-2" rx="4" ry="5" fill="#FFFFFF" opacity="0.25" />
+              <ellipse cx="8" cy="-2" rx="4" ry="5" fill="#FFFFFF" opacity="0.2" />
 
-              {/* Cute Toddler Knuckle Dimple Accents (Soft depressions where knuckles are) */}
-              <circle cx="-6" cy="7.5" r="0.9" fill="#1E3A8A" opacity="0.22" />
-              <circle cx="-1" cy="9.5" r="0.9" fill="#1E3A8A" opacity="0.22" />
-              <circle cx="4" cy="9.5" r="0.9" fill="#1E3A8A" opacity="0.22" />
-              <circle cx="9" cy="7.5" r="0.9" fill="#1E3A8A" opacity="0.22" />
+              {/* Cute Toddler Knuckle Dimple Accents (Soft ambient depressions) */}
+              <circle cx="-6" cy="7.5" r="0.9" fill="#1E3A8A" opacity="0.18" />
+              <circle cx="-1" cy="9.5" r="0.9" fill="#1E3A8A" opacity="0.18" />
+              <circle cx="4" cy="9.5" r="0.9" fill="#1E3A8A" opacity="0.18" />
+              <circle cx="9" cy="7.5" r="0.9" fill="#1E3A8A" opacity="0.18" />
 
               {/* Thumb (Clearly separated, curving back toward the waist) */}
               <path
                 d="M -8 -2 C -14 -5, -18 -1, -17 4 C -16 8, -10 9, -7 5 Z"
-                fill="url(#kSkinFace)"
-                stroke="#255BB5"
-                strokeWidth="0.6"
+                fill="url(#kSkinHand)"
               />
-              <ellipse cx="-12.5" cy="1.5" rx="2.5" ry="1.6" fill="#FFFFFF" opacity="0.5" />
+              <ellipse cx="-12.5" cy="1.5" rx="2.5" ry="1.6" fill="#FFFFFF" opacity="0.35" />
               <circle cx="-13" cy="2.5" r="1.4" fill="url(#kSkinHand)" />
 
               {/* Index Finger (Closest to navel, gracefully curving down over hip) */}
               <path
                 d="M -9 7 C -11 13, -11 19, -8 24 C -6.5 26.5, -3 26.5, -2 24 C 0 19, 0 13, -2 7 Z"
-                fill="url(#kFingerCylinder)"
-                stroke="#255BB5"
-                strokeWidth="0.6"
+                fill="url(#kSkinHand)"
               />
-              <circle cx="-5" cy="24" r="2.1" fill="url(#kSkinFace)" />
-              <ellipse cx="-5" cy="23.5" rx="1.1" ry="0.8" fill="#FFFFFF" opacity="0.8" />
-              <ellipse cx="-5" cy="14" rx="1.2" ry="4.0" fill="#FFFFFF" opacity="0.35" />
+              <circle cx="-5" cy="24" r="2.1" fill="url(#kSkinHand)" />
+              <ellipse cx="-5" cy="23.5" rx="1.1" ry="0.8" fill="#FFFFFF" opacity="0.5" />
+              <ellipse cx="-5" cy="14" rx="1.2" ry="4.0" fill="#FFFFFF" opacity="0.25" />
 
               {/* Middle Finger (Longest, centered and plump) */}
               <path
                 d="M -2 9 C -4 15, -4 21, -1 27 C 0.5 29.5, 4 29.5, 5 27 C 7 21, 7 15, 5 9 Z"
-                fill="url(#kFingerCylinder)"
-                stroke="#255BB5"
-                strokeWidth="0.6"
+                fill="url(#kSkinHand)"
               />
-              <circle cx="2" cy="27" r="2.2" fill="url(#kSkinFace)" />
-              <ellipse cx="2" cy="26.5" rx="1.2" ry="0.8" fill="#FFFFFF" opacity="0.85" />
-              <ellipse cx="2" cy="16" rx="1.3" ry="4.5" fill="#FFFFFF" opacity="0.38" />
+              <circle cx="2" cy="27" r="2.2" fill="url(#kSkinHand)" />
+              <ellipse cx="2" cy="26.5" rx="1.2" ry="0.8" fill="#FFFFFF" opacity="0.55" />
+              <ellipse cx="2" cy="16" rx="1.3" ry="4.5" fill="#FFFFFF" opacity="0.28" />
 
               {/* Ring Finger (Softly following middle finger curve) */}
               <path
                 d="M 5 9 C 3 15, 3 20, 5 25 C 6.5 27.5, 10 27.5, 11 25 C 13 20, 13 15, 12 9 Z"
-                fill="url(#kFingerCylinder)"
-                stroke="#255BB5"
-                strokeWidth="0.6"
+                fill="url(#kSkinHand)"
               />
-              <circle cx="8" cy="25" r="2.1" fill="url(#kSkinFace)" />
-              <ellipse cx="8" cy="24.5" rx="1.1" ry="0.8" fill="#FFFFFF" opacity="0.8" />
-              <ellipse cx="8" cy="15" rx="1.2" ry="4.0" fill="#FFFFFF" opacity="0.35" />
+              <circle cx="8" cy="25" r="2.1" fill="url(#kSkinHand)" />
+              <ellipse cx="8" cy="24.5" rx="1.1" ry="0.8" fill="#FFFFFF" opacity="0.5" />
+              <ellipse cx="8" cy="15" rx="1.2" ry="4.0" fill="#FFFFFF" opacity="0.25" />
 
               {/* Pinky Finger (Cute, short, delicate toddler outer finger) */}
               <path
                 d="M 12 7 C 11 12, 11 16, 12 20 C 13.2 22, 16 22, 17 20 C 18 16, 18 12, 17 7 Z"
-                fill="url(#kFingerCylinder)"
-                stroke="#255BB5"
-                strokeWidth="0.6"
+                fill="url(#kSkinHand)"
               />
-              <circle cx="14.5" cy="20" r="1.8" fill="url(#kSkinFace)" />
-              <ellipse cx="14.5" cy="19.5" rx="1.0" ry="0.7" fill="#FFFFFF" opacity="0.75" />
-              <ellipse cx="14.5" cy="13" rx="1.0" ry="3.0" fill="#FFFFFF" opacity="0.3" />
+              <circle cx="14.5" cy="20" r="1.8" fill="url(#kSkinHand)" />
+              <ellipse cx="14.5" cy="19.5" rx="1.0" ry="0.7" fill="#FFFFFF" opacity="0.45" />
+              <ellipse cx="14.5" cy="13" rx="1.0" ry="3.0" fill="#FFFFFF" opacity="0.2" />
 
-              {/* Soft Creases between Fingers at Hand Base */}
-              <path d="M -5.5 8.5 L -5.5 12" fill="none" stroke="#1E3A8A" strokeWidth="0.6" opacity="0.25" />
-              <path d="M 1.5 10 L 1.5 13.5" fill="none" stroke="#1E3A8A" strokeWidth="0.6" opacity="0.25" />
-              <path d="M 8.5 9.5 L 8.5 13" fill="none" stroke="#1E3A8A" strokeWidth="0.6" opacity="0.25" />
+              {/* Soft Ambient Shadows between Fingers at Hand Base (No stroke lines) */}
+              <path d="M -5.5 8.5 L -5.5 12" fill="none" stroke="#1E3A8A" strokeWidth="0.7" opacity="0.16" />
+              <path d="M 1.5 10 L 1.5 13.5" fill="none" stroke="#1E3A8A" strokeWidth="0.7" opacity="0.16" />
+              <path d="M 8.5 9.5 L 8.5 13" fill="none" stroke="#1E3A8A" strokeWidth="0.7" opacity="0.16" />
             </g>
           </g>
 
