@@ -162,7 +162,7 @@ export const ParametricHand = ({ isFlipped = false, fingers }: { isFlipped?: boo
   );
 };
 
-export type KrishnaPose = 'crossed' | 'chakra' | 'standing';
+export type KrishnaPose = 'crossHands' | 'chakra' | 'standing';
 
 export type ArmPoseConfig = {
   left: { shoulder: number, elbow: number, wrist: number, fingers?: ArmFingersConfig },
@@ -178,9 +178,9 @@ export const POSE_CONFIGS: Record<KrishnaPose, ArmPoseConfig> = {
     left: { shoulder: 15, elbow: -10, wrist: 0, fingers: { thumb: 0, index: 15, middle: 20, ring: 25, little: 30 } },
     right: { shoulder: -15, elbow: 10, wrist: 0, fingers: { thumb: 0, index: 15, middle: 20, ring: 25, little: 30 } }
   },
-  crossed: {
-    left: { shoulder: 135, elbow: -110, wrist: -20, fingers: { thumb: 0, index: 0, middle: 0, ring: 0, little: 0 } },
-    right: { shoulder: -45, elbow: 110, wrist: 20, fingers: { thumb: 0, index: 0, middle: 0, ring: 0, little: 0 } }
+  crossHands: { // Crossed naturally in front of chest
+    left: { shoulder: -40, elbow: -85, wrist: -10, fingers: { thumb: 10, index: 15, middle: 20, ring: 25, little: 30 } },
+    right: { shoulder: 45, elbow: 85, wrist: 10, fingers: { thumb: 10, index: 15, middle: 20, ring: 25, little: 30 } }
   }
 };
 

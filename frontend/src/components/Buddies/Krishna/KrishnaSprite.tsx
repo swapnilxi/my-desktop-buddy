@@ -6,7 +6,7 @@ import styles from './krishna.module.css';
 import krishnaHairImg from './krishna_hair.png';
 import { KrishnaArms } from './krishna_arms';
 
-export type KrishnaPose = 'crossed' | 'chakra' | 'standing';
+export type KrishnaPose = 'crossHands' | 'chakra' | 'standing';
 
 export type KrishnaState =
   | 'idle'
@@ -43,7 +43,7 @@ export function LittleKrishna({
   state: stateProp,
   mood = 'idle',
   isSpeaking = false,
-  pose = 'standing',
+  pose = 'chakra',
   className = '',
   name = 'Little Krishna',
   greeting = 'Radhe Radhe! Let us create something wonderful! 🪶✨',
