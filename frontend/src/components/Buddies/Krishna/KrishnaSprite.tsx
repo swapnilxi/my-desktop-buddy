@@ -14,12 +14,14 @@ export type KrishnaState =
   | 'motivation'
   | 'relax'
   | 'greeting'
-  | 'clicked';
+  | 'clicked'
+  | 'speaking';
 
 export interface KrishnaProps {
   size?: 'sm' | 'md' | 'lg';
   state?: KrishnaState;
-  mood?: 'idle' | 'happy' | 'wave' | 'chakra' | BuddyMood;
+  mood?: 'idle' | 'happy' | 'wave' | 'chakra' | 'speaking' | BuddyMood;
+  isSpeaking?: boolean;
   pose?: KrishnaPose;
   className?: string;
   name?: string;
@@ -38,6 +40,7 @@ export function LittleKrishna({
   size = 'md',
   state: stateProp,
   mood = 'idle',
+  isSpeaking = false,
   pose = 'chakra',
   className = '',
   name = 'Little Krishna',
@@ -53,6 +56,7 @@ export function LittleKrishna({
 }: KrishnaProps) {
   const deriveDefaultState = (): KrishnaState => {
     if (stateProp) return stateProp;
+    if (mood === 'speaking' || isSpeaking) return 'speaking';
     if (mood === 'happy' || mood === 'excited') return 'happy';
     if (mood === 'thinking') return 'thinking';
     if (mood === 'waving' || mood === 'wave') return 'greeting';
@@ -61,6 +65,7 @@ export function LittleKrishna({
   };
 
   const [activeState, setActiveState] = useState<KrishnaState>(deriveDefaultState());
+  const isSpeakingActive = activeState === 'speaking' || mood === 'speaking' || isSpeaking || (!!greeting && activeState === 'greeting');
   const [isBlinking, setIsBlinking] = useState(false);
   const autoReturnTimer = useRef<NodeJS.Timeout | null>(null);
 
@@ -1630,22 +1635,22 @@ export function LittleKrishna({
                   />
                 </g>
 
-                {/* ── Left Eye (Big Doe-Like Pixar 3D Eye) ── */}
-                <g id="leftEyeGroup" transform="translate(137, 121)">
+                {/* ── Left Eye (Cute Soft Almond-Shaped 3D Child Eye) ── */}
+                <g id="leftEyeGroup" transform="translate(135, 120)">
                   <clipPath id="kLeftEyeClip">
-                    <path d="M 0 17 C 7 -4, 35 -4, 42 17 C 35 38, 7 38, 0 17 Z" />
+                    <path d="M -1 16.2 C 6 -1.5, 33 -1.5, 46 17.8 C 35 36.5, 10 36.0, -1 16.2 Z" />
                   </clipPath>
 
                   {/* Eye Socket Ambient Shadow */}
                   <path
-                    d="M -2 16 C 6 -5, 36 -5, 44 16 C 36 40, 6 40, -2 16 Z"
+                    d="M -3 15.2 C 4 -3.0, 35 -3.0, 48 16.8 C 37 38.5, 8 38.0, -3 15.2 Z"
                     fill="#1E3A8A"
                     opacity="0.12"
                   />
 
                   {/* Sclera (Warm Natural White) */}
                   <path
-                    d="M 0 17 C 7 -4, 35 -4, 42 17 C 35 38, 7 38, 0 17 Z"
+                    d="M -1 16.2 C 6 -1.5, 33 -1.5, 46 17.8 C 35 36.5, 10 36.0, -1 16.2 Z"
                     fill="#F6F9FC"
                   />
 
@@ -1653,37 +1658,37 @@ export function LittleKrishna({
                   <g clipPath="url(#kLeftEyeClip)">
                     {/* Upper Eyeball Drop Shadow */}
                     <path
-                      d="M 0 17 C 7 -4, 35 -4, 42 17 C 35 11, 7 11, 0 17 Z"
+                      d="M -1 16.2 C 6 -1.5, 33 -1.5, 46 17.8 C 33 11.0, 6 11.0, -1 16.2 Z"
                       fill="#1E3A8A"
                       opacity="0.18"
                     />
 
                     {/* Iris */}
                     <g className={styles.iris}>
-                      {/* Huge Warm Amber/Chocolate Pixar Iris */}
-                      <circle cx="21.5" cy="17" r="15.5" fill="url(#kIrisGrad)" />
+                      {/* Warm Amber/Chocolate Pixar Iris */}
+                      <circle cx="22.5" cy="17.5" r="16.0" fill="url(#kIrisGrad)" />
                       {/* Soft Limbal Ring */}
-                      <circle cx="21.5" cy="17" r="15.5" fill="none" stroke="#1A0802" strokeWidth="1.0" opacity="0.8" />
+                      <circle cx="22.5" cy="17.5" r="16.0" fill="none" stroke="#1A0802" strokeWidth="1.0" opacity="0.8" />
 
                       {/* Deep Velvety Circular Pupil */}
-                      <circle cx="21.5" cy="17" r="9.0" fill="url(#kPupilGrad)" />
-                      <circle cx="21.5" cy="17" r="7.6" fill="#0A0402" />
+                      <circle cx="22.5" cy="17.5" r="9.3" fill="url(#kPupilGrad)" />
+                      <circle cx="22.5" cy="17.5" r="7.8" fill="#0A0402" />
 
                       {/* Warm Amber Iris Caustic Reflection Arc */}
-                      <ellipse cx="21.5" cy="24.1" rx="8.2" ry="2.7" fill="#FBBF24" opacity="0.55" />
+                      <ellipse cx="22.5" cy="24.8" rx="8.5" ry="2.8" fill="#FBBF24" opacity="0.55" />
 
                       {/* Soulful Natural Pixar Catchlights */}
-                      <circle cx="25.8" cy="12.3" r="4.0" fill="#FFFFFF" opacity="0.98" />
-                      <circle cx="16.6" cy="21.7" r="1.8" fill="#FFFFFF" opacity="0.8" />
-                      <circle cx="27.2" cy="19.1" r="1.0" fill="#FFFFFF" opacity="0.55" />
+                      <circle cx="26.8" cy="12.5" r="4.2" fill="#FFFFFF" opacity="0.98" />
+                      <circle cx="17.2" cy="22.2" r="1.9" fill="#FFFFFF" opacity="0.8" />
+                      <circle cx="28.2" cy="19.5" r="1.1" fill="#FFFFFF" opacity="0.55" />
                     </g>
 
                     {/* Inner Corner Tear Duct (Caruncle) Warmth */}
-                    <circle cx="40.5" cy="17.0" r="2.0" fill="#FDA4AF" opacity="0.35" />
+                    <circle cx="44.5" cy="17.8" r="2.2" fill="#FDA4AF" opacity="0.35" />
 
                     {/* Animated Upper Eyelid for Blinking */}
                     <path
-                      d="M -2 -4 H 46 V 36 H -2 Z"
+                      d="M -4 -6 H 50 V 38 H -4 Z"
                       fill="#5B9AFA"
                       className={`${styles.eyelidUpper} ${isBlinking ? styles.blinkActive : ''}`}
                     />
@@ -1691,7 +1696,7 @@ export function LittleKrishna({
 
                   {/* Soft Double-Eyelid Crease */}
                   <path
-                    d="M 4 7 C 13 -2, 29 -2, 38 7"
+                    d="M 3 6 C 12 -4, 30 -4, 40 5"
                     fill="none"
                     stroke="#255BB5"
                     strokeWidth="1.1"
@@ -1701,7 +1706,7 @@ export function LittleKrishna({
 
                   {/* Gentle Lower Lid Smiling Crinkle */}
                   <path
-                    d="M 7 37 C 16 40, 26 40, 35 37"
+                    d="M 6 38.5 C 16 41.5, 28 41.5, 37 38.5"
                     fill="none"
                     stroke="#255BB5"
                     strokeWidth="0.8"
@@ -1711,40 +1716,40 @@ export function LittleKrishna({
 
                   {/* Elegant Tapered Upper Lash Line */}
                   <path
-                    d="M -1 17 C 7 -4, 35 -4, 43 17"
+                    d="M -2 16.2 C 5 -3.0, 34 -3.0, 47 17.8"
                     fill="none"
                     stroke="#0F172A"
-                    strokeWidth="3.2"
+                    strokeWidth="3.6"
                     strokeLinecap="round"
                   />
 
                   {/* Delicate Soft Lower Lash Contour */}
                   <path
-                    d="M 42 17 C 35 38, 7 38, 0 17"
+                    d="M 46 17.8 C 35 36.5, 10 36.0, -1 16.2"
                     fill="none"
                     stroke="#1E293B"
-                    strokeWidth="1.0"
+                    strokeWidth="1.1"
                     strokeLinecap="round"
                     opacity="0.35"
                   />
                 </g>
 
-                {/* ── Right Eye (Big Doe-Like Pixar 3D Eye) ── */}
-                <g id="rightEyeGroup" transform="translate(200, 121)">
+                {/* ── Right Eye (Cute Soft Almond-Shaped 3D Child Eye) ── */}
+                <g id="rightEyeGroup" transform="translate(198, 120)">
                   <clipPath id="kRightEyeClip">
-                    <path d="M 0 17 C 7 -4, 35 -4, 42 17 C 35 38, 7 38, 0 17 Z" />
+                    <path d="M -1 17.8 C 12 -1.5, 39 -1.5, 46 16.2 C 35 36.0, 10 36.5, -1 17.8 Z" />
                   </clipPath>
 
                   {/* Eye Socket Ambient Shadow */}
                   <path
-                    d="M -2 16 C 6 -5, 36 -5, 44 16 C 36 40, 6 40, -2 16 Z"
+                    d="M -3 16.8 C 10 -3.0, 41 -3.0, 48 15.2 C 37 38.0, 8 38.5, -3 16.8 Z"
                     fill="#1E3A8A"
                     opacity="0.12"
                   />
 
                   {/* Sclera (Warm Natural White) */}
                   <path
-                    d="M 0 17 C 7 -4, 35 -4, 42 17 C 35 38, 7 38, 0 17 Z"
+                    d="M -1 17.8 C 12 -1.5, 39 -1.5, 46 16.2 C 35 36.0, 10 36.5, -1 17.8 Z"
                     fill="#F6F9FC"
                   />
 
@@ -1752,37 +1757,37 @@ export function LittleKrishna({
                   <g clipPath="url(#kRightEyeClip)">
                     {/* Upper Eyeball Drop Shadow */}
                     <path
-                      d="M 0 17 C 7 -4, 35 -4, 42 17 C 35 11, 7 11, 0 17 Z"
+                      d="M -1 17.8 C 12 -1.5, 39 -1.5, 46 16.2 C 39 11.0, 12 11.0, -1 17.8 Z"
                       fill="#1E3A8A"
                       opacity="0.18"
                     />
 
                     {/* Iris */}
                     <g className={styles.iris}>
-                      {/* Huge Warm Amber/Chocolate Pixar Iris */}
-                      <circle cx="20.5" cy="17" r="15.5" fill="url(#kIrisGrad)" />
+                      {/* Warm Amber/Chocolate Pixar Iris */}
+                      <circle cx="22.5" cy="17.5" r="16.0" fill="url(#kIrisGrad)" />
                       {/* Soft Limbal Ring */}
-                      <circle cx="20.5" cy="17" r="15.5" fill="none" stroke="#1A0802" strokeWidth="1.0" opacity="0.8" />
+                      <circle cx="22.5" cy="17.5" r="16.0" fill="none" stroke="#1A0802" strokeWidth="1.0" opacity="0.8" />
 
                       {/* Deep Velvety Circular Pupil */}
-                      <circle cx="20.5" cy="17" r="9.0" fill="url(#kPupilGrad)" />
-                      <circle cx="20.5" cy="17" r="7.6" fill="#0A0402" />
+                      <circle cx="22.5" cy="17.5" r="9.3" fill="url(#kPupilGrad)" />
+                      <circle cx="22.5" cy="17.5" r="7.8" fill="#0A0402" />
 
                       {/* Warm Amber Iris Caustic Reflection Arc */}
-                      <ellipse cx="20.5" cy="24.1" rx="8.2" ry="2.7" fill="#FBBF24" opacity="0.55" />
+                      <ellipse cx="22.5" cy="24.8" rx="8.5" ry="2.8" fill="#FBBF24" opacity="0.55" />
 
                       {/* Soulful Natural Pixar Catchlights */}
-                      <circle cx="24.8" cy="12.3" r="4.0" fill="#FFFFFF" opacity="0.98" />
-                      <circle cx="15.6" cy="21.7" r="1.8" fill="#FFFFFF" opacity="0.8" />
-                      <circle cx="26.2" cy="19.1" r="1.0" fill="#FFFFFF" opacity="0.55" />
+                      <circle cx="26.8" cy="12.5" r="4.2" fill="#FFFFFF" opacity="0.98" />
+                      <circle cx="17.2" cy="22.2" r="1.9" fill="#FFFFFF" opacity="0.8" />
+                      <circle cx="28.2" cy="19.5" r="1.1" fill="#FFFFFF" opacity="0.55" />
                     </g>
 
                     {/* Inner Corner Tear Duct (Caruncle) Warmth */}
-                    <circle cx="1.5" cy="17.0" r="2.0" fill="#FDA4AF" opacity="0.35" />
+                    <circle cx="0.5" cy="17.8" r="2.2" fill="#FDA4AF" opacity="0.35" />
 
                     {/* Animated Upper Eyelid for Blinking */}
                     <path
-                      d="M -2 -4 H 46 V 36 H -2 Z"
+                      d="M -4 -6 H 50 V 38 H -4 Z"
                       fill="#5B9AFA"
                       className={`${styles.eyelidUpper} ${isBlinking ? styles.blinkActive : ''}`}
                     />
@@ -1790,7 +1795,7 @@ export function LittleKrishna({
 
                   {/* Soft Double-Eyelid Crease */}
                   <path
-                    d="M 3 7 C 12 -2, 28 -2, 37 7"
+                    d="M 5 5 C 15 -4, 33 -4, 42 6"
                     fill="none"
                     stroke="#255BB5"
                     strokeWidth="1.1"
@@ -1800,7 +1805,7 @@ export function LittleKrishna({
 
                   {/* Gentle Lower Lid Smiling Crinkle */}
                   <path
-                    d="M 5 37 C 14 40, 24 40, 33 37"
+                    d="M 8 38.5 C 17 41.5, 29 41.5, 39 38.5"
                     fill="none"
                     stroke="#255BB5"
                     strokeWidth="0.8"
@@ -1810,19 +1815,19 @@ export function LittleKrishna({
 
                   {/* Elegant Tapered Upper Lash Line */}
                   <path
-                    d="M -1 17 C 7 -4, 35 -4, 43 17"
+                    d="M -2 17.8 C 11 -3.0, 40 -3.0, 47 16.2"
                     fill="none"
                     stroke="#0F172A"
-                    strokeWidth="3.2"
+                    strokeWidth="3.6"
                     strokeLinecap="round"
                   />
 
                   {/* Delicate Soft Lower Lash Contour */}
                   <path
-                    d="M 0 17 C 7 38, 35 38, 42 17"
+                    d="M -1 17.8 C 10 36.5, 35 36.0, 46 16.2"
                     fill="none"
                     stroke="#1E293B"
-                    strokeWidth="1.0"
+                    strokeWidth="1.1"
                     strokeLinecap="round"
                     opacity="0.35"
                   />
@@ -1885,31 +1890,26 @@ export function LittleKrishna({
                 </g>
 
                 {/* ── Pixar Stylized Little Krishna Smile & Expressive Mouth Group ── */}
-                <g transform="translate(190, 181)">
+                <g transform="translate(190, 183)">
                   <g
                     id="lipsGroup"
-                    className={`${styles.pixarMouth} ${mood === 'speaking' ? styles.mouthSpeaking : ''}`}
+                    className={`${styles.pixarMouth} ${isSpeakingActive ? styles.mouthSpeaking : ''}`}
                   >
                     {/* ── Pure HTML/CSS 3D Little Krishna Mouth (Requested by user) ── */}
-                    <foreignObject x="-16" y="-12" width="32" height="24">
-                      <div className={styles.mouthContainer}>
+                    <foreignObject x="-22" y="-12" width="44" height="24">
+                      <div className={`${styles.mouthContainer} ${isSpeakingActive ? styles.mouthSpeaking : ''}`}>
                         {/* Subtle skin glow above upper lip */}
                         <div className={styles.mouthSkinHighlight} />
 
-                        {/* Main mouth structure group */}
+                        {/* Main mouth structure group — clean smiling outline only */}
                         <div className={styles.mouthGroup}>
-                          {/* Upper lip with shallow arc and Cupid center dip */}
-                          <div className={styles.upperLip}>
-                            <div className={styles.lipLeft} />
-                            <div className={styles.lipRight} />
-                          </div>
-
-                          {/* Mouth seam with upward curved smile corners */}
+                          {/* Elegant Clean Smiling Line Outline */}
                           <div className={styles.mouthSeam} />
 
-                          {/* Lower lip with specular highlight */}
-                          <div className={styles.lowerLip}>
-                            <div className={styles.lipHighlight} />
+                          {/* Speaking Oral Cavity (smoothly flexes & articulates during speech) */}
+                          <div className={styles.speakingCavity}>
+                            <div className={styles.teethBar} />
+                            <div className={styles.tongue} />
                           </div>
                         </div>
 

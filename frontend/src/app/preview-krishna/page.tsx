@@ -13,6 +13,7 @@ const STATES: KrishnaState[] = [
     'relax',
     'greeting',
     'clicked',
+    'speaking',
 ];
 
 export default function PreviewKrishnaPage() {

@@ -1338,9 +1338,9 @@
 
 .mouthSkinHighlight {
   position: absolute;
-  top: 2px;
-  width: 10px;
-  height: 3px;
+  top: 1.5px;
+  width: 12px;
+  height: 2.5px;
   background: radial-gradient(ellipse at center, rgba(235, 245, 255, 0.45) 0%, rgba(235, 245, 255, 0) 70%);
   border-radius: 50%;
   z-index: 0;
@@ -1349,8 +1349,8 @@
 .mouthShadow {
   position: absolute;
   bottom: 2px;
-  width: 18px;
-  height: 5px;
+  width: 22px;
+  height: 4.5px;
   background: radial-gradient(ellipse at center, rgba(30, 58, 138, 0.28) 0%, rgba(30, 58, 138, 0) 70%);
   border-radius: 50%;
   z-index: 0;
@@ -1362,92 +1362,176 @@
   flex-direction: column;
   align-items: center;
   z-index: 1;
-  width: 22px;
+  width: 24px;
   height: 10px;
 }
 
-.upperLip {
-  position: absolute;
-  top: 0px;
-  width: 18px;
-  height: 3.5px;
-  display: flex;
-  justify-content: center;
-  z-index: 1;
-}
-
-.lipLeft, .lipRight {
-  width: 9px;
-  height: 3.5px;
-  background: linear-gradient(to bottom, #F9A8B9 0%, #E36B85 50%, #B8435C 100%);
-  box-shadow: inset 0 0.8px 0.5px rgba(255, 255, 255, 0.5), 0 0 0.5px rgba(139, 46, 66, 0.6);
-  position: relative;
-}
-
-.lipLeft {
-  border-radius: 7px 3px 1px 2px;
-  transform: rotate(-7deg);
-  transform-origin: bottom right;
-  margin-right: -0.3px;
-}
-
-.lipRight {
-  border-radius: 3px 7px 2px 1px;
-  transform: rotate(7deg);
-  transform-origin: bottom left;
-  margin-left: -0.3px;
-}
-
+/* ── ELEGANT CLEAN SMILING OUTLINE ONLY ────────────────── */
 .mouthSeam {
-  position: absolute;
-  top: 1.8px;
-  width: 19px;
-  height: 2.5px;
-  border-bottom: 1.2px solid #702235;
-  border-radius: 0 0 10px 10px;
+  position: relative;
+  top: 1.0px;
+  width: 22px;
+  height: 4.5px;
+  border-bottom: 2.2px solid #5A1022;
+  border-radius: 0 0 16px 16px;
   z-index: 2;
-  box-shadow: 0 0.5px 0.5px rgba(74, 11, 26, 0.25);
+  box-shadow: 0 0.8px 1px rgba(74, 11, 26, 0.3);
 }
 
+/* Soft upturned smile corners */
 .mouthSeam::before, .mouthSeam::after {
   content: "";
   position: absolute;
-  top: 0px;
-  width: 3.5px;
-  height: 2px;
-  border-bottom: 1px solid #702235;
+  top: -1.0px;
+  width: 4.8px;
+  height: 3.0px;
+  border-bottom: 1.8px solid #5A1022;
 }
 
 .mouthSeam::before {
-  left: -1.5px;
-  border-radius: 0 0 0 4px;
-  transform: rotate(-22deg);
+  left: -2.4px;
+  border-radius: 0 0 0 5px;
+  transform: rotate(-38deg);
 }
 
 .mouthSeam::after {
-  right: -1.5px;
-  border-radius: 0 0 4px 0;
-  transform: rotate(22deg);
-}
-
-.lowerLip {
-  position: absolute;
-  top: 3.2px;
-  width: 15px;
-  height: 4.5px;
-  background: radial-gradient(ellipse at 50% 25%, #FFE2EA 0%, #F593A8 40%, #D45B74 75%, #A8324C 100%);
-  border-radius: 50% 50% 50% 50% / 20% 20% 80% 80%;
-  box-shadow: 0 0.8px 1px rgba(139, 46, 66, 0.5), inset 0 -0.8px 1px rgba(112, 34, 53, 0.7);
-  z-index: 0;
-  display: flex;
-  justify-content: center;
+  right: -2.4px;
+  border-radius: 0 0 5px 0;
+  transform: rotate(38deg);
 }
 
 .lipHighlight {
-  margin-top: 1.2px;
-  width: 4px;
-  height: 1.2px;
-  background: rgba(255, 255, 255, 0.85);
+  margin-top: 1.0px;
+  width: 4.8px;
+  height: 1.1px;
+  background: rgba(255, 255, 255, 0.88);
   border-radius: 50%;
   box-shadow: 0 0 2px rgba(255, 255, 255, 0.9);
+}
+
+.lipHighlight {
+  margin-top: 1.0px;
+  width: 3.6px;
+  height: 1.1px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 50%;
+  box-shadow: 0 0 1.8px rgba(255, 255, 255, 0.9);
+}
+
+/* ── SPEAKING ANIMATION & ORAL CAVITY ────────────────── */
+.speakingCavity {
+  position: absolute;
+  top: 2.2px;
+  width: 12px;
+  height: 0px;
+  background: #3D1022;
+  border-radius: 0 0 7px 7px;
+  opacity: 0;
+  overflow: hidden;
+  z-index: 1;
+  transform-origin: top center;
+  transition: height 0.15s ease, opacity 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.teethBar {
+  width: 9px;
+  height: 1.3px;
+  background: #FFFFFF;
+  opacity: 0.92;
+  border-radius: 0 0 2px 2px;
+}
+
+.tongue {
+  width: 8px;
+  height: 2.4px;
+  background: #E27488;
+  border-radius: 4px 4px 0 0;
+  opacity: 0.88;
+}
+
+/* Active Speaking State Styles & Keyframes */
+.mouthSpeaking .speakingCavity {
+  opacity: 1;
+  animation: speakingCavityAnim 0.32s ease-in-out infinite alternate;
+}
+
+.mouthSpeaking .lowerLip {
+  animation: lowerLipSpeakingAnim 0.32s ease-in-out infinite alternate;
+}
+
+.mouthSpeaking .upperLip {
+  animation: upperLipSpeakingAnim 0.32s ease-in-out infinite alternate;
+}
+
+.mouthSpeaking .mouthSeam {
+  animation: mouthSeamSpeakingAnim 0.32s ease-in-out infinite alternate;
+}
+
+@keyframes speakingCavityAnim {
+  0% {
+    height: 1px;
+    transform: scaleY(0.3);
+    opacity: 0.3;
+  }
+  35% {
+    height: 5px;
+    transform: scaleY(1);
+    opacity: 1;
+  }
+  70% {
+    height: 2.5px;
+    transform: scaleY(0.6);
+    opacity: 0.7;
+  }
+  100% {
+    height: 5.5px;
+    transform: scaleY(1.15);
+    opacity: 1;
+  }
+}
+
+@keyframes lowerLipSpeakingAnim {
+  0% {
+    transform: translateY(0px);
+  }
+  35% {
+    transform: translateY(3.8px);
+  }
+  70% {
+    transform: translateY(1.8px);
+  }
+  100% {
+    transform: translateY(4.2px);
+  }
+}
+
+@keyframes upperLipSpeakingAnim {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-0.8px);
+  }
+  100% {
+    transform: translateY(-0.4px);
+  }
+}
+
+@keyframes mouthSeamSpeakingAnim {
+  0% {
+    opacity: 1;
+    border-bottom-width: 1.2px;
+  }
+  50% {
+    opacity: 0.3;
+    border-bottom-width: 0.4px;
+  }
+  100% {
+    opacity: 0.7;
+    border-bottom-width: 0.8px;
+  }
 }
