@@ -1902,9 +1902,17 @@ export function LittleKrishna({
             <ellipse cx="190" cy="267.2" rx="2.2" ry="1.0" fill="#93C5FD" opacity="0.55" />
           </g>
 
-          {/* ════════════════ LAYER 7: LEFT ARM (BEHIND HEAD) ════════════════ */}
-          {/* Right/chakra arm renders AFTER head layer for correct z-order */}
-          <KrishnaArms pose={pose} renderSide="characterLeft" />
+          {/* ════════════════ LAYER 7: ARMS ════════════════ */}
+          {/* Chakra pose: upper arms + left forearm here; right forearm+hand rendered in Layer 8 (above hair). */}
+          {/* All other poses: full arms rendered here, no Layer 8 split needed. */}
+          {pose === 'chakra' ? (
+            <>
+              <KrishnaArms pose={pose} renderSide="all" renderLayer="upperArm" />
+              <KrishnaArms pose={pose} renderSide="characterLeft" renderLayer="forearmAndHand" />
+            </>
+          ) : (
+            <KrishnaArms pose={pose} renderSide="all" renderLayer="all" />
+          )}
 
           {/* ════════════════ LAYER 6: HEAD & FACE ════════════════ */}
           {/* Scaled down around the chin anchor (190,217) to reduce oversized-head / chibi look.
@@ -2539,11 +2547,14 @@ export function LittleKrishna({
             </g>
           </g>
 
-          {/* ════════════════ LAYER 8: RIGHT ARM (CHAKRA ARM — IN FRONT OF HEAD) ════════════════ */}
-          {/* Rendered after head so the raised chakra arm is not hidden behind hair */}
-          <KrishnaArms pose={pose} renderSide="characterRight" />
+          {/* ════════════════ LAYER 8: RIGHT FOREARM + HAND (CHAKRA POSE ONLY, IN FRONT OF HEAD) ════════════════ */}
+          {/* Only splits for chakra pose. Other poses render arms fully in Layer 7 to avoid */}
+          {/* the forearm appearing in front of necklaces/jewelry at chest level. */}
+          {pose === 'chakra' && (
+            <KrishnaArms pose={pose} renderSide="characterRight" renderLayer="forearmAndHand" />
+          )}
 
-          {/* ════════════════ LAYER 9: SUDARSHAN CHAKRA (LOWERED TO EAR/TEMPLE LEVEL) ════════════════ */}
+          {/* ════════════════ LAYER 9: SUDARSHAN CHAKRA ════════════════ */}
           {/* Centered directly above the lowered index finger tip at (91, 56) */}
           <g id="sudarshanChakraMaster" filter="url(#kChakraGlowFilter)">
             {/* Divine Golden Radial Glow Aura */}

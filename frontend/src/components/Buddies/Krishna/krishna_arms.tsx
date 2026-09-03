@@ -220,9 +220,9 @@ export type ArmPoseConfig = {
 
 export const POSE_CONFIGS: Record<KrishnaPose, ArmPoseConfig> = {
   chakra: {
-    // Right arm: shoulder=138° raises arm to upper-left from left shoulder pivot.
-    // elbow=42° redirects forearm more upward. Total=180° → arm points straight up.
-    // shouldMirror=true (arm pointing up) → thumb on inner/hair side. ✓
+    // Natural raised arm: shoulder=138° lifts arm up from left pivot, elbow=42° keeps forearm vertical.
+    // Total=180° → hand straight up. shouldMirror=true → thumb on inner side. ✓
+    // Upper arm renders behind head (connected to chest). Forearm+hand render in front via layer split.
     right: { shoulder: 138, elbow: 42, wrist: 0, fingers: { thumb: 20, index: -4, middle: 75, ring: 80, little: 85 } },
     left: { shoulder: -35, elbow: 95, wrist: 20, fingers: { thumb: 15, index: 25, middle: 35, ring: 40, little: 45 } },
   },
@@ -237,34 +237,49 @@ export const POSE_CONFIGS: Record<KrishnaPose, ArmPoseConfig> = {
 };
 
 export type KrishnaArmsRenderSide = 'all' | 'characterLeft' | 'characterRight';
+export type KrishnaArmsRenderLayer = 'all' | 'upperArm' | 'forearmAndHand';
 
-export const KrishnaArms = ({ pose = 'chakra', renderSide = 'all' }: { pose?: KrishnaPose; renderSide?: KrishnaArmsRenderSide }) => {
+export const KrishnaArms = ({
+  pose = 'chakra',
+  renderSide = 'all',
+  renderLayer = 'all',
+}: {
+  pose?: KrishnaPose;
+  renderSide?: KrishnaArmsRenderSide;
+  renderLayer?: KrishnaArmsRenderLayer;
+}) => {
   const config = POSE_CONFIGS[pose] || POSE_CONFIGS.chakra;
   const rightTotalAngle = config.right.shoulder + config.right.elbow + config.right.wrist;
   const leftTotalAngle = config.left.shoulder + config.left.elbow + config.left.wrist;
 
+  // Render upper arm only OR forearm+hand only for split z-layer compositing.
+  const showUpperArm = renderLayer === 'all' || renderLayer === 'upperArm';
+  const showForearmAndHand = renderLayer === 'all' || renderLayer === 'forearmAndHand';
+
   return (
-    <g id="armRoots" filter="url(#kSoftShadow)">
+    <g id={`armRoots-${renderLayer}`} filter="url(#kSoftShadow)">
       {/* KRISHNA'S ANATOMICAL RIGHT ARM (Viewer's Left side) — chakra hand */}
       {(renderSide === 'all' || renderSide === 'characterRight') && (
-      <g id="leftChestArmRoot" className="arm-character-right">
+      <g id={`leftChestArmRoot-${renderLayer}`} className="arm-character-right">
         <g
-          id="leftShoulderPivot"
+          id={`leftShoulderPivot-${renderLayer}`}
           transform={`translate(${190 - ARM_SPEC.shoulderPivotOffset}, 205) rotate(${config.right.shoulder})`}
         >
-          <g id="leftUpperArm">
-            <ParametricUpperArm isFlipped={true} />
+          <g id={`leftUpperArm-${renderLayer}`}>
+            {showUpperArm && <ParametricUpperArm isFlipped={true} />}
 
             {/* Elbow Pivot Joint */}
-            <g id="leftElbowPivot" transform={`translate(0, ${ARM_SPEC.upper.len}) rotate(${config.right.elbow})`}>
-              <g id="leftForearm">
-                <ParametricForearm />
+            <g id={`leftElbowPivot-${renderLayer}`} transform={`translate(0, ${ARM_SPEC.upper.len}) rotate(${config.right.elbow})`}>
+              <g id={`leftForearm-${renderLayer}`}>
+                {showForearmAndHand && <ParametricForearm />}
 
                 {/* Wrist Pivot Joint & Hand */}
-                <g id="leftWristPivot" transform={`translate(0, ${ARM_SPEC.forearm.len}) rotate(${config.right.wrist})`}>
+                {showForearmAndHand && (
+                <g id={`leftWristPivot-${renderLayer}`} transform={`translate(0, ${ARM_SPEC.forearm.len}) rotate(${config.right.wrist})`}>
                   {/* Character's Right Hand (Chakra Hand) */}
                   <ParametricHand side="characterRight" fingers={config.right.fingers} totalArmAngle={rightTotalAngle} />
                 </g>
+                )}
               </g>
             </g>
           </g>
@@ -274,24 +289,26 @@ export const KrishnaArms = ({ pose = 'chakra', renderSide = 'all' }: { pose?: Kr
 
       {/* KRISHNA'S ANATOMICAL LEFT ARM (Viewer's Right side) */}
       {(renderSide === 'all' || renderSide === 'characterLeft') && (
-      <g id="rightChestArmRoot" className="arm-character-left">
+      <g id={`rightChestArmRoot-${renderLayer}`} className="arm-character-left">
         <g
-          id="rightShoulderPivot"
+          id={`rightShoulderPivot-${renderLayer}`}
           transform={`translate(${190 + ARM_SPEC.shoulderPivotOffset}, 205) rotate(${config.left.shoulder})`}
         >
-          <g id="rightUpperArm">
-            <ParametricUpperArm isFlipped={false} />
+          <g id={`rightUpperArm-${renderLayer}`}>
+            {showUpperArm && <ParametricUpperArm isFlipped={false} />}
 
             {/* Elbow Pivot Joint */}
-            <g id="rightElbowPivot" transform={`translate(0, ${ARM_SPEC.upper.len}) rotate(${config.left.elbow})`}>
-              <g id="rightForearm">
-                <ParametricForearm />
+            <g id={`rightElbowPivot-${renderLayer}`} transform={`translate(0, ${ARM_SPEC.upper.len}) rotate(${config.left.elbow})`}>
+              <g id={`rightForearm-${renderLayer}`}>
+                {showForearmAndHand && <ParametricForearm />}
 
                 {/* Wrist Pivot Joint & Hand */}
-                <g id="rightWristPivot" transform={`translate(0, ${ARM_SPEC.forearm.len}) rotate(${config.left.wrist})`}>
+                {showForearmAndHand && (
+                <g id={`rightWristPivot-${renderLayer}`} transform={`translate(0, ${ARM_SPEC.forearm.len}) rotate(${config.left.wrist})`}>
                   {/* Character's Left Hand */}
                   <ParametricHand side="characterLeft" fingers={config.left.fingers} totalArmAngle={leftTotalAngle} />
                 </g>
+                )}
               </g>
             </g>
           </g>
