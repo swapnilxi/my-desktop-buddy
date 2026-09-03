@@ -18,6 +18,15 @@ export const ARM_SPEC = {
   },
   wrist: {
     width: u(24)
+  },
+  hand: {
+    palm: { w: u(46), h: u(52), wristW: u(24), transitionL: u(10), d: u(24) },
+    knuckle: { w: u(44), d: u(23) },
+    thumb: { l: u(25), base: u(13), tip: u(9) },
+    index: { l: u(31), base: u(12), tip: u(8) },
+    middle: { l: u(34), base: u(12), tip: u(8) },
+    ring: { l: u(30), base: u(11), tip: u(8) },
+    little: { l: u(25), base: u(10), tip: u(7) }
   }
 };
 
@@ -61,6 +70,58 @@ export const ParametricForearm = () => {
   );
 };
 
+export const ParametricDigit = ({ len, baseW, tipW, transform }: { len: number, baseW: number, tipW: number, transform?: string }) => {
+  const b = baseW / 2;
+  const t = tipW / 2;
+  // Digits start slightly inside the knuckle (Y = -u(4)) to guarantee seamless structural overlap
+  const path = `M ${-b} ${-u(4)} C ${-b} ${len*0.3}, ${-t} ${len*0.7}, ${-t} ${len} C ${-t} ${len+t*1.5}, ${t} ${len+t*1.5}, ${t} ${len} C ${t} ${len*0.7}, ${b} ${len*0.3}, ${b} ${-u(4)} Z`;
+  return (
+    <g className="parametric-digit" transform={transform}>
+      <path d={path} fill="url(#kSkinBody)" />
+      <path d={`M 0 0 C 1 ${len*0.4}, 1 ${len*0.8}, 0 ${len - u(3)}`} fill="none" stroke="#FFFFFF" strokeWidth={u(3)} strokeLinecap="round" opacity="0.2" />
+    </g>
+  );
+};
+
+export const ParametricHand = ({ isFlipped = false }: { isFlipped?: boolean }) => {
+  const { palm, thumb, index, middle, ring, little } = ARM_SPEC.hand;
+  
+  // Palm transition: perfectly overlapping the u(24) wrist and elegantly flaring out
+  const w = palm.wristW / 2;
+  const pW = palm.w / 2;
+  const h = palm.h;
+  
+  // Beautiful rounded biological palm pad
+  const palmPath = `M ${-w} ${-u(7)} C ${-pW} ${u(10)}, ${-pW*1.1} ${h*0.4}, ${-pW*0.95} ${h} C ${-pW*0.5} ${h+u(5)}, ${pW*0.5} ${h+u(5)}, ${pW*0.95} ${h} C ${pW*1.1} ${h*0.4}, ${pW} ${u(10)}, ${w} ${-u(7)} Z`;
+  
+  // Thenar eminence (thumb base) for seamless blending
+  const thenarPath = `M ${-w} ${-u(3)} C ${-pW*1.5} ${h*0.2}, ${-pW*1.4} ${h*0.6}, ${-pW*0.7} ${h*0.85} C ${-pW*0.2} ${h*0.6}, 0 ${h*0.3}, ${-w} ${-u(3)} Z`;
+  
+  // Thumb points naturally outward from the thenar base
+  const thumbTransform = `translate(${-pW*0.95}, ${h*0.55}) rotate(40)`;
+  
+  // Digits arranged anatomically along the knuckle curve
+  const idxX = -u(16);
+  const midX = -u(5);
+  const rngX = u(6);
+  const litX = u(16);
+  
+  return (
+    <g className="parametric-hand" transform={isFlipped ? 'scale(-1, 1)' : ''}>
+      <g className="palm-volume">
+        <path d={palmPath} fill="url(#kSkinBody)" />
+        <path d={thenarPath} fill="url(#kSkinBody)" />
+      </g>
+      
+      <ParametricDigit len={thumb.l} baseW={thumb.base} tipW={thumb.tip} transform={thumbTransform} />
+      <ParametricDigit len={index.l} baseW={index.base} tipW={index.tip} transform={`translate(${idxX}, ${h - u(3)}) rotate(4)`} />
+      <ParametricDigit len={middle.l} baseW={middle.base} tipW={middle.tip} transform={`translate(${midX}, ${h}) rotate(0)`} />
+      <ParametricDigit len={ring.l} baseW={ring.base} tipW={ring.tip} transform={`translate(${rngX}, ${h - u(2)}) rotate(-4)`} />
+      <ParametricDigit len={little.l} baseW={little.base} tipW={little.tip} transform={`translate(${litX}, ${h - u(6)}) rotate(-9)`} />
+    </g>
+  );
+};
+
 export const KrishnaArms = () => {
   return (
     <g id="armRoots" filter="url(#kSoftShadow)">
@@ -76,10 +137,10 @@ export const KrishnaArms = () => {
               <g id="leftForearm">
                 <ParametricForearm />
                 
-                {/* Wrist Pivot Marker */}
+                {/* Wrist Pivot Marker & Hand */}
                 <g id="leftWristPivot" transform={`translate(0, ${ARM_SPEC.forearm.len})`}>
-                  <circle cx="0" cy="0" r="3.5" fill="none" stroke="#FFFFFF" strokeWidth="1.2" opacity="0.5" />
-                  <circle cx="0" cy="0" r="1" fill="#FFFFFF" opacity="0.8" />
+                  {/* Left Hand is flipped so the thumb points inward */}
+                  <ParametricHand isFlipped={true} />
                 </g>
               </g>
             </g>
@@ -99,10 +160,9 @@ export const KrishnaArms = () => {
               <g id="rightForearm">
                 <ParametricForearm />
                 
-                {/* Wrist Pivot Marker */}
+                {/* Wrist Pivot Marker & Hand */}
                 <g id="rightWristPivot" transform={`translate(0, ${ARM_SPEC.forearm.len})`}>
-                  <circle cx="0" cy="0" r="3.5" fill="none" stroke="#FFFFFF" strokeWidth="1.2" opacity="0.5" />
-                  <circle cx="0" cy="0" r="1" fill="#FFFFFF" opacity="0.8" />
+                  <ParametricHand isFlipped={false} />
                 </g>
               </g>
             </g>
