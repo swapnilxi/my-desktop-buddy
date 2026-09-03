@@ -516,6 +516,47 @@ export function LittleKrishna({
               <stop offset="100%" stopColor="#662200" />
             </radialGradient>
 
+            {/* ── 3D Royal Ghungroo Payal (Anklet) Shaders ── */}
+            <linearGradient id="kPayalGold" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#D97706" />
+              <stop offset="14%" stopColor="#FBBF24" />
+              <stop offset="32%" stopColor="#FFFDEB" />
+              <stop offset="55%" stopColor="#F59E0B" />
+              <stop offset="80%" stopColor="#D97706" />
+              <stop offset="100%" stopColor="#78350F" />
+            </linearGradient>
+
+            <radialGradient id="kPayalRuby" cx="35%" cy="30%" r="68%">
+              <stop offset="0%" stopColor="#FFA4A4" />
+              <stop offset="25%" stopColor="#EF4444" />
+              <stop offset="65%" stopColor="#B91C1C" />
+              <stop offset="100%" stopColor="#7F1D1D" />
+            </radialGradient>
+
+            <radialGradient id="kPayalEmerald" cx="35%" cy="30%" r="68%">
+              <stop offset="0%" stopColor="#A7F3D0" />
+              <stop offset="30%" stopColor="#10B981" />
+              <stop offset="70%" stopColor="#047857" />
+              <stop offset="100%" stopColor="#064E3B" />
+            </radialGradient>
+
+            <radialGradient id="kPayalBellDome" cx="35%" cy="26%" r="72%">
+              <stop offset="0%" stopColor="#FFFFFF" />
+              <stop offset="22%" stopColor="#FFF2A3" />
+              <stop offset="50%" stopColor="#FBBF24" />
+              <stop offset="76%" stopColor="#D97706" />
+              <stop offset="92%" stopColor="#92400E" />
+              <stop offset="100%" stopColor="#78350F" />
+            </radialGradient>
+
+            <radialGradient id="kPayalPearl" cx="35%" cy="28%" r="65%">
+              <stop offset="0%" stopColor="#FFFFFF" />
+              <stop offset="42%" stopColor="#FFFBEB" />
+              <stop offset="75%" stopColor="#FDE68A" />
+              <stop offset="100%" stopColor="#D97706" />
+            </radialGradient>
+
+
             {/* Base Under-wrap gradient */}
             <linearGradient id="kDhotiBaseGrad" x1="20%" y1="0%" x2="80%" y2="100%">
               <stop offset="0%" stopColor="#FFF4AD" />
@@ -725,8 +766,7 @@ export function LittleKrishna({
             <ellipse cx="245" cy="78" rx="28" ry="22" fill="url(#kHairHl)" />
           </g>
 
-          {/* ════════════════ LAYER 2: FEET & ANKLETS ════════════════ */}
-          {/* ════════════════ LAYER 2: FEET & ANKLETS ════════════════ */}
+          {/* ════════════════ LAYER 2: FEET (CHARAN KAMAL) ════════════════ */}
           <g id="feet" filter="url(#kSoftShadow)" transform="translate(190,290) scale(1,1.06) translate(-190,-290)">
             {/* Left Foot (Adorably Cute Chubby Toddler Foot with Lotus-Pink Blush) */}
             <g id="leftFoot" transform="translate(148, 426)">
@@ -776,6 +816,39 @@ export function LittleKrishna({
               <path d="M 2.5 21.5 C 2.2 18.0, 2.0 15.2, 1.8 13.5" fill="none" stroke="#1E3A8A" strokeWidth="1.0" strokeLinecap="round" opacity="0.3" />
               <path d="M -3.6 21 C -3.7 17.8, -3.8 15.5, -3.9 14.0" fill="none" stroke="#1E3A8A" strokeWidth="0.9" strokeLinecap="round" opacity="0.28" />
               <path d="M -8.8 19.5 C -9.0 17.0, -9.2 15.0, -9.3 13.8" fill="none" stroke="#1E3A8A" strokeWidth="0.8" strokeLinecap="round" opacity="0.25" />
+
+              {/* ── Sacred Vaishnav Lotus Foot Decoration: White Chakra (Charan Chinha) ── */}
+              <g id="vaishnavChakraLeft" opacity="0.92">
+                {/* Central Sacred Sandalwood Core */}
+                <circle cx="0" cy="11" r="1.3" fill="#FFFFFF" />
+                <circle cx="0" cy="11" r="0.6" fill="#FDE047" opacity="0.9" />
+
+                {/* Inner Sandalwood Ring */}
+                <circle cx="0" cy="11" r="2.8" fill="none" stroke="#FFFFFF" strokeWidth="0.65" opacity="0.9" />
+
+                {/* Outer Wheel Rim */}
+                <circle cx="0" cy="11" r="4.8" fill="none" stroke="#FFFFFF" strokeWidth="0.8" strokeDasharray="1.4 0.9" opacity="0.95" />
+
+                {/* 8 Radiant Sacred Spokes */}
+                <line x1="0" y1="8.2" x2="0" y2="6.2" stroke="#FFFFFF" strokeWidth="0.65" strokeLinecap="round" />
+                <line x1="0" y1="13.8" x2="0" y2="15.8" stroke="#FFFFFF" strokeWidth="0.65" strokeLinecap="round" />
+                <line x1="-2.8" y1="11" x2="-4.8" y2="11" stroke="#FFFFFF" strokeWidth="0.65" strokeLinecap="round" />
+                <line x1="2.8" y1="11" x2="4.8" y2="11" stroke="#FFFFFF" strokeWidth="0.65" strokeLinecap="round" />
+                <line x1="-2.0" y1="9.0" x2="-3.4" y2="7.6" stroke="#FFFFFF" strokeWidth="0.6" strokeLinecap="round" />
+                <line x1="2.0" y1="9.0" x2="3.4" y2="7.6" stroke="#FFFFFF" strokeWidth="0.6" strokeLinecap="round" />
+                <line x1="-2.0" y1="13.0" x2="-3.4" y2="14.4" stroke="#FFFFFF" strokeWidth="0.6" strokeLinecap="round" />
+                <line x1="2.0" y1="13.0" x2="3.4" y2="14.4" stroke="#FFFFFF" strokeWidth="0.6" strokeLinecap="round" />
+
+                {/* 8 Sandalwood Paste Bindu Dots (Chandan Tilak Dots) */}
+                <circle cx="0" cy="5.2" r="0.55" fill="#FFFFFF" opacity="0.9" />
+                <circle cx="4.1" cy="6.9" r="0.55" fill="#FFFFFF" opacity="0.9" />
+                <circle cx="5.8" cy="11.0" r="0.55" fill="#FFFFFF" opacity="0.9" />
+                <circle cx="4.1" cy="15.1" r="0.55" fill="#FFFFFF" opacity="0.9" />
+                <circle cx="0" cy="16.8" r="0.55" fill="#FFFFFF" opacity="0.9" />
+                <circle cx="-4.1" cy="15.1" r="0.55" fill="#FFFFFF" opacity="0.9" />
+                <circle cx="-5.8" cy="11.0" r="0.55" fill="#FFFFFF" opacity="0.9" />
+                <circle cx="-4.1" cy="6.9" r="0.55" fill="#FFFFFF" opacity="0.9" />
+              </g>
             </g>
 
             {/* Right Foot (Adorably Cute Chubby Toddler Foot with Lotus-Pink Blush) */}
@@ -826,31 +899,39 @@ export function LittleKrishna({
               <path d="M -2.5 21.5 C -2.2 18.0, -2.0 15.2, -1.8 13.5" fill="none" stroke="#1E3A8A" strokeWidth="1.0" strokeLinecap="round" opacity="0.3" />
               <path d="M 3.6 21 C 3.7 17.8, 3.8 15.5, 3.9 14.0" fill="none" stroke="#1E3A8A" strokeWidth="0.9" strokeLinecap="round" opacity="0.28" />
               <path d="M 8.8 19.5 C 9.0 17.0, 9.2 15.0, 9.3 13.8" fill="none" stroke="#1E3A8A" strokeWidth="0.8" strokeLinecap="round" opacity="0.25" />
-            </g>
 
-            {/* ── Little Krishna's 3D Glistening Golden Payal Anklets ── */}
-            <g id="anklets">
-              {/* Left Anklet */}
-              <ellipse cx="148" cy="425" rx="14" ry="4.2" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.8" />
-              <ellipse cx="148" cy="424" rx="12" ry="2.2" fill="none" stroke="#FFF9D6" strokeWidth="0.8" opacity="0.85" />
-              {/* Left Anklet Ghungroo Gold Bells with Glistening Highlights */}
-              {[137, 142, 148, 154, 159].map((bx, i) => (
-                <g key={`la-${i}`}>
-                  <circle cx={bx} cy="427" r="2.2" fill="url(#kGoldDomeRivet)" stroke="#78350F" strokeWidth="0.4" />
-                  <circle cx={bx - 0.6} cy="426.3" r="0.8" fill="#FFFBEB" opacity="0.9" />
-                </g>
-              ))}
+              {/* ── Sacred Vaishnav Lotus Foot Decoration: White Chakra (Charan Chinha) ── */}
+              <g id="vaishnavChakraRight" opacity="0.92">
+                {/* Central Sacred Sandalwood Core */}
+                <circle cx="0" cy="11" r="1.3" fill="#FFFFFF" />
+                <circle cx="0" cy="11" r="0.6" fill="#FDE047" opacity="0.9" />
 
-              {/* Right Anklet */}
-              <ellipse cx="226" cy="425" rx="14" ry="4.2" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.8" />
-              <ellipse cx="226" cy="424" rx="12" ry="2.2" fill="none" stroke="#FFF9D6" strokeWidth="0.8" opacity="0.85" />
-              {/* Right Anklet Ghungroo Gold Bells with Glistening Highlights */}
-              {[215, 220, 226, 232, 237].map((bx, i) => (
-                <g key={`ra-${i}`}>
-                  <circle cx={bx} cy="427" r="2.2" fill="url(#kGoldDomeRivet)" stroke="#78350F" strokeWidth="0.4" />
-                  <circle cx={bx - 0.6} cy="426.3" r="0.8" fill="#FFFBEB" opacity="0.9" />
-                </g>
-              ))}
+                {/* Inner Sandalwood Ring */}
+                <circle cx="0" cy="11" r="2.8" fill="none" stroke="#FFFFFF" strokeWidth="0.65" opacity="0.9" />
+
+                {/* Outer Wheel Rim */}
+                <circle cx="0" cy="11" r="4.8" fill="none" stroke="#FFFFFF" strokeWidth="0.8" strokeDasharray="1.4 0.9" opacity="0.95" />
+
+                {/* 8 Radiant Sacred Spokes */}
+                <line x1="0" y1="8.2" x2="0" y2="6.2" stroke="#FFFFFF" strokeWidth="0.65" strokeLinecap="round" />
+                <line x1="0" y1="13.8" x2="0" y2="15.8" stroke="#FFFFFF" strokeWidth="0.65" strokeLinecap="round" />
+                <line x1="-2.8" y1="11" x2="-4.8" y2="11" stroke="#FFFFFF" strokeWidth="0.65" strokeLinecap="round" />
+                <line x1="2.8" y1="11" x2="4.8" y2="11" stroke="#FFFFFF" strokeWidth="0.65" strokeLinecap="round" />
+                <line x1="-2.0" y1="9.0" x2="-3.4" y2="7.6" stroke="#FFFFFF" strokeWidth="0.6" strokeLinecap="round" />
+                <line x1="2.0" y1="9.0" x2="3.4" y2="7.6" stroke="#FFFFFF" strokeWidth="0.6" strokeLinecap="round" />
+                <line x1="-2.0" y1="13.0" x2="-3.4" y2="14.4" stroke="#FFFFFF" strokeWidth="0.6" strokeLinecap="round" />
+                <line x1="2.0" y1="13.0" x2="3.4" y2="14.4" stroke="#FFFFFF" strokeWidth="0.6" strokeLinecap="round" />
+
+                {/* 8 Sandalwood Paste Bindu Dots (Chandan Tilak Dots) */}
+                <circle cx="0" cy="5.2" r="0.55" fill="#FFFFFF" opacity="0.9" />
+                <circle cx="4.1" cy="6.9" r="0.55" fill="#FFFFFF" opacity="0.9" />
+                <circle cx="5.8" cy="11.0" r="0.55" fill="#FFFFFF" opacity="0.9" />
+                <circle cx="4.1" cy="15.1" r="0.55" fill="#FFFFFF" opacity="0.9" />
+                <circle cx="0" cy="16.8" r="0.55" fill="#FFFFFF" opacity="0.9" />
+                <circle cx="-4.1" cy="15.1" r="0.55" fill="#FFFFFF" opacity="0.9" />
+                <circle cx="-5.8" cy="11.0" r="0.55" fill="#FFFFFF" opacity="0.9" />
+                <circle cx="-4.1" cy="6.9" r="0.55" fill="#FFFFFF" opacity="0.9" />
+              </g>
             </g>
           </g>
 
@@ -902,16 +983,16 @@ export function LittleKrishna({
               {/* Soft ambient occlusion shadow under waistband */}
               <ellipse cx="190" cy="288" rx="64" ry="10" fill="#7C2D12" opacity="0.32" />
 
-              {/* Full-length base silhouette reaching ankles (y=416) with distinct two-leg separation */}
+              {/* Full-length base silhouette reaching ankles with distinct two-leg separation */}
               <path
                 d="M 124 296
-                   C 114 330, 115 368, 122 402
-                   C 126 414, 136 418, 150 418
-                   C 162 418, 170 412, 174 400
+                   C 114 330, 115 368, 122 396
+                   C 126 405, 136 408, 150 408
+                   C 162 408, 170 403, 174 394
                    C 178 376, 184 356, 190 354
-                   C 196 356, 202 376, 206 400
-                   C 210 412, 218 418, 230 418
-                   C 244 418, 254 414, 258 402
+                   C 196 356, 202 376, 206 394
+                   C 210 403, 218 408, 230 408
+                   C 244 408, 254 405, 258 396
                    C 265 368, 266 330, 256 296
                    C 246 286, 224 282, 190 282
                    C 156 282, 134 286, 124 296 Z"
@@ -922,11 +1003,11 @@ export function LittleKrishna({
 
               {/* Inseam Shadow Crease (Separation between the two wrapped legs) */}
               <path
-                d="M 174 400
+                d="M 174 394
                    C 182 374, 186 356, 190 354
-                   C 194 356, 198 374, 206 400
-                   C 200 392, 194 384, 190 384
-                   C 186 384, 180 392, 174 400 Z"
+                   C 194 356, 198 374, 206 394
+                   C 200 388, 194 382, 190 382
+                   C 186 382, 180 388, 174 394 Z"
                 fill="#5B2305"
                 opacity="0.48"
               />
@@ -937,9 +1018,9 @@ export function LittleKrishna({
               {/* Left Front Thigh & Shin Mass */}
               <path
                 d="M 124 296
-                   C 116 330, 116 368, 124 400
-                   C 128 414, 140 418, 152 418
-                   C 162 418, 170 412, 174 398
+                   C 116 330, 116 368, 124 394
+                   C 128 405, 140 408, 152 408
+                   C 162 408, 170 403, 174 392
                    C 176 372, 166 342, 152 318
                    C 142 304, 132 296, 124 296 Z"
                 fill="url(#kDhotiLeftMassGrad)"
@@ -950,9 +1031,9 @@ export function LittleKrishna({
               {/* Left Fabric Mass Soft Crest Highlight */}
               <path
                 d="M 130 304
-                   C 124 332, 126 364, 134 394
-                   C 138 410, 146 414, 154 412
-                   C 150 400, 144 382, 142 362
+                   C 124 332, 126 364, 134 388
+                   C 138 402, 146 405, 154 403
+                   C 150 394, 144 380, 142 362
                    C 140 338, 136 320, 130 304 Z"
                 fill="#FFFFF0"
                 opacity="0.45"
@@ -961,9 +1042,9 @@ export function LittleKrishna({
               {/* Right Front Thigh & Shin Mass */}
               <path
                 d="M 256 296
-                   C 264 330, 264 368, 256 400
-                   C 252 414, 240 418, 228 418
-                   C 218 418, 210 412, 206 398
+                   C 264 330, 264 368, 256 394
+                   C 252 405, 240 408, 228 408
+                   C 218 408, 210 403, 206 392
                    C 204 372, 214 342, 228 318
                    C 238 304, 248 296, 256 296 Z"
                 fill="url(#kDhotiRightMassGrad)"
@@ -974,9 +1055,9 @@ export function LittleKrishna({
               {/* Right Fabric Mass Soft Ambient Shading */}
               <path
                 d="M 252 306
-                   C 258 334, 258 366, 252 394
-                   C 248 408, 240 414, 232 414
-                   C 238 404, 244 390, 248 372
+                   C 258 334, 258 366, 252 388
+                   C 248 402, 240 405, 232 405
+                   C 238 396, 244 384, 248 372
                    C 252 348, 252 326, 252 306 Z"
                 fill="#783400"
                 opacity="0.22"
@@ -1251,9 +1332,9 @@ export function LittleKrishna({
             <g id="dhotiHemAccents">
               {/* Left Hem Gold Accent Rim at Ankle */}
               <path
-                d="M 126 410
-                   C 134 418, 146 418, 156 418
-                   C 164 418, 170 414, 174 402"
+                d="M 126 400
+                   C 134 408, 146 408, 156 408
+                   C 164 408, 170 404, 174 394"
                 fill="none"
                 stroke="#FEF08A"
                 strokeWidth="2.0"
@@ -1261,9 +1342,9 @@ export function LittleKrishna({
                 opacity="0.85"
               />
               <path
-                d="M 126 412
-                   C 134 420, 146 420, 156 420
-                   C 164 420, 170 416, 174 404"
+                d="M 126 402
+                   C 134 410, 146 410, 156 410
+                   C 164 410, 170 406, 174 396"
                 fill="none"
                 stroke="#5B2305"
                 strokeWidth="1.2"
@@ -1273,9 +1354,9 @@ export function LittleKrishna({
 
               {/* Right Hem Gold Accent Rim at Ankle */}
               <path
-                d="M 206 402
-                   C 210 414, 216 418, 224 418
-                   C 234 418, 246 418, 254 410"
+                d="M 206 394
+                   C 210 404, 216 408, 224 408
+                   C 234 408, 246 408, 254 400"
                 fill="none"
                 stroke="#FEF08A"
                 strokeWidth="2.0"
@@ -1283,9 +1364,9 @@ export function LittleKrishna({
                 opacity="0.85"
               />
               <path
-                d="M 206 404
-                   C 210 416, 216 420, 224 420
-                   C 234 420, 246 420, 254 412"
+                d="M 206 396
+                   C 210 406, 216 410, 224 410
+                   C 234 410, 246 410, 254 402"
                 fill="none"
                 stroke="#5B2305"
                 strokeWidth="1.2"
@@ -1430,6 +1511,277 @@ export function LittleKrishna({
                   </g>
                 ))}
               </g>
+            </g>
+          </g>
+
+          {/* ════════════════ LAYER 4B: 3D ROYAL GHUNGROO PAYAL ANKLETS ════════════════ */}
+          <g id="royalAnklets" className={styles.ankletLayer} transform="translate(190,290) scale(1,1.06) translate(-190,-290)">
+            {/* ════════ LEFT ROYAL ANKLET (CHARAN NUPUR) ════════ */}
+            <g id="leftAnkletGroup">
+              {/* Soft Ambient Contact Shadow on Blue Toddler Ankle Skin */}
+              <ellipse cx="148" cy="421.5" rx="16.5" ry="6.0" fill="#0C1A38" opacity="0.45" />
+
+              {/* Sculpted 3D Golden Payal Ankle Band (Curved Cylinder Wrap) */}
+              <path
+                d="M 132.5 417.5
+                   C 137.5 421.5, 158.5 421.5, 163.5 417.5
+                   C 163.5 423.5, 158.5 427.5, 148 427.5
+                   C 137.5 427.5, 132.5 423.5, 132.5 417.5 Z"
+                fill="url(#kPayalGold)"
+                stroke="#78350F"
+                strokeWidth="0.8"
+              />
+
+              {/* Inner High-Sheen Crest Specular Highlight */}
+              <path
+                d="M 134.5 419.5 C 139.5 423, 156.5 423, 161.5 419.5"
+                fill="none"
+                stroke="#FFFDF0"
+                strokeWidth="1.2"
+                strokeLinecap="round"
+                opacity="0.9"
+              />
+
+              {/* ── Upper Beaded Gold Border (Micro Pearl / Kantha Cord) ── */}
+              {[
+                { x: 133.5, y: 417.8 },
+                { x: 138.0, y: 419.6 },
+                { x: 143.0, y: 421.0 },
+                { x: 148.0, y: 421.4 },
+                { x: 153.0, y: 421.0 },
+                { x: 158.0, y: 419.6 },
+                { x: 162.5, y: 417.8 },
+              ].map((b, i) => (
+                <g key={`la-ub-${i}`}>
+                  <circle cx={b.x} cy={b.y} r="1.3" fill="url(#kGoldBead)" stroke="#78350F" strokeWidth="0.35" />
+                  <circle cx={b.x - 0.4} cy={b.y - 0.4} r="0.5" fill="#FFFFFF" opacity="0.9" />
+                </g>
+              ))}
+
+              {/* ── Lower Beaded Gold Border ── */}
+              {[
+                { x: 134.0, y: 423.2 },
+                { x: 138.5, y: 425.2 },
+                { x: 143.2, y: 426.6 },
+                { x: 148.0, y: 427.1 },
+                { x: 152.8, y: 426.6 },
+                { x: 157.5, y: 425.2 },
+                { x: 162.0, y: 423.2 },
+              ].map((b, i) => (
+                <g key={`la-lb-${i}`}>
+                  <circle cx={b.x} cy={b.y} r="1.3" fill="url(#kGoldBead)" stroke="#78350F" strokeWidth="0.35" />
+                  <circle cx={b.x - 0.4} cy={b.y - 0.4} r="0.5" fill="#FFFFFF" opacity="0.9" />
+                </g>
+              ))}
+
+              {/* ── Inlaid Royal Gemstones (Navratna Meenakari Accents) ── */}
+              {/* Flanking Rubies */}
+              <circle cx="136" cy="421.2" r="1.4" fill="url(#kPayalRuby)" stroke="#78350F" strokeWidth="0.4" />
+              <circle cx="160" cy="421.2" r="1.4" fill="url(#kPayalRuby)" stroke="#78350F" strokeWidth="0.4" />
+
+              {/* Sacred Emerald Cabochons */}
+              <g id="la-emerald-left">
+                <circle cx="141" cy="423.2" r="2.3" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.4" />
+                <circle cx="141" cy="423.2" r="1.7" fill="url(#kPayalEmerald)" stroke="#064E3B" strokeWidth="0.3" />
+                <circle cx="140.5" cy="422.7" r="0.6" fill="#FFFFFF" opacity="0.95" />
+              </g>
+              <g id="la-emerald-right">
+                <circle cx="155" cy="423.2" r="2.3" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.4" />
+                <circle cx="155" cy="423.2" r="1.7" fill="url(#kPayalEmerald)" stroke="#064E3B" strokeWidth="0.3" />
+                <circle cx="154.5" cy="422.7" r="0.6" fill="#FFFFFF" opacity="0.95" />
+              </g>
+
+              {/* Central Royal Lotus Rosette with Scarlet Ruby Core */}
+              <g id="la-center-ruby">
+                {/* 4 Golden Petal Accents */}
+                <circle cx="148" cy="421.8" r="1.2" fill="url(#kGoldBead)" />
+                <circle cx="148" cy="426.6" r="1.2" fill="url(#kGoldBead)" />
+                <circle cx="145.6" cy="424.2" r="1.2" fill="url(#kGoldBead)" />
+                <circle cx="150.4" cy="424.2" r="1.2" fill="url(#kGoldBead)" />
+
+                {/* Gold Bezel Setting */}
+                <circle cx="148" cy="424.2" r="3.0" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
+                {/* Radiant Ruby Gemstone */}
+                <circle cx="148" cy="424.2" r="2.2" fill="url(#kPayalRuby)" stroke="#7F1D1D" strokeWidth="0.4" />
+                {/* Specular White Glint */}
+                <circle cx="147.3" cy="423.5" r="0.75" fill="#FFFFFF" opacity="0.95" />
+              </g>
+
+              {/* ── 7 Hanging 3D Golden Ghungroo Bells (घुंघरू) with Jingling Clappers ── */}
+              {[
+                { x: 135.0, y: 423.8, isCenter: false },
+                { x: 139.2, y: 425.8, isCenter: false },
+                { x: 143.6, y: 427.4, isCenter: false },
+                { x: 148.0, y: 428.2, isCenter: true },
+                { x: 152.4, y: 427.4, isCenter: false },
+                { x: 156.8, y: 425.8, isCenter: false },
+                { x: 161.0, y: 423.8, isCenter: false },
+              ].map((bell, i) => {
+                const bellRadius = bell.isCenter ? 3.0 : 2.5;
+                const dropY = bell.y + bellRadius + 1.2;
+                return (
+                  <g key={`la-bell-${i}`}>
+                    {/* Golden Suspension Jump Ring */}
+                    <ellipse cx={bell.x} cy={bell.y + 0.5} rx="1.0" ry="1.4" fill="none" stroke="#D97706" strokeWidth="0.7" />
+
+                    {/* Ambient Contact Shadow beneath bell onto foot skin */}
+                    <ellipse cx={bell.x} cy={dropY + bellRadius + 0.8} rx={bellRadius * 0.9} ry="1.2" fill="#0C1A38" opacity="0.32" />
+
+                    {/* 3D Polished Ghungroo Bell Sphere Body */}
+                    <circle cx={bell.x} cy={dropY} r={bellRadius} fill="url(#kPayalBellDome)" stroke="#78350F" strokeWidth="0.5" />
+
+                    {/* Ghungroo Resonance Smile / Sound Slit */}
+                    <path
+                      d={`M ${bell.x - bellRadius * 0.55} ${dropY + bellRadius * 0.25} Q ${bell.x} ${dropY + bellRadius * 0.65} ${bell.x + bellRadius * 0.55} ${dropY + bellRadius * 0.25}`}
+                      fill="none"
+                      stroke="#451A03"
+                      strokeWidth="0.7"
+                      strokeLinecap="round"
+                    />
+
+                    {/* Dangling Pearl Clapper Droplet (Moti) */}
+                    <circle cx={bell.x} cy={dropY + bellRadius + 1.2} r={bell.isCenter ? 1.4 : 1.1} fill="url(#kPayalPearl)" stroke="#B45309" strokeWidth="0.35" />
+                    <circle cx={bell.x - 0.3} cy={dropY + bellRadius + 0.9} r="0.4" fill="#FFFFFF" opacity="0.9" />
+
+                    {/* High Specular Glint on Upper Dome */}
+                    <circle cx={bell.x - bellRadius * 0.38} cy={dropY - bellRadius * 0.35} r={bellRadius * 0.36} fill="#FFFFFF" opacity="0.95" />
+                  </g>
+                );
+              })}
+            </g>
+
+            {/* ════════ RIGHT ROYAL ANKLET (CHARAN NUPUR) ════════ */}
+            <g id="rightAnkletGroup">
+              {/* Soft Ambient Contact Shadow on Blue Toddler Ankle Skin */}
+              <ellipse cx="226" cy="421.5" rx="16.5" ry="6.0" fill="#0C1A38" opacity="0.45" />
+
+              {/* Sculpted 3D Golden Payal Ankle Band (Curved Cylinder Wrap) */}
+              <path
+                d="M 210.5 417.5
+                   C 215.5 421.5, 236.5 421.5, 241.5 417.5
+                   C 241.5 423.5, 236.5 427.5, 226 427.5
+                   C 215.5 427.5, 210.5 423.5, 210.5 417.5 Z"
+                fill="url(#kPayalGold)"
+                stroke="#78350F"
+                strokeWidth="0.8"
+              />
+
+              {/* Inner High-Sheen Crest Specular Highlight */}
+              <path
+                d="M 212.5 419.5 C 217.5 423, 234.5 423, 239.5 419.5"
+                fill="none"
+                stroke="#FFFDF0"
+                strokeWidth="1.2"
+                strokeLinecap="round"
+                opacity="0.9"
+              />
+
+              {/* ── Upper Beaded Gold Border (Micro Pearl / Kantha Cord) ── */}
+              {[
+                { x: 211.5, y: 417.8 },
+                { x: 216.0, y: 419.6 },
+                { x: 221.0, y: 421.0 },
+                { x: 226.0, y: 421.4 },
+                { x: 231.0, y: 421.0 },
+                { x: 236.0, y: 419.6 },
+                { x: 240.5, y: 417.8 },
+              ].map((b, i) => (
+                <g key={`ra-ub-${i}`}>
+                  <circle cx={b.x} cy={b.y} r="1.3" fill="url(#kGoldBead)" stroke="#78350F" strokeWidth="0.35" />
+                  <circle cx={b.x - 0.4} cy={b.y - 0.4} r="0.5" fill="#FFFFFF" opacity="0.9" />
+                </g>
+              ))}
+
+              {/* ── Lower Beaded Gold Border ── */}
+              {[
+                { x: 212.0, y: 423.2 },
+                { x: 216.5, y: 425.2 },
+                { x: 221.2, y: 426.6 },
+                { x: 226.0, y: 427.1 },
+                { x: 230.8, y: 426.6 },
+                { x: 235.5, y: 425.2 },
+                { x: 240.0, y: 423.2 },
+              ].map((b, i) => (
+                <g key={`ra-lb-${i}`}>
+                  <circle cx={b.x} cy={b.y} r="1.3" fill="url(#kGoldBead)" stroke="#78350F" strokeWidth="0.35" />
+                  <circle cx={b.x - 0.4} cy={b.y - 0.4} r="0.5" fill="#FFFFFF" opacity="0.9" />
+                </g>
+              ))}
+
+              {/* ── Inlaid Royal Gemstones (Navratna Meenakari Accents) ── */}
+              {/* Flanking Rubies */}
+              <circle cx="214" cy="421.2" r="1.4" fill="url(#kPayalRuby)" stroke="#78350F" strokeWidth="0.4" />
+              <circle cx="238" cy="421.2" r="1.4" fill="url(#kPayalRuby)" stroke="#78350F" strokeWidth="0.4" />
+
+              {/* Sacred Emerald Cabochons */}
+              <g id="ra-emerald-left">
+                <circle cx="219" cy="423.2" r="2.3" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.4" />
+                <circle cx="219" cy="423.2" r="1.7" fill="url(#kPayalEmerald)" stroke="#064E3B" strokeWidth="0.3" />
+                <circle cx="218.5" cy="422.7" r="0.6" fill="#FFFFFF" opacity="0.95" />
+              </g>
+              <g id="ra-emerald-right">
+                <circle cx="233" cy="423.2" r="2.3" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.4" />
+                <circle cx="233" cy="423.2" r="1.7" fill="url(#kPayalEmerald)" stroke="#064E3B" strokeWidth="0.3" />
+                <circle cx="232.5" cy="422.7" r="0.6" fill="#FFFFFF" opacity="0.95" />
+              </g>
+
+              {/* Central Royal Lotus Rosette with Scarlet Ruby Core */}
+              <g id="ra-center-ruby">
+                {/* 4 Golden Petal Accents */}
+                <circle cx="226" cy="421.8" r="1.2" fill="url(#kGoldBead)" />
+                <circle cx="226" cy="426.6" r="1.2" fill="url(#kGoldBead)" />
+                <circle cx="223.6" cy="424.2" r="1.2" fill="url(#kGoldBead)" />
+                <circle cx="228.4" cy="424.2" r="1.2" fill="url(#kGoldBead)" />
+
+                {/* Gold Bezel Setting */}
+                <circle cx="226" cy="424.2" r="3.0" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
+                {/* Radiant Ruby Gemstone */}
+                <circle cx="226" cy="424.2" r="2.2" fill="url(#kPayalRuby)" stroke="#7F1D1D" strokeWidth="0.4" />
+                {/* Specular White Glint */}
+                <circle cx="225.3" cy="423.5" r="0.75" fill="#FFFFFF" opacity="0.95" />
+              </g>
+
+              {/* ── 7 Hanging 3D Golden Ghungroo Bells (घुंघरू) with Jingling Clappers ── */}
+              {[
+                { x: 213.0, y: 423.8, isCenter: false },
+                { x: 217.2, y: 425.8, isCenter: false },
+                { x: 221.6, y: 427.4, isCenter: false },
+                { x: 226.0, y: 428.2, isCenter: true },
+                { x: 230.4, y: 427.4, isCenter: false },
+                { x: 234.8, y: 425.8, isCenter: false },
+                { x: 239.0, y: 423.8, isCenter: false },
+              ].map((bell, i) => {
+                const bellRadius = bell.isCenter ? 3.0 : 2.5;
+                const dropY = bell.y + bellRadius + 1.2;
+                return (
+                  <g key={`ra-bell-${i}`}>
+                    {/* Golden Suspension Jump Ring */}
+                    <ellipse cx={bell.x} cy={bell.y + 0.5} rx="1.0" ry="1.4" fill="none" stroke="#D97706" strokeWidth="0.7" />
+
+                    {/* Ambient Contact Shadow beneath bell onto foot skin */}
+                    <ellipse cx={bell.x} cy={dropY + bellRadius + 0.8} rx={bellRadius * 0.9} ry="1.2" fill="#0C1A38" opacity="0.32" />
+
+                    {/* 3D Polished Ghungroo Bell Sphere Body */}
+                    <circle cx={bell.x} cy={dropY} r={bellRadius} fill="url(#kPayalBellDome)" stroke="#78350F" strokeWidth="0.5" />
+
+                    {/* Ghungroo Resonance Smile / Sound Slit */}
+                    <path
+                      d={`M ${bell.x - bellRadius * 0.55} ${dropY + bellRadius * 0.25} Q ${bell.x} ${dropY + bellRadius * 0.65} ${bell.x + bellRadius * 0.55} ${dropY + bellRadius * 0.25}`}
+                      fill="none"
+                      stroke="#451A03"
+                      strokeWidth="0.7"
+                      strokeLinecap="round"
+                    />
+
+                    {/* Dangling Pearl Clapper Droplet (Moti) */}
+                    <circle cx={bell.x} cy={dropY + bellRadius + 1.2} r={bell.isCenter ? 1.4 : 1.1} fill="url(#kPayalPearl)" stroke="#B45309" strokeWidth="0.35" />
+                    <circle cx={bell.x - 0.3} cy={dropY + bellRadius + 0.9} r="0.4" fill="#FFFFFF" opacity="0.9" />
+
+                    {/* High Specular Glint on Upper Dome */}
+                    <circle cx={bell.x - bellRadius * 0.38} cy={dropY - bellRadius * 0.35} r={bellRadius * 0.36} fill="#FFFFFF" opacity="0.95" />
+                  </g>
+                );
+              })}
             </g>
           </g>
 
