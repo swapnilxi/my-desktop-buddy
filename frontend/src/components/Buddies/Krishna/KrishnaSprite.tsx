@@ -984,6 +984,12 @@ export function LittleKrishna({
             <ellipse cx="190" cy="360" rx="16" ry="24" fill="#1E3A8A" opacity="0.2" />
           </g>
 
+          {/* ════════════════ LAYER 3B: LEFT THUMB (BEHIND WAIST IN CHAKRA POSE) ════════════════ */}
+          {/* Anatomical Left Thumb passes BEHIND the waist/body flank, while the 4 fingers wrap around the front */}
+          {pose === 'chakra' && (
+            <KrishnaArms pose={pose} renderSide="characterLeft" renderHandPart="thumbOnly" />
+          )}
+
           {/* ════════════════ LAYER 4: 3D WRAPPED LAYERED DHOTI, SCULPTED WAISTBAND & SILK SASH ════════════════ */}
           <g id="dhoti" filter="url(#kSoftShadow)" transform="translate(190,290) scale(1,1.06) translate(-190,-290)">
 
@@ -1915,12 +1921,16 @@ export function LittleKrishna({
           </g>
 
           {/* ════════════════ LAYER 7: ARMS ════════════════ */}
-          {/* Chakra pose: upper arms + left forearm here; right forearm+hand rendered in Layer 8 (above hair). */}
+          {/* Chakra pose: upper arms + left forearm & 4 fingers (without thumb) here. */}
+          {/* Left thumb passed behind waist in Layer 3B. Four fingers wrap around front/side of waist. */}
+          {/* Right forearm+hand rendered in Layer 8 (above hair). */}
           {/* All other poses: full arms rendered here, no Layer 8 split needed. */}
           {pose === 'chakra' ? (
             <>
               <KrishnaArms pose={pose} renderSide="all" renderLayer="upperArm" />
-              <KrishnaArms pose={pose} renderSide="characterLeft" renderLayer="forearmAndHand" />
+              {/* Subtle Waist Contact Shadow where fingers wrap around waist contour */}
+              <ellipse cx="226" cy="286" rx="12" ry="6" fill="#315EA8" opacity="0.18" />
+              <KrishnaArms pose={pose} renderSide="characterLeft" renderLayer="forearmAndHand" renderHandPart="withoutThumb" />
             </>
           ) : (
             <KrishnaArms pose={pose} renderSide="all" renderLayer="all" />
@@ -2737,6 +2747,11 @@ export function LittleKrishna({
               </g>
             </g>
           </g>
+
+          {/* ── Chakra Index Finger Spin Contact (Active Divine Control in front of hub) ── */}
+          {pose === 'chakra' && (
+            <KrishnaArms pose={pose} renderSide="characterRight" renderLayer="forearmAndHand" renderHandPart="chakraIndexTip" />
+          )}
         </svg>
       </div>
     </div>
