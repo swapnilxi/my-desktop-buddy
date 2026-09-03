@@ -43,6 +43,9 @@ export function useVoiceRecorder(options: UseVoiceRecorderOptions): VoiceRecorde
     optionsRef.current = options;
 
     const recognitionRef = useRef<any>(null);
+    // Set when the user deliberately stops, so the recognizer's trailing
+    // 'aborted' error does not get mistaken for a failure worth falling back on.
+    const userStoppedRef = useRef(false);
 
     const cleanupStream = useCallback(() => {
         streamRef.current?.getTracks().forEach((t) => t.stop());
@@ -51,6 +54,7 @@ export function useVoiceRecorder(options: UseVoiceRecorderOptions): VoiceRecorde
     }, []);
 
     const stop = useCallback(() => {
+        userStoppedRef.current = true;
         if (recognitionRef.current) {
             try {
                 recognitionRef.current.stop();
@@ -62,11 +66,16 @@ export function useVoiceRecorder(options: UseVoiceRecorderOptions): VoiceRecorde
 
     const start = useCallback(async () => {
         setError(null);
+        userStoppedRef.current = false;
         const saved = getClientSavedConfig();
         const sttPref = saved?.voice?.stt_provider || 'apple';
 
-        // 1. Try Apple / Browser Speech Recognition first if preferred
-        if (sttPref === 'apple' && isSpeechRecognitionSupported()) {
+        // 1. Try Apple / Browser Speech Recognition first if preferred.
+        //    Skipped inside Electron: its Chromium ships no Google speech key,
+        //    so recognition reliably fails with 'network' and every mic tap
+        //    would pay that failed round trip before falling back.
+        const inElectron = typeof window !== 'undefined' && !!window.hamsterDesk?.isElectron;
+        if (sttPref === 'apple' && !inElectron && isSpeechRecognitionSupported()) {
             let receivedResult = false;
             const rec = createBrowserSpeechRecognition({
                 onStart: () => {
@@ -81,11 +90,21 @@ export function useVoiceRecorder(options: UseVoiceRecorderOptions): VoiceRecorde
                     optionsRef.current.onDone?.();
                 },
                 onError: (err) => {
-                    console.warn('[Apple Speech Recognition fallback to MediaRecorder]', err);
-                    // If recognition fails (e.g. network error in electron), fall through to MediaRecorder
-                    if (!receivedResult) {
-                        startMediaRecorder();
+                    // 'aborted' / 'no-speech' are normal ends, not failures — and a
+                    // user-initiated stop must never re-open the mic.
+                    const benign = err === 'aborted' || err === 'no-speech';
+                    if (receivedResult || userStoppedRef.current || benign) {
+                        setIsRecording(false);
+                        if (benign && !receivedResult && !userStoppedRef.current) {
+                            setError("Didn't catch that — try speaking a bit longer!");
+                        }
+                        optionsRef.current.onDone?.(benign ? 'no-speech' : err);
+                        return;
                     }
+                    // Genuine failure (commonly 'network' inside Electron):
+                    // fall back to MediaRecorder + backend transcription.
+                    console.warn('[Speech Recognition unavailable, using MediaRecorder]', err);
+                    startMediaRecorder();
                 },
                 onEnd: () => {
                     setIsRecording(false);
@@ -94,6 +113,9 @@ export function useVoiceRecorder(options: UseVoiceRecorderOptions): VoiceRecorde
             });
 
             if (rec) {
+                if (recognitionRef.current) {
+                    try { recognitionRef.current.stop(); } catch { }
+                }
                 recognitionRef.current = rec;
                 return;
             }

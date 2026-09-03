@@ -21,6 +21,10 @@ from routes.chat import router as chat_router
 from routes.todos import router as todos_router
 from routes.config import router as config_router
 from routes.voice import router as voice_router
+from routes.gita import router as gita_router
+from routes.daily import router as daily_router
+from routes.memory import router as memory_router
+from routes.krishna import router as krishna_router
 
 
 @asynccontextmanager
@@ -29,6 +33,15 @@ async def lifespan(app: FastAPI):
     print("🐾 Desktop Buddy backend starting up...")
     load_config()
     print("✅ Configuration loaded")
+
+    # Database + Gita knowledge base (Parts 55, 56)
+    from db import init_db
+    from gita import seed_if_empty
+
+    init_db()
+    print("✅ Database ready")
+    stats = seed_if_empty()
+    print(f"✅ Gita knowledge base: {stats['verses']} verses available")
     yield
     print("🐾 Desktop Buddy backend shutting down...")
 
@@ -73,12 +86,36 @@ app.include_router(chat_router)
 app.include_router(todos_router)
 app.include_router(config_router)
 app.include_router(voice_router)
+app.include_router(gita_router)
+app.include_router(daily_router)
+app.include_router(memory_router)
+app.include_router(krishna_router)
 
 
 # ── Health Check ──────────────────────────────────────────────────
 @app.get("/health")
 async def health():
-    return {"status": "ok", "pet": "🐹", "message": "Hammy is running!"}
+    """Health check, including Krishna subsystem readiness (Part 61)."""
+    subsystems: dict[str, object] = {}
+    try:
+        from gita import verse_count_available
+
+        subsystems["gita_verses"] = verse_count_available()
+    except Exception as exc:
+        subsystems["gita_error"] = str(exc)
+    try:
+        from db import DB_FILE
+
+        subsystems["database"] = DB_FILE.exists()
+    except Exception as exc:
+        subsystems["database_error"] = str(exc)
+
+    return {
+        "status": "ok",
+        "pet": "🐹",
+        "message": "Hammy is running!",
+        "subsystems": subsystems,
+    }
 
 
 @app.get("/context")

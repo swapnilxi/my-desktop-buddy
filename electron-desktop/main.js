@@ -26,25 +26,88 @@ const COMPACT_HEIGHT = 680;
 const DASHBOARD_WIDTH = 1100;
 const DASHBOARD_HEIGHT = 760;
 
-let lastPetPosition = { x: null, y: null };
+// Smallest window that still shows its own navigation controls. Below this the
+// mode switcher and window buttons get clipped with no way to scroll to them.
+const MIN_WIDTH = 300;
+const MIN_HEIGHT = 260;
+
+const MODE_SIZES = {
+  pet: { width: PET_WIDTH, height: PET_HEIGHT },
+  compact: { width: COMPACT_WIDTH, height: COMPACT_HEIGHT },
+  fullscreen: { width: DASHBOARD_WIDTH, height: DASHBOARD_HEIGHT },
+};
+
+// Remember where the user put each mode, so switching away and back does not
+// discard their position or their resize.
+const savedBounds = { pet: null, compact: null, fullscreen: null };
+let currentMode = 'pet';
+// User preference, so mode switches stop silently re-pinning a window the user
+// deliberately un-pinned. The dashboard overrides it to false either way.
+let userWantsAlwaysOnTop = true;
+
+// Mirrors MODES in frontend/src/components/Shell/WindowChrome.tsx.
+const MODE_MENU = [
+  { id: 'pet', label: 'Pet \u2014 floating buddy' },
+  { id: 'compact', label: 'Sidebar \u2014 chat & tasks' },
+  { id: 'fullscreen', label: 'Dashboard \u2014 full workspace' },
+];
+
+/**
+ * Ask the renderer to switch mode, then reveal the window.
+ *
+ * The renderer decides which mode is rendered, so a native menu cannot simply
+ * resize the window — it has to tell React or the two disagree.
+ */
+function requestMode(mode) {
+  if (!mainWindow || mainWindow.isDestroyed()) return;
+  mainWindow.webContents.send('mode:request', mode);
+  revealWindow();
+}
+
+/** The work area of the display the window actually sits on (not always the primary). */
+function currentWorkArea() {
+  const bounds = mainWindow ? mainWindow.getBounds() : null;
+  const display = bounds
+    ? screen.getDisplayMatching(bounds)
+    : screen.getPrimaryDisplay();
+  // workArea includes the origin, so this respects the macOS menu bar, the
+  // dock, and any secondary monitor's offset — workAreaSize alone does not.
+  return display.workArea;
+}
+
+/** Fit width/height inside the work area and keep the whole window on-screen. */
+function fitToWorkArea(area, width, height, x, y) {
+  const w = Math.max(MIN_WIDTH, Math.min(width, area.width));
+  const h = Math.max(MIN_HEIGHT, Math.min(height, area.height));
+  const maxX = area.x + area.width - w;
+  const maxY = area.y + area.height - h;
+  return {
+    width: w,
+    height: h,
+    x: Math.round(Math.min(Math.max(x, area.x), Math.max(area.x, maxX))),
+    y: Math.round(Math.min(Math.max(y, area.y), Math.max(area.y, maxY))),
+  };
+}
 
 // ── Window Creation ──────────────────────────────────────────────
 
 function createWindow() {
-  const primaryDisplay = screen.getPrimaryDisplay();
-  const { width: screenWidth, height: screenHeight } = primaryDisplay.workAreaSize;
+  const area = screen.getPrimaryDisplay().workArea;
 
-  // Start in Pet / Small mode by default
-  const startWidth = PET_WIDTH;
-  const startHeight = PET_HEIGHT;
+  // Start in Pet / Small mode by default, clamped so it fits even on a small
+  // or scaled display rather than hanging off the bottom of the screen.
+  const startWidth = Math.min(PET_WIDTH, area.width - 20);
+  const startHeight = Math.min(PET_HEIGHT, area.height - 20);
 
   const iconPath = path.join(__dirname, 'assets', 'icon.png');
 
   mainWindow = new BrowserWindow({
     width: startWidth,
     height: startHeight,
-    x: screenWidth - startWidth - 30,
-    y: Math.round((screenHeight - startHeight) / 2),
+    x: area.x + Math.max(0, area.width - startWidth - 30),
+    y: area.y + Math.max(0, Math.round((area.height - startHeight) / 2)),
+    minWidth: MIN_WIDTH,
+    minHeight: MIN_HEIGHT,
     frame: false,
     transparent: true,
     backgroundColor: '#00000000',
@@ -63,6 +126,8 @@ function createWindow() {
     },
   });
 
+  savedBounds.pet = mainWindow.getBounds();
+
   // Make Hammy float across all macOS spaces/desktops
   mainWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
 
@@ -79,6 +144,30 @@ function createWindow() {
   });
 
   mainWindow.loadURL(FRONTEND_URL);
+
+  // A missing dev server or an unbuilt static export used to show nothing at
+  // all — a transparent, frameless, empty window with no error anywhere.
+  mainWindow.webContents.on('did-fail-load', (_e, errorCode, errorDescription, validatedURL) => {
+    if (errorCode === -3) return; // aborted by a subsequent navigation
+    console.error(`[Window] Failed to load ${validatedURL}: ${errorDescription} (${errorCode})`);
+    const hint = IS_DEV
+      ? `Start the Next.js dev server first:<br><code>cd frontend &amp;&amp; npm run dev</code>`
+      : `Build the frontend first:<br><code>cd frontend &amp;&amp; npm run build</code>`;
+    mainWindow.webContents.loadURL(
+      'data:text/html;charset=utf-8,' +
+      encodeURIComponent(`<!doctype html><meta charset="utf-8">
+        <body style="margin:0;display:grid;place-items:center;height:100vh;
+          font:14px/1.6 -apple-system,system-ui,sans-serif;
+          background:#140d09;color:#fffbf2;text-align:center">
+          <div style="max-width:30rem;padding:2rem">
+            <div style="font-size:2.5rem">\u{1F43E}</div>
+            <h1 style="font-size:1.1rem;margin:.5rem 0">Desktop Buddy could not load its interface</h1>
+            <p style="color:#d9c7b8">${hint}</p>
+            <p style="color:#8c7665;font-size:12px">${errorDescription} \u2014 ${validatedURL}</p>
+          </div>
+        </body>`)
+    );
+  });
 
   mainWindow.on('closed', () => {
     mainWindow = null;
@@ -110,90 +199,135 @@ function setupIPC() {
   });
 
   ipcMain.on('window:toggle-always-on-top', () => {
-    if (mainWindow) {
-      const isTop = mainWindow.isAlwaysOnTop();
-      mainWindow.setAlwaysOnTop(!isTop);
+    if (!mainWindow) return;
+    userWantsAlwaysOnTop = !userWantsAlwaysOnTop;
+    // The dashboard is never pinned, so honour the preference only elsewhere.
+    mainWindow.setAlwaysOnTop(currentMode !== 'fullscreen' && userWantsAlwaysOnTop);
+  });
+
+  ipcMain.handle('window:get-always-on-top', () => userWantsAlwaysOnTop);
+
+  // The mode is called 'fullscreen' but was a hard-capped 1100x760 window with
+  // no way to fill the screen. Maximize (rather than setFullScreen, which is
+  // unreliable on a transparent frameless macOS window) gives it one.
+  ipcMain.on('window:toggle-maximize', () => {
+    if (!mainWindow || mainWindow.isDestroyed()) return;
+    if (mainWindow.isMaximized()) {
+      mainWindow.unmaximize();
+    } else {
+      // Remember the pre-maximize bounds so restoring returns to them.
+      savedBounds[currentMode] = mainWindow.getBounds();
+      mainWindow.maximize();
     }
   });
+
+  ipcMain.handle('window:is-maximized', () =>
+    !!mainWindow && !mainWindow.isDestroyed() && mainWindow.isMaximized());
 
   // Smooth pointer-driven window dragging from the renderer
   ipcMain.on('window:move-by', (event, { deltaX, deltaY }) => {
     if (!mainWindow) return;
-    const [x, y] = mainWindow.getPosition();
-    mainWindow.setPosition(Math.round(x + deltaX), Math.round(y + deltaY));
+    const b = mainWindow.getBounds();
+    const nextX = Math.round(b.x + deltaX);
+    const nextY = Math.round(b.y + deltaY);
+
+    // Union of every display, so dragging across monitors still works, but the
+    // window can never be pushed somewhere its own controls are unreachable.
+    const displays = screen.getAllDisplays();
+    const minX = Math.min(...displays.map((d) => d.workArea.x));
+    const maxX = Math.max(...displays.map((d) => d.workArea.x + d.workArea.width));
+    const minY = Math.min(...displays.map((d) => d.workArea.y));
+    const maxY = Math.max(...displays.map((d) => d.workArea.y + d.workArea.height));
+
+    // Always leave a grabbable strip of the window on screen.
+    const KEEP_VISIBLE = 80;
+    mainWindow.setPosition(
+      Math.min(Math.max(nextX, minX - b.width + KEEP_VISIBLE), maxX - KEEP_VISIBLE),
+      Math.min(Math.max(nextY, minY), maxY - KEEP_VISIBLE)
+    );
   });
 
   ipcMain.on('window:start-drag', () => {
     // No-op acknowledgement — renderer uses this to signal drag start
   });
 
+  // Pet mode is a transparent 340x540 rectangle sitting above every other app.
+  // Without click-through, all of that empty space around the buddy silently
+  // swallowed desktop clicks. The renderer turns this on while the pointer is
+  // over the transparent backdrop and off again over the buddy and controls.
+  ipcMain.on('window:set-click-through', (_event, enabled) => {
+    if (!mainWindow || mainWindow.isDestroyed()) return;
+    // forward:true keeps mousemove flowing so the renderer can tell when the
+    // pointer re-enters an interactive element.
+    mainWindow.setIgnoreMouseEvents(!!enabled, { forward: true });
+  });
+
   // 4 Window Modes: 'minimized' | 'pet' | 'compact' | 'fullscreen'
-  ipcMain.on('window:set-mode', (event, mode) => {
+  ipcMain.on('window:set-mode', (event, rawMode) => {
     if (!mainWindow) return;
-    const primaryDisplay = screen.getPrimaryDisplay();
-    const { width: screenWidth, height: screenHeight } = primaryDisplay.workAreaSize;
-    const currentBounds = mainWindow.getBounds();
+
+    // Accept the historical aliases the renderer used to send.
+    const aliases = { small: 'pet', sidebar: 'compact', dashboard: 'fullscreen' };
+    const mode = aliases[rawMode] || rawMode;
 
     if (mode === 'minimized') {
       mainWindow.minimize();
-    } else if (mode === 'pet' || mode === 'small') {
-      // Save or restore position within screen bounds
-      let targetX = lastPetPosition.x ?? Math.min(Math.max(10, currentBounds.x), screenWidth - PET_WIDTH - 10);
-      let targetY = lastPetPosition.y ?? Math.min(Math.max(10, currentBounds.y), screenHeight - PET_HEIGHT - 10);
-      targetX = Math.min(Math.max(10, targetX), screenWidth - PET_WIDTH - 10);
-      targetY = Math.min(Math.max(10, targetY), screenHeight - PET_HEIGHT - 10);
-
-      mainWindow.setAlwaysOnTop(true);
-      mainWindow.setBounds({
-        x: targetX,
-        y: targetY,
-        width: PET_WIDTH,
-        height: PET_HEIGHT,
-      }, true);
-    } else if (mode === 'compact' || mode === 'sidebar') {
-      // Save current pet position before expanding
-      if (currentBounds.width === PET_WIDTH) {
-        lastPetPosition = { x: currentBounds.x, y: currentBounds.y };
-      }
-
-      let targetX = currentBounds.x;
-      let targetY = currentBounds.y;
-
-      if (targetX + COMPACT_WIDTH > screenWidth - 10) {
-        targetX = screenWidth - COMPACT_WIDTH - 10;
-      }
-      if (targetY + COMPACT_HEIGHT > screenHeight - 10) {
-        targetY = screenHeight - COMPACT_HEIGHT - 10;
-      }
-      targetX = Math.max(10, targetX);
-      targetY = Math.max(10, targetY);
-
-      mainWindow.setAlwaysOnTop(true);
-      mainWindow.setBounds({
-        x: targetX,
-        y: targetY,
-        width: COMPACT_WIDTH,
-        height: COMPACT_HEIGHT,
-      }, true);
-    } else if (mode === 'fullscreen' || mode === 'dashboard') {
-      // Save pet position before expanding
-      if (currentBounds.width === PET_WIDTH) {
-        lastPetPosition = { x: currentBounds.x, y: currentBounds.y };
-      }
-
-      const targetW = Math.min(DASHBOARD_WIDTH, screenWidth - 40);
-      const targetH = Math.min(DASHBOARD_HEIGHT, screenHeight - 60);
-      const targetX = Math.round((screenWidth - targetW) / 2);
-      const targetY = Math.round((screenHeight - targetH) / 2);
-
-      mainWindow.setAlwaysOnTop(false);
-      mainWindow.setBounds({
-        x: targetX,
-        y: targetY,
-        width: targetW,
-        height: targetH,
-      }, true);
+      return;
     }
+
+    const size = MODE_SIZES[mode];
+    if (!size) return;
+
+    // setBounds is ignored (or fights the OS) on a maximized window.
+    if (mainWindow.isMaximized()) mainWindow.unmaximize();
+
+    // Remember the outgoing mode's bounds, including any resize the user made,
+    // so returning to it restores what they left rather than a canned rectangle.
+    if (mainWindow.isVisible() && !mainWindow.isMinimized()) {
+      savedBounds[currentMode] = mainWindow.getBounds();
+    }
+
+    const area = currentWorkArea();
+    const remembered = savedBounds[mode];
+    const previous = savedBounds[currentMode] || mainWindow.getBounds();
+
+    let target;
+    if (remembered) {
+      target = fitToWorkArea(area, remembered.width, remembered.height, remembered.x, remembered.y);
+    } else if (mode === 'fullscreen') {
+      // First visit to the dashboard: centre it on the current display.
+      const w = Math.min(size.width, area.width - 40);
+      const h = Math.min(size.height, area.height - 40);
+      target = fitToWorkArea(
+        area, w, h,
+        area.x + Math.round((area.width - w) / 2),
+        area.y + Math.round((area.height - h) / 2)
+      );
+    } else {
+      // Keep the floating modes anchored where the user last had the window.
+      target = fitToWorkArea(area, size.width, size.height, previous.x, previous.y);
+    }
+
+    // The dashboard is a workspace you focus on, so it must not sit above every
+    // other app; the floating modes are companions, so they stay pinned unless
+    // the user has explicitly unpinned them.
+    mainWindow.setAlwaysOnTop(mode !== 'fullscreen' && userWantsAlwaysOnTop);
+
+    currentMode = mode;
+    savedBounds[mode] = target;
+    // Refresh the tray/dock radio ticks so they reflect the new mode.
+    updateTrayMenu();
+    // Leaving click-through on outside pet mode would make the panel unusable.
+    if (mode !== 'pet') mainWindow.setIgnoreMouseEvents(false);
+
+    // Only the floating companion modes should follow the user across Spaces
+    // and draw over full-screen apps; the dashboard is a normal workspace.
+    mainWindow.setVisibleOnAllWorkspaces(mode !== 'fullscreen', {
+      visibleOnFullScreen: mode !== 'fullscreen',
+    });
+    // animate:false — an animated resize races the renderer's instant DOM swap,
+    // which showed the incoming mode stretched into the outgoing window size.
+    mainWindow.setBounds(target, false);
   });
 
   ipcMain.on('buddy:update', (_event, buddyInfo) => {
@@ -206,6 +340,18 @@ function setupIPC() {
   });
 }
 
+/** The one correct way to bring the buddy back — used by tray, dock and activate. */
+function revealWindow() {
+  if (!mainWindow || mainWindow.isDestroyed()) return;
+  // restore() first: a minimized window that is only show()n on macOS can stay
+  // in the dock, which made the tray icon look broken.
+  if (mainWindow.isMinimized()) mainWindow.restore();
+  mainWindow.show();
+  mainWindow.focus();
+  // Minimizing drops the pin, so re-apply the user's preference on the way back.
+  mainWindow.setAlwaysOnTop(currentMode !== 'fullscreen' && userWantsAlwaysOnTop);
+}
+
 let trayAnimTimer = null;
 let dockAnimTimer = null;
 let currentBuddyName = 'Hammy';
@@ -214,19 +360,28 @@ let currentBuddyEmoji = '🐹';
 function updateTrayMenu(name, emoji) {
   if (name) currentBuddyName = name;
   if (emoji) currentBuddyEmoji = emoji;
-  if (!tray || tray.isDestroyed()) return;
+  if (!tray || tray.isDestroyed()) {
+    updateDockMenu();
+    return;
+  }
 
   tray.setToolTip(`${currentBuddyName} — Desktop Buddy ${currentBuddyEmoji}`);
+  updateDockMenu();
   const contextMenu = Menu.buildFromTemplate([
     {
       label: `Show ${currentBuddyName} ${currentBuddyEmoji}`,
-      click: () => {
-        if (mainWindow) {
-          if (mainWindow.isMinimized()) mainWindow.restore();
-          mainWindow.show();
-          mainWindow.focus();
-        }
-      },
+      click: revealWindow,
+    },
+    {
+      // While the window is hidden or minimized the tray is the only way back,
+      // and it could previously only Show/Hide — never return to a chosen mode.
+      label: 'View mode',
+      submenu: MODE_MENU.map((m) => ({
+        label: m.label,
+        type: 'radio',
+        checked: currentMode === m.id,
+        click: () => requestMode(m.id),
+      })),
     },
     {
       label: 'Hide',
@@ -300,14 +455,14 @@ function createTray() {
   }, 800);
 
   tray.on('click', () => {
-    if (mainWindow) {
-      if (mainWindow.isVisible()) {
-        mainWindow.hide();
-      } else {
-        if (mainWindow.isMinimized()) mainWindow.restore();
-        mainWindow.show();
-        mainWindow.focus();
-      }
+    if (!mainWindow || mainWindow.isDestroyed()) return;
+    // Only hide when the window is genuinely up front. When it is minimized or
+    // just behind another app, a blind visible/hidden toggle hid it instead of
+    // bringing it back — the opposite of what the click was for.
+    if (mainWindow.isVisible() && !mainWindow.isMinimized() && mainWindow.isFocused()) {
+      mainWindow.hide();
+    } else {
+      revealWindow();
     }
   });
 }
@@ -318,7 +473,9 @@ function startBackend() {
     if (res.statusCode === 200) {
       console.log(`[Backend] FastAPI is already running on port ${BACKEND_PORT}.`);
     }
+    res.resume();
   });
+  req.setTimeout(2000, () => req.destroy());
 
   req.on('error', () => {
     console.log(`[Backend] Launching FastAPI sidecar on port ${BACKEND_PORT}...`);
@@ -326,12 +483,22 @@ function startBackend() {
 
     backendProcess = spawn('python3', [
       '-m', 'uvicorn', 'main:app',
-      '--host', '0.0.0.0',
+      // Loopback only: the sidecar is for this machine, and 0.0.0.0 published
+      // the user's chat and API keys to every device on their network.
+      '--host', '127.0.0.1',
       '--port', String(BACKEND_PORT),
       '--reload',
     ], {
       cwd: backendDir,
       stdio: 'pipe',
+    });
+
+    // Without this, a missing python3 raises an unhandled 'error' event and
+    // takes the whole app down instead of just leaving the backend offline.
+    backendProcess.on('error', (err) => {
+      console.error('[Backend] Failed to launch FastAPI sidecar:', err.message);
+      console.error('[Backend] Is python3 on PATH? The app will run with the backend offline.');
+      backendProcess = null;
     });
 
     backendProcess.stdout.on('data', (data) => {
@@ -357,6 +524,39 @@ function stopBackend() {
 
 // ── App Lifecycle ────────────────────────────────────────────────
 
+function updateDockMenu() {
+  if (process.platform !== 'darwin' || !app.dock) return;
+  app.dock.setMenu(Menu.buildFromTemplate([
+    {
+      label: `Show ${currentBuddyName} ${currentBuddyEmoji}`,
+      click: revealWindow,
+    },
+    {
+      label: 'View mode',
+      submenu: MODE_MENU.map((m) => ({
+        label: m.label,
+        type: 'radio',
+        checked: currentMode === m.id,
+        click: () => requestMode(m.id),
+      })),
+    },
+    {
+      label: 'Hide',
+      click: () => {
+        if (mainWindow) mainWindow.hide();
+      },
+    },
+    { type: 'separator' },
+    {
+      label: `Quit ${currentBuddyName}`,
+      click: () => {
+        app.isQuitting = true;
+        app.quit();
+      },
+    },
+  ]));
+}
+
 function setupDock() {
   if (process.platform === 'darwin' && app.dock) {
     app.dock.show();
@@ -365,33 +565,7 @@ function setupDock() {
     if (!dockIcon.isEmpty()) {
       app.dock.setIcon(dockIcon);
     }
-    const dockMenu = Menu.buildFromTemplate([
-      {
-        label: 'Show Hammy 🐹',
-        click: () => {
-          if (mainWindow) {
-            if (mainWindow.isMinimized()) mainWindow.restore();
-            mainWindow.show();
-            mainWindow.focus();
-          }
-        },
-      },
-      {
-        label: 'Hide',
-        click: () => {
-          if (mainWindow) mainWindow.hide();
-        },
-      },
-      { type: 'separator' },
-      {
-        label: 'Quit Hammy',
-        click: () => {
-          app.isQuitting = true;
-          app.quit();
-        },
-      },
-    ]);
-    app.dock.setMenu(dockMenu);
+    updateDockMenu();
   }
 }
 
@@ -440,11 +614,7 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();
     } else if (mainWindow) {
-      if (mainWindow.isMinimized()) {
-        mainWindow.restore();
-      }
-      mainWindow.show();
-      mainWindow.focus();
+      revealWindow();
     }
   });
 });

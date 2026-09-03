@@ -52,6 +52,19 @@ export function createBrowserSpeechRecognition(handlers: BrowserRecognitionHandl
       handlers.onEnd?.();
     };
 
+    // Actually begin listening. Without this the recognizer is wired up but
+    // never activates, which makes Tap-to-Talk a silent no-op.
+    try {
+      recognition.start();
+    } catch (err) {
+      // start() throws InvalidStateError if a session is already running.
+      // Return null rather than firing onError: callers treat null as
+      // "unavailable" and fall back to MediaRecorder themselves, so firing
+      // onError here would start two recorders.
+      console.warn('[SpeechRecognition start error]', err);
+      return null;
+    }
+
     return recognition;
   } catch (err) {
     console.error('[createBrowserSpeechRecognition error]', err);

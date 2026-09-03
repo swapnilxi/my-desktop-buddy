@@ -5,6 +5,11 @@ export interface HamsterDeskAPI {
     quit: () => void;
     toggleAlwaysOnTop: () => void;
     setMode: (mode: 'minimized' | 'pet' | 'compact' | 'fullscreen') => void;
+    setClickThrough?: (enabled: boolean) => void;
+    toggleMaximize?: () => void;
+    onModeRequest?: (cb: (mode: string) => void) => (() => void) | undefined;
+    isMaximized?: () => Promise<boolean>;
+    getAlwaysOnTop?: () => Promise<boolean>;
     moveBy: (deltaX: number, deltaY: number) => void;
     startDrag: () => void;
     updateBuddy?: (info: { type: string; name: string; emoji: string }) => void;

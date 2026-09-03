@@ -29,7 +29,8 @@ export default function RootLayout({
       </head>
       <body>
         {children}
-        <audio id="flute-bg-music" src="/flute.mp3" loop />
+        {/* preload="none": an 11.7MB track should not download until asked for. */}
+        <audio id="flute-bg-music" src="/flute.mp3" loop preload="none" />
       </body>
     </html>
   );

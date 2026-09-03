@@ -300,6 +300,7 @@ export default function TodoPanel({
                       setIsEditingActivity(true);
                       setCustomInputText(timer.currentActivity);
                     }}
+                    aria-label="Type a custom activity label"
                     title="Type custom activity label"
                   >
                     ✏️
@@ -341,6 +342,7 @@ export default function TodoPanel({
                   <button
                     className="todo-activity-btn-mode"
                     onClick={() => setIsEditingActivity(false)}
+                    aria-label="Back to the activity dropdown"
                     title="Back to dropdown"
                   >
                     ✕

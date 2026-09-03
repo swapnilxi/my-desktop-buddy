@@ -61,15 +61,38 @@ Your companion's personality, favorite snacks, and interactive reactions change 
 - **Tap to Talk 🎙️**: Click the microphone icon to speak naturally to your buddy. They will transcribe your speech and reply with a synthesized voice.
 
 ### 🪟 Window Modes
-Desktop Buddy adapts to your workflow with 3 unique layout modes:
+Desktop Buddy adapts to your workflow with 3 layout modes:
 
 <div align="center">
   <img src="public/assets/ui-modes.jpg" alt="3 Window Modes Overview" width="100%" style="border-radius: 12px; margin-bottom: 16px;" />
 </div>
 
-1. **🐾 Floating Pet Widget**: A minimal, transparent overlay that sits on your desktop with quick actions and speech bubbles.
-2. **💬 Compact Sidebar**: A sleek side panel featuring the AI chat window and your quick To-Do list.
-3. **🖥️ Full Dashboard**: A comprehensive productivity workspace with project tracking, task management, and full chat history.
+1. **🐾 Pet** — a minimal, transparent overlay that floats on your desktop with quick actions and speech bubbles.
+2. **💬 Sidebar** — a narrow side panel with the AI chat, your To-Do list and settings.
+3. **🖥️ Dashboard** — the full productivity workspace, with room for chat history and tasks side by side.
+
+**Switching modes.** Every mode carries the same three-way switcher, so you can
+get to any mode from any other:
+
+| Action | How |
+| :--- | :--- |
+| Switch mode | Click 🐾 / 💬 / 🖥️ in the mode switcher |
+| Keyboard | `Cmd/Ctrl + 1` Pet · `Cmd/Ctrl + 2` Sidebar · `Cmd/Ctrl + 3` Dashboard |
+| Step back a mode | `Esc` (Dashboard → Sidebar → Pet) |
+| From the menu bar | Tray / dock icon → **View mode** |
+
+Your chosen mode is remembered, so the app reopens where you left it. Your chat
+history, focus timer and tasks all carry across modes — switching never resets them.
+
+**Window controls** mean the same thing in every mode:
+
+| Control | What it does |
+| :--- | :--- |
+| 📌 / 📍 | Pin or unpin the window above other apps (Pet & Sidebar) |
+| `−` | Minimize to the dock — click the menu-bar icon to bring it back |
+| `✕` | Hide the window; everything keeps running |
+| `⤢` | Maximize / restore (Dashboard only) |
+| ⏻ | Quit the app and stop the local backend — always asks first |
 
 ### ✅ Productivity & Tasks
 - Open the To-Do list from the widget toolbar.

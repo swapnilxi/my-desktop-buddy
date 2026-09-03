@@ -10,12 +10,23 @@
   --bg-secondary: #1e130d;
   --bg-tertiary: #2a1b13;
   --bg-card: rgba(38, 24, 17, 0.75);
+  /* Opaque ground for the dashboard workspace. Referenced by
+     .dashboard-container, which previously had no definition at all and so
+     rendered fully see-through over a transparent html/body. */
+  --bg-deep: #0f0a07;
+  /* Referenced with fallbacks by page.tsx and ConfigPanel; define it once so
+     inline styles and stylesheet rules cannot drift apart. */
+  --border-color: rgba(255, 255, 255, 0.1);
   --bg-glass: rgba(255, 248, 235, 0.05);
   --bg-glass-hover: rgba(245, 168, 75, 0.12);
 
   --text-primary: #fffbf2;
   --text-secondary: #d9c7b8;
-  --text-muted: #8c7665;
+  /* Raised to pass WCAG AA at the 10-11px sizes this is used at in the status
+     bar and the dashboard mode nav (~6.8:1 on --bg-primary). */
+  --text-muted: #b3a08e;
+  /* The old value, kept for genuinely de-emphasised decoration only. */
+  --text-dim: #8c7665;
   --text-accent: #f5a84b;
 
   --accent-primary: #f5a84b;
@@ -104,6 +115,93 @@ body {
   line-height: 1.6;
 }
 
+/* ── Keyboard Focus ─────────────────────────────────────────────────
+   Previously only text inputs had a :focus style, so a keyboard user could
+   not see where they were in any of the four view modes. */
+:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Pointer clicks should not paint a ring; keyboard focus always should. */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Controls that only appear on hover must become visible when focused, or the
+   keyboard path lands on something the user cannot see. */
+.compact-widget:focus-within .compact-control-btn,
+.compact-control-btn:focus-visible {
+  opacity: 1;
+}
+
+/* Skip-style helper for labels that should be read but not shown. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Reduced Motion ────────────────────────────────────────────────
+   The app runs dozens of infinite animations. Honour the OS setting instead
+   of animating regardless. */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Progress indicators are information, not decoration. Freezing them makes
+     "still working" look identical to "stuck", so they keep animating — just
+     more slowly and without the scale/throb. */
+  .typing-dot,
+  .voice-spinner,
+  .voice-pulse-dot {
+    animation-duration: 1.4s !important;
+    animation-iteration-count: infinite !important;
+  }
+
+  .voice-pulse-dot,
+  .btn-voice.recording {
+    animation-name: reduced-fade !important;
+  }
+
+  /* Keep hover/active affordances legible without the springy transforms. */
+  .floating-btn:hover,
+  .win-btn:hover,
+  .tab-btn:hover,
+  .mode-nav-btn:hover,
+  .pet-timer-chip:hover,
+  .copilot-talk-btn:hover,
+  .krishnaContainer:hover {
+    transform: none !important;
+  }
+}
+
+@keyframes reduced-fade {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.45;
+  }
+}
+
 /* ── Custom Scrollbar ──────────────────────────────────────────── */
 * {
   scrollbar-width: thin;
@@ -111,8 +209,8 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
@@ -120,8 +218,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.22);
   border-radius: var(--radius-full);
+  /* Inset the thumb so a 10px-wide track still reads as a slim bar. */
+  border: 2px solid transparent;
+  background-clip: content-box;
+  min-height: 32px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -155,14 +257,30 @@ body {
 }
 
 /* ── Hamster Section ───────────────────────────────────────────── */
+/* Single source of truth for the mascot area. Two later duplicates used to
+   override parts of this, and the flex-shrink:0 here is what locked the buddy
+   at ~44% of the compact window and starved every tab below it. */
 .hamster-section {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: var(--space-lg) var(--space-lg) var(--space-sm);
+  gap: 6px;
+  /* The top padding reserves room for the buddy's speech bubble, which is
+     absolutely positioned ~46px above the sprite. Without it the bubble paints
+     over the mode switcher and hides the app's main navigation. */
+  padding: 54px var(--space-lg) var(--space-sm);
   position: relative;
   z-index: 1;
-  flex-shrink: 0;
+  /* Grow no bigger than its content, but give height back under pressure. */
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  /* The buddy's speech bubble sits ~46px above the sprite and is where voice
+     answers appear, so allow it to paint outside while still clipping the
+     oversized sprite beyond that margin. */
+  overflow: clip;
+  overflow-clip-margin: 76px;
 }
 
 /* ── Tab Navigation ────────────────────────────────────────────── */
@@ -177,11 +295,14 @@ body {
 
 .tab-btn {
   flex: 1;
+  /* min-width:0 lets the four tabs actually share a 348px strip instead of
+     overflowing it; without it flex items refuse to shrink below their text. */
+  min-width: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-xs);
-  padding: var(--space-sm) var(--space-md);
+  padding: var(--space-sm) var(--space-sm);
   background: var(--bg-glass);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: var(--radius-md) var(--radius-md) 0 0;
@@ -221,6 +342,45 @@ body {
 
 .tab-emoji {
   font-size: var(--text-base);
+  flex-shrink: 0;
+}
+
+.tab-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Labels are dropped only when they genuinely cannot fit: five or more tabs in
+   a narrow sidebar. Four fit comfortably at 380px. The aria-label always
+   carries the full name, so nothing is lost to assistive tech either way. */
+@media (max-width: 460px) {
+
+  .tab-nav[data-tab-count="5"] .tab-label,
+  .tab-nav[data-tab-count="6"] .tab-label,
+  .tab-nav[data-tab-count="7"] .tab-label,
+  .tab-nav[data-tab-count="8"] .tab-label {
+    display: none;
+  }
+
+  .tab-nav[data-tab-count="5"] .tab-btn,
+  .tab-nav[data-tab-count="6"] .tab-btn,
+  .tab-nav[data-tab-count="7"] .tab-btn,
+  .tab-nav[data-tab-count="8"] .tab-btn {
+    padding: var(--space-sm) var(--space-xs);
+  }
+
+  .tab-nav[data-tab-count="5"] .tab-emoji,
+  .tab-nav[data-tab-count="6"] .tab-emoji,
+  .tab-nav[data-tab-count="7"] .tab-emoji,
+  .tab-nav[data-tab-count="8"] .tab-emoji {
+    font-size: var(--text-lg);
+  }
+
+  /* Four or fewer: shrink the text rather than hide it. */
+  .tab-nav .tab-label {
+    font-size: 11.5px;
+  }
 }
 
 /* ── Tab Content ───────────────────────────────────────────────── */
@@ -1016,6 +1176,9 @@ body {
 
 .todo-list {
   flex: 1;
+  /* Floor: with flex:1 and no minimum, the expanded timer card above pushed
+     this to 0px and the tasks vanished entirely in the 380px sidebar. */
+  min-height: 140px;
   overflow-y: auto;
   padding: var(--space-md) var(--space-lg);
 }
@@ -1211,6 +1374,7 @@ body {
 }
 
 .config-row {
+  max-width: 560px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1430,11 +1594,14 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  /* flex-start + scroll: centring taller-than-the-box content clipped the
+     heading off the top with no way to reach it. */
+  justify-content: flex-start;
   height: 100%;
-  padding: var(--space-2xl);
+  overflow-y: auto;
+  padding: var(--space-lg);
   text-align: center;
-  gap: var(--space-lg);
+  gap: var(--space-md);
 }
 
 .speech-coming-soon {
@@ -1682,23 +1849,16 @@ body {
   background: rgba(244, 164, 96, 0.2);
 }
 
-/* ── Interactive Hamster Section ───────────────────────────────── */
-.hamster-section {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px 0;
-  position: relative;
-}
-
 /* ── Compact Pet Widget Mode (Floating on Desktop) ─────────────── */
 .compact-widget {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  /* space-between keeps the toolbar pinned to the bottom edge and the controls
+     to the top, so neither is pushed off-screen when the timer chip appears. */
+  justify-content: space-between;
   gap: 2px;
-  min-height: 100vh;
+  height: 100vh;
   padding: 4px 6px 8px;
   box-sizing: border-box;
   background: transparent !important;
@@ -1721,10 +1881,19 @@ body {
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  padding: 0 4px;
-  height: 20px;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 2px 4px;
+  min-height: 30px;
   z-index: 15;
+}
+
+.pet-status-dot {
+  width: 8px;
+  height: 8px;
+  margin: 0 0 0 4px;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px currentColor;
 }
 
 .compact-top-controls {
@@ -1733,26 +1902,31 @@ body {
   gap: 5px;
 }
 
+/* Kept for compatibility; pet mode now renders shared .chrome-btn controls. */
 .compact-control-btn {
-  width: 17px;
-  height: 17px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background: rgba(30, 30, 45, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.15);
   color: var(--text-secondary);
-  font-size: 9px;
+  font-size: 11px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  opacity: 0;
+  /* Visible by default. These are pet mode's only window controls, so hiding
+     them behind :hover left touch and keyboard users with no way out at all. */
+  opacity: 0.65;
   transition: all var(--transition-fast);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
 
-.compact-widget:hover .compact-control-btn {
-  opacity: 0.85;
+.compact-widget:hover .compact-control-btn,
+.compact-control-btn:hover,
+.compact-control-btn:focus-visible {
+  opacity: 1;
 }
 
 .compact-hide-btn:hover {
@@ -1780,7 +1954,9 @@ body {
   position: relative;
   z-index: 2;
   cursor: grab;
-  padding-top: 40px;
+  /* Just enough clearance for the speech bubble above the sprite. The old 40px
+     pushed the toolbar off the bottom of the 540px window. */
+  padding-top: 18px;
   overflow: visible !important;
 }
 
@@ -1932,11 +2108,11 @@ body {
   color: var(--danger);
 }
 
-/* ── Hide Next.js Dev Badge / Watermark ────────────────────────── */
-[data-nextjs-dev-overlay-container],
+/* ── Hide the Next.js dev badge, but NOT its error overlay ─────────
+   `nextjs-portal` and [data-nextjs-dialog-overlay] are how Next renders build
+   and runtime errors. Hiding them made every crash invisible: the app just
+   showed a blank transparent window with no clue why. */
 [data-nextjs-toast],
-[data-nextjs-dialog-overlay],
-nextjs-portal,
 #__next-build-watcher {
   display: none !important;
 }
@@ -1959,6 +2135,10 @@ nextjs-portal,
 /* Co-Pilot Left Sidebar */
 .dashboard-copilot-sidebar {
   width: 260px;
+  /* The mode nav and the status footer used to be clipped off the bottom on
+     every laptop-sized window, with no scrollbar to reach them. */
+  overflow-y: auto;
+  overflow-x: hidden;
   background: rgba(18, 18, 30, 0.92);
   border-right: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
@@ -1992,11 +2172,26 @@ nextjs-portal,
   letter-spacing: 0.4px;
 }
 
+/* Belt and braces: whatever the sprite, it stays inside the sidebar. */
+.copilot-pet-box>* {
+  max-width: 100%;
+}
+
 .copilot-pet-box {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 8px 0;
+  /* Room for the speech bubble above the sprite (see .hamster-section). */
+  padding: 52px 0 8px;
+  width: 100%;
+  /* Sprites are wider than the 236px content box, so keep them contained
+     instead of spilling over the app title and the divider — but let the
+     speech bubble above the sprite still show. */
+  max-width: 100%;
+  overflow: hidden;
+  overflow: clip;
+  overflow-clip-margin: 76px;
+  flex-shrink: 0;
 }
 
 .copilot-actions {
@@ -2077,6 +2272,7 @@ nextjs-portal,
 
 .copilot-footer {
   margin-top: auto;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -2138,10 +2334,42 @@ nextjs-portal,
 
 .dashboard-workspace-body {
   flex: 1;
+  min-height: 0;
   overflow: hidden;
   padding: 12px;
   display: flex;
   flex-direction: column;
+}
+
+/* Reading measure. A chat line stretched to 800px is genuinely hard to read,
+   so centre the conversation instead of letting it span the whole workspace. */
+.dashboard-workspace-body.tab-chat .chat-messages>* {
+  max-width: 68ch;
+  width: 100%;
+  margin-inline: auto;
+}
+
+.dashboard-workspace-body.tab-chat .chat-input-row,
+.dashboard-workspace-body.tab-chat .chat-controls {
+  max-width: 68ch;
+  margin-inline: auto;
+  width: 100%;
+}
+
+/* Settings and tasks genuinely benefit from the extra width: lay their cards
+   out in columns rather than one tall single-file list. */
+.dashboard-workspace-body.tab-config .config-panel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  align-content: start;
+  align-items: start;
+}
+
+.dashboard-workspace-body.tab-todo .todo-panel,
+.dashboard-workspace-body.tab-speech .speech-panel {
+  max-width: 860px;
+  width: 100%;
+  margin-inline: auto;
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -2244,4 +2472,647 @@ nextjs-portal,
     transform: scale(1.08);
     box-shadow: 0 0 0 7px rgba(255, 59, 48, 0);
   }
+}
+/* ═══════════════════════════════════════════════════════════════
+   SHARED WINDOW CHROME — one mode switcher and one set of window
+   controls, present and consistent in all three view modes.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Mode Switcher (segmented) ─────────────────────────────────── */
+.mode-switcher {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-full);
+}
+
+.mode-switcher-bar {
+  display: flex;
+  justify-content: center;
+  padding: 6px var(--space-lg) 0;
+  flex-shrink: 0;
+}
+
+.mode-switch-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  /* 28px floor keeps every control at a usable target size. */
+  min-height: 28px;
+  min-width: 28px;
+  padding: 0 10px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-full);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.mode-switch-btn:hover {
+  background: var(--bg-glass-hover);
+  color: var(--text-primary);
+}
+
+.mode-switch-btn.active {
+  background: var(--gradient-primary);
+  color: #201206;
+  box-shadow: 0 1px 6px var(--accent-glow);
+}
+
+.mode-switch-glyph {
+  font-size: 13px;
+  line-height: 1;
+}
+
+/* ── Mode Switcher (dashboard sidebar list) ────────────────────── */
+.mode-switcher-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.mode-switcher-list .mode-switch-btn {
+  justify-content: flex-start;
+  width: 100%;
+  min-height: 34px;
+  padding: 0 10px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: var(--text-xs);
+}
+
+.mode-switcher-list .mode-switch-btn:hover {
+  background: rgba(244, 164, 96, 0.15);
+  border-color: var(--accent-primary);
+  color: var(--text-primary);
+}
+
+.mode-switcher-list .mode-switch-btn.active {
+  background: rgba(244, 164, 96, 0.22);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+/* ── Window Controls ──────────────────────────────────────────── */
+.window-chrome-controls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.chrome-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+/* Still a comfortable target: 26px with a transparent extension to 30px. */
+.chrome-btn-sm {
+  width: 26px;
+  height: 26px;
+  font-size: 11px;
+}
+
+.chrome-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--text-primary);
+}
+
+.chrome-btn.is-pinned {
+  color: var(--accent-primary);
+  border-color: rgba(245, 168, 75, 0.4);
+}
+
+.chrome-btn-hide:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--text-primary);
+}
+
+/* Quit is visually distinct from Hide, because it is the only irreversible
+   control in the app and the two used to share the ✕ glyph. */
+.chrome-btn-quit {
+  color: var(--danger);
+  border-color: rgba(255, 118, 117, 0.28);
+}
+
+.chrome-btn-quit:hover {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #fff;
+}
+
+/* ── Confirmation Dialog ──────────────────────────────────────── */
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: var(--space-lg);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.confirm-panel {
+  width: 100%;
+  max-width: 330px;
+  padding: var(--space-lg);
+  background: var(--bg-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.confirm-title {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+.confirm-body {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-lg);
+}
+
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+}
+
+.confirm-btn {
+  min-height: 32px;
+  padding: 0 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.confirm-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.confirm-destructive {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #2a0b0b;
+}
+
+.confirm-destructive:hover {
+  filter: brightness(1.1);
+  background: var(--danger);
+}
+
+/* ── Pet Mode: click-through backdrop ─────────────────────────── */
+/* The pet window is a real, transparent, always-on-top rectangle. This layer
+   fills the empty space around the buddy and hands clicks back to whatever is
+   underneath, instead of silently swallowing them. */
+.pet-clickthrough-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: auto;
+}
+
+/* Anything the user is meant to hit sits above the backdrop. */
+.interactive-region {
+  position: relative;
+  z-index: 5;
+}
+
+.floating-divider {
+  width: 1px;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.16);
+  flex-shrink: 0;
+}
+
+/* The pet-mode toolbar now also carries the mode switcher, so let it wrap
+   rather than overflow the 340px window. */
+.floating-controls {
+  flex-wrap: wrap;
+  max-width: 100%;
+  row-gap: 4px;
+}
+
+.floating-controls .mode-switcher {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.floating-controls .mode-switch-btn {
+  min-width: 30px;
+  padding: 0 4px;
+}
+
+/* The timer chip is a real button now, so neutralise the default button look. */
+.pet-timer-chip {
+  font-family: inherit;
+  text-align: left;
+}
+
+/* ── Compact Mode: collapsible mascot ─────────────────────────── */
+.hamster-section.is-collapsed {
+  /* No sprite means no bubble, so the reserved space is not needed. */
+  padding-top: var(--space-sm);
+  padding-bottom: 0;
+}
+
+.hamster-section-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.mascot-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 26px;
+  padding: 0 9px;
+  background: var(--bg-glass);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-full);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.mascot-toggle-btn:hover {
+  background: var(--bg-glass-hover);
+  color: var(--text-primary);
+  border-color: rgba(245, 168, 75, 0.35);
+}
+
+.mascot-toggle-btn.is-listening {
+  background: rgba(255, 107, 107, 0.2);
+  border-color: var(--danger);
+  color: var(--text-primary);
+}
+
+.app-title-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 120px;
+}
+
+/* ── Status bar & dashboard timer chip ────────────────────────── */
+.status-bar-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 22px;
+  padding: 0 8px;
+  background: rgba(245, 168, 75, 0.14);
+  border: 1px solid rgba(245, 168, 75, 0.3);
+  border-radius: var(--radius-full);
+  color: var(--accent-primary);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.status-bar-btn:hover {
+  background: rgba(245, 168, 75, 0.24);
+}
+
+/* A running focus session is now visible from the dashboard too, not only
+   from inside the To-Do tab. */
+.dashboard-timer-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 0 10px;
+  margin-right: var(--space-sm);
+  background: rgba(245, 168, 75, 0.14);
+  border: 1px solid rgba(245, 168, 75, 0.35);
+  border-radius: var(--radius-full);
+  color: var(--accent-primary);
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  cursor: pointer;
+}
+
+.dashboard-timer-chip:hover {
+  background: rgba(245, 168, 75, 0.24);
+}
+
+.dashboard-timer-chip.mode-break {
+  background: rgba(102, 215, 154, 0.14);
+  border-color: rgba(102, 215, 154, 0.35);
+  color: var(--success);
+}
+
+.dashboard-timer-chip .pet-timer-task-label {
+  max-width: 140px;
+}
+
+/* ── Dashboard sidebar secondary actions ──────────────────────── */
+.copilot-secondary-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.copilot-secondary-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  min-height: 32px;
+  padding: 0 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.copilot-secondary-btn:hover {
+  background: rgba(244, 164, 96, 0.16);
+  border-color: var(--accent-primary);
+}
+
+.copilot-mode-nav {
+  flex-shrink: 0;
+}
+
+/* ── Buddy sprite scaling ─────────────────────────────────────── */
+/* HamsterSprite and PandaSprite are fixed-size SVG layouts, so a size prop
+   scales the rendered box. Without this they overflow the 260px sidebar. */
+.buddy-scale {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* `zoom` rather than `transform: scale()`: a transform is purely visual, so the
+   sprite's original 240-270px box stays reserved in the layout and keeps
+   overflowing the 236px sidebar. zoom actually shrinks the box. */
+.buddy-scale-sm {
+  zoom: 0.72;
+}
+
+.buddy-scale-lg {
+  zoom: 1.2;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE — the stylesheet previously had no @media rules at all,
+   so every mode rendered at exactly one assumed size.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Short windows: the sidebar mascot is the first thing to go. */
+@media (max-height: 620px) {
+  .hamster-section {
+    padding-top: 30px;
+    padding-bottom: 0;
+  }
+
+  .compact-hamster-area {
+    padding-top: 10px;
+  }
+}
+
+/* Narrow dashboard (small laptops): the fixed 260px sidebar ate the workspace. */
+@media (max-width: 900px) {
+  .dashboard-copilot-sidebar {
+    width: 200px;
+    padding: 12px 8px;
+  }
+
+  .copilot-pet-box {
+    display: none;
+  }
+
+  .dashboard-header-title span:not(.app-drag-dots) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+/* Very narrow: collapse the dashboard sidebar to a rail of glyphs. */
+@media (max-width: 700px) {
+  .dashboard-copilot-sidebar {
+    width: 60px;
+    align-items: center;
+  }
+
+  .copilot-title,
+  .mode-nav-label,
+  .copilot-footer span:not(.status-dot),
+  .copilot-secondary-btn,
+  .mode-switcher-list .mode-switch-label {
+    display: none;
+  }
+
+  .copilot-talk-btn {
+    padding: 10px 0;
+    font-size: 0;
+  }
+
+  .copilot-talk-btn span {
+    font-size: var(--text-lg);
+  }
+
+  .mode-switcher-list .mode-switch-btn {
+    justify-content: center;
+    padding: 0;
+  }
+}
+
+/* Wide screens: stop the workspace sprawling edge to edge. */
+@media (min-width: 1400px) {
+  .dashboard-workspace-body {
+    padding: 16px 24px;
+  }
+}
+
+/* Offscreen-but-focusable actions: the pet/feed gestures are pointer-only, so
+   keyboard and screen-reader users reach them here. Visible on focus so a
+   sighted keyboard user can see what they have landed on. */
+.sr-only-actions {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  z-index: 40;
+  display: flex;
+  gap: 4px;
+}
+
+.sr-only-btn {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  padding: 0;
+}
+
+.sr-only-btn:focus-visible {
+  position: static;
+  width: auto;
+  height: auto;
+  min-height: 26px;
+  clip: auto;
+  padding: 0 10px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--accent-primary);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 11px;
+  cursor: pointer;
+}
+
+/* ── Tab panes ─────────────────────────────────────────────────────
+   Real layout boxes rather than `display: contents`, which generates no box
+   and so could not legally carry role="tabpanel". The panels inside still set
+   height:100%, so the pane has to be a full-height flex container itself. */
+.tab-pane {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* [hidden] must win over the display:flex above. */
+.tab-pane[hidden] {
+  display: none !important;
+}
+
+/* ── Compact / Sidebar container ───────────────────────────────────
+   This class was applied in the JSX but defined nowhere, so in a browser tab
+   the mode called "Sidebar" inflated to the full window: 348px-wide tab
+   buttons and a lone buddy in an ocean of gradient. In Electron the window
+   itself is 380px so the bug was invisible there. */
+.compact-sidebar-container {
+  width: 100%;
+  max-width: 420px;
+  /* Anchor to the right edge, which is where a sidebar belongs and where the
+     Electron window sits. */
+  margin-left: auto;
+  margin-right: 0;
+}
+
+/* The desktop window is frameless and exactly this size, so the rounded card
+   treatment only makes sense when there is a page around it. */
+@media (min-width: 460px) {
+  .compact-sidebar-container {
+    margin-right: auto;
+    border-radius: 24px;
+    height: min(100vh, 760px);
+    align-self: center;
+  }
+
+  body:has(.compact-sidebar-container) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+  }
+}
+
+/* ── Dashboard workspace card ─────────────────────────────────────
+   The dashboard tab strip sat directly on the window with no card beneath it,
+   so the active tab appeared to float detached from the content it labels. */
+.dashboard-workspace-body {
+  background: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: none;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  margin: 0 12px 12px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.dashboard-tab-bar {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+/* ── Pet-mode chrome legibility ─────────────────────────────────────
+   The pet widget floats over whatever the user has on screen, so its controls
+   cannot borrow contrast from an app background the way the other two modes
+   can. Give them their own opaque chip so they stay readable over a light
+   wallpaper as well as a dark one. */
+.compact-widget .chrome-btn {
+  background: rgba(20, 13, 9, 0.82);
+  border-color: rgba(255, 255, 255, 0.28);
+  color: var(--text-primary);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.compact-widget .chrome-btn:hover {
+  background: rgba(40, 26, 18, 0.95);
+  border-color: var(--accent-primary);
+}
+
+.compact-widget .chrome-btn-quit {
+  color: #ff9d9c;
+  border-color: rgba(255, 118, 117, 0.45);
+}
+
+.compact-widget .chrome-btn-quit:hover {
+  background: var(--danger);
+  color: #2a0b0b;
+}
+
+/* Same reasoning for the status dot: it needs a visible ring on any backdrop. */
+.compact-widget .pet-status-dot {
+  outline: 2px solid rgba(20, 13, 9, 0.82);
 }

@@ -1,18 +1,24 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import type { ChatMessage, HamsterMood } from '@/lib/api';
-import { sendChatMessage, transcribeAudio, getClientSavedConfig } from '@/lib/api';
-import { speak, stopSpeaking } from '@/lib/speech';
+import type { HamsterMood } from '@/lib/api';
+import { transcribeAudio, getClientSavedConfig } from '@/lib/api';
+import { stopSpeaking } from '@/lib/speech';
 import { createBrowserSpeechRecognition, isSpeechRecognitionSupported } from '@/lib/speechRecognition';
 import type { BuddyDefinition, BuddyType } from '../Buddies/types';
 import { getBuddyDefinition } from '../Buddies/registry';
+import type { ConversationHandle } from '@/lib/useConversation';
 
 interface ChatPanelProps {
   onMoodChange: (mood: HamsterMood) => void;
   buddyType?: BuddyType | string;
   buddyName?: string;
   buddyDef?: BuddyDefinition;
+  /**
+   * Conversation state owned by the page, so switching window mode no longer
+   * unmounts this panel and throws the history away.
+   */
+  conversation: ConversationHandle;
 }
 
 export default function ChatPanel({
@@ -20,16 +26,23 @@ export default function ChatPanel({
   buddyType = 'hamster',
   buddyName,
   buddyDef,
+  conversation,
 }: ChatPanelProps) {
   const effectiveDef = buddyDef || getBuddyDefinition(buddyType);
   const effectiveName = buddyName || effectiveDef.defaultName;
   const effectiveEmoji = effectiveDef.emoji;
 
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [useRag, setUseRag] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    messages,
+    input,
+    setInput,
+    isSending: isLoading,
+    error,
+    setError,
+    useRag,
+    setUseRag,
+    send,
+  } = conversation;
   const [isRecording, setIsRecording] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -49,38 +62,9 @@ export default function ChatPanel({
   const handleSend = async (overrideText?: string) => {
     const trimmed = (overrideText ?? input).trim();
     if (!trimmed || isLoading) return;
-
-    setError(null);
-    const userMessage: ChatMessage = { role: 'user', content: trimmed };
-    const updatedMessages = [...messages, userMessage];
-    setMessages(updatedMessages);
-    setInput('');
-    setIsLoading(true);
-    onMoodChange('thinking');
-
-    try {
-      const response = await sendChatMessage(trimmed, messages, useRag);
-      const assistantMessage: ChatMessage = { role: 'assistant', content: response.response };
-      setMessages([...updatedMessages, assistantMessage]);
-      onMoodChange('speaking');
-
-      // Speak the reply aloud; return to idle when speech finishes.
-      speak(response.response, {
-        buddyType: buddyType as string,
-        onStart: () => onMoodChange('speaking'),
-        onEnd: () => onMoodChange('idle'),
-      });
-
-      // Safety net in case speech events never fire (e.g. muted/unavailable)
-      setTimeout(() => onMoodChange('idle'), 15000);
-    } catch (err) {
-      console.error('[Chat Error]', err);
-      const errorMsg = err instanceof Error ? err.message : 'Failed to get response';
-      setError(errorMsg);
-      onMoodChange('idle');
-    } finally {
-      setIsLoading(false);
-    }
+    // Clear the draft only for typed sends; a transcript never sat in the box.
+    if (overrideText === undefined) setInput('');
+    await send(trimmed);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -187,8 +171,11 @@ export default function ChatPanel({
     const saved = getClientSavedConfig();
     const sttPref = saved?.voice?.stt_provider || 'apple';
 
-    // 1. Try Apple / Browser Native Speech Recognition first if preferred
-    if (sttPref === 'apple' && isSpeechRecognitionSupported()) {
+    // 1. Try Apple / Browser Native Speech Recognition first if preferred.
+    //    Skipped in Electron, whose Chromium has no speech key — see
+    //    useVoiceRecorder for the same guard.
+    const inElectron = typeof window !== 'undefined' && !!window.hamsterDesk?.isElectron;
+    if (sttPref === 'apple' && !inElectron && isSpeechRecognitionSupported()) {
       let receivedResult = false;
       const rec = createBrowserSpeechRecognition({
         onStart: () => {
@@ -201,10 +188,17 @@ export default function ChatPanel({
           handleSend(transcript);
         },
         onError: (err) => {
-          console.warn('[Apple Speech Recognition fallback to MediaRecorder]', err);
-          if (!receivedResult) {
-            startMediaRecording();
+          const benign = err === 'aborted' || err === 'no-speech';
+          if (receivedResult || benign) {
+            setIsRecording(false);
+            if (benign && !receivedResult) {
+              setError("Didn't catch that — try speaking a bit longer!");
+              onMoodChange('idle');
+            }
+            return;
           }
+          console.warn('[Speech Recognition unavailable, using MediaRecorder]', err);
+          startMediaRecording();
         },
         onEnd: () => {
           setIsRecording(false);
@@ -325,6 +319,8 @@ export default function ChatPanel({
           </div>
           <button
             className={`btn-icon btn-voice ${isRecording ? 'recording' : ''}`}
+            aria-label={isRecording ? 'Stop recording and send' : 'Record a voice message'}
+            aria-pressed={isRecording}
             title={isRecording ? 'Stop & send' : 'Voice input'}
             onClick={toggleRecording}
             disabled={isLoading || isTranscribing}
@@ -335,6 +331,7 @@ export default function ChatPanel({
             className="btn-icon btn-send"
             onClick={() => handleSend()}
             disabled={!input.trim() || isLoading || isRecording || isTranscribing}
+            aria-label="Send message"
             title="Send message"
           >
             ↑

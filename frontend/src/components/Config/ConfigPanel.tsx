@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import type { AppConfig } from '@/lib/api';
 import {
   fetchConfig,
@@ -88,6 +88,15 @@ export default function ConfigPanel({
   const currentBuddyType = (propBuddyType || config.hamster?.buddy_type || 'hamster') as BuddyType;
   const currentBuddyDef = getBuddyDefinition(currentBuddyType);
 
+  // Parent passes fresh inline callbacks on every one of its renders. Keeping
+  // them in a ref stops loadConfig's identity from changing, which otherwise
+  // re-ran the load effect on every parent render and wiped unsaved form edits.
+  const syncRef = useRef({ onColorChange, onNameChange, onBuddyTypeChange });
+
+  useEffect(() => {
+    syncRef.current = { onColorChange, onNameChange, onBuddyTypeChange };
+  });
+
   const loadConfig = useCallback(async () => {
     const localKeys = getClientApiKeys();
     const localSaved = getClientSavedConfig();
@@ -113,9 +122,9 @@ export default function ConfigPanel({
         server_capabilities: serverConfig.server_capabilities,
       };
       setConfig(merged);
-      if (merged.hamster?.color && onColorChange) onColorChange(merged.hamster.color);
-      if (merged.hamster?.name && onNameChange) onNameChange(merged.hamster.name);
-      if (merged.hamster?.buddy_type && onBuddyTypeChange) onBuddyTypeChange(merged.hamster.buddy_type);
+      if (merged.hamster?.color) syncRef.current.onColorChange?.(merged.hamster.color);
+      if (merged.hamster?.name) syncRef.current.onNameChange?.(merged.hamster.name);
+      if (merged.hamster?.buddy_type) syncRef.current.onBuddyTypeChange?.(merged.hamster.buddy_type);
     } catch {
       // Backend unavailable — use defaults + local storage
       const fallbackConfig: AppConfig = {
@@ -131,13 +140,14 @@ export default function ConfigPanel({
         api_keys: localKeys,
       };
       setConfig(fallbackConfig);
-      if (fallbackConfig.hamster?.color && onColorChange) onColorChange(fallbackConfig.hamster.color);
-      if (fallbackConfig.hamster?.name && onNameChange) onNameChange(fallbackConfig.hamster.name);
-      if (fallbackConfig.hamster?.buddy_type && onBuddyTypeChange) onBuddyTypeChange(fallbackConfig.hamster.buddy_type);
+      if (fallbackConfig.hamster?.color) syncRef.current.onColorChange?.(fallbackConfig.hamster.color);
+      if (fallbackConfig.hamster?.name) syncRef.current.onNameChange?.(fallbackConfig.hamster.name);
+      if (fallbackConfig.hamster?.buddy_type) syncRef.current.onBuddyTypeChange?.(fallbackConfig.hamster.buddy_type);
     } finally {
       setIsLoading(false);
     }
-  }, [onColorChange, onNameChange, onBuddyTypeChange, propBuddyType, propBuddyName, propColor]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     loadConfig();
@@ -707,6 +717,8 @@ export default function ConfigPanel({
                 <button
                   className="api-key-toggle"
                   onClick={() => toggleKeyVisibility(toggle)}
+                  aria-label={show ? `Hide the ${label} key` : `Show the ${label} key`}
+                  aria-pressed={show}
                   title={show ? 'Hide key' : 'Show key'}
                 >
                   {show ? '🙈' : '👁️'}

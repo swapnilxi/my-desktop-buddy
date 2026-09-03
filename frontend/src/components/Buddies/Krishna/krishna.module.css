@@ -99,11 +99,20 @@
   border: 1.5px solid #FF8A00;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(255, 138, 0, 0.35);
   border-radius: 14px;
-  padding: 7px 16px;
-  max-width: 270px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  padding: 7px 14px;
+  /* width:max-content first. An absolutely positioned box with left:50% and
+     only a max-width shrink-to-fits against the space remaining to its right,
+     which collapsed the bubble to ~70px once the text was allowed to wrap. */
+  width: max-content;
+  max-width: min(240px, 86vw);
+  /* Voice answers and mic errors land in this bubble. nowrap + ellipsis cut
+     every one of them to roughly 40 characters, so wrap and scroll instead. */
+  white-space: normal;
+  overflow-wrap: anywhere;
+  max-height: 84px;
+  overflow-y: auto;
+  text-align: center;
+  line-height: 1.35;
   z-index: 40;
   pointer-events: auto;
   cursor: pointer;

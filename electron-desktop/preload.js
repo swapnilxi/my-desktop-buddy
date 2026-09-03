@@ -13,7 +13,17 @@ contextBridge.exposeInMainWorld('hamsterDesk', {
     close: () => ipcRenderer.send('window:close'),
     quit: () => ipcRenderer.send('window:quit'),
     toggleAlwaysOnTop: () => ipcRenderer.send('window:toggle-always-on-top'),
-    setMode: (mode) => ipcRenderer.send('window:set-mode', mode), // 'compact' | 'expanded'
+    setMode: (mode) => ipcRenderer.send('window:set-mode', mode), // 'minimized' | 'pet' | 'compact' | 'fullscreen'
+    setClickThrough: (enabled) => ipcRenderer.send('window:set-click-through', enabled),
+    toggleMaximize: () => ipcRenderer.send('window:toggle-maximize'),
+    /** Subscribe to View-mode picks from the tray / dock menu. Returns an unsubscribe. */
+    onModeRequest: (callback) => {
+      const handler = (_event, mode) => callback(mode);
+      ipcRenderer.on('mode:request', handler);
+      return () => ipcRenderer.removeListener('mode:request', handler);
+    },
+    isMaximized: () => ipcRenderer.invoke('window:is-maximized'),
+    getAlwaysOnTop: () => ipcRenderer.invoke('window:get-always-on-top'),
     moveBy: (deltaX, deltaY) => ipcRenderer.send('window:move-by', { deltaX, deltaY }),
     startDrag: () => ipcRenderer.send('window:start-drag'),
     updateBuddy: (buddyInfo) => ipcRenderer.send('buddy:update', buddyInfo),

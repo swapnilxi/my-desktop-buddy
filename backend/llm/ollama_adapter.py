@@ -49,13 +49,17 @@ class OllamaAdapter(LLMAdapter):
                 response.raise_for_status()
                 data = response.json()
                 return data.get("message", {}).get("content", "🐹 *squeak* No response from Ollama.")
-            except httpx.ConnectError:
-                return (
-                    "🐹 Oops! I can't reach Ollama. Make sure it's running locally "
-                    f"at {self.endpoint}. You can start it with `ollama serve`."
-                )
-            except Exception as e:
-                return f"🐹 Something went wrong with Ollama: {str(e)}"
+            except httpx.ConnectError as exc:
+                # Raise rather than returning the error as assistant text: a
+                # returned string looks like a successful reply, which stops
+                # the router from falling back to another provider and puts an
+                # error message in the character's mouth.
+                raise RuntimeError(
+                    f"Ollama is not reachable at {self.endpoint}. Start it with "
+                    "`ollama serve`, or configure a Gemini/DeepSeek key."
+                ) from exc
+            except Exception as exc:
+                raise RuntimeError(f"Ollama request failed: {exc}") from exc
 
     def get_model_name(self) -> str:
         return f"Ollama ({self.model})"

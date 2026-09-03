@@ -328,3 +328,480 @@ export async function transcribeAudio(
 }
 
 
+
+// ══════════════════════════════════════════════════════════════════
+// Krishna Companion API (Madhav)
+// Gita engine, daily content, memory, modes and orchestrated chat.
+// ══════════════════════════════════════════════════════════════════
+
+export const USER_ID_STORAGE_KEY = 'krishna_user_id';
+
+/** Stable local user id, so memories belong to someone even offline. */
+export function getUserId(): string {
+  if (typeof window === 'undefined') return 'local-user';
+  try {
+    let id = localStorage.getItem(USER_ID_STORAGE_KEY);
+    if (!id) {
+      id = `local-${Math.random().toString(36).slice(2, 10)}`;
+      localStorage.setItem(USER_ID_STORAGE_KEY, id);
+    }
+    return id;
+  } catch {
+    return 'local-user';
+  }
+}
+
+function krishnaHeaders(): Record<string, string> {
+  return { ...getClientAuthHeaders(), 'X-User-Id': getUserId() };
+}
+
+/**
+ * Request helper for the Krishna endpoints.
+ *
+ * Unlike apiRequest it preserves the structured `detail` object that the Gita
+ * routes return on a 404, because the difference between "invalid reference"
+ * and "not in the knowledge base" is something the UI must show accurately.
+ */
+export class KrishnaApiError extends Error {
+  status: number;
+  detail: unknown;
+  constructor(message: string, status: number, detail: unknown) {
+    super(message);
+    this.name = 'KrishnaApiError';
+    this.status = status;
+    this.detail = detail;
+  }
+}
+
+async function krishnaRequest<T>(endpoint: string, options?: RequestInit): Promise<T> {
+  const response = await fetch(`${API_BASE}${endpoint}`, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...krishnaHeaders(),
+      ...options?.headers,
+    },
+  });
+
+  if (!response.ok) {
+    let detail: unknown = null;
+    try {
+      detail = (await response.json())?.detail ?? null;
+    } catch {
+      /* non-JSON error body */
+    }
+    const message =
+      typeof detail === 'string'
+        ? detail
+        : (detail as { message?: string })?.message || `Request failed (${response.status})`;
+    throw new KrishnaApiError(message, response.status, detail);
+  }
+
+  if (response.status === 204) return undefined as T;
+  return response.json();
+}
+
+// ── Types ────────────────────────────────────────────────────────
+
+export type KrishnaModeId =
+  | 'friend' | 'wise' | 'productivity' | 'gita'
+  | 'meditation' | 'focus' | 'playful' | 'listening';
+
+export interface KrishnaMode {
+  id: KrishnaModeId;
+  label: string;
+  emoji: string;
+  description: string;
+  default: boolean;
+}
+
+export interface GitaTranslation {
+  text: string;
+  language: string;
+  source: string;
+  source_name?: string;
+  verified: boolean;
+}
+
+export interface GitaCommentary {
+  text: string;
+  author: string;
+  language: string;
+  source: string;
+  source_name?: string;
+  verified: boolean;
+}
+
+export interface GitaApplication {
+  text: string;
+  label: string;
+}
+
+export interface GitaVerse {
+  id: string;
+  chapter: number;
+  verse: number;
+  chapter_name?: string;
+  sanskrit?: string;
+  transliteration?: string;
+  translations: GitaTranslation[];
+  commentaries: GitaCommentary[];
+  practical_application: GitaApplication[];
+  themes: string[];
+  keywords: string[];
+  source?: string;
+  source_type?: string;
+  verified: boolean;
+}
+
+export interface GitaSearchResult {
+  chapter: number;
+  verse: number;
+  reference: string;
+  sanskrit?: string;
+  transliteration?: string;
+  translation?: string;
+  theme?: string;
+  themes: string[];
+  source?: string;
+  source_name?: string;
+  verified: boolean;
+  score: number;
+}
+
+export interface GitaSearchResponse {
+  query: string;
+  results: GitaSearchResult[];
+  total: number;
+  invalid_reference: boolean;
+  message?: string;
+}
+
+export interface DailyVerse {
+  day: string;
+  available: boolean;
+  message?: string;
+  chapter?: number;
+  verse?: number;
+  reference?: string;
+  chapter_name?: string;
+  sanskrit?: string;
+  transliteration?: string;
+  translation?: string;
+  translation_source?: string;
+  themes?: string[];
+  theme?: string;
+  practical_lesson?: { text: string; label: string; note: string };
+  krishna_thought?: { text: string; label: string; note: string };
+  source?: string;
+  verified?: boolean;
+  provenance_note?: string;
+}
+
+export interface WordOfDay {
+  day: string;
+  id: string;
+  word: string;
+  devanagari: string;
+  transliteration: string;
+  pronunciation: string;
+  meaning: string;
+  explanation: string;
+  gita_connection: {
+    reference: string;
+    chapter: number;
+    verse: number;
+    translation?: string;
+    verified: boolean;
+  } | null;
+  application: { text: string; label: string };
+}
+
+export interface DailyTeaching {
+  day: string;
+  id: string;
+  text: string;
+  theme: string;
+  label: string;
+  note: string;
+  inspired_by: { reference: string; chapter: number; verse: number; verified: boolean } | null;
+}
+
+export interface DailyBundle {
+  day: string;
+  verse: DailyVerse;
+  word: WordOfDay;
+  teaching: DailyTeaching;
+  corpus_size: number;
+}
+
+export type MemoryCategory =
+  | 'PROFILE' | 'PREFERENCE' | 'GOAL' | 'PROJECT' | 'WORK'
+  | 'LEARNING' | 'HABIT' | 'TASK' | 'DECISION' | 'CONVERSATION_CONTEXT';
+
+export interface MemoryItem {
+  id: string;
+  user_id: string;
+  category: MemoryCategory;
+  key: string;
+  value: string;
+  source: string;
+  user_confirmed: boolean;
+  sensitive: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MemoryListResponse {
+  user_id: string;
+  memory_paused: boolean;
+  categories: MemoryCategory[];
+  count: number;
+  memories: MemoryItem[];
+}
+
+export interface MemoryProposal {
+  category: MemoryCategory;
+  key: string;
+  value: string;
+  source: string;
+  sensitive: boolean;
+  sensitivity_kinds: string[];
+  requires_consent: boolean;
+  prompt: string;
+  actions: string[];
+}
+
+export interface KrishnaChatResponse {
+  response: string;
+  model: string;
+  mode: KrishnaModeId;
+  intent: string;
+  emotion: string;
+  presentation: {
+    animation: string;
+    chakra: string;
+    voiceMode: string;
+    particles: boolean;
+  };
+  hamster_mood: string;
+  gita_used: {
+    reference: string;
+    chapter: number;
+    verse: number;
+    verified: boolean;
+    source?: string;
+    source_name?: string;
+  }[];
+  gita_invalid_message?: string | null;
+  tools_used: { name: string; arguments: Record<string, unknown>; result: Record<string, unknown> }[];
+  memory_proposal?: MemoryProposal | null;
+  memories_used: number;
+  classification: Record<string, unknown>;
+  events: { event: string; at: string; presentation: Record<string, unknown> }[];
+  safety_flags: string[];
+  request_id: string;
+}
+
+export interface GitaSources {
+  sources: {
+    id: string;
+    name: string;
+    source_type: string;
+    source_url?: string;
+    edition?: string;
+    language?: string;
+    retrieved_at?: string;
+    notes?: string;
+  }[];
+  verses_available: number;
+  unverified_verses: number;
+  note: string;
+}
+
+// ── Chat ─────────────────────────────────────────────────────────
+
+export async function sendKrishnaMessage(
+  message: string,
+  history: ChatMessage[] = [],
+  mode?: KrishnaModeId,
+  conversationId?: string,
+  buddyName?: string,
+): Promise<KrishnaChatResponse> {
+  return krishnaRequest<KrishnaChatResponse>('/krishna/chat', {
+    method: 'POST',
+    body: JSON.stringify({
+      message,
+      history,
+      mode,
+      conversation_id: conversationId,
+      buddy_name: buddyName,
+    }),
+  });
+}
+
+export async function fetchKrishnaModes(): Promise<{
+  modes: KrishnaMode[];
+  time_context: { id: string; label: string };
+}> {
+  return krishnaRequest('/krishna/modes');
+}
+
+export async function fetchKrishnaPersona(): Promise<{
+  name: string;
+  apparent_age: string;
+  inspired_by: string;
+  claims_divinity: boolean;
+  disclaimer: string;
+  traits: string[];
+  modes: KrishnaMode[];
+}> {
+  return krishnaRequest('/krishna/persona');
+}
+
+// ── Gita ─────────────────────────────────────────────────────────
+
+/**
+ * Search the Gita knowledge base.
+ *
+ * An invalid reference comes back as a resolved response with
+ * `invalid_reference: true` rather than a thrown error, so the panel can
+ * render the explanation inline.
+ */
+export async function searchGita(
+  query: string,
+  opts: { chapter?: number; verse?: number; theme?: string; limit?: number } = {},
+): Promise<GitaSearchResponse> {
+  try {
+    return await krishnaRequest<GitaSearchResponse>('/gita/search', {
+      method: 'POST',
+      body: JSON.stringify({ query, limit: 5, ...opts }),
+    });
+  } catch (err) {
+    if (err instanceof KrishnaApiError && err.status === 404) {
+      const detail = err.detail as { message?: string; error?: string } | null;
+      return {
+        query,
+        results: [],
+        total: 0,
+        invalid_reference: detail?.error === 'invalid_reference',
+        message: detail?.message || err.message,
+      };
+    }
+    throw err;
+  }
+}
+
+export async function fetchGitaVerse(chapter: number, verse: number): Promise<GitaVerse> {
+  return krishnaRequest<GitaVerse>(`/gita/verse/${chapter}/${verse}`);
+}
+
+export async function fetchGitaChapters(): Promise<{
+  total_chapters: number;
+  total_verses: number;
+  verses_available: number;
+  chapters: {
+    chapter: number;
+    name_iast: string;
+    name_en: string;
+    verse_count: number;
+    verses_available: number;
+  }[];
+}> {
+  return krishnaRequest('/gita/chapters');
+}
+
+export async function fetchGitaThemes(): Promise<{ themes: { theme: string; count: number }[] }> {
+  return krishnaRequest('/gita/themes');
+}
+
+export async function fetchGitaSources(): Promise<GitaSources> {
+  return krishnaRequest('/gita/sources');
+}
+
+// ── Daily ────────────────────────────────────────────────────────
+
+export async function fetchDaily(day?: string): Promise<DailyBundle> {
+  const qs = day ? `?day=${encodeURIComponent(day)}` : '';
+  return krishnaRequest<DailyBundle>(`/daily${qs}`);
+}
+
+// ── Memory ───────────────────────────────────────────────────────
+
+export async function fetchMemories(category?: MemoryCategory): Promise<MemoryListResponse> {
+  const qs = category ? `?category=${encodeURIComponent(category)}` : '';
+  return krishnaRequest<MemoryListResponse>(`/memory${qs}`);
+}
+
+export async function saveMemory(
+  category: MemoryCategory,
+  key: string,
+  value: string,
+  opts: { userConfirmed?: boolean; allowSensitive?: boolean } = {},
+): Promise<{ saved: boolean; action?: string; memory?: MemoryItem }> {
+  return krishnaRequest('/memory', {
+    method: 'POST',
+    body: JSON.stringify({
+      category,
+      key,
+      value,
+      source: 'user',
+      user_confirmed: opts.userConfirmed ?? true,
+      allow_sensitive: opts.allowSensitive ?? false,
+    }),
+  });
+}
+
+export async function updateMemory(
+  id: string,
+  patch: { key?: string; value?: string; category?: MemoryCategory },
+): Promise<MemoryItem> {
+  return krishnaRequest<MemoryItem>(`/memory/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(patch),
+  });
+}
+
+export async function deleteMemory(id: string): Promise<void> {
+  return krishnaRequest<void>(`/memory/${id}`, { method: 'DELETE' });
+}
+
+export async function forgetEverything(): Promise<{ deleted: number; user_id: string }> {
+  return krishnaRequest('/memory/forget-everything', { method: 'POST' });
+}
+
+export async function setMemoryPaused(paused: boolean): Promise<{ memory_paused: boolean }> {
+  return krishnaRequest('/memory/pause', {
+    method: 'POST',
+    body: JSON.stringify({ paused }),
+  });
+}
+
+export async function exportMemories(): Promise<{
+  user_id: string;
+  exported_at: string;
+  memory_paused: boolean;
+  memories: MemoryItem[];
+}> {
+  return krishnaRequest('/memory/export');
+}
+
+// ── Tools ────────────────────────────────────────────────────────
+
+export interface ToolResultEnvelope {
+  ok: boolean;
+  data?: unknown;
+  message?: string;
+  error?: string;
+}
+
+/** Run a backend tool. A failed tool resolves with ok:false — it does not throw. */
+export async function runKrishnaTool(
+  name: string,
+  args: Record<string, unknown> = {},
+): Promise<ToolResultEnvelope> {
+  return krishnaRequest<ToolResultEnvelope>('/krishna/tools/execute', {
+    method: 'POST',
+    body: JSON.stringify({ name, arguments: args }),
+  });
+}

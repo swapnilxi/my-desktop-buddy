@@ -40,6 +40,8 @@ export interface BuddyDefinition {
 export interface BuddySpriteProps {
   mood: BuddyMood;
   color?: string;
+  /** Render scale. 'sm' keeps the sprite inside narrow panels and sidebars. */
+  size?: 'sm' | 'md' | 'lg';
   pose?: 'crossed' | 'chakra' | 'standing' | string;
   name?: string;
   greeting?: string;
