@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import type { BuddySpriteProps, BuddyMood } from '../types';
 import styles from './krishna.module.css';
 import krishnaHairImg from './krishna_hair.png';
+import { KrishnaArms } from './krishna_arms';
 
 export type KrishnaPose = 'crossed' | 'chakra' | 'standing';
 
@@ -1788,18 +1789,59 @@ export function LittleKrishna({
 
           {/* ════════════════ LAYER 5: SCULPTED TODDLER TORSO & NECK ════════════════ */}
           <g id="torso">
-            {/* Organic Integrated Toddler Neck & Body Silhouette */}
+            {/* Organic Integrated Toddler Torso with Continuous Shoulder/Arm Roots */}
             <path
+              id="torsoBaseWithRoots"
               d="M 160 168
-                 C 154 180, 146 192, 138 202
-                 C 128 214, 132 238, 134 256
+                 C 145 175, 130 185, 122 195
+                 C 115 205, 120 220, 128 222
+                 C 132 230, 132 245, 134 256
                  C 136 268, 140 274, 146 280
                  C 168 286, 212 286, 234 280
                  C 240 274, 244 268, 246 256
-                 C 248 238, 252 214, 242 202
-                 C 234 192, 226 180, 220 168
+                 C 248 245, 248 230, 252 222
+                 C 260 220, 265 205, 258 195
+                 C 250 185, 235 175, 220 168
                  Z"
               fill="url(#kSkinBody)"
+            />
+            
+            {/* Left Axilla Soft Shadow Crease */}
+            <path
+              d="M 128 222 C 132 226, 134 232, 133 240"
+              fill="none"
+              stroke="#1E3A8A"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              opacity="0.15"
+            />
+            {/* Right Axilla Soft Shadow Crease */}
+            <path
+              d="M 252 222 C 248 226, 246 232, 247 240"
+              fill="none"
+              stroke="#1E3A8A"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              opacity="0.15"
+            />
+            
+            {/* Left Shoulder Cap Highlight */}
+            <path
+              d="M 140 180 C 130 185, 122 195, 120 205"
+              fill="none"
+              stroke="#FFFFFF"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              opacity="0.25"
+            />
+            {/* Right Shoulder Cap Highlight */}
+            <path
+              d="M 240 180 C 250 185, 258 195, 260 205"
+              fill="none"
+              stroke="#FFFFFF"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              opacity="0.25"
             />
 
             {/* Neck Pillar & Trapezius 3D Volume */}
@@ -1859,6 +1901,9 @@ export function LittleKrishna({
             <ellipse cx="190" cy="268" rx="3.2" ry="1.9" fill="#1E40AF" opacity="0.35" />
             <ellipse cx="190" cy="267.2" rx="2.2" ry="1.0" fill="#93C5FD" opacity="0.55" />
           </g>
+
+          {/* ════════════════ LAYER 7: ARM ROOT SYSTEM & UPPER ARMS ════════════════ */}
+          <KrishnaArms />
 
           {/* ════════════════ LAYER 6: HEAD & FACE ════════════════ */}
           {/* Scaled down around the chin anchor (190,217) to reduce oversized-head / chibi look.
@@ -2493,317 +2538,7 @@ export function LittleKrishna({
             </g>
           </g>
 
-          {/* ════════════════ LAYER 8: SCULPTED ORGANIC 3D ARMS & HANDS ════════════════ */}
-          <g id="canonicalChakraArms" filter="url(#kSoftShadow)">
-            {/* ── A. RAISED RIGHT ARM (Viewer's Left - Character's Right) ── */}
-            {/* Seamless Continuous 3D Toddler Arm (Torso → Soft Shoulder → Full Upper Arm → Soft Elbow → Tapered Forearm → Wrist) */}
-            <path
-              id="newRaisedRightArm"
-              d="M 85 128
-                 C 74 136, 68 152, 70 168
-                 C 72 180, 80 188, 95 198
-                 C 112 212, 135 220, 148 200
-                 C 148 175, 130 168, 110 168
-                 C 100 170, 94 172, 94 178
-                 C 92 158, 98 140, 101 128 Z"
-              fill="url(#kSkinBody)"
-            />
-            {/* Soft Shoulder Cap Volume Overlay */}
-            <path
-              d="M 144 195 C 135 174, 122 168, 110 168 C 102 170, 96 172, 94 178"
-              fill="none"
-              stroke="#FFFFFF"
-              strokeWidth="2.0"
-              strokeLinecap="round"
-              opacity="0.22"
-            />
-            {/* Under-Armpit Ambient Shadow (Depth & Occlusion) */}
-            <path
-              d="M 125 212 C 112 206, 102 196, 92 186"
-              fill="none"
-              stroke="#1E3A8A"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              opacity="0.18"
-            />
-            {/* Soft Continuous Inner Elbow Crease */}
-            <path
-              d="M 94 178 C 88 176, 82 173, 80 170"
-              fill="none"
-              stroke="#1E3A8A"
-              strokeWidth="1.2"
-              strokeLinecap="round"
-              opacity="0.2"
-            />
-            {/* Continuous Volumetric Arm Highlight Sheen (Shoulder → Bicep → Elbow Bend → Forearm) */}
-            <path
-              d="M 135 188 C 122 176, 106 173, 90 168 C 82 165, 76 162, 74 158 C 72 150, 78 138, 88 132"
-              fill="none"
-              stroke="#FFFFFF"
-              strokeWidth="3.0"
-              strokeLinecap="round"
-              opacity="0.25"
-            />
-
-            {/* Polished 3D Gold Armlet (Bajuband) Wrapped Around Right Bicep */}
-            <g id="rightBicepBajuband" transform="translate(105, 188) rotate(-35)">
-              {/* Contact Shadow on Skin */}
-              <ellipse cx="0" cy="3" rx="9" ry="3" fill="#1E3A8A" opacity="0.22" />
-              {/* 3D Curved Gold Band Base */}
-              <path d="M -9 -2.5 C -4 -5.5, 4 -5.5, 9 -2.5 L 9 2.5 C 4 -0.5, -4 -0.5, -9 2.5 Z" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.6" />
-              {/* Specular Highlight Arc */}
-              <path d="M -8 -1.5 C -3 -4, 3 -4, 8 -1.5" fill="none" stroke="#FFFBEB" strokeWidth="1.2" opacity="0.85" />
-              {/* Central Ruby Cabochon Medallion */}
-              <circle cx="0" cy="-1.8" r="2.6" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.6" />
-              <circle cx="0" cy="-1.8" r="1.5" fill="#DC2626" />
-              <circle cx="-0.5" cy="-2.2" r="0.6" fill="#FFFFFF" opacity="0.9" />
-            </g>
-
-            {/* Polished 3D Gold Bangles (Kadas) Wrapping Right Wrist */}
-            <g id="raisedWristBangles" transform="translate(93, 126)">
-              {/* Contact Shadow on Wrist Skin */}
-              <ellipse cx="0" cy="8" rx="11" ry="3.5" fill="#1E3A8A" opacity="0.2" />
-              {/* Bangle 1 */}
-              <ellipse cx="0" cy="-5" rx="10.5" ry="3.5" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
-              <ellipse cx="0" cy="-6" rx="7.5" ry="1.8" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.85" />
-              {/* Bangle 2 */}
-              <ellipse cx="0" cy="0" rx="10.5" ry="3.5" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
-              <ellipse cx="0" cy="-1" rx="7.5" ry="1.8" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.85" />
-              {/* Bangle 3 */}
-              <ellipse cx="0" cy="5" rx="10.5" ry="3.5" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
-              <ellipse cx="0" cy="4" rx="7.5" ry="1.8" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.85" />
-            </g>
-
-            {/* ── 3D SCULPTED TODDLER FIST WITH ERECT INDEX FINGER (Positioned Directly Beneath Chakra) ── */}
-            <g id="sculptedChakraHand" transform="translate(93, 110)">
-              {/* Main Palm Volume */}
-              <path
-                d="M -8 18
-                   C -12 12, -10 2, -6 -4
-                   C -2 -8, 6 -8, 10 -2
-                   C 14 4, 12 12, 8 18
-                   C 4 20, -4 20, -8 18 Z"
-                fill="url(#kSkinBody)"
-              />
-              {/* Palm volume/depth */}
-              <ellipse cx="0" cy="5" rx="7" ry="8" fill="url(#kHandVolume)" />
-
-              {/* Extended Index Finger (Supporting Chakra) */}
-              <g id="newChakraIndexFinger">
-                <path
-                  d="M -6.5 -4 C -8 -15, -6 -28, -5 -33 C -4.5 -35.5, -0.5 -35.5, 0 -33 C 1 -28, 3 -15, 1.5 -4 Z"
-                  fill="url(#kToddlerFingerGrad)"
-                />
-                <circle cx="-2.5" cy="-33.5" r="2.2" fill="url(#kSkinBody)" />
-                <path d="M -5.5 -5 C -7 -15, -5 -28, -4 -32" fill="none" stroke="#FFFFFF" strokeWidth="1.2" opacity="0.4" strokeLinecap="round" />
-                <path d="M -3 -33 C -2 -34, -1 -34, -1 -33" fill="none" stroke="#EBF5FF" strokeWidth="0.8" strokeLinecap="round" opacity="0.8" />
-                <path d="M -6.5 -3 C -3 -5, 0 -5, 1.5 -3" fill="none" stroke="#1E3A8A" strokeWidth="1.0" opacity="0.3" strokeLinecap="round" />
-              </g>
-
-              {/* Digit 1: Folded Middle Finger */}
-              <g id="newChakraMiddleFinger">
-                <path
-                  d="M -2 2 C 4 -1, 12 1, 13 6 C 14 10, 8 12, 2 10"
-                  fill="url(#kToddlerFingerGrad)"
-                />
-                <circle cx="10" cy="6" r="3.2" fill="url(#kSkinBody)" />
-                <path d="M -1 3 C 4 1, 10 3, 11 6" fill="none" stroke="#FFFFFF" strokeWidth="1.2" opacity="0.4" strokeLinecap="round" />
-                <path d="M 0 9 C 4 11, 10 10, 11 7" fill="none" stroke="#1E3A8A" strokeWidth="1.0" opacity="0.3" strokeLinecap="round" />
-              </g>
-
-              {/* Digit 2: Folded Ring Finger */}
-              <g id="newChakraRingFinger">
-                <path
-                  d="M -1 7 C 4 5, 11 6, 12 11 C 13 15, 7 17, 2 15"
-                  fill="url(#kToddlerFingerGrad)"
-                />
-                <circle cx="9" cy="11" r="3" fill="url(#kSkinBody)" />
-                <path d="M 0 8 C 4 6, 9 8, 10 11" fill="none" stroke="#FFFFFF" strokeWidth="1.1" opacity="0.35" strokeLinecap="round" />
-                <path d="M 1 14 C 4 16, 9 15, 10 12" fill="none" stroke="#1E3A8A" strokeWidth="1.0" opacity="0.3" strokeLinecap="round" />
-              </g>
-
-              {/* Digit 3: Folded Pinky Finger */}
-              <g id="newChakraPinkyFinger">
-                <path
-                  d="M 0 12 C 4 10, 10 11, 11 15 C 12 19, 7 21, 2 19"
-                  fill="url(#kToddlerFingerGrad)"
-                />
-                <circle cx="8" cy="15" r="2.8" fill="url(#kSkinBody)" />
-                <path d="M 1 13 C 4 11, 8 13, 9 15" fill="none" stroke="#FFFFFF" strokeWidth="1.0" opacity="0.3" strokeLinecap="round" />
-                <path d="M 2 18 C 5 20, 8 19, 9 16" fill="none" stroke="#1E3A8A" strokeWidth="1.0" opacity="0.3" strokeLinecap="round" />
-              </g>
-
-              {/* Thumb (Resting on side of palm, slightly overlapping fingers) */}
-              <g id="newChakraThumb">
-                <path
-                  d="M -9 15 C -15 9, -12 -1, -6 -1 C -2 -1, 0 4, -1 8 C -2 13, -5 17, -9 15 Z"
-                  fill="url(#kSkinBody)"
-                />
-                <circle cx="-3" cy="7" r="3.8" fill="url(#kSkinBody)" />
-                <path d="M -10 12 C -14 6, -11 0, -6 0" fill="none" stroke="#FFFFFF" strokeWidth="1.2" opacity="0.35" strokeLinecap="round" />
-                <path d="M -2 4 C -1 6, -1 8, -3 10" fill="none" stroke="#EBF5FF" strokeWidth="0.8" strokeLinecap="round" opacity="0.8" />
-                <path d="M -7 -1 C -4 -1, -1 2, -1 5" fill="none" stroke="#1E3A8A" strokeWidth="1.0" opacity="0.25" strokeLinecap="round" />
-              </g>
-            </g>
-
-            {/* ── B. TARGET LEFT ARM & HAND ON HIP (Viewer's Right - Character's Left) ── */}
-            {/* Seamless Continuous Organic 3D Toddler Left Arm (Soft Shoulder → Full Upper Arm → Soft Elbow → Tapered Forearm → Wrist) */}
-            <path
-              id="newContinuousLeftArm"
-              d="M 218 195
-                 C 218 172, 242 172, 252 182
-                 C 268 194, 282 210, 296 234
-                 C 298 246, 282 264, 258 280
-                 L 241 271
-                 C 252 260, 268 248, 276 230
-                 C 264 220, 242 214, 230 214
-                 C 220 210, 218 204, 218 195 Z"
-              fill="url(#kSkinBody)"
-            />
-            {/* Soft Left Shoulder Cap Volume Overlay */}
-            <path
-              d="M 222 190 C 226 176, 240 174, 250 181"
-              fill="none"
-              stroke="#FFFFFF"
-              strokeWidth="2.0"
-              strokeLinecap="round"
-              opacity="0.22"
-            />
-            {/* Under-Armpit Ambient Occlusion Shadow */}
-            <path
-              d="M 230 214 C 245 220, 255 228, 265 240"
-              fill="none"
-              stroke="#1E3A8A"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              opacity="0.18"
-            />
-            {/* Soft Inner Elbow Crease */}
-            <path
-              d="M 276 230 C 282 236, 285 240, 286 244"
-              fill="none"
-              stroke="#1E3A8A"
-              strokeWidth="1.2"
-              strokeLinecap="round"
-              opacity="0.18"
-            />
-            {/* Continuous Volumetric Arm Highlight Sheen (Shoulder → Upper Arm → Elbow Bend → Forearm) */}
-            <path
-              d="M 232 182 C 250 188, 275 208, 291 234 C 295 242, 285 258, 255 275"
-              fill="none"
-              stroke="#FFFFFF"
-              strokeWidth="3.2"
-              strokeLinecap="round"
-              opacity="0.25"
-            />
-
-            {/* Polished 3D Gold Armlet (Bajuband) Wrapped Around Left Bicep */}
-            <g id="leftBicepBajuband" transform="translate(262, 218) rotate(-45)">
-              {/* Contact Shadow on Skin */}
-              <ellipse cx="0" cy="3" rx="10" ry="3.5" fill="#1E3A8A" opacity="0.22" />
-              {/* 3D Curved Gold Band Base */}
-              <path d="M -11 -2.5 C -4 -5.5, 4 -5.5, 11 -2.5 L 11 2.5 C 4 -0.5, -4 -0.5, -11 2.5 Z" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.6" />
-              {/* Specular Highlight Arc */}
-              <path d="M -10 -1.5 C -3 -4, 3 -4, 10 -1.5" fill="none" stroke="#FFFBEB" strokeWidth="1.2" opacity="0.85" />
-              {/* Central Ruby Cabochon Medallion */}
-              <circle cx="0" cy="-2" r="3" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.6" />
-              <circle cx="0" cy="-2" r="1.8" fill="#DC2626" />
-              <circle cx="-0.5" cy="-2.4" r="0.6" fill="#FFFFFF" opacity="0.9" />
-            </g>
-
-            {/* Polished 3D Gold Bangles (Kadas) Wrapping Left Wrist Aligned With Waist Curve */}
-            <g id="hipWristBangles" transform="translate(250, 277) rotate(-32)">
-              {/* Contact Shadow on Wrist Skin */}
-              <ellipse cx="0" cy="9" rx="11" ry="4" fill="#1E3A8A" opacity="0.22" />
-              {/* Bangle 1 */}
-              <ellipse cx="0" cy="-4" rx="10.5" ry="3.6" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
-              <ellipse cx="0" cy="-4.8" rx="7.5" ry="1.8" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.85" />
-              {/* Bangle 2 */}
-              <ellipse cx="0" cy="1" rx="10.5" ry="3.6" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
-              <ellipse cx="0" cy="0.2" rx="7.5" ry="1.8" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.85" />
-              {/* Bangle 3 */}
-              <ellipse cx="0" cy="6" rx="10.5" ry="3.8" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
-              <ellipse cx="0" cy="5.2" rx="7.5" ry="1.8" fill="none" stroke="#FFFBEB" strokeWidth="0.8" opacity="0.85" />
-            </g>
-
-            {/* ── TARGET 3D TODDLER HAND ON HIP STRUCTURE ── */}
-            <g id="sculptedHipHandTarget">
-              {/* Soft Contact Shadow Cast by Resting Hand on Belt */}
-              <path
-                d="M 246 288 C 236 291, 220 297, 215 304 C 218 307, 228 307, 244 300 Z"
-                fill="#3D1302"
-                opacity="0.25"
-              />
-
-              {/* Thumb (Tucked naturally on the side) */}
-              <g id="newHipThumb">
-                <path
-                  d="M 256 278 C 263 279, 267 285, 263 291 C 260 295, 254 296, 249 293 C 247 290, 252 282, 256 278 Z"
-                  fill="url(#kSkinBody)"
-                />
-                <path d="M 254 280 C 260 281, 264 286, 261 290" fill="none" stroke="#FFFFFF" strokeWidth="1.2" opacity="0.3" strokeLinecap="round" />
-                <path d="M 257 286 C 255 288, 253 289, 251 288" fill="none" stroke="#1E3A8A" strokeWidth="1.0" opacity="0.25" strokeLinecap="round" />
-              </g>
-
-              {/* Main Palm Volume */}
-              <path
-                d="M 241 271
-                   C 230 273, 224 284, 228 294
-                   C 232 302, 244 306, 252 302
-                   C 258 298, 260 288, 258 280 Z"
-                fill="url(#kSkinBody)"
-              />
-              <ellipse cx="243" cy="286" rx="7" ry="8" fill="url(#kHandVolume)" />
-
-              {/* Digit A: Index Finger */}
-              <g id="newHipIndexFinger">
-                <path
-                  d="M 238 276 C 226 278, 216 282, 212 287 C 210 290, 214 293, 218 292 C 226 289, 236 284, 242 281 Z"
-                  fill="url(#kToddlerFingerGrad)"
-                />
-                <circle cx="215" cy="289" r="2.8" fill="url(#kSkinBody)" />
-                <path d="M 235 278 C 225 280, 216 284, 214 288" fill="none" stroke="#FFFFFF" strokeWidth="1.2" opacity="0.4" strokeLinecap="round" />
-                <path d="M 213.5 289.5 C 213 291, 214 292, 216 292" fill="none" stroke="#EBF5FF" strokeWidth="0.8" strokeLinecap="round" opacity="0.8" />
-                <path d="M 226 286 C 228 288, 229 289, 228 290" fill="none" stroke="#1E3A8A" strokeWidth="0.8" opacity="0.25" strokeLinecap="round" />
-              </g>
-
-              {/* Digit B: Middle Finger */}
-              <g id="newHipMiddleFinger">
-                <path
-                  d="M 242 281 C 228 284, 215 289, 210 295 C 208 298, 212 301, 216 300 C 226 295, 238 289, 246 286 Z"
-                  fill="url(#kToddlerFingerGrad)"
-                />
-                <circle cx="213" cy="297" r="3.0" fill="url(#kSkinBody)" />
-                <path d="M 238 284 C 226 287, 215 292, 212 296" fill="none" stroke="#FFFFFF" strokeWidth="1.2" opacity="0.45" strokeLinecap="round" />
-                <path d="M 211.5 297.5 C 211 299, 212 300, 214 300" fill="none" stroke="#EBF5FF" strokeWidth="0.8" strokeLinecap="round" opacity="0.8" />
-                <path d="M 224 294 C 226 296, 227 297, 226 298" fill="none" stroke="#1E3A8A" strokeWidth="0.8" opacity="0.25" strokeLinecap="round" />
-              </g>
-
-              {/* Digit C: Ring Finger */}
-              <g id="newHipRingFinger">
-                <path
-                  d="M 246 286 C 234 289, 222 295, 217 301 C 215 304, 219 307, 223 306 C 232 301, 242 295, 249 291 Z"
-                  fill="url(#kToddlerFingerGrad)"
-                />
-                <circle cx="220" cy="303" r="2.8" fill="url(#kSkinBody)" />
-                <path d="M 242 289 C 232 292, 222 297, 219 302" fill="none" stroke="#FFFFFF" strokeWidth="1.1" opacity="0.4" strokeLinecap="round" />
-                <path d="M 218.5 303.5 C 218 305, 219 306, 221 306" fill="none" stroke="#EBF5FF" strokeWidth="0.75" strokeLinecap="round" opacity="0.75" />
-                <path d="M 230 300 C 232 302, 233 303, 232 304" fill="none" stroke="#1E3A8A" strokeWidth="0.8" opacity="0.25" strokeLinecap="round" />
-              </g>
-
-              {/* Digit D: Pinky Finger */}
-              <g id="newHipPinkyFinger">
-                <path
-                  d="M 249 291 C 240 294, 230 300, 226 306 C 224 309, 228 312, 232 311 C 239 306, 247 300, 252 296 Z"
-                  fill="url(#kToddlerFingerGrad)"
-                />
-                <circle cx="229" cy="308" r="2.5" fill="url(#kSkinBody)" />
-                <path d="M 245 294 C 237 297, 229 302, 227 307" fill="none" stroke="#FFFFFF" strokeWidth="1.0" opacity="0.35" strokeLinecap="round" />
-                <path d="M 227.5 308.5 C 227 310, 228 311, 230 311" fill="none" stroke="#EBF5FF" strokeWidth="0.6" strokeLinecap="round" opacity="0.6" />
-                <path d="M 237 305 C 239 307, 240 308, 239 309" fill="none" stroke="#1E3A8A" strokeWidth="0.8" opacity="0.25" strokeLinecap="round" />
-              </g>
-            </g>
-          </g>
+          {/* ════════════════ LAYER 8: SCULPTED ORGANIC 3D ARMS & HANDS (REMOVED) ════════════════ */}
 
           {/* ════════════════ LAYER 9: SUDARSHAN CHAKRA (LOWERED TO EAR/TEMPLE LEVEL) ════════════════ */}
           {/* Centered directly above the lowered index finger tip at (91, 56) */}

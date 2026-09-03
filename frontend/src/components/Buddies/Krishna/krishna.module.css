@@ -782,7 +782,7 @@
    ══════════════════════════════════════════════════════════════════════ */
 
 /* ── 0. EXPLICIT TRANSFORM ORIGINS FOR LAYERED ANIMATION ────────── */
-#headGroup {
+#headGroup, #krishnaHairGroup {
   transform-origin: 190px 180px;
 }
 
@@ -820,7 +820,7 @@
   animation: krishnaIdleBreathing 4.5s ease-in-out infinite;
 }
 
-.krishnaIdle #headGroup {
+.krishnaIdle #headGroup, #krishnaHairGroup {
   animation: idleHeadTilt 7.5s ease-in-out infinite;
 }
 
@@ -837,7 +837,7 @@
   animation: protectorPulse 3s ease-in-out infinite alternate;
 }
 
-.krishnaProtector #headGroup {
+.krishnaProtector #headGroup, #krishnaHairGroup {
   animation: idleHeadTilt 7.5s ease-in-out infinite;
 }
 
@@ -863,7 +863,7 @@
 }
 
 /* ── 3. THINKING STATE (HEAD TILT & EYE SHIFT) ─────────────────── */
-.krishnaThinking #headGroup {
+.krishnaThinking #headGroup, #krishnaHairGroup {
   transform: rotate(-6deg) translateY(-2px);
   transition: transform 0.4s ease;
 }
@@ -878,7 +878,7 @@
   animation: happyBounce 0.75s ease-in-out infinite alternate;
 }
 
-.krishnaHappy #headGroup {
+.krishnaHappy #headGroup, #krishnaHairGroup {
   animation: happyHeadNod 0.75s ease-in-out infinite alternate;
 }
 
@@ -894,7 +894,7 @@
   animation: motivationFloat 4s ease-in-out infinite;
 }
 
-.krishnaMotivation #headGroup {
+.krishnaMotivation #headGroup, #krishnaHairGroup {
   animation: motivationNod 2.2s ease-in-out infinite;
 }
 
@@ -908,7 +908,7 @@
   animation: relaxDeepBreathing 8s ease-in-out infinite;
 }
 
-.krishnaRelax #headGroup {
+.krishnaRelax #headGroup, #krishnaHairGroup {
   animation: relaxHeadSway 8s ease-in-out infinite;
 }
 
