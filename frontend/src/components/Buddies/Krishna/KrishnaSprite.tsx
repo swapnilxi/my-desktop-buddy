@@ -43,7 +43,7 @@ export function LittleKrishna({
   state: stateProp,
   mood = 'idle',
   isSpeaking = false,
-  pose = 'chakra',
+  pose = 'standing',
   className = '',
   name = 'Little Krishna',
   greeting = 'Radhe Radhe! Let us create something wonderful! 🪶✨',
