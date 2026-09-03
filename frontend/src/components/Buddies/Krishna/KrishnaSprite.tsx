@@ -2443,8 +2443,8 @@ export function LittleKrishna({
                     <circle cx="-2.5" cy="7.5" r="5.8" fill="none" stroke="#FFFFFF" strokeWidth="1.0" opacity="0.85" strokeLinecap="round" />
                     <circle cx="-0.5" cy="9.5" r="6.8" fill="none" stroke="#78350F" strokeWidth="0.8" opacity="0.6" strokeLinecap="round" />
 
-                    <circle cx="-1.5" cy="17.5" r="2.0" fill="url(#kPayalPearl)" stroke="#B45309" strokeWidth="0.4" />
-                    <circle cx="-2.0" cy="17.0" r="0.6" fill="#FFFFFF" opacity="0.95" />
+                    <circle cx="-1.5" cy="17.5" r="2.2" fill="url(#kRubyBead)" stroke="#991B1B" strokeWidth="0.4" />
+                    <circle cx="-2.0" cy="17.0" r="0.6" fill="#FFFFFF" opacity="0.9" />
                   </g>
                 </g>
 
@@ -2501,8 +2501,8 @@ export function LittleKrishna({
                     <circle cx="2.5" cy="7.5" r="5.8" fill="none" stroke="#FFFFFF" strokeWidth="1.0" opacity="0.85" strokeLinecap="round" />
                     <circle cx="0.5" cy="9.5" r="6.8" fill="none" stroke="#78350F" strokeWidth="0.8" opacity="0.6" strokeLinecap="round" />
 
-                    <circle cx="1.5" cy="17.5" r="2.0" fill="url(#kPayalPearl)" stroke="#B45309" strokeWidth="0.4" />
-                    <circle cx="1.0" cy="17.0" r="0.6" fill="#FFFFFF" opacity="0.95" />
+                    <circle cx="1.5" cy="17.5" r="2.2" fill="url(#kRubyBead)" stroke="#991B1B" strokeWidth="0.4" />
+                    <circle cx="1.0" cy="17.0" r="0.6" fill="#FFFFFF" opacity="0.9" />
                   </g>
                 </g>
               </g>
