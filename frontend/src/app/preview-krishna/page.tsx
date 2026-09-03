@@ -18,7 +18,7 @@ const STATES: KrishnaState[] = [
 
 export default function PreviewKrishnaPage() {
     const [state, setState] = useState<KrishnaState>('protector');
-    const [showBubbles, setShowBubbles] = useState(false);
+    const [showBubbles, setShowBubbles] = useState(true);
 
     return (
         <div
@@ -35,7 +35,7 @@ export default function PreviewKrishnaPage() {
             }}
         >
             <h1 style={{ color: '#FFC83D', margin: 0, fontSize: 22, letterSpacing: 1 }}>
-                🪶 Little Krishna — Face Preview
+                🪶 Little Krishna — Master Preview
             </h1>
 
             <div
@@ -54,7 +54,7 @@ export default function PreviewKrishnaPage() {
                     size="lg"
                     state={state}
                     mood="idle"
-                    greeting={showBubbles ? 'Radhe Radhe! ✨🪶' : ''}
+                    greeting={showBubbles ? 'Divine light protects your journey ✨🪶' : ''}
                     pose="chakra"
                 />
             </div>

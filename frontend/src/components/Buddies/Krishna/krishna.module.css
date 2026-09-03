@@ -97,15 +97,15 @@
 /* ── Floating Speech Bubble (Desktop Buddy mode) ────────────────── */
 .greetingBubble {
   position: absolute;
-  top: -46px;
+  top: -48px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(15, 27, 61, 0.95);
-  border: 1.5px solid #FF8A00;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(255, 138, 0, 0.35);
-  border-radius: 14px;
-  padding: 7px 16px;
-  max-width: 270px;
+  background: rgba(12, 20, 39, 0.92);
+  border: 1.5px solid #F59E0B;
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.35), 0 8px 24px rgba(0, 0, 0, 0.6);
+  border-radius: 20px;
+  padding: 8px 20px;
+  max-width: 320px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -125,16 +125,16 @@
   transform: translateX(-50%);
   border-width: 6px 6px 0;
   border-style: solid;
-  border-color: rgba(15, 27, 61, 0.95) transparent transparent;
+  border-color: #F59E0B transparent transparent;
   display: block;
   width: 0;
 }
 
 .greetingText {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
-  color: #FFF2D1;
-  letter-spacing: 0.2px;
+  color: #FFFFFF;
+  letter-spacing: 0.3px;
 }
 
 /* ── Restrained Divine Aura ─────────────────────────────────────── */
