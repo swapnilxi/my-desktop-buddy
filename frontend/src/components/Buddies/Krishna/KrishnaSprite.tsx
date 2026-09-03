@@ -1890,89 +1890,92 @@ export function LittleKrishna({
                     id="lipsGroup"
                     className={`${styles.pixarMouth} ${mood === 'speaking' ? styles.mouthSpeaking : ''}`}
                   >
-                    {/* Labiomental Soft Under-Lip Crease (blends naturally into chin) */}
-                    <path
-                      d="M -6.5 5.2 Q 0 7.0 6.5 5.2"
-                      fill="none"
-                      stroke="#255BB5"
-                      strokeWidth="1.0"
-                      opacity="0.22"
-                      strokeLinecap="round"
-                    />
+                    {/* ── Pure HTML/CSS 3D Little Krishna Mouth (Requested by user) ── */}
+                    <foreignObject x="-16" y="-12" width="32" height="24">
+                      <div className={styles.mouthContainer}>
+                        {/* Subtle skin glow above upper lip */}
+                        <div className={styles.mouthSkinHighlight} />
 
-                    {/* Soft Natural Lower Lip Roll (Subtle warm skin flush, not lipstick) */}
-                    <path
-                      d="M -7.2 0.8 C -4.5 4.2, 4.5 4.2, 7.2 0.8 C 4.5 2.4, -4.5 2.4, -7.2 0.8 Z"
-                      fill="url(#kPixarLowerLip)"
-                    />
+                        {/* Main mouth structure group */}
+                        <div className={styles.mouthGroup}>
+                          {/* Upper lip with shallow arc and Cupid center dip */}
+                          <div className={styles.upperLip}>
+                            <div className={styles.lipLeft} />
+                            <div className={styles.lipRight} />
+                          </div>
 
-                    {/* Soft Natural Upper Lip Rim (Subtle warm skin blend) */}
-                    <path
-                      d="M -7.5 0 C -4 -0.9, 4 -0.9, 7.5 0 C 4.5 0.5, -4.5 0.5, -7.5 0 Z"
-                      fill="url(#kPixarLipWarmth)"
-                    />
+                          {/* Mouth seam with upward curved smile corners */}
+                          <div className={styles.mouthSeam} />
 
-                    {/* Speaking Mouth Cavity (smoothly opens/flexes during speech) */}
-                    <g className={styles.mouthCavity}>
-                      {/* Inner oral cavity */}
-                      <path
-                        d="M -6.0 0.8 C -4.5 4.8, 4.5 4.8, 6.0 0.8 Z"
-                        fill="#3D1022"
-                      />
-                      {/* Subtle upper teeth accent bar */}
-                      <path
-                        d="M -4.5 1.0 C -2.8 1.8, 2.8 1.8, 4.5 1.0 C 3.2 1.5, -3.2 1.5, -4.5 1.0 Z"
-                        fill="#FFFFFF"
-                        opacity="0.9"
-                      />
-                      {/* Soft child tongue */}
-                      <path
-                        d="M -3.5 3.5 C -1.8 2.6, 1.8 2.6, 3.5 3.5 C 2.5 4.6, -2.5 4.6, -3.5 3.5 Z"
-                        fill="#E27488"
-                        opacity="0.85"
-                      />
-                    </g>
+                          {/* Lower lip with specular highlight */}
+                          <div className={styles.lowerLip}>
+                            <div className={styles.lipHighlight} />
+                          </div>
+                        </div>
 
-                    {/* Signature Pixar Corner Dimple Tucks */}
-                    <path
-                      d="M -8.8 -1.0 C -8.2 -0.2, -7.6 0.4, -6.8 0.2"
-                      fill="none"
-                      stroke="#3D182B"
-                      strokeWidth="1.2"
-                      strokeLinecap="round"
-                      opacity="0.65"
-                    />
-                    <path
-                      d="M 8.8 -1.0 C 8.2 -0.2, 7.6 0.4, 6.8 0.2"
-                      fill="none"
-                      stroke="#3D182B"
-                      strokeWidth="1.2"
-                      strokeLinecap="round"
-                      opacity="0.65"
-                    />
-
-                    {/* Expressive Dynamic Pixar Smile Seam Line */}
-                    <path
-                      d="M -8.0 0 C -4.0 2.6, 4.0 2.6, 8.0 0"
-                      fill="none"
-                      stroke="#3D182B"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      className={styles.smileLine}
-                    />
+                        {/* Soft blue-purple skin shadow under lower lip */}
+                        <div className={styles.mouthShadow} />
+                      </div>
+                    </foreignObject>
                   </g>
                 </g>
               </g>
 
-              {/* Topknot Bun */}
+              {/* Topknot Bun & Ornate 3D Gold Hair Band / Ring */}
               <g id="crownTopknot">
                 <ellipse cx="190" cy="74" rx="30" ry="26" fill="url(#kHairBase)" />
                 <ellipse cx="176" cy="68" rx="13" ry="12" fill="url(#kHairCurl)" />
                 <ellipse cx="204" cy="68" rx="13" ry="12" fill="url(#kHairCurl)" />
                 <ellipse cx="190" cy="56" rx="14" ry="11" fill="url(#kHairCurl)" />
                 <ellipse cx="184" cy="62" rx="18" ry="12" fill="url(#kHairHl)" />
-                <rect x="166" y="86" width="48" height="8" rx="4" fill="url(#kGoldGrad)" stroke="#92400E" strokeWidth="0.8" />
-                <rect x="174" y="87" width="32" height="3" rx="1.5" fill="#FEF08A" opacity="0.6" />
+
+                {/* ── 3D Ornate Golden Topknot Ring / Hair Pin ── */}
+                <g id="hairPinBand">
+                  {/* Ambient Contact Shadow under Gold Ring */}
+                  <path
+                    d="M 164 85 C 175 94, 205 94, 216 85"
+                    fill="none"
+                    stroke="#0A1128"
+                    strokeWidth="5"
+                    opacity="0.5"
+                    strokeLinecap="round"
+                  />
+
+                  {/* Main Curved 3D Gold Ring Base */}
+                  <path
+                    d="M 164 84 C 175 93, 205 93, 216 84 L 216 89 C 205 98, 175 98, 164 89 Z"
+                    fill="url(#kGoldGrad)"
+                    stroke="#78350F"
+                    strokeWidth="0.8"
+                    strokeLinejoin="round"
+                  />
+
+                  {/* Top Edge Specular Rim Light */}
+                  <path
+                    d="M 165 84 C 175 92.5, 205 92.5, 215 84"
+                    fill="none"
+                    stroke="#FEF08A"
+                    strokeWidth="1.2"
+                    strokeLinecap="round"
+                    opacity="0.9"
+                  />
+
+                  {/* Gold Pearl Beads along the Ring */}
+                  <circle cx="168" cy="87" r="2.2" fill="url(#kGoldBead)" stroke="#78350F" strokeWidth="0.4" />
+                  <circle cx="178" cy="89.5" r="2.5" fill="url(#kGoldBead)" stroke="#78350F" strokeWidth="0.4" />
+                  <circle cx="202" cy="89.5" r="2.5" fill="url(#kGoldBead)" stroke="#78350F" strokeWidth="0.4" />
+                  <circle cx="212" cy="87" r="2.2" fill="url(#kGoldBead)" stroke="#78350F" strokeWidth="0.4" />
+
+                  {/* Central Ornate Gold Crest & Ruby Cabochon Jewel */}
+                  <g id="hairPinCenterGem" transform="translate(190, 90.5)">
+                    {/* Gold Rosette Outer Casing */}
+                    <ellipse cx="0" cy="0" rx="5.5" ry="4.5" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.6" />
+                    <ellipse cx="0" cy="-0.5" rx="4.5" ry="3.5" fill="none" stroke="#FEF08A" strokeWidth="0.6" opacity="0.9" />
+                    {/* Central Ruby Gemstone */}
+                    <ellipse cx="0" cy="0" rx="3.0" ry="2.2" fill="#DC2626" stroke="#7F1D1D" strokeWidth="0.5" />
+                    <circle cx="-0.8" cy="-0.6" r="0.7" fill="#FFFFFF" opacity="0.9" />
+                  </g>
+                </g>
               </g>
 
               {/* ════════════════ PEACOCK FEATHER HEADDRESS (REFERENCE FIDELITY) ════════════════ */}

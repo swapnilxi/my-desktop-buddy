@@ -1324,3 +1324,130 @@
 .krishnaHappy .pixarMouth {
   transform: scale(1.06, 1.15);
 }
+
+/* ── PURE CSS 3D MOUTH IMPLEMENTATION ────────────────── */
+.mouthContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.mouthSkinHighlight {
+  position: absolute;
+  top: 2px;
+  width: 10px;
+  height: 3px;
+  background: radial-gradient(ellipse at center, rgba(235, 245, 255, 0.45) 0%, rgba(235, 245, 255, 0) 70%);
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.mouthShadow {
+  position: absolute;
+  bottom: 2px;
+  width: 18px;
+  height: 5px;
+  background: radial-gradient(ellipse at center, rgba(30, 58, 138, 0.28) 0%, rgba(30, 58, 138, 0) 70%);
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.mouthGroup {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1;
+  width: 22px;
+  height: 10px;
+}
+
+.upperLip {
+  position: absolute;
+  top: 0px;
+  width: 18px;
+  height: 3.5px;
+  display: flex;
+  justify-content: center;
+  z-index: 1;
+}
+
+.lipLeft, .lipRight {
+  width: 9px;
+  height: 3.5px;
+  background: linear-gradient(to bottom, #F9A8B9 0%, #E36B85 50%, #B8435C 100%);
+  box-shadow: inset 0 0.8px 0.5px rgba(255, 255, 255, 0.5), 0 0 0.5px rgba(139, 46, 66, 0.6);
+  position: relative;
+}
+
+.lipLeft {
+  border-radius: 7px 3px 1px 2px;
+  transform: rotate(-7deg);
+  transform-origin: bottom right;
+  margin-right: -0.3px;
+}
+
+.lipRight {
+  border-radius: 3px 7px 2px 1px;
+  transform: rotate(7deg);
+  transform-origin: bottom left;
+  margin-left: -0.3px;
+}
+
+.mouthSeam {
+  position: absolute;
+  top: 1.8px;
+  width: 19px;
+  height: 2.5px;
+  border-bottom: 1.2px solid #702235;
+  border-radius: 0 0 10px 10px;
+  z-index: 2;
+  box-shadow: 0 0.5px 0.5px rgba(74, 11, 26, 0.25);
+}
+
+.mouthSeam::before, .mouthSeam::after {
+  content: "";
+  position: absolute;
+  top: 0px;
+  width: 3.5px;
+  height: 2px;
+  border-bottom: 1px solid #702235;
+}
+
+.mouthSeam::before {
+  left: -1.5px;
+  border-radius: 0 0 0 4px;
+  transform: rotate(-22deg);
+}
+
+.mouthSeam::after {
+  right: -1.5px;
+  border-radius: 0 0 4px 0;
+  transform: rotate(22deg);
+}
+
+.lowerLip {
+  position: absolute;
+  top: 3.2px;
+  width: 15px;
+  height: 4.5px;
+  background: radial-gradient(ellipse at 50% 25%, #FFE2EA 0%, #F593A8 40%, #D45B74 75%, #A8324C 100%);
+  border-radius: 50% 50% 50% 50% / 20% 20% 80% 80%;
+  box-shadow: 0 0.8px 1px rgba(139, 46, 66, 0.5), inset 0 -0.8px 1px rgba(112, 34, 53, 0.7);
+  z-index: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.lipHighlight {
+  margin-top: 1.2px;
+  width: 4px;
+  height: 1.2px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 50%;
+  box-shadow: 0 0 2px rgba(255, 255, 255, 0.9);
+}
