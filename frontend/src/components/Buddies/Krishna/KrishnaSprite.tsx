@@ -360,6 +360,13 @@ export function LittleKrishna({
               <stop offset="100%" stopColor="#2A64C2" stopOpacity="0" />
             </radialGradient>
 
+            {/* Cute Rosy Lotus Blush for Little Krishna's Baby Toes */}
+            <radialGradient id="kLotusToeBlush" cx="50%" cy="38%" r="62%">
+              <stop offset="0%" stopColor="#FFA6BA" stopOpacity="0.9" />
+              <stop offset="50%" stopColor="#FB7185" stopOpacity="0.5" />
+              <stop offset="100%" stopColor="#5B9AFA" stopOpacity="0" />
+            </radialGradient>
+
             <linearGradient id="kJewelryContactShadow" x1="0%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" stopColor="#0B132B" stopOpacity="0.38" />
               <stop offset="60%" stopColor="#1E3A8A" stopOpacity="0.15" />
@@ -719,73 +726,130 @@ export function LittleKrishna({
           </g>
 
           {/* ════════════════ LAYER 2: FEET & ANKLETS ════════════════ */}
-          {/* Lower body (feet/legs/dhoti) vertically lengthened around the waist (y=290) so the
-              body reads taller and better balances the reduced head — child, not chibi. */}
+          {/* ════════════════ LAYER 2: FEET & ANKLETS ════════════════ */}
           <g id="feet" filter="url(#kSoftShadow)" transform="translate(190,290) scale(1,1.06) translate(-190,-290)">
-            {/* Left Foot (Cute Bare Toddler Foot with Defined Toes) */}
-            <g transform="translate(136, 426)">
+            {/* Left Foot (Adorably Cute Chubby Toddler Foot with Lotus-Pink Blush) */}
+            <g id="leftFoot" transform="translate(148, 426)">
+              {/* Soft Ground Contact Ambient Shadow */}
+              <ellipse cx="0" cy="24.5" rx="16" ry="4" fill="#0A1128" opacity="0.38" />
+
+              {/* Plump, Chubby Baby Foot Silhouette */}
               <path
-                d="M 8 -2 C 0 -4, -6 8, -4 20 C -2 28, 10 32, 26 28 C 36 24, 38 12, 28 4 C 20 0, 14 -2, 8 -2 Z"
+                d="M -6 0
+                   C -12 2, -15 9, -14 16
+                   C -14 20, -11 21.8, -9 20.8
+                   C -8.5 23.5, -5.5 24.2, -3.8 22.8
+                   C -3.0 25.0, 0.2 25.5, 2.2 23.8
+                   C 3.2 25.6, 7.0 25.8, 9.0 23.8
+                   C 10.0 25.2, 14.5 24.5, 14.5 19.5
+                   C 14.5 14, 11 6, 6 0 Z"
                 fill="url(#kSkinLimb)"
               />
-              {/* Soft Toes with Unified Skin Shader & Subtle Ambient Separation */}
-              <circle cx="-1" cy="19" r="4.5" fill="url(#kSkinHand)" />
-              <ellipse cx="-2" cy="18" rx="2.0" ry="1.4" fill="#FFFFFF" opacity="0.55" />
 
-              <circle cx="6" cy="24" r="4.0" fill="url(#kSkinHand)" />
-              <ellipse cx="5" cy="23" rx="1.8" ry="1.2" fill="#FFFFFF" opacity="0.5" />
+              {/* Chubby Toddler Instep Dome Highlight */}
+              <ellipse cx="-0.5" cy="10" rx="9" ry="6" fill="url(#kSkinHand)" opacity="0.7" />
+              <ellipse cx="0" cy="8" rx="5" ry="3" fill="#FFFFFF" opacity="0.3" />
 
-              <circle cx="14" cy="26" r="3.6" fill="url(#kSkinHand)" />
-              <circle cx="21" cy="26" r="3.2" fill="url(#kSkinHand)" />
-              <circle cx="28" cy="24" r="2.8" fill="url(#kSkinHand)" />
+              {/* ── 5 Cute Plump Rounded Baby Toe Cushions with Warm Rosy Lotus Blush ── */}
+              {/* Big Toe (Plump & Sweet, Medial/Right) */}
+              <circle cx="11.8" cy="18.5" r="4.2" fill="url(#kLotusToeBlush)" />
+              <ellipse cx="11.5" cy="17.2" rx="2.0" ry="1.3" fill="#FFFFFF" opacity="0.65" />
 
-              {/* Soft Ambient Shadows Between Toes */}
-              <path d="M 2.5 21.5 L 2.5 24" fill="none" stroke="#1E3A8A" strokeWidth="0.6" opacity="0.2" />
-              <path d="M 10 24.5 L 10 26.5" fill="none" stroke="#1E3A8A" strokeWidth="0.6" opacity="0.2" />
-              <path d="M 17.5 25.5 L 17.5 27" fill="none" stroke="#1E3A8A" strokeWidth="0.6" opacity="0.2" />
-              <path d="M 24.5 24.5 L 24.5 26" fill="none" stroke="#1E3A8A" strokeWidth="0.6" opacity="0.2" />
+              {/* Second Toe */}
+              <circle cx="5.8" cy="20.5" r="3.7" fill="url(#kLotusToeBlush)" />
+              <ellipse cx="5.5" cy="19.2" rx="1.7" ry="1.1" fill="#FFFFFF" opacity="0.55" />
+
+              {/* Third Toe */}
+              <circle cx="-0.8" cy="21.0" r="3.3" fill="url(#kLotusToeBlush)" />
+              <ellipse cx="-1.0" cy="19.8" rx="1.5" ry="1.0" fill="#FFFFFF" opacity="0.5" />
+
+              {/* Fourth Toe */}
+              <circle cx="-6.4" cy="20.0" r="2.9" fill="url(#kLotusToeBlush)" />
+              <ellipse cx="-6.6" cy="19.0" rx="1.3" ry="0.9" fill="#FFFFFF" opacity="0.45" />
+
+              {/* Little Pinky Toe Button */}
+              <circle cx="-11.2" cy="18.2" r="2.5" fill="url(#kLotusToeBlush)" />
+              <ellipse cx="-11.3" cy="17.4" rx="1.0" ry="0.7" fill="#FFFFFF" opacity="0.4" />
+
+              {/* Soft, Cute Interdigital Separation Creases */}
+              <path d="M 8.8 21 C 8.5 17.5, 8.0 14.5, 7.8 12.5" fill="none" stroke="#1E3A8A" strokeWidth="1.1" strokeLinecap="round" opacity="0.35" />
+              <path d="M 2.5 21.5 C 2.2 18.0, 2.0 15.2, 1.8 13.5" fill="none" stroke="#1E3A8A" strokeWidth="1.0" strokeLinecap="round" opacity="0.3" />
+              <path d="M -3.6 21 C -3.7 17.8, -3.8 15.5, -3.9 14.0" fill="none" stroke="#1E3A8A" strokeWidth="0.9" strokeLinecap="round" opacity="0.28" />
+              <path d="M -8.8 19.5 C -9.0 17.0, -9.2 15.0, -9.3 13.8" fill="none" stroke="#1E3A8A" strokeWidth="0.8" strokeLinecap="round" opacity="0.25" />
             </g>
 
-            {/* Right Foot (Cute Bare Toddler Foot with Defined Toes) */}
-            <g transform="translate(212, 426)">
+            {/* Right Foot (Adorably Cute Chubby Toddler Foot with Lotus-Pink Blush) */}
+            <g id="rightFoot" transform="translate(226, 426)">
+              {/* Soft Ground Contact Ambient Shadow */}
+              <ellipse cx="0" cy="24.5" rx="16" ry="4" fill="#0A1128" opacity="0.38" />
+
+              {/* Plump, Chubby Baby Foot Silhouette */}
               <path
-                d="M 12 -2 C 4 -4, -2 8, 0 20 C 2 28, 14 32, 30 28 C 40 24, 40 12, 32 4 C 24 0, 18 -2, 12 -2 Z"
+                d="M 6 0
+                   C 12 2, 15 9, 14 16
+                   C 14 20, 11 21.8, 9 20.8
+                   C 8.5 23.5, 5.5 24.2, 3.8 22.8
+                   C 3.0 25.0, -0.2 25.5, -2.2 23.8
+                   C -3.2 25.6, -7.0 25.8, -9.0 23.8
+                   C -10.0 25.2, -14.5 24.5, -14.5 19.5
+                   C -14.5 14, -11 6, -6 0 Z"
                 fill="url(#kSkinLimb)"
               />
-              {/* Soft Toes with Unified Skin Shader & Subtle Ambient Separation */}
-              <circle cx="2" cy="19" r="4.5" fill="url(#kSkinHand)" />
-              <ellipse cx="1" cy="18" rx="2.0" ry="1.4" fill="#FFFFFF" opacity="0.55" />
 
-              <circle cx="9" cy="24" r="4.0" fill="url(#kSkinHand)" />
-              <ellipse cx="8" cy="23" rx="1.8" ry="1.2" fill="#FFFFFF" opacity="0.5" />
+              {/* Chubby Toddler Instep Dome Highlight */}
+              <ellipse cx="0.5" cy="10" rx="9" ry="6" fill="url(#kSkinHand)" opacity="0.7" />
+              <ellipse cx="0" cy="8" rx="5" ry="3" fill="#FFFFFF" opacity="0.3" />
 
-              <circle cx="17" cy="26" r="3.6" fill="url(#kSkinHand)" />
-              <circle cx="24" cy="26" r="3.2" fill="url(#kSkinHand)" />
-              <circle cx="31" cy="24" r="2.8" fill="url(#kSkinHand)" />
+              {/* ── 5 Cute Plump Rounded Baby Toe Cushions with Warm Rosy Lotus Blush ── */}
+              {/* Big Toe (Plump & Sweet, Medial/Left) */}
+              <circle cx="-11.8" cy="18.5" r="4.2" fill="url(#kLotusToeBlush)" />
+              <ellipse cx="-11.5" cy="17.2" rx="2.0" ry="1.3" fill="#FFFFFF" opacity="0.65" />
 
-              {/* Soft Ambient Shadows Between Toes */}
-              <path d="M 5.5 21.5 L 5.5 24" fill="none" stroke="#1E3A8A" strokeWidth="0.6" opacity="0.2" />
-              <path d="M 13 24.5 L 13 26.5" fill="none" stroke="#1E3A8A" strokeWidth="0.6" opacity="0.2" />
-              <path d="M 20.5 25.5 L 20.5 27" fill="none" stroke="#1E3A8A" strokeWidth="0.6" opacity="0.2" />
-              <path d="M 27.5 24.5 L 27.5 26" fill="none" stroke="#1E3A8A" strokeWidth="0.6" opacity="0.2" />
+              {/* Second Toe */}
+              <circle cx="-5.8" cy="20.5" r="3.7" fill="url(#kLotusToeBlush)" />
+              <ellipse cx="-5.5" cy="19.2" rx="1.7" ry="1.1" fill="#FFFFFF" opacity="0.55" />
+
+              {/* Third Toe */}
+              <circle cx="0.8" cy="21.0" r="3.3" fill="url(#kLotusToeBlush)" />
+              <ellipse cx="1.0" cy="19.8" rx="1.5" ry="1.0" fill="#FFFFFF" opacity="0.5" />
+
+              {/* Fourth Toe */}
+              <circle cx="6.4" cy="20.0" r="2.9" fill="url(#kLotusToeBlush)" />
+              <ellipse cx="6.6" cy="19.0" rx="1.3" ry="0.9" fill="#FFFFFF" opacity="0.45" />
+
+              {/* Little Pinky Toe Button */}
+              <circle cx="11.2" cy="18.2" r="2.5" fill="url(#kLotusToeBlush)" />
+              <ellipse cx="11.3" cy="17.4" rx="1.0" ry="0.7" fill="#FFFFFF" opacity="0.4" />
+
+              {/* Soft, Cute Interdigital Separation Creases */}
+              <path d="M -8.8 21 C -8.5 17.5, -8.0 14.5, -7.8 12.5" fill="none" stroke="#1E3A8A" strokeWidth="1.1" strokeLinecap="round" opacity="0.35" />
+              <path d="M -2.5 21.5 C -2.2 18.0, -2.0 15.2, -1.8 13.5" fill="none" stroke="#1E3A8A" strokeWidth="1.0" strokeLinecap="round" opacity="0.3" />
+              <path d="M 3.6 21 C 3.7 17.8, 3.8 15.5, 3.9 14.0" fill="none" stroke="#1E3A8A" strokeWidth="0.9" strokeLinecap="round" opacity="0.28" />
+              <path d="M 8.8 19.5 C 9.0 17.0, 9.2 15.0, 9.3 13.8" fill="none" stroke="#1E3A8A" strokeWidth="0.8" strokeLinecap="round" opacity="0.25" />
             </g>
 
-            {/* ── Little Krishna's 3D Golden Anklets (Payal / Ghungroo) ── */}
+            {/* ── Little Krishna's 3D Glistening Golden Payal Anklets ── */}
             <g id="anklets">
               {/* Left Anklet */}
-              <ellipse cx="148" cy="422" rx="14" ry="4" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.8" />
-              <ellipse cx="148" cy="421" rx="12" ry="2" fill="none" stroke="#FFF9D6" strokeWidth="0.8" opacity="0.8" />
-              {/* Left Anklet Gold Beads */}
-              {[138, 143, 148, 153, 158].map((bx, i) => (
-                <circle key={`la-${i}`} cx={bx} cy="424" r="2.2" fill="url(#kGoldDomeRivet)" stroke="#78350F" strokeWidth="0.4" />
+              <ellipse cx="148" cy="425" rx="14" ry="4.2" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.8" />
+              <ellipse cx="148" cy="424" rx="12" ry="2.2" fill="none" stroke="#FFF9D6" strokeWidth="0.8" opacity="0.85" />
+              {/* Left Anklet Ghungroo Gold Bells with Glistening Highlights */}
+              {[137, 142, 148, 154, 159].map((bx, i) => (
+                <g key={`la-${i}`}>
+                  <circle cx={bx} cy="427" r="2.2" fill="url(#kGoldDomeRivet)" stroke="#78350F" strokeWidth="0.4" />
+                  <circle cx={bx - 0.6} cy="426.3" r="0.8" fill="#FFFBEB" opacity="0.9" />
+                </g>
               ))}
 
               {/* Right Anklet */}
-              <ellipse cx="224" cy="422" rx="14" ry="4" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.8" />
-              <ellipse cx="224" cy="421" rx="12" ry="2" fill="none" stroke="#FFF9D6" strokeWidth="0.8" opacity="0.8" />
-              {/* Right Anklet Gold Beads */}
-              {[214, 219, 224, 229, 234].map((bx, i) => (
-                <circle key={`ra-${i}`} cx={bx} cy="424" r="2.2" fill="url(#kGoldDomeRivet)" stroke="#78350F" strokeWidth="0.4" />
+              <ellipse cx="226" cy="425" rx="14" ry="4.2" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.8" />
+              <ellipse cx="226" cy="424" rx="12" ry="2.2" fill="none" stroke="#FFF9D6" strokeWidth="0.8" opacity="0.85" />
+              {/* Right Anklet Ghungroo Gold Bells with Glistening Highlights */}
+              {[215, 220, 226, 232, 237].map((bx, i) => (
+                <g key={`ra-${i}`}>
+                  <circle cx={bx} cy="427" r="2.2" fill="url(#kGoldDomeRivet)" stroke="#78350F" strokeWidth="0.4" />
+                  <circle cx={bx - 0.6} cy="426.3" r="0.8" fill="#FFFBEB" opacity="0.9" />
+                </g>
               ))}
             </g>
           </g>
@@ -811,14 +875,14 @@ export function LittleKrishna({
 
             {/* Right Leg Pillar (Exposed between dhoti hem and ankle) */}
             <path
-              d="M 230 322 C 236 360, 236 394, 232 424"
+              d="M 230 322 C 234 360, 234 394, 226 424"
               fill="none"
               stroke="url(#kSkinLimb)"
               strokeWidth="28"
               strokeLinecap="round"
             />
             <path
-              d="M 230 322 C 236 360, 236 394, 232 424"
+              d="M 230 322 C 234 360, 234 394, 226 424"
               fill="none"
               stroke="#D9ECFF"
               strokeWidth="5"
@@ -2399,6 +2463,8 @@ export function LittleKrishna({
                   opacity="0.45"
                   strokeLinecap="round"
                 />
+                {/* Stylized Fingernail Accent */}
+                <path d="M 221.8 288.5 C 221.2 289.8, 221.5 291.2, 222.5 291.8" fill="none" stroke="#EBF5FF" strokeWidth="0.8" strokeLinecap="round" opacity="0.8" />
               </g>
 
               {/* Digit B: Middle Finger (Longest toddler digit curving across waistband) */}
@@ -2419,6 +2485,8 @@ export function LittleKrishna({
                   opacity="0.45"
                   strokeLinecap="round"
                 />
+                {/* Stylized Fingernail Accent */}
+                <path d="M 219.2 295.5 C 218.6 297.0, 219.0 298.5, 220.2 299.0" fill="none" stroke="#EBF5FF" strokeWidth="0.8" strokeLinecap="round" opacity="0.8" />
               </g>
 
               {/* Digit C: Ring Finger (Curving along lower waistband edge) */}
@@ -2439,6 +2507,8 @@ export function LittleKrishna({
                   opacity="0.4"
                   strokeLinecap="round"
                 />
+                {/* Stylized Fingernail Accent */}
+                <path d="M 224.2 301.8 C 223.8 303.2, 224.2 304.5, 225.4 305.0" fill="none" stroke="#EBF5FF" strokeWidth="0.75" strokeLinecap="round" opacity="0.75" />
               </g>
 
               {/* Digit D: Pinky Finger (Curving softly along side waist / sash edge) */}
@@ -2459,6 +2529,8 @@ export function LittleKrishna({
                   opacity="0.35"
                   strokeLinecap="round"
                 />
+                {/* Stylized Fingernail Accent */}
+                <path d="M 232.2 307.8 C 231.8 309.0, 232.2 310.2, 233.4 310.6" fill="none" stroke="#EBF5FF" strokeWidth="0.7" strokeLinecap="round" opacity="0.7" />
               </g>
             </g>
           </g>
