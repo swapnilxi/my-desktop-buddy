@@ -310,6 +310,30 @@ export function LittleKrishna({
               <stop offset="100%" stopColor="#5B9AFA" stopOpacity="0" />
             </radialGradient>
 
+            {/* ── 3D Sculpted Child Ear Gradients ── */}
+            <radialGradient id="kEarBaseLeft" cx="38%" cy="32%" r="68%">
+              <stop offset="0%" stopColor="#EBF5FF" />
+              <stop offset="28%" stopColor="#A5CEFF" />
+              <stop offset="65%" stopColor="#6BA7FF" />
+              <stop offset="88%" stopColor="#3876D6" />
+              <stop offset="100%" stopColor="#1E4E9E" />
+            </radialGradient>
+
+            <radialGradient id="kEarBaseRight" cx="62%" cy="32%" r="68%">
+              <stop offset="0%" stopColor="#EBF5FF" />
+              <stop offset="28%" stopColor="#A5CEFF" />
+              <stop offset="65%" stopColor="#6BA7FF" />
+              <stop offset="88%" stopColor="#3876D6" />
+              <stop offset="100%" stopColor="#1E4E9E" />
+            </radialGradient>
+
+            <radialGradient id="kEarInnerShadow" cx="45%" cy="40%" r="60%">
+              <stop offset="0%" stopColor="#122554" />
+              <stop offset="60%" stopColor="#1B3A82" />
+              <stop offset="88%" stopColor="#2A5CB0" />
+              <stop offset="100%" stopColor="#4180E0" stopOpacity="0" />
+            </radialGradient>
+
             {/* ── 3D Cylindrical Neck & Occlusion Shaders ── */}
             <linearGradient id="kSkinNeck" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stopColor="#2A64C2" />
@@ -2291,7 +2315,7 @@ export function LittleKrishna({
                 id="krishnaHairOverlay"
                 href={krishnaHairImg.src || '/characters/krishna_hair.png'}
                 x={39}
-                y={-76}
+                y={-72}
                 width={296}
                 height={355}
                 preserveAspectRatio="xMidYMid meet"
@@ -2301,113 +2325,141 @@ export function LittleKrishna({
               {/* ════════════════ LITTLE KRISHNA EARS & GOLD BALI ORNAMENTS ════════════════ */}
               <g id="krishnaEars">
                 {/* Left Ear (Viewer's Left - Character's Right) */}
-                <g id="earLeft" transform="translate(116, 166)">
+                <g id="earLeft" transform="translate(112, 164) scale(1.3)">
                   {/* Soft Drop Shadow onto hair curls behind */}
-                  <ellipse cx="-1" cy="2" rx="9" ry="13" fill="#0A1128" opacity="0.35" />
+                  <ellipse cx="-1" cy="2" rx="9.8" ry="13.8" fill="#091024" opacity="0.28" />
 
-                  {/* 3D Toddler Ear Outer Helix / Shell */}
+                  {/* Cute Chubby 3D Child Ear Outer Helix / Shell */}
                   <path
                     d="M 5 -12
-                       C -6 -13, -12 -7, -12 1
-                       C -12 8, -7 14, 0 15
-                       C 4 15, 6 10, 6 1
+                       C -6 -13.5, -13 -6.5, -13 1
+                       C -13 8.5, -8 14.5, -0.5 15.5
+                       C 5 15.5, 8 9.5, 6.8 0.8
                        Z"
-                    fill="url(#kSkinFace)"
-                    stroke="#204E9E"
+                    fill="url(#kEarBaseLeft)"
+                    stroke="#2351A2"
                     strokeWidth="0.8"
                     strokeLinejoin="round"
                   />
 
-                  {/* Inner Concha & Antihelix Shading */}
+                  {/* Soft 3D Outer Rim Highlight (Upper Outer Helix) */}
                   <path
-                    d="M 1 -7 C -4 -4, -4 4, 1 7"
+                    d="M 3 -10.5 C -3 -11.5, -10 -6.5, -10 0"
                     fill="none"
-                    stroke="#1E3A8A"
-                    strokeWidth="2.2"
+                    stroke="#EBF5FF"
+                    strokeWidth="1.3"
                     strokeLinecap="round"
-                    opacity="0.32"
-                  />
-                  <path
-                    d="M -1 -4 C -5 -1, -5 4, -1 6"
-                    fill="none"
-                    stroke="#0E235C"
-                    strokeWidth="1.2"
-                    strokeLinecap="round"
-                    opacity="0.38"
+                    opacity="0.65"
                   />
 
-                  {/* Ear Lobe Highlight / Volumetric Specular */}
-                  <ellipse cx="-1" cy="9" rx="3.2" ry="4" fill="#FFFFFF" opacity="0.22" />
+                  {/* Adorable Rosy Lotus Blush on Chubby Child Lobe */}
+                  <ellipse cx="-1.5" cy="8.5" rx="4.8" ry="5.0" fill="url(#kLotusToeBlush)" opacity="0.35" />
 
-                  {/* ── Sacred Royal Golden Bali (Hoop Earring) ── */}
+                  {/* Sculpted Soft Inner Concha Bowl (Recessed "C" Shape) */}
+                  <path
+                    d="M 2.5 -6.5
+                       C -3 -5, -5.5 -0.5, -3.5 4.5
+                       C -2 7, 0.5 6, 1.8 3.8
+                       C 0.8 1.2, -0.2 -2.5, 2.5 -6.5 Z"
+                    fill="url(#kEarInnerShadow)"
+                    opacity="0.75"
+                  />
+                  <path
+                    d="M 1.5 -5 C -2.2 -3.5, -3.8 0, -2.2 4"
+                    fill="none"
+                    stroke="#10214D"
+                    strokeWidth="1.1"
+                    strokeLinecap="round"
+                    opacity="0.4"
+                  />
+
+                  {/* Soft Fuller Rounded Lobe Volume & Highlight */}
+                  <ellipse cx="-1" cy="10" rx="4.5" ry="4.8" fill="url(#kChinVolume)" opacity="0.45" />
+                  <ellipse cx="-1.2" cy="9.2" rx="2.6" ry="2.8" fill="#FFFFFF" opacity="0.3" />
+
+                  {/* ── Sacred Royal Golden Bali (Hoop Earring) Attached to Lobe ── */}
                   {/* Ear Piercing Gold Stud with Ruby Cabochon */}
-                  <circle cx="1" cy="11.5" r="2.4" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
-                  <circle cx="1" cy="11.5" r="1.3" fill="#DC2626" />
-                  <circle cx="0.6" cy="11.1" r="0.45" fill="#FFFFFF" opacity="0.9" />
+                  <circle cx="-0.5" cy="11.5" r="2.4" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
+                  <circle cx="-0.5" cy="11.5" r="1.3" fill="#DC2626" />
+                  <circle cx="-0.9" cy="11.1" r="0.45" fill="#FFFFFF" opacity="0.9" />
 
                   {/* Hanging Heavy 3D Golden Kundala / Bali Hoop */}
-                  <circle cx="-1" cy="20.5" r="8.0" fill="none" stroke="url(#kGoldGrad)" strokeWidth="3.4" strokeLinecap="round" />
-                  <circle cx="-2" cy="19.5" r="6.3" fill="none" stroke="#FFFFFF" strokeWidth="1.1" opacity="0.85" strokeLinecap="round" />
-                  <circle cx="0" cy="21.5" r="7.2" fill="none" stroke="#78350F" strokeWidth="0.8" opacity="0.6" strokeLinecap="round" />
+                  <circle cx="-2.5" cy="20.5" r="8.0" fill="none" stroke="url(#kGoldGrad)" strokeWidth="3.4" strokeLinecap="round" />
+                  <circle cx="-3.5" cy="19.5" r="6.3" fill="none" stroke="#FFFFFF" strokeWidth="1.1" opacity="0.85" strokeLinecap="round" />
+                  <circle cx="-1.5" cy="21.5" r="7.2" fill="none" stroke="#78350F" strokeWidth="0.8" opacity="0.6" strokeLinecap="round" />
 
                   {/* Dangling Pearl / Gemstone Droplet */}
-                  <circle cx="-1" cy="29.5" r="2.2" fill="url(#kPayalPearl)" stroke="#B45309" strokeWidth="0.4" />
-                  <circle cx="-1.5" cy="28.8" r="0.7" fill="#FFFFFF" opacity="0.95" />
+                  <circle cx="-2.5" cy="29.5" r="2.2" fill="url(#kPayalPearl)" stroke="#B45309" strokeWidth="0.4" />
+                  <circle cx="-3.0" cy="28.8" r="0.7" fill="#FFFFFF" opacity="0.95" />
                 </g>
 
                 {/* Right Ear (Viewer's Right - Character's Left) */}
-                <g id="earRight" transform="translate(264, 166)">
+                <g id="earRight" transform="translate(268, 164) scale(1.3)">
                   {/* Soft Drop Shadow onto hair curls behind */}
-                  <ellipse cx="1" cy="2" rx="9" ry="13" fill="#0A1128" opacity="0.35" />
+                  <ellipse cx="1" cy="2" rx="9.8" ry="13.8" fill="#091024" opacity="0.28" />
 
-                  {/* 3D Toddler Ear Outer Helix / Shell */}
+                  {/* Cute Chubby 3D Child Ear Outer Helix / Shell */}
                   <path
                     d="M -5 -12
-                       C 6 -13, 12 -7, 12 1
-                       C 12 8, 7 14, 0 15
-                       C -4 15, -6 10, -6 1
+                       C 6 -13.5, 13 -6.5, 13 1
+                       C 13 8.5, 8 14.5, 0.5 15.5
+                       C -5 15.5, -8 9.5, -6.8 0.8
                        Z"
-                    fill="url(#kSkinFace)"
-                    stroke="#204E9E"
+                    fill="url(#kEarBaseRight)"
+                    stroke="#2351A2"
                     strokeWidth="0.8"
                     strokeLinejoin="round"
                   />
 
-                  {/* Inner Concha & Antihelix Shading */}
+                  {/* Soft 3D Outer Rim Highlight (Upper Outer Helix) */}
                   <path
-                    d="M -1 -7 C 4 -4, 4 4, -1 7"
+                    d="M -3 -10.5 C 3 -11.5, 10 -6.5, 10 0"
                     fill="none"
-                    stroke="#1E3A8A"
-                    strokeWidth="2.2"
+                    stroke="#EBF5FF"
+                    strokeWidth="1.3"
                     strokeLinecap="round"
-                    opacity="0.32"
-                  />
-                  <path
-                    d="M 1 -4 C 5 -1, 5 4, 1 6"
-                    fill="none"
-                    stroke="#0E235C"
-                    strokeWidth="1.2"
-                    strokeLinecap="round"
-                    opacity="0.38"
+                    opacity="0.65"
                   />
 
-                  {/* Ear Lobe Highlight / Volumetric Specular */}
-                  <ellipse cx="1" cy="9" rx="3.2" ry="4" fill="#FFFFFF" opacity="0.22" />
+                  {/* Adorable Rosy Lotus Blush on Chubby Child Lobe */}
+                  <ellipse cx="1.5" cy="8.5" rx="4.8" ry="5.0" fill="url(#kLotusToeBlush)" opacity="0.35" />
 
-                  {/* ── Sacred Royal Golden Bali (Hoop Earring) ── */}
+                  {/* Sculpted Soft Inner Concha Bowl (Recessed "C" Shape) */}
+                  <path
+                    d="M -2.5 -6.5
+                       C 3 -5, 5.5 -0.5, 3.5 4.5
+                       C 2 7, -0.5 6, -1.8 3.8
+                       C -0.8 1.2, 0.2 -2.5, -2.5 -6.5 Z"
+                    fill="url(#kEarInnerShadow)"
+                    opacity="0.75"
+                  />
+                  <path
+                    d="M -1.5 -5 C 2.2 -3.5, 3.8 0, 2.2 4"
+                    fill="none"
+                    stroke="#10214D"
+                    strokeWidth="1.1"
+                    strokeLinecap="round"
+                    opacity="0.4"
+                  />
+
+                  {/* Soft Fuller Rounded Lobe Volume & Highlight */}
+                  <ellipse cx="1" cy="10" rx="4.5" ry="4.8" fill="url(#kChinVolume)" opacity="0.45" />
+                  <ellipse cx="1.2" cy="9.2" rx="2.6" ry="2.8" fill="#FFFFFF" opacity="0.3" />
+
+                  {/* ── Sacred Royal Golden Bali (Hoop Earring) Attached to Lobe ── */}
                   {/* Ear Piercing Gold Stud with Ruby Cabochon */}
-                  <circle cx="-1" cy="11.5" r="2.4" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
-                  <circle cx="-1" cy="11.5" r="1.3" fill="#DC2626" />
-                  <circle cx="-1.4" cy="11.1" r="0.45" fill="#FFFFFF" opacity="0.9" />
+                  <circle cx="0.5" cy="11.5" r="2.4" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
+                  <circle cx="0.5" cy="11.5" r="1.3" fill="#DC2626" />
+                  <circle cx="0.1" cy="11.1" r="0.45" fill="#FFFFFF" opacity="0.9" />
 
                   {/* Hanging Heavy 3D Golden Kundala / Bali Hoop */}
-                  <circle cx="1" cy="20.5" r="8.0" fill="none" stroke="url(#kGoldGrad)" strokeWidth="3.4" strokeLinecap="round" />
-                  <circle cx="2" cy="19.5" r="6.3" fill="none" stroke="#FFFFFF" strokeWidth="1.1" opacity="0.85" strokeLinecap="round" />
-                  <circle cx="0" cy="21.5" r="7.2" fill="none" stroke="#78350F" strokeWidth="0.8" opacity="0.6" strokeLinecap="round" />
+                  <circle cx="2.5" cy="20.5" r="8.0" fill="none" stroke="url(#kGoldGrad)" strokeWidth="3.4" strokeLinecap="round" />
+                  <circle cx="3.5" cy="19.5" r="6.3" fill="none" stroke="#FFFFFF" strokeWidth="1.1" opacity="0.85" strokeLinecap="round" />
+                  <circle cx="1.5" cy="21.5" r="7.2" fill="none" stroke="#78350F" strokeWidth="0.8" opacity="0.6" strokeLinecap="round" />
 
                   {/* Dangling Pearl / Gemstone Droplet */}
-                  <circle cx="1" cy="29.5" r="2.2" fill="url(#kPayalPearl)" stroke="#B45309" strokeWidth="0.4" />
-                  <circle cx="0.5" cy="28.8" r="0.7" fill="#FFFFFF" opacity="0.95" />
+                  <circle cx="2.5" cy="29.5" r="2.2" fill="url(#kPayalPearl)" stroke="#B45309" strokeWidth="0.4" />
+                  <circle cx="2.0" cy="28.8" r="0.7" fill="#FFFFFF" opacity="0.95" />
                 </g>
               </g>
             </g>
