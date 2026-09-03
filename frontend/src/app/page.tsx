@@ -8,7 +8,6 @@ import ConfigPanel from '@/components/Config/ConfigPanel';
 import SpeechTrainingPanel from '@/components/SpeechTraining/SpeechTrainingPanel';
 import GitaPanel from '@/components/Krishna/GitaPanel';
 import DailyPanel from '@/components/Krishna/DailyPanel';
-import MemoryPanel from '@/components/Krishna/MemoryPanel';
 import { checkHealth, fetchGreeting, getClientSavedConfig, saveClientSavedConfig } from '@/lib/api';
 import type { HamsterMood } from '@/lib/api';
 import { useVoiceRecorder } from '@/lib/useVoiceRecorder';
@@ -21,7 +20,7 @@ import type { WindowMode } from '@/components/Shell/WindowChrome';
 import ConfirmDialog from '@/components/Shell/ConfirmDialog';
 
 export type { WindowMode };
-type TabId = 'chat' | 'todo' | 'daily' | 'gita' | 'memory' | 'config' | 'speech';
+type TabId = 'chat' | 'todo' | 'daily' | 'gita' | 'config' | 'speech';
 
 /** Remembering the mode means a relaunch no longer dumps the user into the widget. */
 const MODE_STORAGE_KEY = 'desktop_buddy_window_mode';
@@ -46,7 +45,6 @@ const BASE_TABS: Tab[] = [
 const KRISHNA_TABS: Tab[] = [
   { id: 'daily', emoji: '🌅', label: 'Today' },
   { id: 'gita', emoji: '📖', label: 'Gita' },
-  { id: 'memory', emoji: '🧠', label: 'Memory' },
 ];
 
 const TRAILING_TABS: Tab[] = [
@@ -135,7 +133,7 @@ export default function Home() {
 
   /**
    * The tab actually shown. Derived rather than corrected in an effect: the
-   * Gita/Today/Memory tabs only exist for Krishna, so a selection left over
+   * Gita/Today tabs only exist for Krishna, so a selection left over
    * from a buddy switch (or restored from a saved default) would otherwise
    * render an empty workspace for one paint.
    */
@@ -814,15 +812,6 @@ export default function Home() {
             hidden={effectiveTab !== 'gita'}
           >
             <GitaPanel />
-          </div>
-          <div
-            id="panel-memory"
-            className="tab-pane"
-            role="tabpanel"
-            aria-labelledby="tab-memory"
-            hidden={effectiveTab !== 'memory'}
-          >
-            <MemoryPanel />
           </div>
         </>
       )}
