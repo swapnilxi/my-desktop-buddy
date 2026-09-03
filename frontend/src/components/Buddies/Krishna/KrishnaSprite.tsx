@@ -507,6 +507,13 @@ export function LittleKrishna({
               <stop offset="100%" stopColor="#8A4A00" />
             </radialGradient>
 
+            <radialGradient id="kRubyBead" cx="32%" cy="28%" r="65%">
+              <stop offset="0%" stopColor="#FFA6A6" />
+              <stop offset="35%" stopColor="#EF4444" />
+              <stop offset="75%" stopColor="#B91C1C" />
+              <stop offset="100%" stopColor="#7F1D1D" />
+            </radialGradient>
+
             {/* ── 3D Golden Dome Rivet Shader for Waist Belt ── */}
             <radialGradient id="kGoldDomeRivet" cx="35%" cy="30%" r="68%">
               <stop offset="0%" stopColor="#FFFFFA" />
@@ -1789,19 +1796,22 @@ export function LittleKrishna({
 
           {/* ════════════════ LAYER 5: SCULPTED TODDLER TORSO & NECK ════════════════ */}
           <g id="torso">
-            {/* Organic Integrated Toddler Torso with Continuous Shoulder/Arm Roots */}
+            {/* Unified Continuous Toddler Skin Form: Neck Pillar (Width 50 near jaw, 60 at base) → Trapezius → Upper Chest → Torso */}
             <path
               id="torsoBaseWithRoots"
-              d="M 160 168
-                 C 145 175, 130 185, 122 195
-                 C 115 205, 120 220, 128 222
+              d="M 165 158
+                 C 163 172, 160 184, 160 192
+                 C 152 196, 142 200, 138 202
+                 C 126 210, 120 220, 128 222
                  C 132 230, 132 245, 134 256
                  C 136 268, 140 274, 146 280
                  C 168 286, 212 286, 234 280
                  C 240 274, 244 268, 246 256
                  C 248 245, 248 230, 252 222
-                 C 260 220, 265 205, 258 195
-                 C 250 185, 235 175, 220 168
+                 C 260 220, 254 210, 242 202
+                 C 238 200, 228 196, 220 192
+                 C 220 184, 217 172, 215 158
+                 C 198 154, 182 154, 165 158
                  Z"
               fill="url(#kSkinBody)"
             />
@@ -1844,48 +1854,50 @@ export function LittleKrishna({
               opacity="0.25"
             />
 
-            {/* Neck Pillar & Trapezius 3D Volume */}
+            {/* Continuous Volumetric Neck & Upper Chest Highlight Overlay (No Seams) */}
             <path
-              d="M 160 168
-                 C 156 182, 148 194, 138 202
-                 C 170 208, 210 208, 242 202
-                 C 232 194, 224 182, 220 168
+              d="M 168 162
+                 C 165 178, 164 190, 164 200
+                 C 164 212, 172 222, 190 224
+                 C 208 222, 216 212, 216 200
+                 C 216 190, 215 178, 212 162
                  Z"
               fill="url(#kSkinNeck)"
+              opacity="0.3"
             />
 
-            {/* Soft Cylindrical Center Light on Neck */}
-            <ellipse cx="190" cy="188" rx="14" ry="11" fill="#D9ECFF" opacity="0.32" />
+            {/* Soft Cylindrical Center Light flowing from Neck down into Upper Chest */}
+            <ellipse cx="190" cy="194" rx="16" ry="18" fill="#D9ECFF" opacity="0.28" />
 
             {/* Deep Soft Crescent Ambient Occlusion Shadow Under Chin */}
             <path
-              d="M 164 174 C 176 190, 204 190, 216 174 C 208 196, 172 196, 164 174 Z"
+              d="M 164 172 C 176 188, 204 188, 216 172 C 208 194, 172 194, 164 172 Z"
               fill="url(#kNeckOcclusionShadow)"
             />
 
             {/* Subtle Suprasternal Notch / Jugular Fossa (Neck Base) */}
-            <ellipse cx="190" cy="202" rx="3.8" ry="2.0" fill="#1E3A8A" opacity="0.25" />
+            <ellipse cx="190" cy="202" rx="3.6" ry="1.8" fill="#1E3A8A" opacity="0.16" />
 
-            {/* Subtle Clavicle Bones (Collarbones) */}
+            {/* Subtle Soft Clavicle Transitions (No Hard Lines) */}
             <path
               d="M 185 202 C 174 200, 160 198, 146 202"
               fill="none"
               stroke="#D9ECFF"
-              strokeWidth="1.8"
+              strokeWidth="1.6"
               strokeLinecap="round"
-              opacity="0.35"
+              opacity="0.22"
             />
             <path
               d="M 195 202 C 206 200, 220 198, 234 202"
               fill="none"
               stroke="#D9ECFF"
-              strokeWidth="1.8"
+              strokeWidth="1.6"
               strokeLinecap="round"
-              opacity="0.35"
+              opacity="0.22"
             />
 
-            {/* Upper Chest / Pectoral Volume Highlights */}
-            <ellipse cx="168" cy="222" rx="18" ry="14" fill="#D9ECFF" opacity="0.22" />
+            {/* Upper Chest / Central Gentle Fullness Highlight */}
+            <ellipse cx="190" cy="216" rx="26" ry="14" fill="#D9ECFF" opacity="0.2" />
             <ellipse cx="212" cy="222" rx="18" ry="14" fill="#D9ECFF" opacity="0.18" />
 
             {/* Cute Toddler Chest Nipples (Soft Warm Accent) */}
@@ -2497,29 +2509,159 @@ export function LittleKrishna({
             </g>
           </g>
 
-          {/* ════════════════ LAYER 7: MULTI-STRAND GOLD NECKLACES ════════════════ */}
+          {/* ════════════════ LAYER 7: VOLUMETRIC 4-LAYER GOLD NECKLACE SYSTEM ════════════════ */}
+          {/* Form-fitting jewellery system that physically wraps around the neck base and cascades over upper chest */}
           <g id="necklace" filter="url(#kSoftShadow)">
-            {/* Upper Choker-Style Gold Chain */}
-            <path d="M 154 204 C 168 220, 212 220, 226 204" fill="none" stroke="url(#kGoldGrad)" strokeWidth="3.2" />
-            <circle cx="166" cy="211" r="3.2" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
-            <circle cx="178" cy="217" r="3.4" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
-            <circle cx="190" cy="219" r="3.8" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
-            <circle cx="202" cy="217" r="3.4" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
-            <circle cx="214" cy="211" r="3.2" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
 
-            {/* Lower Longer Curved Gold Bead Chain */}
-            <path d="M 148 206 C 164 246, 216 246, 232 206" fill="none" stroke="url(#kGoldGrad)" strokeWidth="4.2" />
-            <circle cx="158" cy="218" r="3.8" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
-            <circle cx="158" cy="218" r="1.2" fill="#FFFFFF" opacity="0.9" />
-            <circle cx="172" cy="228" r="4.2" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
-            <circle cx="172" cy="228" r="1.3" fill="#FFFFFF" opacity="0.9" />
-            <circle cx="208" cy="228" r="4.2" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
-            <circle cx="208" cy="228" r="1.3" fill="#FFFFFF" opacity="0.9" />
-            <circle cx="222" cy="218" r="3.8" fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
-            <circle cx="222" cy="218" r="1.2" fill="#FFFFFF" opacity="0.9" />
+            {/* ── LAYER 1: NECK COLLAR / UPPER NECK CHAIN (WRAPS LOWER NECK BASE) ── */}
+            {/* Soft Ambient Contact Shadow under collar against neck skin */}
+            <path
+              d="M 158 186 C 166 200, 214 200, 222 186"
+              fill="none"
+              stroke="#1E3A8A"
+              strokeWidth="2.4"
+              strokeLinecap="round"
+              opacity="0.22"
+            />
+            {/* Gold Band hugging lower neck base contour */}
+            <path
+              d="M 158 184 C 166 198, 214 198, 222 184"
+              fill="none"
+              stroke="url(#kGoldGrad)"
+              strokeWidth="3.6"
+              strokeLinecap="round"
+            />
+            {/* Inner Gold Highlight Stroke */}
+            <path
+              d="M 160 183.5 C 168 197, 212 197, 220 183.5"
+              fill="none"
+              stroke="#FFF0A3"
+              strokeWidth="1.2"
+              strokeLinecap="round"
+              opacity="0.8"
+            />
 
-            {/* Ornate Gold & Ruby Medallion Pendant */}
-            <g transform="translate(190, 236)">
+            {/* Layer 1 3D Gold Collar Beads (hugging neck curve) */}
+            {[
+              { cx: 161, cy: 187.5, r: 3.6 },
+              { cx: 170, cy: 193.5, r: 3.8 },
+              { cx: 179, cy: 196.5, r: 4.0 },
+              { cx: 190, cy: 197.5, r: 4.4 }, // Center Throat Bead
+              { cx: 201, cy: 196.5, r: 4.0 },
+              { cx: 210, cy: 193.5, r: 3.8 },
+              { cx: 219, cy: 187.5, r: 3.6 },
+            ].map((b, i) => (
+              <g key={`l1bead-${i}`}>
+                <circle cx={b.cx} cy={b.cy} r={b.r} fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
+                <circle cx={b.cx - b.r * 0.3} cy={b.cy - b.r * 0.3} r={b.r * 0.35} fill="#FFF0A3" opacity="0.9" />
+              </g>
+            ))}
+            {/* Center Collar Teardrop Gold Droplet */}
+            <path
+              d="M 188.5 204 C 188.5 201.5, 190 200, 190 200 C 190 200, 191.5 201.5, 191.5 204 C 191.5 206.5, 188.5 206.5, 188.5 204 Z"
+              fill="url(#kGoldGrad)"
+              stroke="#92400E"
+              strokeWidth="0.5"
+            />
+
+            {/* ── LAYER 2: SHORT UPPER CHEST CHAIN (TRANSITION TO CHEST) ── */}
+            {/* Soft Contact Shadow on upper chest skin */}
+            <path
+              d="M 152 192 C 166 216, 214 216, 228 192"
+              fill="none"
+              stroke="#1E3A8A"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              opacity="0.18"
+            />
+            {/* Gold Chain draped across upper chest */}
+            <path
+              d="M 152 190 C 166 214, 214 214, 228 190"
+              fill="none"
+              stroke="url(#kGoldGrad)"
+              strokeWidth="4.0"
+              strokeLinecap="round"
+            />
+            <path
+              d="M 154 189.5 C 167 213, 213 213, 226 189.5"
+              fill="none"
+              stroke="#FFF0A3"
+              strokeWidth="1.2"
+              strokeLinecap="round"
+              opacity="0.75"
+            />
+
+            {/* Layer 2 3D Gold Beads & Center Ruby Gem Inset */}
+            {[
+              { cx: 157, cy: 197, r: 3.6 },
+              { cx: 167, cy: 205, r: 4.0 },
+              { cx: 178, cy: 210, r: 4.3 },
+              { cx: 190, cy: 212, r: 4.6, isRuby: true }, // Center Ruby Bead
+              { cx: 202, cy: 210, r: 4.3 },
+              { cx: 213, cy: 205, r: 4.0 },
+              { cx: 223, cy: 197, r: 3.6 },
+            ].map((b, i) => (
+              <g key={`l2bead-${i}`}>
+                <circle cx={b.cx} cy={b.cy} r={b.r} fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
+                {b.isRuby ? (
+                  <>
+                    <circle cx={b.cx} cy={b.cy} r={b.r * 0.55} fill="url(#kRubyBead)" stroke="#991B1B" strokeWidth="0.4" />
+                    <circle cx={b.cx - b.r * 0.2} cy={b.cy - b.r * 0.2} r={b.r * 0.25} fill="#FFFFFF" opacity="0.9" />
+                  </>
+                ) : (
+                  <circle cx={b.cx - b.r * 0.3} cy={b.cy - b.r * 0.3} r={b.r * 0.35} fill="#FFF0A3" opacity="0.9" />
+                )}
+              </g>
+            ))}
+
+            {/* ── LAYER 3: LONGER CENTRAL NECKLACE (DEEP SWEEPING CHEST CURVE) ── */}
+            {/* Soft Contact Shadow on chest volume */}
+            <path
+              d="M 148 194 C 162 240, 218 240, 232 194"
+              fill="none"
+              stroke="#1E3A8A"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              opacity="0.14"
+            />
+            {/* Main Volumetric Gold Chain */}
+            <path
+              d="M 148 192 C 162 238, 218 238, 232 192"
+              fill="none"
+              stroke="url(#kGoldGrad)"
+              strokeWidth="4.2"
+              strokeLinecap="round"
+            />
+            <path
+              d="M 150 191.5 C 163 237, 217 237, 230 191.5"
+              fill="none"
+              stroke="#FFF0A3"
+              strokeWidth="1.2"
+              strokeLinecap="round"
+              opacity="0.7"
+            />
+
+            {/* Layer 3 3D Gold Accent Beads */}
+            {[
+              { cx: 153, cy: 202, r: 3.8 },
+              { cx: 162, cy: 215, r: 4.2 },
+              { cx: 174, cy: 227, r: 4.5 },
+              { cx: 206, cy: 227, r: 4.5 },
+              { cx: 218, cy: 215, r: 4.2 },
+              { cx: 227, cy: 202, r: 3.8 },
+            ].map((b, i) => (
+              <g key={`l3bead-${i}`}>
+                <circle cx={b.cx} cy={b.cy} r={b.r} fill="url(#kGoldBead)" stroke="#92400E" strokeWidth="0.5" />
+                <circle cx={b.cx - b.r * 0.3} cy={b.cy - b.r * 0.3} r={b.r * 0.35} fill="#FFF0A3" opacity="0.9" />
+              </g>
+            ))}
+
+            {/* ── LAYER 4: CENTRAL ORNATE MEDALLION PENDANT ── */}
+            {/* Connecting Bail Ring at bottom vertex of Layer 3 (190, 237) */}
+            <circle cx="190" cy="231" r="3.2" fill="none" stroke="url(#kGoldGrad)" strokeWidth="1.6" />
+            <circle cx="190" cy="231" r="3.2" fill="none" stroke="#92400E" strokeWidth="0.4" />
+
+            <g id="centralPendant" transform="translate(190, 240)">
               {/* Petal Accents */}
               {[0, 45, 90, 135, 180, 225, 270, 315].map((ang) => (
                 <circle
@@ -2534,9 +2676,10 @@ export function LittleKrishna({
               ))}
               {/* Medallion Core */}
               <circle cx="0" cy="0" r="8.5" fill="url(#kGoldGrad)" stroke="#92400E" strokeWidth="1.2" />
-              <circle cx="0" cy="0" r="5.5" fill="#DC2626" stroke="#991B1B" strokeWidth="0.8" />
+              <circle cx="0" cy="0" r="5.5" fill="url(#kRubyBead)" stroke="#991B1B" strokeWidth="0.8" />
               <circle cx="-1.6" cy="-1.6" r="1.8" fill="#FFFFFF" opacity="0.9" />
-              {/* Teardrop Droplet */}
+
+              {/* Teardrop Droplet Hanging Below Medallion */}
               <path
                 d="M -3 10 C -3 7, 0 5, 0 5 C 0 5, 3 7, 3 10 C 3 13, -3 13, -3 10 Z"
                 fill="url(#kGoldGrad)"
@@ -2545,6 +2688,7 @@ export function LittleKrishna({
               />
               <circle cx="0" cy="11.5" r="1.2" fill="#FFFFFF" opacity="0.85" />
             </g>
+
           </g>
 
           {/* ════════════════ LAYER 8: RIGHT FOREARM + HAND (CHAKRA POSE ONLY, IN FRONT OF HEAD) ════════════════ */}
