@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import type { BuddySpriteProps, BuddyMood } from '../types';
 import styles from './krishna.module.css';
+import krishnaHairImg from './krishna_hair.png';
 
 export type KrishnaPose = 'crossed' | 'chakra' | 'standing';
 
@@ -741,30 +742,6 @@ export function LittleKrishna({
             </filter>
           </defs>
 
-          {/* ════════════════ LAYER 1: BACK HAIR (BEHIND BODY) ════════════════ */}
-          {/* Scaled down around the chin anchor (190,217) to reduce oversized-head / chibi look */}
-          <g id="hairBackBehind" transform="translate(0,-32) translate(190,217) scale(0.85) translate(-190,-217)">
-            <circle cx="120" cy="116" r="38" fill="url(#kHairCurl)" />
-            <ellipse cx="112" cy="110" rx="28" ry="22" fill="url(#kHairHl)" />
-            <circle cx="102" cy="148" r="32" fill="url(#kHairCurl)" />
-            <ellipse cx="95" cy="142" rx="24" ry="18" fill="url(#kHairHl)" />
-            <circle cx="106" cy="178" r="28" fill="url(#kHairCurl)" />
-            <ellipse cx="100" cy="172" rx="20" ry="16" fill="url(#kHairHl)" />
-
-            <circle cx="260" cy="116" r="38" fill="url(#kHairCurl)" />
-            <ellipse cx="268" cy="110" rx="28" ry="22" fill="url(#kHairHl)" />
-            <circle cx="278" cy="148" r="32" fill="url(#kHairCurl)" />
-            <ellipse cx="285" cy="142" rx="24" ry="18" fill="url(#kHairHl)" />
-            <circle cx="274" cy="178" r="28" fill="url(#kHairCurl)" />
-            <ellipse cx="280" cy="172" rx="20" ry="16" fill="url(#kHairHl)" />
-
-            <circle cx="142" cy="84" r="40" fill="url(#kHairCurl)" />
-            <ellipse cx="135" cy="78" rx="28" ry="22" fill="url(#kHairHl)" />
-            <circle cx="190" cy="68" r="48" fill="url(#kHairCurl)" />
-            <ellipse cx="190" cy="58" rx="36" ry="26" fill="url(#kHairHl)" />
-            <circle cx="238" cy="84" r="40" fill="url(#kHairCurl)" />
-            <ellipse cx="245" cy="78" rx="28" ry="22" fill="url(#kHairHl)" />
-          </g>
 
           {/* ════════════════ LAYER 2: FEET (CHARAN KAMAL) ════════════════ */}
           <g id="feet" filter="url(#kSoftShadow)" transform="translate(190,290) scale(1,1.06) translate(-190,-290)">
@@ -1865,62 +1842,34 @@ export function LittleKrishna({
               (which override the transform attribute) do not wipe it out. */}
           <g transform="translate(190,217) scale(0.85) translate(-190,-217)">
             <g id="headGroup" transform="translate(0, -32)">
-              {/* Front Side Wisps (Original Hair) */}
-              <g id="hairSides">
-                <path d="M 116 148 C 104 164, 110 186, 126 190 C 134 192, 138 182, 130 174 C 124 168, 128 158, 134 156"
-                  fill="url(#kHairCurl)" stroke="#20304C" strokeWidth="0.8" />
-                <path d="M 116 148 C 104 164, 110 186, 126 190"
-                  fill="none" stroke="#6CA0E8" strokeWidth="1.5" strokeLinecap="round" opacity="0.45" />
 
-                <path d="M 264 148 C 276 164, 270 186, 254 190 C 246 192, 242 182, 250 174 C 256 168, 252 158, 246 156"
-                  fill="url(#kHairCurl)" stroke="#20304C" strokeWidth="0.8" />
-                <path d="M 264 148 C 276 164, 270 186, 254 190"
-                  fill="none" stroke="#6CA0E8" strokeWidth="1.5" strokeLinecap="round" opacity="0.45" />
-              </g>
-
-              {/* Ears + Thick 3D Gold Hoop Earrings (Balis) */}
               <g id="headBase">
-                <g transform="translate(130, 156)">
-                  <ellipse cx="0" cy="0" rx="9.5" ry="13.5" fill="url(#kSkinFace)" />
-                  {/* Thick Polished 3D Gold Bali / Hoop */}
-                  <circle cx="-1.5" cy="9.5" r="7.5" fill="none" stroke="url(#kGoldGrad)" strokeWidth="3.4" strokeLinecap="round" />
-                  <circle cx="-2.5" cy="8.5" r="5.8" fill="none" stroke="#FFFFFF" strokeWidth="1.1" opacity="0.8" strokeLinecap="round" />
-                  <circle cx="-0.5" cy="10.5" r="6.8" fill="none" stroke="#78350F" strokeWidth="0.9" opacity="0.6" strokeLinecap="round" />
-                </g>
-
-                <g transform="translate(250, 156)">
-                  <ellipse cx="0" cy="0" rx="9.5" ry="13.5" fill="url(#kSkinFace)" />
-                  {/* Thick Polished 3D Gold Bali / Hoop */}
-                  <circle cx="1.5" cy="9.5" r="7.5" fill="none" stroke="url(#kGoldGrad)" strokeWidth="3.4" strokeLinecap="round" />
-                  <circle cx="2.5" cy="8.5" r="5.8" fill="none" stroke="#FFFFFF" strokeWidth="1.1" opacity="0.8" strokeLinecap="round" />
-                  <circle cx="0.5" cy="10.5" r="6.8" fill="none" stroke="#78350F" strokeWidth="0.9" opacity="0.6" strokeLinecap="round" />
-                </g>
 
                 {/* 3D Sculpted Head Base: Reference-Matched Pixar Little Krishna Silhouette */}
                 <path
-                  d="M 190 82
-                   C 226 82, 244 98, 246 120
-                   C 248 140, 246 156, 240 170
-                   C 234 188, 220 202, 206 210
-                   C 200 213, 196 214.5, 190 214.5
-                   C 184 214.5, 180 213, 174 210
-                   C 160 202, 146 188, 140 170
-                   C 134 156, 132 140, 134 120
-                   C 136 98, 154 82, 190 82 Z"
+                  d="M 190 48
+                   C 230 48, 258 70, 264 105
+                   C 268 126, 268 152, 262 170
+                   C 254 188, 235 204, 210 212
+                   C 200 215, 195 216, 190 216
+                   C 185 216, 180 215, 170 212
+                   C 145 204, 126 188, 118 170
+                   C 112 152, 112 126, 116 105
+                   C 122 70, 150 48, 190 48 Z"
                   fill="url(#kSkinFace)"
                 />
 
                 {/* Soft Lower Face & Jawline Depth Shading */}
                 <path
-                  d="M 190 82
-                   C 226 82, 244 98, 246 120
-                   C 248 140, 246 156, 240 170
-                   C 234 188, 220 202, 206 210
-                   C 200 213, 196 214.5, 190 214.5
-                   C 184 214.5, 180 213, 174 210
-                   C 160 202, 146 188, 140 170
-                   C 134 156, 132 140, 134 120
-                   C 136 98, 154 82, 190 82 Z"
+                  d="M 190 48
+                   C 230 48, 258 70, 264 105
+                   C 268 126, 268 152, 262 170
+                   C 254 188, 235 204, 210 212
+                   C 200 215, 195 216, 190 216
+                   C 185 216, 180 215, 170 212
+                   C 145 204, 126 188, 118 170
+                   C 112 152, 112 126, 116 105
+                   C 122 70, 150 48, 190 48 Z"
                   fill="url(#kJawlineShadow)"
                 />
 
@@ -2337,190 +2286,128 @@ export function LittleKrishna({
                 </g>
               </g>
 
-              {/* Topknot Bun & Ornate 3D Gold Hair Band / Ring */}
-              <g id="crownTopknot">
-                <ellipse cx="190" cy="74" rx="30" ry="26" fill="url(#kHairBase)" />
-                <ellipse cx="176" cy="68" rx="13" ry="12" fill="url(#kHairCurl)" />
-                <ellipse cx="204" cy="68" rx="13" ry="12" fill="url(#kHairCurl)" />
-                <ellipse cx="190" cy="56" rx="14" ry="11" fill="url(#kHairCurl)" />
-                <ellipse cx="184" cy="62" rx="18" ry="12" fill="url(#kHairHl)" />
+              {/* ════════════════ LITTLE KRISHNA HAIR & PEACOCK FEATHER (DIRECT IMAGE) ════════════════ */}
+              <image
+                id="krishnaHairOverlay"
+                href={krishnaHairImg.src || '/characters/krishna_hair.png'}
+                x={39}
+                y={-76}
+                width={296}
+                height={355}
+                preserveAspectRatio="xMidYMid meet"
+                style={{ pointerEvents: 'none' }}
+              />
 
-                {/* ── 3D Ornate Golden Topknot Ring / Hair Pin ── */}
-                <g id="hairPinBand">
-                  {/* Ambient Contact Shadow under Gold Ring */}
-                  <path
-                    d="M 164 85 C 175 94, 205 94, 216 85"
-                    fill="none"
-                    stroke="#0A1128"
-                    strokeWidth="5"
-                    opacity="0.5"
-                    strokeLinecap="round"
-                  />
+              {/* ════════════════ LITTLE KRISHNA EARS & GOLD BALI ORNAMENTS ════════════════ */}
+              <g id="krishnaEars">
+                {/* Left Ear (Viewer's Left - Character's Right) */}
+                <g id="earLeft" transform="translate(116, 166)">
+                  {/* Soft Drop Shadow onto hair curls behind */}
+                  <ellipse cx="-1" cy="2" rx="9" ry="13" fill="#0A1128" opacity="0.35" />
 
-                  {/* Main Curved 3D Gold Ring Base */}
+                  {/* 3D Toddler Ear Outer Helix / Shell */}
                   <path
-                    d="M 164 84 C 175 93, 205 93, 216 84 L 216 89 C 205 98, 175 98, 164 89 Z"
-                    fill="url(#kGoldGrad)"
-                    stroke="#78350F"
+                    d="M 5 -12
+                       C -6 -13, -12 -7, -12 1
+                       C -12 8, -7 14, 0 15
+                       C 4 15, 6 10, 6 1
+                       Z"
+                    fill="url(#kSkinFace)"
+                    stroke="#204E9E"
                     strokeWidth="0.8"
                     strokeLinejoin="round"
                   />
 
-                  {/* Top Edge Specular Rim Light */}
+                  {/* Inner Concha & Antihelix Shading */}
                   <path
-                    d="M 165 84 C 175 92.5, 205 92.5, 215 84"
+                    d="M 1 -7 C -4 -4, -4 4, 1 7"
                     fill="none"
-                    stroke="#FEF08A"
-                    strokeWidth="1.2"
+                    stroke="#1E3A8A"
+                    strokeWidth="2.2"
                     strokeLinecap="round"
-                    opacity="0.9"
-                  />
-
-                  {/* Gold Pearl Beads along the Ring */}
-                  <circle cx="168" cy="87" r="2.2" fill="url(#kGoldBead)" stroke="#78350F" strokeWidth="0.4" />
-                  <circle cx="178" cy="89.5" r="2.5" fill="url(#kGoldBead)" stroke="#78350F" strokeWidth="0.4" />
-                  <circle cx="202" cy="89.5" r="2.5" fill="url(#kGoldBead)" stroke="#78350F" strokeWidth="0.4" />
-                  <circle cx="212" cy="87" r="2.2" fill="url(#kGoldBead)" stroke="#78350F" strokeWidth="0.4" />
-
-                  {/* Central Ornate Gold Crest & Ruby Cabochon Jewel */}
-                  <g id="hairPinCenterGem" transform="translate(190, 90.5)">
-                    {/* Gold Rosette Outer Casing */}
-                    <ellipse cx="0" cy="0" rx="5.5" ry="4.5" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.6" />
-                    <ellipse cx="0" cy="-0.5" rx="4.5" ry="3.5" fill="none" stroke="#FEF08A" strokeWidth="0.6" opacity="0.9" />
-                    {/* Central Ruby Gemstone */}
-                    <ellipse cx="0" cy="0" rx="3.0" ry="2.2" fill="#DC2626" stroke="#7F1D1D" strokeWidth="0.5" />
-                    <circle cx="-0.8" cy="-0.6" r="0.7" fill="#FFFFFF" opacity="0.9" />
-                  </g>
-                </g>
-              </g>
-
-              {/* ════════════════ PEACOCK FEATHER HEADDRESS (REFERENCE FIDELITY) ════════════════ */}
-              <g id="peacockFeather" className={styles.featherSvgAnim}>
-                {/* Soft Ambient Contact Shadow Underneath Feather Base on Hair */}
-                <ellipse cx="168" cy="48" rx="14" ry="6" fill="#0A1128" opacity="0.65" />
-
-                {/* Feather Main Container (Root at 168, 44 with natural -9° upward lean) */}
-                <g transform="translate(168, 44) rotate(-9)">
-                  {/* ── A. Plume Background Shadow / Silhouette Definition ── */}
-                  <path
-                    d="M 0 -8
-                     C -18 -20, -28 -44, -26 -68
-                     C -24 -86, -12 -98, -4 -103
-                     C 0 -105, 4 -103, 8 -98
-                     C 20 -86, 28 -68, 26 -44
-                     C 24 -20, 14 -8, 0 -8 Z"
-                    fill="#022C22"
-                    opacity="0.5"
-                    transform="translate(0, 1.5)"
-                  />
-
-                  {/* ── B. Main Vibrant 3D Emerald Feather Plume ── */}
-                  <path
-                    d="M 0 -8
-                     C -17 -20, -26 -44, -25 -68
-                     C -23 -86, -11 -98, -3 -102
-                     C 0 -103.5, 3 -102, 7 -98
-                     C 19 -86, 27 -68, 25 -44
-                     C 23 -20, 13 -8, 0 -8 Z"
-                    fill="url(#kFeatherPlume)"
-                    stroke="#047857"
-                    strokeWidth="1.2"
-                  />
-
-                  {/* ── C. Iridescent Shimmer Overlay (Teal / Lime Transitions) ── */}
-                  <path
-                    d="M 0 -12
-                     C -14 -22, -21 -42, -20 -64
-                     C -18 -80, -9 -92, -2 -96
-                     C 0 -97, 2 -96, 5 -92
-                     C 15 -80, 22 -64, 20 -42
-                     C 18 -22, 11 -12, 0 -12 Z"
-                    fill="url(#kFeatherEyeCyan)"
                     opacity="0.32"
                   />
-
-                  {/* ── D. Layered Feather Barbs (Left & Right Lateral Striations) ── */}
-                  <g id="featherBarbs" opacity="0.85">
-                    {/* Left Barbs */}
-                    <path d="M -1 -18 C -10 -24, -18 -32, -22 -36" fill="none" stroke="#6EE7B7" strokeWidth="1.2" strokeLinecap="round" />
-                    <path d="M -2 -28 C -12 -34, -20 -44, -25 -50" fill="none" stroke="#34D399" strokeWidth="1.3" strokeLinecap="round" />
-                    <path d="M -2 -40 C -14 -48, -23 -58, -26 -66" fill="none" stroke="#22C55E" strokeWidth="1.4" strokeLinecap="round" />
-                    <path d="M -2 -52 C -15 -62, -23 -72, -25 -82" fill="none" stroke="#4ADE80" strokeWidth="1.3" strokeLinecap="round" />
-                    <path d="M -2 -66 C -14 -76, -18 -86, -18 -94" fill="none" stroke="#86EFAC" strokeWidth="1.2" strokeLinecap="round" />
-                    <path d="M -1 -80 C -10 -90, -11 -96, -7 -100" fill="none" stroke="#BEF264" strokeWidth="1.1" strokeLinecap="round" />
-
-                    {/* Right Barbs */}
-                    <path d="M 1 -18 C 10 -24, 18 -32, 22 -36" fill="none" stroke="#6EE7B7" strokeWidth="1.2" strokeLinecap="round" />
-                    <path d="M 2 -28 C 12 -34, 20 -44, 25 -50" fill="none" stroke="#34D399" strokeWidth="1.3" strokeLinecap="round" />
-                    <path d="M 2 -40 C 14 -48, 23 -58, 26 -66" fill="none" stroke="#22C55E" strokeWidth="1.4" strokeLinecap="round" />
-                    <path d="M 2 -52 C 15 -62, 23 -72, 25 -82" fill="none" stroke="#4ADE80" strokeWidth="1.3" strokeLinecap="round" />
-                    <path d="M 2 -66 C 14 -76, 18 -86, 18 -94" fill="none" stroke="#86EFAC" strokeWidth="1.2" strokeLinecap="round" />
-                    <path d="M 1 -80 C 10 -90, 11 -96, 7 -100" fill="none" stroke="#BEF264" strokeWidth="1.1" strokeLinecap="round" />
-
-                    {/* Delicate Crown Feather Strands (Top Radiating Tips) */}
-                    <path d="M -2 -98 C -5 -106, -8 -112, -12 -116" fill="none" stroke="#86EFAC" strokeWidth="1.2" strokeLinecap="round" opacity="0.9" />
-                    <path d="M -1 -102 C -2 -110, -3 -116, -4 -121" fill="none" stroke="#BEF264" strokeWidth="1.3" strokeLinecap="round" />
-                    <path d="M 1 -102 C 2 -110, 4 -116, 5 -121" fill="none" stroke="#BEF264" strokeWidth="1.3" strokeLinecap="round" />
-                    <path d="M 2 -98 C 5 -106, 9 -112, 13 -116" fill="none" stroke="#86EFAC" strokeWidth="1.2" strokeLinecap="round" opacity="0.9" />
-                  </g>
-
-                  {/* ── E. The Iconic Peacock "Eye" (Ocellus) ── */}
-                  <g id="featherEye" transform="translate(0, -62)">
-                    {/* 1. Golden/Bronze Iridescent Halo Rim */}
-                    <ellipse cx="0" cy="0" rx="19" ry="24" fill="url(#kFeatherEyeGold)" stroke="#78350F" strokeWidth="1.2" />
-                    <ellipse cx="0" cy="0" rx="17.5" ry="22.5" fill="none" stroke="#FEF08A" strokeWidth="0.8" opacity="0.85" />
-
-                    {/* 2. Vibrant Turquoise / Peacock Cyan Ring */}
-                    <ellipse cx="0" cy="-0.5" rx="14" ry="18" fill="url(#kFeatherEyeCyan)" stroke="#0369A1" strokeWidth="1.0" />
-
-                    {/* 3. Deep Royal Cobalt Blue Ring */}
-                    <ellipse cx="0" cy="-1" rx="9.5" ry="12.5" fill="url(#kFeatherEyeNavy)" />
-
-                    {/* 4. Velvety Midnight Indigo / Violet Pupil Center */}
-                    <ellipse cx="-0.5" cy="-2" rx="5.5" ry="7.5" fill="url(#kFeatherEyeViolet)" />
-
-                    {/* 5. 3D Specular Arc Catchlight */}
-                    <path d="M -5 -6 C -2 -9.5, 3 -9.5, 6 -6" fill="none" stroke="#FFFFFF" strokeWidth="1.8" strokeLinecap="round" opacity="0.95" />
-                    <circle cx="-3" cy="-4" r="1.5" fill="#FFFFFF" opacity="0.9" />
-                  </g>
-
-                  {/* ── F. 3D Golden / Bronze Central Shaft (Rachis) ── */}
                   <path
-                    d="M 0 0 C -0.4 -26, -0.8 -62, -0.2 -98"
+                    d="M -1 -4 C -5 -1, -5 4, -1 6"
                     fill="none"
-                    stroke="url(#kFeatherStem)"
-                    strokeWidth="3.4"
+                    stroke="#0E235C"
+                    strokeWidth="1.2"
                     strokeLinecap="round"
-                  />
-                  <path
-                    d="M 0 0 C -0.4 -26, -0.8 -62, -0.2 -98"
-                    fill="none"
-                    stroke="#FEF08A"
-                    strokeWidth="1.0"
-                    strokeLinecap="round"
-                    opacity="0.85"
+                    opacity="0.38"
                   />
 
-                  {/* ── G. Elegant Golden Attachment / Base Clip on Hair ── */}
-                  <g id="featherGoldBase" transform="translate(0, 0)">
-                    {/* Base Occlusion Shadow */}
-                    <ellipse cx="0" cy="2.5" rx="10" ry="4" fill="#0A1128" opacity="0.7" />
-                    {/* Outer Gold Ring */}
-                    <ellipse cx="0" cy="0" rx="8.5" ry="4.5" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.8" />
-                    <ellipse cx="0" cy="-0.8" rx="6.5" ry="2.8" fill="none" stroke="#FEF08A" strokeWidth="0.8" opacity="0.9" />
-                    {/* Central Inset Ruby Gem Cabochon */}
-                    <circle cx="0" cy="0" r="3.0" fill="#DC2626" stroke="#7F1D1D" strokeWidth="0.5" />
-                    <circle cx="-0.8" cy="-0.8" r="0.9" fill="#FFFFFF" opacity="0.85" />
-                    {/* Small Lower Gold Beaded Droplet */}
-                    <circle cx="0" cy="4.2" r="1.5" fill="url(#kGoldBead)" stroke="#78350F" strokeWidth="0.4" />
-                  </g>
+                  {/* Ear Lobe Highlight / Volumetric Specular */}
+                  <ellipse cx="-1" cy="9" rx="3.2" ry="4" fill="#FFFFFF" opacity="0.22" />
+
+                  {/* ── Sacred Royal Golden Bali (Hoop Earring) ── */}
+                  {/* Ear Piercing Gold Stud with Ruby Cabochon */}
+                  <circle cx="1" cy="11.5" r="2.4" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
+                  <circle cx="1" cy="11.5" r="1.3" fill="#DC2626" />
+                  <circle cx="0.6" cy="11.1" r="0.45" fill="#FFFFFF" opacity="0.9" />
+
+                  {/* Hanging Heavy 3D Golden Kundala / Bali Hoop */}
+                  <circle cx="-1" cy="20.5" r="8.0" fill="none" stroke="url(#kGoldGrad)" strokeWidth="3.4" strokeLinecap="round" />
+                  <circle cx="-2" cy="19.5" r="6.3" fill="none" stroke="#FFFFFF" strokeWidth="1.1" opacity="0.85" strokeLinecap="round" />
+                  <circle cx="0" cy="21.5" r="7.2" fill="none" stroke="#78350F" strokeWidth="0.8" opacity="0.6" strokeLinecap="round" />
+
+                  {/* Dangling Pearl / Gemstone Droplet */}
+                  <circle cx="-1" cy="29.5" r="2.2" fill="url(#kPayalPearl)" stroke="#B45309" strokeWidth="0.4" />
+                  <circle cx="-1.5" cy="28.8" r="0.7" fill="#FFFFFF" opacity="0.95" />
                 </g>
 
-                {/* ── H. Forefront Hair Curl Overlap (Anchors Clasp Physically Into Hair) ── */}
-                <g id="featherHairAnchor">
-                  <ellipse cx="163" cy="48" rx="7.5" ry="6" fill="url(#kHairCurl)" />
-                  <ellipse cx="162" cy="46" rx="4.5" ry="3" fill="url(#kHairHl)" opacity="0.8" />
-                  <ellipse cx="173" cy="48" rx="6.5" ry="5.5" fill="url(#kHairCurl)" />
+                {/* Right Ear (Viewer's Right - Character's Left) */}
+                <g id="earRight" transform="translate(264, 166)">
+                  {/* Soft Drop Shadow onto hair curls behind */}
+                  <ellipse cx="1" cy="2" rx="9" ry="13" fill="#0A1128" opacity="0.35" />
+
+                  {/* 3D Toddler Ear Outer Helix / Shell */}
+                  <path
+                    d="M -5 -12
+                       C 6 -13, 12 -7, 12 1
+                       C 12 8, 7 14, 0 15
+                       C -4 15, -6 10, -6 1
+                       Z"
+                    fill="url(#kSkinFace)"
+                    stroke="#204E9E"
+                    strokeWidth="0.8"
+                    strokeLinejoin="round"
+                  />
+
+                  {/* Inner Concha & Antihelix Shading */}
+                  <path
+                    d="M -1 -7 C 4 -4, 4 4, -1 7"
+                    fill="none"
+                    stroke="#1E3A8A"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                    opacity="0.32"
+                  />
+                  <path
+                    d="M 1 -4 C 5 -1, 5 4, 1 6"
+                    fill="none"
+                    stroke="#0E235C"
+                    strokeWidth="1.2"
+                    strokeLinecap="round"
+                    opacity="0.38"
+                  />
+
+                  {/* Ear Lobe Highlight / Volumetric Specular */}
+                  <ellipse cx="1" cy="9" rx="3.2" ry="4" fill="#FFFFFF" opacity="0.22" />
+
+                  {/* ── Sacred Royal Golden Bali (Hoop Earring) ── */}
+                  {/* Ear Piercing Gold Stud with Ruby Cabochon */}
+                  <circle cx="-1" cy="11.5" r="2.4" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
+                  <circle cx="-1" cy="11.5" r="1.3" fill="#DC2626" />
+                  <circle cx="-1.4" cy="11.1" r="0.45" fill="#FFFFFF" opacity="0.9" />
+
+                  {/* Hanging Heavy 3D Golden Kundala / Bali Hoop */}
+                  <circle cx="1" cy="20.5" r="8.0" fill="none" stroke="url(#kGoldGrad)" strokeWidth="3.4" strokeLinecap="round" />
+                  <circle cx="2" cy="19.5" r="6.3" fill="none" stroke="#FFFFFF" strokeWidth="1.1" opacity="0.85" strokeLinecap="round" />
+                  <circle cx="0" cy="21.5" r="7.2" fill="none" stroke="#78350F" strokeWidth="0.8" opacity="0.6" strokeLinecap="round" />
+
+                  {/* Dangling Pearl / Gemstone Droplet */}
+                  <circle cx="1" cy="29.5" r="2.2" fill="url(#kPayalPearl)" stroke="#B45309" strokeWidth="0.4" />
+                  <circle cx="0.5" cy="28.8" r="0.7" fill="#FFFFFF" opacity="0.95" />
                 </g>
               </g>
             </g>
