@@ -20,7 +20,7 @@ export const ARM_SPEC = {
     width: u(24)
   },
   hand: {
-    palm: { w: u(48), h: u(54), wristW: u(24), transitionL: u(10), d: u(24) },
+    palm: { w: u(48), h: u(54), wristW: u(24), heelW: u(34), transitionL: u(10), d: u(24) },
     knuckle: { w: u(46), h: u(18), d: u(23) },
     thumb: { l: u(27), base: u(14), tip: u(9) },
     index: { l: u(31), base: u(12), tip: u(8) },
@@ -106,76 +106,107 @@ export interface ParametricHandProps {
   side?: HandSide;
   isFlipped?: boolean;
   fingers?: ArmFingersConfig;
+  totalArmAngle?: number;
 }
 
 /**
  * ════════════════ MASTER HAND ANATOMICAL SYSTEM ════════════════
  * Single anatomical source of truth for both hands.
- * Unflipped (MasterHand): Character's Left Hand (Thumb on -X side, Little finger on +X side).
- * Mirrored: Character's Right Hand (derived via scale(-1, 1) mirroring without identity swapping).
+ * Semantic Finger Identities: THUMB, INDEX, MIDDLE, RING, LITTLE.
+ * Invariant master dimensions & finger order.
+ * Medial thumb orientation (pointing towards hair/body center) is maintained across all arm rotations.
  */
-export const ParametricHand = ({ side, isFlipped = false, fingers }: ParametricHandProps) => {
+export const ParametricHand = ({ side, isFlipped = false, fingers, totalArmAngle = 0 }: ParametricHandProps) => {
   const { palm, knuckle, thumb, index, middle, ring, little } = ARM_SPEC.hand;
   const f = fingers || { thumb: 0, index: 0, middle: 0, ring: 0, little: 0 };
-  
-  // Determine if hand should be mirrored (Character's Right Hand)
-  const shouldMirror = isFlipped || side === 'characterRight' || side === 'right';
-  
-  // Palm transition: perfectly overlapping the u(24) wrist and elegantly flaring out
-  const w = palm.wristW / 2;
-  const pW = palm.w / 2;
-  const heel = u(17); // 34 total palm heel width
-  const h = palm.h;
-  const kW = knuckle.w / 2;
-  const kH = knuckle.h / 2;
-  
-  // Beautiful rounded biological palm pad
-  // Transitions from wrist(24) -> heel(34) over 10 units, then expands to max palm width(48)
-  const palmPath = `M ${-w} ${-u(7)} C ${-heel} ${u(10)}, ${-pW} ${h*0.4}, ${-pW*0.95} ${h} C ${-pW*0.5} ${h+u(2)}, ${pW*0.5} ${h+u(2)}, ${pW*0.95} ${h} C ${pW} ${h*0.4}, ${heel} ${u(10)}, ${w} ${-u(7)} Z`;
-  
-  // Explicit Knuckle Mass (blending out of the palm)
-  const knucklePath = `M ${-kW} ${h - u(4)} C ${-kW*1.1} ${h + kH}, ${kW*1.1} ${h + kH}, ${kW} ${h - u(4)} Z`;
-  
-  // Thenar eminence (thumb base) on radial/thumb side for seamless blending (10-12 unit blend)
-  const thenarPath = `M ${-w} ${-u(3)} C ${-pW*1.6} ${h*0.3}, ${-pW*1.5} ${h*0.65}, ${-pW*0.7} ${h*0.85} C ${-pW*0.2} ${h*0.6}, 0 ${h*0.3}, ${-w} ${-u(3)} Z`;
-  
-  // Hypothenar mass (little finger side) for structural palm padding
-  const hypothenarPath = `M ${w} ${-u(3)} C ${pW*1.3} ${h*0.3}, ${pW*1.1} ${h*0.75}, ${pW*0.5} ${h*0.85} C ${pW*0.1} ${h*0.6}, 0 ${h*0.3}, ${w} ${-u(3)} Z`;
-  
-  // Thumb points naturally outward from the thenar base, plus articulation
-  const thumbTransform = `translate(${-pW*1.05}, ${h*0.55}) rotate(${42 + f.thumb})`;
-  
-  // Digits arranged anatomically along the knuckle curve (THUMB -> INDEX -> MIDDLE -> RING -> LITTLE)
-  const idxX = -u(16);
-  const midX = -u(5);
-  const rngX = u(6);
-  const litX = u(16);
-  
-  // Volume highlighting to differentiate front/back and provide 3D padding
-  const centralHighlight = `M ${-pW*0.4} ${h*0.4} C ${-pW*0.3} ${h*0.7}, ${pW*0.3} ${h*0.7}, ${pW*0.4} ${h*0.4} C ${pW*0.2} ${u(15)}, ${-pW*0.2} ${u(15)}, ${-pW*0.4} ${h*0.4} Z`;
-  
+
+  // Character's Right Hand vs Left Hand base handedness
+  const isLeftHand = side === 'characterLeft' || side === 'left';
+  const isRightHand = !isLeftHand;
+
+  // Determine if the forearm vector points upwards in SVG space (-Y direction)
+  const normalizedAngle = ((totalArmAngle % 360) + 540) % 360 - 180;
+  const isArmPointingUp = Math.cos((normalizedAngle * Math.PI) / 180) < 0;
+
+  // Preserve medial thumb orientation (pointing towards hair/centerline):
+  // Right Hand (Viewer Left): Thumb must be on screen +X (hair/head side).
+  // When pointing down, unmirrored master hand has +X Thumb on hair side.
+  // When pointing up, 2D 180-deg rotation flips +X to -X; applying scale(-1, 1) keeps Thumb on +X (hair side).
+  const shouldMirror = isRightHand ? (isArmPointingUp || isFlipped) : !isArmPointingUp;
+
+  // Master Hand Measurements (scaled by u)
+  const w = palm.wristW / 2;       // Wrist half width: u(12)
+  const pW = palm.w / 2;           // Palm half width: u(24)
+  const heel = palm.heelW / 2;     // Palm heel half width: u(17)
+  const h = palm.h;                // Palm height: u(54)
+  const kW = knuckle.w / 2;        // Knuckle half width: u(23)
+  const kH = knuckle.h / 2;        // Knuckle half height: u(9)
+
+  // ════════════════ CANONICAL MASTER HAND LOCAL COORDINATE SYSTEM ════════════════
+  // Hand extends down +Y axis.
+  // Radial / Thumb side is at +X (medial / hair side).
+  // Ulnar / Little-finger side is at -X (lateral / outer side).
+
+  // 1. Biological Palm Base Contour
+  const palmPath = `M ${-w} ${-u(7)} 
+    C ${-heel} ${u(10)}, ${-pW} ${h * 0.4}, ${-pW * 0.95} ${h} 
+    C ${-pW * 0.5} ${h + u(2)}, ${pW * 0.5} ${h + u(2)}, ${pW * 0.95} ${h} 
+    C ${pW} ${h * 0.4}, ${heel} ${u(10)}, ${w} ${-u(7)} Z`;
+
+  // 2. Knuckle Mass (blending palm to digit roots)
+  const knucklePath = `M ${-kW} ${h - u(4)} 
+    C ${-kW * 1.1} ${h + kH}, ${kW * 1.1} ${h + kH}, ${kW} ${h - u(4)} Z`;
+
+  // 3. Thenar Eminence (Thumb base mass) on +X (Thumb/Radial) side
+  const thenarPath = `M ${w} ${-u(3)} 
+    C ${pW * 1.6} ${h * 0.3}, ${pW * 1.5} ${h * 0.65}, ${pW * 0.7} ${h * 0.85} 
+    C ${pW * 0.2} ${h * 0.6}, 0 ${h * 0.3}, ${w} ${-u(3)} Z`;
+
+  // 4. Hypothenar Mass (Little-finger base mass) on -X (Little/Ulnar) side
+  const hypothenarPath = `M ${-w} ${-u(3)} 
+    C ${-pW * 1.3} ${h * 0.3}, ${-pW * 1.1} ${h * 0.75}, ${-pW * 0.5} ${h * 0.85} 
+    C ${-pW * 0.1} ${h * 0.6}, 0 ${h * 0.3}, ${-w} ${-u(3)} Z`;
+
+  // Soft internal volume shading
+  const centralHighlight = `M ${-pW * 0.4} ${h * 0.4} 
+    C ${-pW * 0.3} ${h * 0.7}, ${pW * 0.3} ${h * 0.7}, ${pW * 0.4} ${h * 0.4} 
+    C ${pW * 0.2} ${u(15)}, ${-pW * 0.2} ${u(15)}, ${-pW * 0.4} ${h * 0.4} Z`;
+
+  // 5. Thumb & Digits placement in invariant anatomical order:
+  // LITTLE (-X) -> RING -> MIDDLE -> INDEX -> THUMB (+X / hair side)
+  const litX = -u(16);
+  const rngX = -u(6);
+  const midX = u(4);
+  const idxX = u(15);
+
+  // Thumb positioned on +X Thenar base (pointing gracefully inward towards hair/index)
+  const thumbTransform = `translate(${pW * 1.05}, ${h * 0.55}) rotate(${-42 - f.thumb})`;
+
   return (
-    <g className={`parametric-hand ${shouldMirror ? 'hand-character-right' : 'hand-character-left'}`} transform={shouldMirror ? 'scale(-1, 1)' : undefined}>
+    <g
+      className={`parametric-hand ${isLeftHand ? 'hand-character-left' : 'hand-character-right'}`}
+      transform={shouldMirror ? 'scale(-1, 1)' : undefined}
+    >
       <g className="palm-volume">
-        {/* Base Volume */}
+        {/* Palm & Mass Volumes */}
         <path d={palmPath} fill="url(#kSkinBody)" />
         <path d={knucklePath} fill="url(#kSkinBody)" />
         <path d={thenarPath} fill="url(#kSkinBody)" />
         <path d={hypothenarPath} fill="url(#kSkinBody)" />
-        
-        {/* Soft Shading / Internal Mass Definition */}
+
+        {/* Soft Volume Highlights */}
         <path d={centralHighlight} fill="#FFFFFF" opacity="0.1" />
         <path d={thenarPath} fill="none" stroke="#1E3A8A" strokeWidth={u(4)} opacity="0.1" />
         <path d={hypothenarPath} fill="none" stroke="#1E3A8A" strokeWidth={u(3)} opacity="0.1" />
         <path d={knucklePath} fill="none" stroke="#FFFFFF" strokeWidth={u(3)} opacity="0.15" />
       </g>
-      
-      {/* ANATOMICAL DIGITS: Preserved semantic identity across both hands */}
-      <ParametricDigit len={thumb.l} baseW={thumb.base} tipW={thumb.tip} transform={thumbTransform} />
-      <ParametricDigit len={index.l} baseW={index.base} tipW={index.tip} transform={`translate(${idxX}, ${h - u(3)}) rotate(${4 + f.index})`} />
+
+      {/* ANATOMICAL DIGITS: Permanent semantic IDs and dimensions */}
+      <ParametricDigit len={little.l} baseW={little.base} tipW={little.tip} transform={`translate(${litX}, ${h - u(6)}) rotate(${9 + f.little})`} />
+      <ParametricDigit len={ring.l} baseW={ring.base} tipW={ring.tip} transform={`translate(${rngX}, ${h - u(2)}) rotate(${4 + f.ring})`} />
       <ParametricDigit len={middle.l} baseW={middle.base} tipW={middle.tip} transform={`translate(${midX}, ${h}) rotate(${0 + f.middle})`} />
-      <ParametricDigit len={ring.l} baseW={ring.base} tipW={ring.tip} transform={`translate(${rngX}, ${h - u(2)}) rotate(${-4 + f.ring})`} />
-      <ParametricDigit len={little.l} baseW={little.base} tipW={little.tip} transform={`translate(${litX}, ${h - u(6)}) rotate(${-9 + f.little})`} />
+      <ParametricDigit len={index.l} baseW={index.base} tipW={index.tip} transform={`translate(${idxX}, ${h - u(3)}) rotate(${-4 + f.index})`} />
+      <ParametricDigit len={thumb.l} baseW={thumb.base} tipW={thumb.tip} transform={thumbTransform} />
     </g>
   );
 };
@@ -183,75 +214,90 @@ export const ParametricHand = ({ side, isFlipped = false, fingers }: ParametricH
 export type KrishnaPose = 'crossHands' | 'chakra' | 'standing';
 
 export type ArmPoseConfig = {
-  left: { shoulder: number, elbow: number, wrist: number, fingers?: ArmFingersConfig },
-  right: { shoulder: number, elbow: number, wrist: number, fingers?: ArmFingersConfig }
+  left: { shoulder: number; elbow: number; wrist: number; fingers?: ArmFingersConfig };
+  right: { shoulder: number; elbow: number; wrist: number; fingers?: ArmFingersConfig };
 };
 
 export const POSE_CONFIGS: Record<KrishnaPose, ArmPoseConfig> = {
   chakra: {
-    left: { shoulder: 138, elbow: 42, wrist: 0, fingers: { thumb: 40, index: -4, middle: 75, ring: 80, little: 85 } },
-    right: { shoulder: -35, elbow: 95, wrist: 20, fingers: { thumb: 15, index: 25, middle: 35, ring: 40, little: 45 } }
+    // Right arm: shoulder=138° raises arm to upper-left from left shoulder pivot.
+    // elbow=42° redirects forearm more upward. Total=180° → arm points straight up.
+    // shouldMirror=true (arm pointing up) → thumb on inner/hair side. ✓
+    right: { shoulder: 138, elbow: 42, wrist: 0, fingers: { thumb: 20, index: -4, middle: 75, ring: 80, little: 85 } },
+    left: { shoulder: -35, elbow: 95, wrist: 20, fingers: { thumb: 15, index: 25, middle: 35, ring: 40, little: 45 } },
   },
-  standing: { // Naturally rested
-    left: { shoulder: 15, elbow: -10, wrist: 0, fingers: { thumb: 0, index: 15, middle: 20, ring: 25, little: 30 } },
-    right: { shoulder: -15, elbow: 10, wrist: 0, fingers: { thumb: 0, index: 15, middle: 20, ring: 25, little: 30 } }
+  standing: {
+    right: { shoulder: 15, elbow: -10, wrist: 0, fingers: { thumb: 0, index: 15, middle: 20, ring: 25, little: 30 } },
+    left: { shoulder: -15, elbow: 10, wrist: 0, fingers: { thumb: 0, index: 15, middle: 20, ring: 25, little: 30 } },
   },
-  crossHands: { // Crossed naturally in front of chest
-    left: { shoulder: -40, elbow: -85, wrist: -10, fingers: { thumb: 10, index: 15, middle: 20, ring: 25, little: 30 } },
-    right: { shoulder: 45, elbow: 85, wrist: 10, fingers: { thumb: 10, index: 15, middle: 20, ring: 25, little: 30 } }
-  }
+  crossHands: {
+    right: { shoulder: -40, elbow: -85, wrist: -10, fingers: { thumb: 10, index: 15, middle: 20, ring: 25, little: 30 } },
+    left: { shoulder: 45, elbow: 85, wrist: 10, fingers: { thumb: 10, index: 15, middle: 20, ring: 25, little: 30 } },
+  },
 };
 
-export const KrishnaArms = ({ pose = 'chakra' }: { pose?: KrishnaPose }) => {
-  const config = POSE_CONFIGS[pose];
+export type KrishnaArmsRenderSide = 'all' | 'characterLeft' | 'characterRight';
+
+export const KrishnaArms = ({ pose = 'chakra', renderSide = 'all' }: { pose?: KrishnaPose; renderSide?: KrishnaArmsRenderSide }) => {
+  const config = POSE_CONFIGS[pose] || POSE_CONFIGS.chakra;
+  const rightTotalAngle = config.right.shoulder + config.right.elbow + config.right.wrist;
+  const leftTotalAngle = config.left.shoulder + config.left.elbow + config.left.wrist;
 
   return (
     <g id="armRoots" filter="url(#kSoftShadow)">
-      {/* LEFT SHOULDER PIVOT ROOT (Viewer's Left, Character's Right) */}
-      <g id="leftChestArmRoot">
-        {/* Scaled mathematically from master 1000-unit coordinate system */}
-        <g id="leftShoulderPivot" transform={`translate(${190 - ARM_SPEC.shoulderPivotOffset}, 205) rotate(${config.left.shoulder})`}>
+      {/* KRISHNA'S ANATOMICAL RIGHT ARM (Viewer's Left side) — chakra hand */}
+      {(renderSide === 'all' || renderSide === 'characterRight') && (
+      <g id="leftChestArmRoot" className="arm-character-right">
+        <g
+          id="leftShoulderPivot"
+          transform={`translate(${190 - ARM_SPEC.shoulderPivotOffset}, 205) rotate(${config.right.shoulder})`}
+        >
           <g id="leftUpperArm">
             <ParametricUpperArm isFlipped={true} />
-            
-            {/* Elbow Pivot Joint (Rotational Origin for Forearm) */}
-            <g id="leftElbowPivot" transform={`translate(0, ${ARM_SPEC.upper.len}) rotate(${config.left.elbow})`}>
+
+            {/* Elbow Pivot Joint */}
+            <g id="leftElbowPivot" transform={`translate(0, ${ARM_SPEC.upper.len}) rotate(${config.right.elbow})`}>
               <g id="leftForearm">
                 <ParametricForearm />
-                
-                {/* Wrist Pivot Marker & Hand */}
-                <g id="leftWristPivot" transform={`translate(0, ${ARM_SPEC.forearm.len}) rotate(${config.left.wrist})`}>
-                  {/* Character's Right Hand is derived by mirroring the Master Hand */}
-                  <ParametricHand side="characterRight" fingers={config.left.fingers} />
+
+                {/* Wrist Pivot Joint & Hand */}
+                <g id="leftWristPivot" transform={`translate(0, ${ARM_SPEC.forearm.len}) rotate(${config.right.wrist})`}>
+                  {/* Character's Right Hand (Chakra Hand) */}
+                  <ParametricHand side="characterRight" fingers={config.right.fingers} totalArmAngle={rightTotalAngle} />
                 </g>
               </g>
             </g>
           </g>
         </g>
       </g>
+      )}
 
-      {/* RIGHT SHOULDER PIVOT ROOT (Viewer's Right, Character's Left) */}
-      <g id="rightChestArmRoot">
-        {/* Scaled mathematically from master 1000-unit coordinate system */}
-        <g id="rightShoulderPivot" transform={`translate(${190 + ARM_SPEC.shoulderPivotOffset}, 205) rotate(${config.right.shoulder})`}>
+      {/* KRISHNA'S ANATOMICAL LEFT ARM (Viewer's Right side) */}
+      {(renderSide === 'all' || renderSide === 'characterLeft') && (
+      <g id="rightChestArmRoot" className="arm-character-left">
+        <g
+          id="rightShoulderPivot"
+          transform={`translate(${190 + ARM_SPEC.shoulderPivotOffset}, 205) rotate(${config.left.shoulder})`}
+        >
           <g id="rightUpperArm">
             <ParametricUpperArm isFlipped={false} />
-            
-            {/* Elbow Pivot Joint (Rotational Origin for Forearm) */}
-            <g id="rightElbowPivot" transform={`translate(0, ${ARM_SPEC.upper.len}) rotate(${config.right.elbow})`}>
+
+            {/* Elbow Pivot Joint */}
+            <g id="rightElbowPivot" transform={`translate(0, ${ARM_SPEC.upper.len}) rotate(${config.left.elbow})`}>
               <g id="rightForearm">
                 <ParametricForearm />
-                
-                {/* Wrist Pivot Marker & Hand */}
-                <g id="rightWristPivot" transform={`translate(0, ${ARM_SPEC.forearm.len}) rotate(${config.right.wrist})`}>
-                  {/* Character's Left Hand uses the Master Hand specification */}
-                  <ParametricHand side="characterLeft" fingers={config.right.fingers} />
+
+                {/* Wrist Pivot Joint & Hand */}
+                <g id="rightWristPivot" transform={`translate(0, ${ARM_SPEC.forearm.len}) rotate(${config.left.wrist})`}>
+                  {/* Character's Left Hand */}
+                  <ParametricHand side="characterLeft" fingers={config.left.fingers} totalArmAngle={leftTotalAngle} />
                 </g>
               </g>
             </g>
           </g>
         </g>
       </g>
+      )}
     </g>
   );
 };

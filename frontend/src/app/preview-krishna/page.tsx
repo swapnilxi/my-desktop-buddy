@@ -18,6 +18,7 @@ const STATES: KrishnaState[] = [
 
 export default function PreviewKrishnaPage() {
     const [state, setState] = useState<KrishnaState>('protector');
+    const [pose, setPose] = useState<'chakra' | 'crossHands' | 'standing'>('chakra');
     const [showBubbles, setShowBubbles] = useState(true);
 
     return (
@@ -55,8 +56,29 @@ export default function PreviewKrishnaPage() {
                     state={state}
                     mood="idle"
                     greeting={showBubbles ? 'Divine light protects your journey ✨🪶' : ''}
-                    pose="chakra"
+                    pose={pose}
                 />
+            </div>
+
+            <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
+                {(['chakra', 'crossHands', 'standing'] as const).map((p) => (
+                    <button
+                        key={p}
+                        onClick={() => setPose(p)}
+                        style={{
+                            background: pose === p ? '#4ADE80' : 'rgba(255,255,255,0.1)',
+                            color: pose === p ? '#0F1B3D' : '#E2EFFF',
+                            border: 'none',
+                            borderRadius: 8,
+                            padding: '8px 16px',
+                            cursor: 'pointer',
+                            fontWeight: 700,
+                            fontSize: 14,
+                        }}
+                    >
+                        Pose: {p}
+                    </button>
+                ))}
             </div>
 
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center', maxWidth: 640 }}>

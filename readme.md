@@ -164,6 +164,24 @@ Creating a new character is clean and modular:
 
 ---
 
+## 🖐️ Little Krishna — Hand & Finger Orientation Architecture
+
+The Little Krishna character implements a strict **Canonical Master Hand Architecture**:
+
+- **Canonical Hand Identity**: Krishna's anatomical `rightHand` is always rendered on the **viewer's left side** when front-facing; `leftHand` is rendered on the **viewer's right side**.
+- **Chakra Hand**: The Sudarshan Chakra is held/spun by Krishna's **anatomical RIGHT hand** (`rightHand`) on the viewer-left side, aligned on the **RIGHT INDEX FINGER**.
+- **Invariant Semantic Finger IDs**: Every hand maintains permanent semantic IDs (`thumb`, `index`, `middle`, `ring`, `little`) that never change or reverse.
+- **Anatomical Local Coordinate System**:
+  - `MasterHand` (Canonical Right Hand) defines digits from `-X` to `+X`: `LITTLE (-X) → RING → MIDDLE → INDEX → THUMB (+X)`.
+  - Thenar mass is on the Thumb (`+X`) side, Hypothenar mass is on the Little finger (`-X`) side.
+  - `leftHand` is created by horizontally mirroring the complete hand coordinate system (`transform="scale(-1, 1)"`).
+  - Front-facing visual screen order & reference alignment:
+    - **Krishna Right Hand (Viewer Left)**: When raised holding the Sudarshan Chakra, the **THUMB** is positioned on the inner/medial side (facing Krishna's hair/head), the **INDEX** finger points straight up under the Chakra hub, and the **MIDDLE**, **RING**, and **LITTLE** fingers curl down on the outer side.
+    - **Krishna Left Hand (Viewer Right)**: **THUMB** is on the inner/medial side (towards waist/body center), with remaining fingers extending toward the outer hip.
+- **Invariant Base Measurements**: Both hands share identical master measurements (Middle: 34, Index: 31, Ring: 30, Thumb: 27, Little: 25). Poses change joint rotations only, never component identities or hand scaling.
+
+---
+
 ## 🔒 Security & Privacy
 
 - **No Remote Credential Storage**: User API keys are stored in client `LocalStorage` and passed per-request.

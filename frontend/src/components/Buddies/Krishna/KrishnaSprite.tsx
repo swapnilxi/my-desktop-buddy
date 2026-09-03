@@ -62,7 +62,7 @@ export function LittleKrishna({
     if (mood === 'happy' || mood === 'excited') return 'happy';
     if (mood === 'thinking') return 'thinking';
     if (mood === 'waving' || mood === 'wave') return 'greeting';
-    if (pose === 'crossed') return 'idle';
+    if (pose === 'crossHands' || (pose as string) === 'crossed') return 'idle';
     return 'protector';
   };
 
@@ -1902,8 +1902,9 @@ export function LittleKrishna({
             <ellipse cx="190" cy="267.2" rx="2.2" ry="1.0" fill="#93C5FD" opacity="0.55" />
           </g>
 
-          {/* ════════════════ LAYER 7: ARM ROOT SYSTEM & UPPER ARMS ════════════════ */}
-          <KrishnaArms />
+          {/* ════════════════ LAYER 7: LEFT ARM (BEHIND HEAD) ════════════════ */}
+          {/* Right/chakra arm renders AFTER head layer for correct z-order */}
+          <KrishnaArms pose={pose} renderSide="characterLeft" />
 
           {/* ════════════════ LAYER 6: HEAD & FACE ════════════════ */}
           {/* Scaled down around the chin anchor (190,217) to reduce oversized-head / chibi look.
@@ -2538,7 +2539,9 @@ export function LittleKrishna({
             </g>
           </g>
 
-          {/* ════════════════ LAYER 8: SCULPTED ORGANIC 3D ARMS & HANDS (REMOVED) ════════════════ */}
+          {/* ════════════════ LAYER 8: RIGHT ARM (CHAKRA ARM — IN FRONT OF HEAD) ════════════════ */}
+          {/* Rendered after head so the raised chakra arm is not hidden behind hair */}
+          <KrishnaArms pose={pose} renderSide="characterRight" />
 
           {/* ════════════════ LAYER 9: SUDARSHAN CHAKRA (LOWERED TO EAR/TEMPLE LEVEL) ════════════════ */}
           {/* Centered directly above the lowered index finger tip at (91, 56) */}
