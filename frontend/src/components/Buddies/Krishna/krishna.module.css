@@ -1,5 +1,5 @@
 /* ══════════════════════════════════════════════════════════════════════
-   LITTLE KRISHNA — DESKTOP BUDDY STYLING (PIXAR 3D HYBRID CSS/SVG)
+   LITTLE KRISHNA — DESKTOP BUDDY STYLING (STYLIZED SVG/CSS HYBRID)
    Color Palette:
    - Skin: #6BA7FF
    - Hair: #1E3A8A
@@ -12,6 +12,7 @@
    - Background: #0F1B3D
    ══════════════════════════════════════════════════════════════════════ */
 
+:root,
 .krishnaContainer {
   position: relative;
   display: flex;
@@ -23,6 +24,26 @@
   transform-origin: bottom center;
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   overflow: visible !important;
+  isolation: isolate;
+
+  /* ── GLOBAL 3D LIGHTING & MATERIAL COHESION SYSTEM ── */
+  --skin-base: #6BA7FF;
+  --skin-light: #84B5FA;
+  --skin-highlight: #A9CCFF;
+  --skin-shadow: #4E82D1;
+  --skin-contact: #315EA8;
+
+  --gold-base: #F5A900;
+  --gold-light: #FFD45A;
+  --gold-highlight: #FFF0A3;
+  --gold-shadow: #B86A00;
+
+  --hair-shadow: #040A25;
+  --hair-base: #0D1B49;
+  --hair-mid: #22377C;
+  --hair-highlight: #0B94B4;
+
+  --key-light-angle: 40deg;
 }
 
 .krishnaContainer:hover {
@@ -62,57 +83,52 @@
   flex-direction: column;
   align-items: center;
   overflow: visible !important;
+  z-index: 2;
 }
 
 .krishnaSvg {
   width: 100%;
   height: 100%;
   overflow: visible !important;
-  /* Ambient glow and subtle drop shadow */
-  filter: drop-shadow(0 0 28px rgba(255, 200, 61, 0.45)) drop-shadow(0 10px 26px rgba(15, 27, 61, 0.6));
+  filter: drop-shadow(0 8px 16px rgba(15, 27, 61, 0.35)) drop-shadow(0 0 16px rgba(255, 212, 90, 0.22));
   transition: filter 0.3s ease;
 }
 
 .krishnaContainer:hover .krishnaSvg {
-  filter: drop-shadow(0 0 40px rgba(255, 200, 61, 0.7)) drop-shadow(0 12px 32px rgba(15, 27, 61, 0.7));
+  filter: drop-shadow(0 10px 20px rgba(15, 27, 61, 0.42)) drop-shadow(0 0 20px rgba(255, 212, 90, 0.32));
 }
 
-/* ── Ground Shadow ──────────────────────────────────────────────── */
+/* ── Soft Contact Shadow (only a faint diffuse glow under the feet) ── */
 .groundShadow {
   position: absolute;
-  bottom: 2px;
-  width: 160px;
-  height: 22px;
-  background: radial-gradient(ellipse at center, rgba(15, 27, 61, 0.55) 0%, rgba(15, 27, 61, 0) 75%);
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 14px;
+  background: radial-gradient(ellipse at center, rgba(15, 27, 61, 0.22) 0%, rgba(15, 27, 61, 0) 70%);
   border-radius: 50%;
+  filter: blur(3px);
   z-index: 1;
   animation: shadowPulse 3s ease-in-out infinite;
+  opacity: 0.85;
 }
 
 /* ── Floating Speech Bubble (Desktop Buddy mode) ────────────────── */
 .greetingBubble {
   position: absolute;
-  top: -46px;
+  top: -48px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(15, 27, 61, 0.95);
-  border: 1.5px solid #FF8A00;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(255, 138, 0, 0.35);
-  border-radius: 14px;
-  padding: 7px 14px;
-  /* width:max-content first. An absolutely positioned box with left:50% and
-     only a max-width shrink-to-fits against the space remaining to its right,
-     which collapsed the bubble to ~70px once the text was allowed to wrap. */
-  width: max-content;
-  max-width: min(240px, 86vw);
-  /* Voice answers and mic errors land in this bubble. nowrap + ellipsis cut
-     every one of them to roughly 40 characters, so wrap and scroll instead. */
-  white-space: normal;
-  overflow-wrap: anywhere;
-  max-height: 84px;
-  overflow-y: auto;
-  text-align: center;
-  line-height: 1.35;
+  background: rgba(12, 20, 39, 0.92);
+  border: 1.5px solid #F59E0B;
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.35), 0 8px 24px rgba(0, 0, 0, 0.6);
+  border-radius: 20px;
+  padding: 8px 20px;
+  max-width: 320px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   z-index: 40;
   pointer-events: auto;
   cursor: pointer;
@@ -129,19 +145,19 @@
   transform: translateX(-50%);
   border-width: 6px 6px 0;
   border-style: solid;
-  border-color: rgba(15, 27, 61, 0.95) transparent transparent;
+  border-color: #F59E0B transparent transparent;
   display: block;
   width: 0;
 }
 
 .greetingText {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
-  color: #FFF2D1;
-  letter-spacing: 0.2px;
+  color: #FFFFFF;
+  letter-spacing: 0.3px;
 }
 
-/* ── Floating Divine Aura Particle ──────────────────────────────── */
+/* ── Restrained Divine Aura ─────────────────────────────────────── */
 .divineAura {
   position: absolute;
   top: 15px;
@@ -149,7 +165,7 @@
   transform: translateX(-50%);
   width: 190px;
   height: 190px;
-  background: radial-gradient(circle, rgba(255, 200, 61, 0.2) 0%, rgba(255, 138, 0, 0.1) 50%, rgba(15, 27, 61, 0) 70%);
+  background: radial-gradient(circle, rgba(255, 225, 128, 0.12) 0%, rgba(82, 159, 255, 0.08) 42%, transparent 70%);
   border-radius: 50%;
   z-index: 0;
   pointer-events: none;
@@ -388,42 +404,76 @@
 }
 
 /* ── 6. HEAD & FACE ─────────────────────────────────────────────── */
+/* =========================================================
+   KRISHNA — HEAD SHAPE V2
+   Stronger child-like head volume
+   ========================================================= */
+
 .head {
   position: absolute;
-  top: 28px;
+
+  width: 112px;
+  height: 104px;
+
   left: 50%;
+  top: 0;
   transform: translateX(-50%);
-  width: 96px;
-  height: 86px;
-  background: radial-gradient(circle at 38% 32%, #A1C8FF 0%, #6BA7FF 55%, #4275BF 100%);
-  border-radius: 46px 46px 42px 42px;
-  box-shadow: 0 8px 22px rgba(15, 27, 61, 0.5), inset 0 2px 5px rgba(255, 255, 255, 0.5);
+
+  border-radius: 50% 50% 48% 48% / 48% 48% 52% 52%;
+
+  /* One continuous blue facial surface */
+  background:
+    /* soft forehead light */
+    radial-gradient(ellipse 55% 42% at 38% 23%,
+      rgba(255, 255, 255, 0.24) 0%,
+      rgba(255, 255, 255, 0.10) 32%,
+      transparent 70%),
+
+    /* subtle cheek warmth integrated into the face */
+    radial-gradient(ellipse 30% 23% at 23% 66%,
+      rgba(255, 145, 165, 0.16) 0%,
+      rgba(255, 145, 165, 0.07) 42%,
+      transparent 75%),
+
+    radial-gradient(ellipse 30% 23% at 77% 66%,
+      rgba(255, 145, 165, 0.16) 0%,
+      rgba(255, 145, 165, 0.07) 42%,
+      transparent 75%),
+
+    /* main skin volume */
+    radial-gradient(ellipse 90% 88% at 48% 42%,
+      #9bc8ff 0%,
+      #72adf5 46%,
+      #5790dc 72%,
+      #3e70bd 100%);
+
+  /* soft dimensional edge */
+  box-shadow:
+    0 7px 15px rgba(20, 50, 110, 0.28),
+    inset 6px 5px 10px rgba(255, 255, 255, 0.15),
+    inset -8px -10px 16px rgba(25, 65, 135, 0.16);
+
+  overflow: hidden;
   z-index: 10;
 }
 
-/* Rosy Cheeks */
+/* Remove the old separate oval cheeks */
 .cheekLeft {
-  position: absolute;
-  bottom: 20px;
-  left: 8px;
-  width: 18px;
-  height: 12px;
-  background: radial-gradient(circle, rgba(255, 95, 135, 0.45) 0%, rgba(255, 107, 107, 0) 75%);
-  border-radius: 50%;
-  filter: blur(1.5px);
+  display: none;
+}
+
+
+/* =========================================================
+   FULLER BABY CHEEKS
+   ========================================================= */
+
+/* .cheekLeft {
+  left: 2px;
 }
 
 .cheekRight {
-  position: absolute;
-  bottom: 20px;
-  right: 8px;
-  width: 18px;
-  height: 12px;
-  background: radial-gradient(circle, rgba(255, 95, 135, 0.45) 0%, rgba(255, 107, 107, 0) 75%);
-  border-radius: 50%;
-  filter: blur(1.5px);
-}
-
+  right: 2px;
+} */
 /* ── 7. FACE DETAILS ────────────────────────────────────────────── */
 /* Eyebrows */
 .eyebrows {
@@ -467,36 +517,33 @@
 
 .eye {
   position: relative;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 30px;
   background: #FFFFFF;
   border-radius: 50%;
   overflow: hidden;
-  box-shadow: inset 0 2px 4px rgba(15, 27, 61, 0.35), 0 2px 5px rgba(15, 27, 61, 0.2);
-  border-top: 2px solid #1E3A8A;
+  box-shadow:
+    inset 0 2px 6px rgba(15, 27, 61, 0.18),
+    0 3px 6px rgba(15, 27, 61, 0.20);
+  border-top: 2.5px solid #1E3A8A;
+  border-bottom: 1px solid rgba(15, 27, 61, 0.10);
 }
 
 .iris {
-  position: absolute;
-  top: 2px;
-  left: 3px;
-  width: 18px;
-  height: 18px;
-  background: radial-gradient(circle at 40% 35%, #784508 0%, #4A2800 65%, #1F0F00 100%);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   transition: transform 0.2s ease;
 }
 
 .pupil {
-  width: 10px;
-  height: 10px;
+  width: 9px;
+  height: 9px;
   background: #0F1B3D;
   border-radius: 50%;
   position: relative;
+
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.08);
 }
+
 
 /* Glossy Eye Sparkle Highlights */
 .sparklePrimary {
@@ -567,32 +614,6 @@
   z-index: 12;
 }
 
-/* Smile / Mouth */
-.mouth {
-  position: absolute;
-  bottom: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 20px;
-  height: 10px;
-  border-bottom: 3px solid #842A1E;
-  border-radius: 0 0 14px 14px;
-  background: radial-gradient(ellipse at center, #E04D5A 0%, #B82C3A 80%, #842A1E 100%);
-  box-shadow: 0 1px 3px rgba(15, 27, 61, 0.3);
-  z-index: 12;
-  transition: all 0.2s ease;
-}
-
-.lipHighlight {
-  position: absolute;
-  bottom: 1px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 10px;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.6);
-  border-radius: 2px;
-}
 
 /* ── 8. EARS & GOLD HOOP EARRINGS ───────────────────────────────── */
 .earLeft {
@@ -662,13 +683,54 @@
   box-shadow: 0 3px 8px rgba(15, 27, 61, 0.6), inset 0 2px 3px rgba(255, 255, 255, 0.2);
 }
 
-.curl1 { top: 6px; left: 0px; width: 28px; height: 28px; }
-.curl2 { top: -2px; left: 16px; width: 32px; height: 32px; }
-.curl3 { top: -6px; left: 40px; width: 36px; height: 36px; }
-.curl4 { top: -2px; right: 16px; width: 32px; height: 32px; }
-.curl5 { top: 6px; right: 0px; width: 28px; height: 28px; }
-.curl6 { top: 22px; left: -6px; width: 24px; height: 26px; }
-.curl7 { top: 22px; right: -6px; width: 24px; height: 26px; }
+.curl1 {
+  top: 6px;
+  left: 0px;
+  width: 28px;
+  height: 28px;
+}
+
+.curl2 {
+  top: -2px;
+  left: 16px;
+  width: 32px;
+  height: 32px;
+}
+
+.curl3 {
+  top: -6px;
+  left: 40px;
+  width: 36px;
+  height: 36px;
+}
+
+.curl4 {
+  top: -2px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+}
+
+.curl5 {
+  top: 6px;
+  right: 0px;
+  width: 28px;
+  height: 28px;
+}
+
+.curl6 {
+  top: 22px;
+  left: -6px;
+  width: 24px;
+  height: 26px;
+}
+
+.curl7 {
+  top: 22px;
+  right: -6px;
+  width: 24px;
+  height: 26px;
+}
 
 /* Topknot Bun */
 .topknot {
@@ -740,27 +802,33 @@
    ══════════════════════════════════════════════════════════════════════ */
 
 /* ── 0. EXPLICIT TRANSFORM ORIGINS FOR LAYERED ANIMATION ────────── */
-#headGroup {
-  transform-origin: 177px 190px;
+#headGroup, #krishnaHairGroup {
+  transform-origin: 190px 180px;
 }
 
 #peacockFeather {
-  transform-origin: 174px 80px;
+  transform-origin: 168px 44px;
+  transform-box: view-box;
 }
 
-#crossedArms,
-#chakraArms,
-#raisedArm {
-  transform-origin: 177px 192px;
+.featherSvgAnim {
+  filter: drop-shadow(0 2px 6px rgba(4, 120, 87, 0.45)) drop-shadow(0 1px 2px rgba(15, 27, 61, 0.4));
+  transform-origin: 168px 44px;
+}
+
+#canonicalChakraArms,
+#crossedArms {
+  transform-origin: 190px 190px;
 }
 
 #dhoti,
-#waistSash {
-  transform-origin: 176px 260px;
+#waistSashTail {
+  transform-origin: 190px 260px;
 }
 
 .chakraDisc {
-  transform-origin: 0px 0px;
+  transform-origin: 91px 56px;
+  transform-box: view-box;
 }
 
 #feet {
@@ -772,7 +840,7 @@
   animation: krishnaIdleBreathing 4.5s ease-in-out infinite;
 }
 
-.krishnaIdle #headGroup {
+.krishnaIdle #headGroup, #krishnaHairGroup {
   animation: idleHeadTilt 7.5s ease-in-out infinite;
 }
 
@@ -780,12 +848,16 @@
   animation: featherSwayAnim 6s ease-in-out infinite alternate;
 }
 
+.krishnaIdle .chakraDisc {
+  animation: spinChakra 12s linear infinite;
+}
+
 /* ── 2. PROTECTOR STATE (CANONICAL CHAKRA POSE) ────────────────── */
 .krishnaProtector {
   animation: protectorPulse 3s ease-in-out infinite alternate;
 }
 
-.krishnaProtector #headGroup {
+.krishnaProtector #headGroup, #krishnaHairGroup {
   animation: idleHeadTilt 7.5s ease-in-out infinite;
 }
 
@@ -793,13 +865,25 @@
   animation: featherSwayAnim 6s ease-in-out infinite alternate;
 }
 
-.krishnaProtector .divineAura {
+.krishnaContainer[data-state='protector'] .divineAura {
   opacity: 0.95;
   animation: protectorAuraGlow 3s ease-in-out infinite alternate;
 }
 
+.krishnaProtector .chakraDisc {
+  animation: spinChakra 6.5s linear infinite;
+}
+
+.krishnaContainer[data-pose='chakra'] .chakraDisc {
+  animation: spinChakra 12s linear infinite;
+}
+
+.krishnaContainer[data-pose='chakra'][data-state='protector'] .chakraDisc {
+  animation-duration: 6.5s;
+}
+
 /* ── 3. THINKING STATE (HEAD TILT & EYE SHIFT) ─────────────────── */
-.krishnaThinking #headGroup {
+.krishnaThinking #headGroup, #krishnaHairGroup {
   transform: rotate(-6deg) translateY(-2px);
   transition: transform 0.4s ease;
 }
@@ -814,14 +898,10 @@
   animation: happyBounce 0.75s ease-in-out infinite alternate;
 }
 
-.krishnaHappy #headGroup {
+.krishnaHappy #headGroup, #krishnaHairGroup {
   animation: happyHeadNod 0.75s ease-in-out infinite alternate;
 }
 
-.krishnaHappy .mouth {
-  height: 14px;
-  border-radius: 0 0 18px 18px;
-}
 
 .krishnaHappy .cheekLeft,
 .krishnaHappy .cheekRight {
@@ -834,13 +914,13 @@
   animation: motivationFloat 4s ease-in-out infinite;
 }
 
-.krishnaMotivation #headGroup {
+.krishnaMotivation #headGroup, #krishnaHairGroup {
   animation: motivationNod 2.2s ease-in-out infinite;
 }
 
-.krishnaMotivation .divineAura {
+.krishnaContainer[data-state='motivation'] .divineAura {
   opacity: 0.85;
-  background: radial-gradient(circle, rgba(255, 215, 0, 0.3) 0%, rgba(255, 138, 0, 0.15) 60%, transparent 75%);
+  background: radial-gradient(circle, rgba(255, 225, 128, 0.22) 0%, rgba(82, 159, 255, 0.12) 55%, transparent 75%);
 }
 
 /* ── 6. RELAX STATE (DEEP BREATHING & FLUTE PREPARATION) ────────── */
@@ -848,7 +928,7 @@
   animation: relaxDeepBreathing 8s ease-in-out infinite;
 }
 
-.krishnaRelax #headGroup {
+.krishnaRelax #headGroup, #krishnaHairGroup {
   animation: relaxHeadSway 8s ease-in-out infinite;
 }
 
@@ -857,20 +937,51 @@
 }
 
 /* ── 7. GREETING STATE (WAVING GESTURE) ────────────────────────── */
-.krishnaGreeting .armRight {
+.krishnaGreeting #raisedArm {
   animation: waveArm 1s ease-in-out infinite alternate;
 }
 
-/* ── 8. CLICKED STATE (QUICK FEEDBACK BOUNCE & GLOW) ───────────── */
+/* ── 8. CLICKED STATE (QUICK FEEDBACK GLOW - NO MOVEMENT) ───────────── */
 .krishnaClicked {
-  animation: clickAck 0.45s ease-out;
+  filter: drop-shadow(0 0 16px rgba(255, 215, 0, 0.65));
+}
+
+/* ── EXPRESSIVE EYEBROWS & FACIAL DYNAMICS ───────────────────────── */
+.eyebrowLeft,
+.eyebrowRight {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.krishnaThinking .eyebrowLeft {
+  transform: translateY(1.5px) rotate(3deg);
+}
+
+.krishnaThinking .eyebrowRight {
+  transform: translateY(-2.5px) rotate(-4deg);
+}
+
+.krishnaHappy .eyebrowLeft,
+.krishnaHappy .eyebrowRight {
+  transform: translateY(-2px);
+}
+
+.krishnaMotivation .eyebrowLeft,
+.krishnaMotivation .eyebrowRight {
+  transform: translateY(-1.5px);
+}
+
+.krishnaClicked .eyebrowLeft,
+.krishnaClicked .eyebrowRight {
+  transform: translateY(-3px) scale(1.05);
 }
 
 /* ── LOCALIZED BLINK ANIMATION ──────────────────────────────────── */
 .eyelidUpper {
-  transform-origin: 18px 2px;
+  transform-origin: 22px 0px;
   transform: scaleY(0);
-  transition: transform 0.1s ease-in-out;
+  transition: transform 0.08s ease-in-out;
 }
 
 .eyelidUpper.blinkActive {
@@ -948,18 +1059,24 @@
 
 /* ── KEYFRAME DEFINITIONS ───────────────────────────────────────── */
 @keyframes krishnaIdleBreathing {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px) scale(var(--k-scale, 1.45));
   }
+
   50% {
     transform: translateY(-4px) scale(var(--k-scale, 1.45));
   }
 }
 
 @keyframes idleHeadTilt {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: rotate(0deg);
   }
+
   50% {
     transform: rotate(1.8deg) translateY(-1px);
   }
@@ -969,6 +1086,7 @@
   0% {
     transform: translateY(0px) scale(var(--k-scale, 1.45));
   }
+
   100% {
     transform: translateY(-3px) scale(var(--k-scale, 1.45));
   }
@@ -979,6 +1097,7 @@
     opacity: 0.6;
     transform: translateX(-50%) scale(0.98);
   }
+
   100% {
     opacity: 1;
     transform: translateX(-50%) scale(1.08);
@@ -989,6 +1108,7 @@
   0% {
     transform: translateY(0px) scale(var(--k-scale, 1.45));
   }
+
   100% {
     transform: translateY(-10px) scale(var(--k-scale, 1.45));
   }
@@ -998,42 +1118,55 @@
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(-3deg) translateY(-2px);
   }
 }
 
 @keyframes motivationFloat {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px) scale(var(--k-scale, 1.45));
   }
+
   50% {
     transform: translateY(-5px) scale(var(--k-scale, 1.45));
   }
 }
 
 @keyframes motivationNod {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: rotate(0deg);
   }
+
   50% {
     transform: rotate(2.5deg) translateY(1px);
   }
 }
 
 @keyframes relaxDeepBreathing {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px) scale(var(--k-scale, 1.45));
   }
+
   50% {
     transform: translateY(-6px) scale(var(--k-scale, 1.45));
   }
 }
 
 @keyframes relaxHeadSway {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: rotate(-1.5deg);
   }
+
   50% {
     transform: rotate(2deg);
   }
@@ -1043,9 +1176,11 @@
   0% {
     transform: scale(var(--k-scale, 1.45));
   }
+
   50% {
     transform: scale(calc(var(--k-scale, 1.45) * 1.08)) translateY(-6px);
   }
+
   100% {
     transform: scale(var(--k-scale, 1.45));
   }
@@ -1055,6 +1190,7 @@
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -1064,16 +1200,20 @@
   0% {
     transform: rotate(-15deg);
   }
+
   100% {
     transform: rotate(-45deg) translateY(-3px);
   }
 }
 
 @keyframes shadowPulse {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
     opacity: 0.55;
   }
+
   50% {
     transform: scale(0.88);
     opacity: 0.35;
@@ -1085,6 +1225,7 @@
     transform: translateX(-50%) scale(0.95);
     opacity: 0.6;
   }
+
   100% {
     transform: translateX(-50%) scale(1.1);
     opacity: 1;
@@ -1092,16 +1233,34 @@
 }
 
 @keyframes bubbleFloat {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateX(-50%) translateY(0px);
   }
+
   50% {
     transform: translateX(-50%) translateY(-3px);
   }
 }
 
+@keyframes featherSwayAnim {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  50% {
+    transform: rotate(2.2deg) translateY(-0.5px);
+  }
+
+  100% {
+    transform: rotate(-1.5deg) translateY(0.5px);
+  }
+}
+
 /* ── 9. ACCESSIBILITY & REDUCED MOTION SUPPORT ────────────────── */
 @media (prefers-reduced-motion: reduce) {
+
   .krishna,
   .krishnaIdle,
   .krishnaProtector,
@@ -1131,9 +1290,273 @@
   cursor: pointer;
   z-index: 10;
   transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
 }
 
 .fluteIcon:hover {
   transform: translateY(-50%) scale(1.15) rotate(5deg);
+}
+
+/* ── PIXAR EXPRESSIVE MOUTH & SPEAKING SUPPORT ────────────────── */
+.pixarMouth {
+  transform-origin: 0px 0px;
+  transition: transform 0.18s ease-out;
+}
+
+.mouthCavity {
+  opacity: 0.8;
+  transform-origin: 0 0;
+  transform: scale(0.7, 0.25);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.mouthSpeaking .mouthCavity {
+  opacity: 1;
+  animation: pixarSpeechCavity 0.32s ease-in-out infinite alternate;
+}
+
+.mouthSpeaking .smileLine {
+  animation: pixarSpeechSeam 0.32s ease-in-out infinite alternate;
+}
+
+@keyframes pixarSpeechCavity {
+  0% {
+    transform: scale(0.7, 0.2);
+    opacity: 0.2;
+  }
+
+  100% {
+    transform: scale(1.05, 1.25);
+    opacity: 1;
+  }
+}
+
+@keyframes pixarSpeechSeam {
+  0% {
+    transform: scaleY(0.7);
+  }
+
+  100% {
+    transform: scaleY(1.2);
+  }
+}
+
+.krishnaHappy .pixarMouth {
+  transform: scale(1.06, 1.15);
+}
+
+/* ── PURE CSS 3D MOUTH IMPLEMENTATION ────────────────── */
+.mouthContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.mouthSkinHighlight {
+  position: absolute;
+  top: 1.5px;
+  width: 12px;
+  height: 2.5px;
+  background: radial-gradient(ellipse at center, rgba(235, 245, 255, 0.45) 0%, rgba(235, 245, 255, 0) 70%);
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.mouthShadow {
+  position: absolute;
+  bottom: 2px;
+  width: 22px;
+  height: 4.5px;
+  background: radial-gradient(ellipse at center, rgba(30, 58, 138, 0.28) 0%, rgba(30, 58, 138, 0) 70%);
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.mouthGroup {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1;
+  width: 24px;
+  height: 10px;
+}
+
+/* ── ELEGANT CLEAN SMILING OUTLINE ONLY ────────────────── */
+.mouthSeam {
+  position: relative;
+  top: 1.0px;
+  width: 22px;
+  height: 4.5px;
+  border-bottom: 2.2px solid #5A1022;
+  border-radius: 0 0 16px 16px;
+  z-index: 2;
+  box-shadow: 0 0.8px 1px rgba(74, 11, 26, 0.3);
+}
+
+/* Soft upturned smile corners */
+.mouthSeam::before, .mouthSeam::after {
+  content: "";
+  position: absolute;
+  top: -1.0px;
+  width: 4.8px;
+  height: 3.0px;
+  border-bottom: 1.8px solid #5A1022;
+}
+
+.mouthSeam::before {
+  left: -2.4px;
+  border-radius: 0 0 0 5px;
+  transform: rotate(-38deg);
+}
+
+.mouthSeam::after {
+  right: -2.4px;
+  border-radius: 0 0 5px 0;
+  transform: rotate(38deg);
+}
+
+.lipHighlight {
+  margin-top: 1.0px;
+  width: 4.8px;
+  height: 1.1px;
+  background: rgba(255, 255, 255, 0.88);
+  border-radius: 50%;
+  box-shadow: 0 0 2px rgba(255, 255, 255, 0.9);
+}
+
+.lipHighlight {
+  margin-top: 1.0px;
+  width: 3.6px;
+  height: 1.1px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 50%;
+  box-shadow: 0 0 1.8px rgba(255, 255, 255, 0.9);
+}
+
+/* ── SPEAKING ANIMATION & ORAL CAVITY ────────────────── */
+.speakingCavity {
+  position: absolute;
+  top: 2.2px;
+  width: 12px;
+  height: 0px;
+  background: #3D1022;
+  border-radius: 0 0 7px 7px;
+  opacity: 0;
+  overflow: hidden;
+  z-index: 1;
+  transform-origin: top center;
+  transition: height 0.15s ease, opacity 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.teethBar {
+  width: 9px;
+  height: 1.3px;
+  background: #FFFFFF;
+  opacity: 0.92;
+  border-radius: 0 0 2px 2px;
+}
+
+.tongue {
+  width: 8px;
+  height: 2.4px;
+  background: #E27488;
+  border-radius: 4px 4px 0 0;
+  opacity: 0.88;
+}
+
+/* Active Speaking State Styles & Keyframes */
+.mouthSpeaking .speakingCavity {
+  opacity: 1;
+  animation: speakingCavityAnim 0.32s ease-in-out infinite alternate;
+}
+
+.mouthSpeaking .lowerLip {
+  animation: lowerLipSpeakingAnim 0.32s ease-in-out infinite alternate;
+}
+
+.mouthSpeaking .upperLip {
+  animation: upperLipSpeakingAnim 0.32s ease-in-out infinite alternate;
+}
+
+.mouthSpeaking .mouthSeam {
+  animation: mouthSeamSpeakingAnim 0.32s ease-in-out infinite alternate;
+}
+
+@keyframes speakingCavityAnim {
+  0% {
+    height: 1px;
+    transform: scaleY(0.3);
+    opacity: 0.3;
+  }
+  35% {
+    height: 5px;
+    transform: scaleY(1);
+    opacity: 1;
+  }
+  70% {
+    height: 2.5px;
+    transform: scaleY(0.6);
+    opacity: 0.7;
+  }
+  100% {
+    height: 5.5px;
+    transform: scaleY(1.15);
+    opacity: 1;
+  }
+}
+
+@keyframes lowerLipSpeakingAnim {
+  0% {
+    transform: translateY(0px);
+  }
+  35% {
+    transform: translateY(3.8px);
+  }
+  70% {
+    transform: translateY(1.8px);
+  }
+  100% {
+    transform: translateY(4.2px);
+  }
+}
+
+@keyframes upperLipSpeakingAnim {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-0.8px);
+  }
+  100% {
+    transform: translateY(-0.4px);
+  }
+}
+
+@keyframes mouthSeamSpeakingAnim {
+  0% {
+    opacity: 1;
+    border-bottom-width: 1.2px;
+  }
+  50% {
+    opacity: 0.3;
+    border-bottom-width: 0.4px;
+  }
+  100% {
+    opacity: 0.7;
+    border-bottom-width: 0.8px;
+  }
+}
+
+/* ── 15. ROYAL GHUNGROO PAYAL (ANKLETS) ── */
+.ankletLayer {
+  filter: drop-shadow(0 2px 5px rgba(15, 27, 61, 0.45));
 }
