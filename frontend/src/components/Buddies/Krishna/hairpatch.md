@@ -386,17 +386,20 @@ Cool Highlight:   #0B94B4
    - **Neck Safe Area**: Front/center neck skin (`x: 135–245`) remains 100% clean blue skin (`#kSkinBody`). Hair only traces the posterior outer neck edge (`x < 114` left, `x > 266` right).
    - **Color & Shading**: Palette `#040A25` (shadow), `#0D1B49` (base), `#22377C` (midtone), `#0B94B4` (highlight stroke).
 
-2. **Part B — Hand & Wrist Jewellery**:
+2. **Part B — Hand & Wrist Refinements, Dominant White Vaishnav Chakra & Natural Palm Pink Tint**:
    - **Anatomy Invariant**: Wrist width 24 units (`u(24)`), palm 48x54, thumb 27, index 31, middle 34, ring 30, little 25.
-   - **Wrist Bangles**: Form-fitting dual gold bangles in `ParametricHand` wrapping 24-unit wrist contour (`#kJewelGoldGrad`: `#B86A00` → `#F5A900` → `#FFD45A` → `#FFF0A3`).
-   - **Hand Chain (Hathphool)**: Traditional delicate gold beaded chain anchored to wrist bangle, extending down back of hand to a ruby medallion, connecting to middle finger ring.
-   - **Finger Ring**: Small, thin, gold, rounded ring on middle finger root following digit rotation.
+   - **Clean Back of Hand**: Back of hand remains clean Krishna blue (`#6BA7FF` / `#84B5FA`). Removed all painted crease strokes from skin volume. Fingers are defined cleanly by shape, silhouette, volume, spacing, and knuckle ridge highlight.
+   - **Natural Palm Warm Pink Tint (Subtle Undertone)**:
+     - Applied localized SVG radial/linear gradients with soft falloff for central palm (`#kPalmCentralPinkGlow`), thenar/thumb pad (`#kThenarPinkWarmth`), hypothenar pad (`#kHypothenarPinkWarmth`), finger inner pads (`#kFingerPadPinkWarmth`), and subtle fingertip warmth (`#kFingertipSubtleWarmth`).
+     - Color Palette: Base Blue `#6BA7FF` → Light Blue `#84B5FA` → Primary Palm Tint `#E89AA5` → Soft Pink `#F2B5BA` → Light Warm Highlight `#F8D1D1`.
+     - Hand remains predominantly Krishna blue, with pink functioning strictly as a subtle, soft, natural warm rosy palm & finger pad undertone. No pink on back of hand, wrist, forearm, or face.
+   - **Dominant White Vaishnav-Inspired Chakra Decoration**: Prominent, crisp, pure white (`#FFFFFF` & `#F8F9FF` opacity 0.98–1.0) 27×27 unit 8-point radial starburst chakra wheel with an inner petaled hub ring and central vertical U-bindu teardrop motif on the back of BOTH hands. Includes a soft skin contact shadow (`#1E3A8A` opacity 0.25) for 3D relief.
+   - **Wrist Bangles & Hand Chain**: Prominent 3D gold bangles (`strokeWidth={u(4.0)}`) with specular sheen and beaded rim. Delicate gold hand-chain (Hathphool) running from wrist anchor down back of hand to chakra motif and middle finger ring.
 
-3. **Part C — Vaishnav Hand/Arm Decoration & Upper Armlet**:
-   - **Forearm Vaishnav Motif**: Subtle vertical ivory (`#F8F9FF`) Vaishnav mark with tiny warm gold accent (`#FFD45A`) on forearm, minimal and secondary to forehead tilak.
-   - **Upper Armlet (Keyur)**: Refined child-proportioned gold armlet in `ParametricUpperArm` with ruby gem motif (`#kJewelRuby`), physically wrapped around upper arm thickness.
+3. **Part C — Upper Armlet (Keyur) Refinement**:
+   - **Dominant Gold Armlet**: Refined upper armlet in `ParametricUpperArm` to be visually intentional and decorative (~22 units band width), featuring a primary 3D gold band (`u(5.2)`), top & bottom beaded filigree rims, specular sheen, and a central ruby gem medallion flanked by gold side beads.
 
 4. **Part D & E — Material Continuity & Pose Safety**:
-   - Consistent 3D gold material across all armlets, bangles, chains, and rings.
-   - All jewellery is integrated directly inside `ParametricUpperArm`, `ParametricForearm`, and `ParametricHand` in [krishna_arms.tsx](file:///Users/abundance/Documents/coding/my-desktop-buddy/frontend/src/components/Buddies/Krishna/krishna_arms.tsx), ensuring seamless pose transformation (`chakra`, `standing`, `crossHands`) with zero duplicate assets.
+   - Master 3D gold and gem materials across all armlets, bangles, chains, and rings.
+   - All ornaments are embedded directly inside `ParametricUpperArm`, `ParametricForearm`, and `ParametricHand` in [krishna_arms.tsx](file:///Users/abundance/Documents/coding/my-desktop-buddy/frontend/src/components/Buddies/Krishna/krishna_arms.tsx), guaranteeing 100% pose safety (`chakra`, `standing`, `crossHands`) and zero duplicate rendering assets.
 

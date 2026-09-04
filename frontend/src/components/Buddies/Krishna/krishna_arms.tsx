@@ -74,32 +74,53 @@ export const ParametricUpperArm = ({ isFlipped = false }: { isFlipped?: boolean 
       <g className="upper-armlet" transform={transform}>
         {/* Ambient contact shadow under armlet */}
         <path
-          d={`M ${-m * 0.85} ${len * 0.44} C ${-m * 0.4} ${len * 0.49}, ${m * 0.4} ${len * 0.49}, ${m * 0.85} ${len * 0.44}`}
+          d={`M ${-m * 0.9} ${len * 0.44} C ${-m * 0.45} ${len * 0.5}, ${m * 0.45} ${len * 0.5}, ${m * 0.9} ${len * 0.44}`}
           fill="none"
           stroke="#1E3A8A"
-          strokeWidth={u(2.8)}
-          opacity="0.22"
+          strokeWidth={u(3.2)}
+          opacity="0.25"
         />
         {/* Main 3D Gold Armlet Band wrapping arm contour */}
         <path
-          d={`M ${-m * 0.83} ${len * 0.42} C ${-m * 0.4} ${len * 0.47}, ${m * 0.4} ${len * 0.47}, ${m * 0.83} ${len * 0.42}`}
+          d={`M ${-m * 0.88} ${len * 0.42} C ${-m * 0.45} ${len * 0.48}, ${m * 0.45} ${len * 0.48}, ${m * 0.88} ${len * 0.42}`}
           fill="none"
           stroke="url(#kJewelGoldGrad)"
-          strokeWidth={u(4.2)}
+          strokeWidth={u(5.2)}
           strokeLinecap="round"
         />
         {/* Gold Band Light Specular Highlight */}
         <path
-          d={`M ${-m * 0.65} ${len * 0.415} C ${-m * 0.3} ${len * 0.46}, ${m * 0.3} ${len * 0.46}, ${m * 0.65} ${len * 0.415}`}
+          d={`M ${-m * 0.7} ${len * 0.415} C ${-m * 0.35} ${len * 0.47}, ${m * 0.35} ${len * 0.47}, ${m * 0.7} ${len * 0.415}`}
           fill="none"
           stroke="url(#kJewelGoldLight)"
-          strokeWidth={u(1.4)}
+          strokeWidth={u(1.6)}
           strokeLinecap="round"
-          opacity="0.9"
+          opacity="0.95"
         />
-        {/* Central Ornamental Gem Motif */}
-        <circle cx={0} cy={len * 0.455} r={u(2.2)} fill="url(#kJewelRuby)" stroke="url(#kJewelGoldGrad)" strokeWidth={u(0.8)} />
-        <circle cx={-u(0.6)} cy={len * 0.445} r={u(0.6)} fill="#FFFFFF" opacity="0.85" />
+        {/* Upper & Lower Beaded Filigree Trims */}
+        <path
+          d={`M ${-m * 0.8} ${len * 0.38} C ${-m * 0.4} ${len * 0.43}, ${m * 0.4} ${len * 0.43}, ${m * 0.8} ${len * 0.38}`}
+          fill="none"
+          stroke="url(#kJewelGoldGrad)"
+          strokeWidth={u(1.8)}
+          strokeDasharray={`${u(1.4)}, ${u(1.4)}`}
+          strokeLinecap="round"
+        />
+        <path
+          d={`M ${-m * 0.8} ${len * 0.46} C ${-m * 0.4} ${len * 0.51}, ${m * 0.4} ${len * 0.51}, ${m * 0.8} ${len * 0.46}`}
+          fill="none"
+          stroke="url(#kJewelGoldGrad)"
+          strokeWidth={u(1.8)}
+          strokeDasharray={`${u(1.4)}, ${u(1.4)}`}
+          strokeLinecap="round"
+        />
+        {/* Central Ornamental Gem Medallion */}
+        <circle cx={0} cy={len * 0.45} r={u(2.8)} fill="url(#kJewelGoldGrad)" stroke="#B86A00" strokeWidth={u(0.4)} />
+        <circle cx={0} cy={len * 0.45} r={u(1.9)} fill="url(#kJewelRuby)" stroke="url(#kJewelGoldGrad)" strokeWidth={u(0.6)} />
+        <circle cx={-u(0.6)} cy={len * 0.44} r={u(0.6)} fill="#FFFFFF" opacity="0.9" />
+        {/* Side Gold Accent Beads */}
+        <circle cx={-u(5.5)} cy={len * 0.45} r={u(1.2)} fill="url(#kJewelGoldGrad)" />
+        <circle cx={u(5.5)} cy={len * 0.45} r={u(1.2)} fill="url(#kJewelGoldGrad)" />
       </g>
     </g>
   );
@@ -169,6 +190,8 @@ export const ParametricDigit = ({
       <path d={path} fill="url(#kSkinBody)" />
       {/* Longitudinal Finger Volume Shading (A9CCFF -> 84B5FA -> 6BA7FF -> 4E82D1) */}
       <path d={path} fill="url(#kFingerLongitudinal)" />
+      {/* Subtle Inner/Palm-Side Finger Pad Warmth */}
+      <path d={path} fill="url(#kFingerPadPinkWarmth)" />
 
       {/* Longitudinal Volume Highlight */}
       <path
@@ -199,8 +222,8 @@ export const ParametricDigit = ({
         opacity="0.22"
       />
 
-      {/* Soft Rounded Fingertip Highlight */}
-      <ellipse cx={0} cy={len - u(0.5)} rx={t * 0.7} ry={t * 0.85} fill="url(#kFingertipSoftGlow)" />
+      {/* Soft Rounded Fingertip Highlight with Subtle Warmth */}
+      <ellipse cx={0} cy={len - u(0.5)} rx={t * 0.7} ry={t * 0.85} fill="url(#kFingertipSubtleWarmth)" />
       {/* Fingertip Underside Shadow */}
       <ellipse cx={0} cy={len + t * 0.8} rx={t * 0.5} ry={t * 0.4} fill="#4E82D1" opacity="0.2" />
 
@@ -346,24 +369,16 @@ export const ParametricHand = ({
             <path d={thenarPath} fill="url(#kSkinBody)" />
             <path d={hypothenarPath} fill="url(#kSkinBody)" />
 
-            {/* 3D Palm Shading: Central Palm 84B5FA Highlight */}
+            {/* 3D Volumetric Soft Shading (No harsh crease strokes on back of hand) */}
             <path d={palmPath} fill="url(#kPalmCentralGlow)" />
-            {/* Thenar 3D Highlight & Soft Transition */}
             <path d={thenarPath} fill="url(#kThenarSoftGlow)" />
-            <path d={thenarPath} fill="none" stroke="#4E82D1" strokeWidth={u(2.5)} opacity="0.18" />
 
-            {/* Hypothenar Soft Highlight & Heel Shadow */}
-            <path d={hypothenarPath} fill="none" stroke="#4E82D1" strokeWidth={u(2.2)} opacity="0.18" />
-            <path
-              d={`M ${-w} ${-u(4)} C ${-heel} ${u(8)}, ${-pW * 0.7} ${h * 0.35}, 0 ${h * 0.25}`}
-              fill="none"
-              stroke="#4E82D1"
-              strokeWidth={u(3)}
-              strokeLinecap="round"
-              opacity="0.2"
-            />
+            {/* ── Natural Palm Warm Pink Undertone (Localized Soft Radial Gradients) ── */}
+            <path d={palmPath} fill="url(#kPalmCentralPinkGlow)" />
+            <path d={thenarPath} fill="url(#kThenarPinkWarmth)" />
+            <path d={hypothenarPath} fill="url(#kHypothenarPinkWarmth)" />
 
-            {/* Knuckle Continuous Highlight Arc (No individual circles) */}
+            {/* Knuckle Continuous Ridge Highlight Arc */}
             <path d={knucklePath} fill="none" stroke="#A9CCFF" strokeWidth={u(2.2)} opacity="0.28" />
 
             {/* Subtle Contact Shadow in Interdigital Clefts */}
@@ -372,24 +387,62 @@ export const ParametricHand = ({
             <circle cx={(midX + idxX) / 2} cy={h - u(2)} r={u(1.5)} fill="#315EA8" opacity="0.15" />
           </g>
 
+          {/* ── WHITE VAISHNAV-INSPIRED CHAKRA DECORATION ON BACK OF HAND (DOMINANT & CRISP) ── */}
+          <g className="back-hand-vaishnav-chakra" transform={`translate(${midX / 2}, ${h * 0.48})`}>
+            {/* Soft Skin Contact Shadow for 3D Relief */}
+            <circle cx={0} cy={u(0.6)} r={u(13.5)} fill="#1E3A8A" opacity="0.25" />
+            
+            {/* Soft Base Glow Disc */}
+            <circle cx={0} cy={0} r={u(13.5)} fill="#F8F9FF" opacity="0.12" />
+
+            {/* Outer Primary Pure White Chakra Ring */}
+            <circle cx={0} cy={0} r={u(13.0)} fill="none" stroke="#FFFFFF" strokeWidth={u(2.0)} opacity="0.98" />
+            <circle cx={0} cy={0} r={u(10.8)} fill="none" stroke="#F8F9FF" strokeWidth={u(1.2)} strokeDasharray={`${u(2.2)}, ${u(1.6)}`} opacity="0.95" />
+
+            {/* 8-Point Radial Chakra Rays / Starburst Petals */}
+            <g fill="none" stroke="#FFFFFF" strokeWidth={u(1.4)} strokeLinecap="round" opacity="0.98">
+              <line x1={0} y1={-u(13.0)} x2={0} y2={-u(6.0)} />
+              <line x1={0} y1={u(6.0)} x2={0} y2={u(13.0)} />
+              <line x1={-u(13.0)} y1={0} x2={-u(6.0)} y2={0} />
+              <line x1={u(6.0)} y1={0} x2={u(13.0)} y2={0} />
+              <line x1={-u(9.2)} y1={-u(9.2)} x2={-u(4.2)} y2={-u(4.2)} />
+              <line x1={u(4.2)} y1={u(4.2)} x2={u(9.2)} y2={u(9.2)} />
+              <line x1={-u(9.2)} y1={u(9.2)} x2={-u(4.2)} y2={u(4.2)} />
+              <line x1={u(4.2)} y1={-u(4.2)} x2={u(9.2)} y2={-u(9.2)} />
+            </g>
+
+            {/* Inner Petaled Hub Ring */}
+            <circle cx={0} cy={0} r={u(5.2)} fill="#F8F9FF" stroke="#FFFFFF" strokeWidth={u(0.8)} opacity="0.98" />
+            <circle cx={0} cy={0} r={u(3.0)} fill="#FFFFFF" />
+
+            {/* Central Vertical Vaishnav U-Bindu Teardrop Motif */}
+            <path
+              d={`M ${-u(1.4)} ${-u(4.5)} L ${-u(1.4)} ${u(1.0)} C ${-u(1.4)} ${u(3.2)}, ${u(1.4)} ${u(3.2)}, ${u(1.4)} ${u(1.0)} L ${u(1.4)} ${-u(4.5)} Z`}
+              fill="#FFFFFF"
+              opacity="1.0"
+            />
+            {/* Sacred Warm Gold Central Bindu Teardrop Accent */}
+            <circle cx={0} cy={u(0.2)} r={u(1.0)} fill="#FFD45A" stroke="#B86A00" strokeWidth={u(0.3)} />
+          </g>
+
           {/* ── REFINED WRIST BANGLES, HAND CHAIN & FINGER JEWELLERY ── */}
           <g className="hand-jewellery">
-            {/* 1. Form-Fitting Dual Wrist Bangles wrapping 24-unit wrist contour */}
+            {/* 1. Prominent Form-Fitting Dual Wrist Bangles wrapping 24-unit wrist contour */}
             <g className="wrist-bangles">
               {/* Ambient skin contact shadow under bangle */}
               <path
                 d={`M ${-w * 0.95} ${-u(5)} C ${-w * 0.45} ${-u(2)}, ${w * 0.45} ${-u(2)}, ${w * 0.95} ${-u(5)}`}
                 fill="none"
                 stroke="#1E3A8A"
-                strokeWidth={u(2.4)}
-                opacity="0.22"
+                strokeWidth={u(3.0)}
+                opacity="0.25"
               />
-              {/* Primary 3D Gold Bangle Band */}
+              {/* Primary Prominent 3D Gold Bangle Band */}
               <path
                 d={`M ${-w * 0.92} ${-u(5.5)} C ${-w * 0.45} ${-u(2.5)}, ${w * 0.45} ${-u(2.5)}, ${w * 0.92} ${-u(5.5)}`}
                 fill="none"
                 stroke="url(#kJewelGoldGrad)"
-                strokeWidth={u(3.4)}
+                strokeWidth={u(4.0)}
                 strokeLinecap="round"
               />
               {/* Primary Bangle Light Specular Sheen */}
@@ -397,16 +450,16 @@ export const ParametricHand = ({
                 d={`M ${-w * 0.7} ${-u(5.8)} C ${-w * 0.3} ${-u(2.8)}, ${w * 0.3} ${-u(2.8)}, ${w * 0.7} ${-u(5.8)}`}
                 fill="none"
                 stroke="#FFF0A3"
-                strokeWidth={u(1.0)}
-                opacity="0.9"
+                strokeWidth={u(1.2)}
+                opacity="0.95"
               />
               {/* Secondary Beaded Gold Bangle */}
               <path
                 d={`M ${-w * 0.88} ${-u(1.5)} C ${-w * 0.4} ${u(1.2)}, ${w * 0.4} ${u(1.2)}, ${w * 0.88} ${-u(1.5)}`}
                 fill="none"
                 stroke="url(#kJewelGoldGrad)"
-                strokeWidth={u(2.0)}
-                strokeDasharray={`${u(1.4)}, ${u(1.4)}`}
+                strokeWidth={u(2.4)}
+                strokeDasharray={`${u(1.5)}, ${u(1.5)}`}
                 strokeLinecap="round"
               />
             </g>
@@ -414,29 +467,25 @@ export const ParametricHand = ({
             {/* 2. Traditional Hand Chain (Hathphool) anchored to Wrist & Middle Finger */}
             <g className="hand-chain">
               {/* Central Wrist Anchor Bead */}
-              <circle cx={0} cy={-u(2.5)} r={u(1.4)} fill="url(#kJewelGoldGrad)" stroke="#B86A00" strokeWidth={u(0.4)} />
+              <circle cx={0} cy={-u(2.5)} r={u(1.5)} fill="url(#kJewelGoldGrad)" stroke="#B86A00" strokeWidth={u(0.4)} />
               
-              {/* Delicate Beaded Chain running down back of hand */}
+              {/* Delicate Beaded Chain running down back of hand to chakra medallion */}
               <path
-                d={`M 0 ${-u(2.5)} Q ${midX * 0.5} ${h * 0.3}, ${midX} ${h * 0.52}`}
+                d={`M 0 ${-u(2.5)} Q ${midX * 0.5} ${h * 0.28}, ${midX / 2} ${h * 0.48 - u(9.5)}`}
+                fill="none"
+                stroke="url(#kJewelGoldGrad)"
+                strokeWidth={u(1.3)}
+                strokeDasharray={`${u(1.2)}, ${u(1.2)}`}
+                strokeLinecap="round"
+              />
+              
+              {/* Chain Continuation from chakra medallion to Middle Finger Root */}
+              <path
+                d={`M ${midX / 2} ${h * 0.48 + u(9.5)} L ${midX} ${h - u(2)}`}
                 fill="none"
                 stroke="url(#kJewelGoldGrad)"
                 strokeWidth={u(1.2)}
                 strokeDasharray={`${u(1.1)}, ${u(1.1)}`}
-                strokeLinecap="round"
-              />
-              
-              {/* Central Hand Medallion Accent */}
-              <circle cx={midX} cy={h * 0.52} r={u(1.8)} fill="url(#kJewelGoldGrad)" />
-              <circle cx={midX} cy={h * 0.52} r={u(0.9)} fill="url(#kJewelRuby)" />
-              
-              {/* Chain Continuation down to Middle Finger Root */}
-              <path
-                d={`M ${midX} ${h * 0.52} L ${midX} ${h - u(2)}`}
-                fill="none"
-                stroke="url(#kJewelGoldGrad)"
-                strokeWidth={u(1.1)}
-                strokeDasharray={`${u(1.0)}, ${u(1.0)}`}
                 strokeLinecap="round"
               />
             </g>
@@ -549,6 +598,41 @@ export const KrishnaArms = ({
         <radialGradient id="kFingertipSoftGlow" cx="42%" cy="35%" r="55%">
           <stop offset="0%" stopColor="#A9CCFF" stopOpacity="0.55" />
           <stop offset="50%" stopColor="#84B5FA" stopOpacity="0.2" />
+          <stop offset="100%" stopColor="#6BA7FF" stopOpacity="0" />
+        </radialGradient>
+
+        {/* ── Natural Palm Warm Pink Undertone Gradients ── */}
+        <radialGradient id="kPalmCentralPinkGlow" cx="45%" cy="45%" r="55%">
+          <stop offset="0%" stopColor="#F2B5BA" stopOpacity="0.28" />
+          <stop offset="45%" stopColor="#E89AA5" stopOpacity="0.18" />
+          <stop offset="80%" stopColor="#84B5FA" stopOpacity="0.08" />
+          <stop offset="100%" stopColor="#6BA7FF" stopOpacity="0" />
+        </radialGradient>
+
+        <radialGradient id="kThenarPinkWarmth" cx="45%" cy="42%" r="55%">
+          <stop offset="0%" stopColor="#F8D1D1" stopOpacity="0.32" />
+          <stop offset="45%" stopColor="#E89AA5" stopOpacity="0.22" />
+          <stop offset="80%" stopColor="#84B5FA" stopOpacity="0.10" />
+          <stop offset="100%" stopColor="#6BA7FF" stopOpacity="0" />
+        </radialGradient>
+
+        <radialGradient id="kHypothenarPinkWarmth" cx="45%" cy="45%" r="50%">
+          <stop offset="0%" stopColor="#F2B5BA" stopOpacity="0.24" />
+          <stop offset="50%" stopColor="#E89AA5" stopOpacity="0.15" />
+          <stop offset="100%" stopColor="#6BA7FF" stopOpacity="0" />
+        </radialGradient>
+
+        <linearGradient id="kFingerPadPinkWarmth" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#A9CCFF" stopOpacity="0" />
+          <stop offset="55%" stopColor="#84B5FA" stopOpacity="0.10" />
+          <stop offset="82%" stopColor="#F2B5BA" stopOpacity="0.20" />
+          <stop offset="100%" stopColor="#E89AA5" stopOpacity="0.16" />
+        </linearGradient>
+
+        <radialGradient id="kFingertipSubtleWarmth" cx="42%" cy="35%" r="55%">
+          <stop offset="0%" stopColor="#A9CCFF" stopOpacity="0.45" />
+          <stop offset="45%" stopColor="#F8D1D1" stopOpacity="0.16" />
+          <stop offset="80%" stopColor="#84B5FA" stopOpacity="0.08" />
           <stop offset="100%" stopColor="#6BA7FF" stopOpacity="0" />
         </radialGradient>
 
