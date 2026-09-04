@@ -121,6 +121,44 @@ One practical action.
 Fill each section with real content. Never copy these descriptions into your reply — they describe what to write, they are not text to output. Use the format only when the verse is doing real work; for an ordinary conversational reply, drop the headings and just talk."""
 
 
+COACHING_FLOW = """WHEN THEY ARE STUCK ON GETTING THINGS DONE
+Do not preach, and do not open with a verse. Work the problem:
+
+1. Understand what is actually happening. If you don't know why they're stuck, ask — is the task boring, unclear, too big, or is it the result they're afraid of? One question, not four.
+2. Name the practical problem in a sentence.
+3. Give ONE useful insight. Not three. Not a framework.
+4. Give ONE concrete next action, small enough to start now.
+5. Offer to do it through a tool — start the focus session, add the task, shrink the estimate, log the habit — rather than describing what they should do.
+
+"Give me 25 minutes on just the first paragraph" is worth more than any amount of philosophy about duty. If a Gita principle genuinely sharpens the point, bring it in after the practical part, never instead of it."""
+
+PRODUCTIVITY_HONESTY = """ABOUT THEIR DATA
+The numbers you were given are the only ones you have. Never invent a task, a streak, a focus time, a deadline or a trend. If you have not been shown a pattern, say you don't have enough data yet rather than guessing — "I don't know your best working hours yet, give me a few more days" is a good answer.
+
+Never say you did something — created a task, started a timer, logged a habit, saved a goal — unless a tool ran and came back ok. If a tool failed, say what failed."""
+
+NO_SHAME_RULE = """ABOUT MISSED WORK AND BROKEN STREAKS
+No shaming, no guilt, no manipulation, no "you said you would". A missed day is a missed day. Say what happened, then point forward: "Yesterday slipped. No problem — let's restart today." Never imply they have let you down."""
+
+
+def _productivity_block(brief: str) -> str:
+    return (
+        "WHERE THEY ACTUALLY ARE RIGHT NOW\n"
+        "Use this the way a friend who remembers would — naturally, and only "
+        "where it is relevant. Do not read it back as a list.\n" + brief
+    )
+
+
+def _plan_block(plan_text: str) -> str:
+    return (
+        "TODAY'S PROPOSED PLAN (computed from their real tasks)\n" + plan_text +
+        "\nPresent this as a plan, in their language, warmly and briefly. Lead with "
+        "the one that matters most, then the rest. Do not add tasks that are not "
+        "listed, do not invent times, and do not fill the buffer. Finish by "
+        "offering to start a focus session on the first item."
+    )
+
+
 def _memory_block(memories: list[dict[str, Any]]) -> str:
     if not memories:
         return ""
@@ -223,6 +261,9 @@ def build_system_prompt(
     gita_invalid_message: Optional[str] = None,
     motivation_cue: Optional[dict[str, Any]] = None,
     task_context: Optional[str] = None,
+    productivity_context: Optional[str] = None,
+    plan_context: Optional[str] = None,
+    gita_action_block: Optional[str] = None,
     time_hour: Optional[int] = None,
     extra_context: Optional[str] = None,
 ) -> str:
@@ -267,11 +308,31 @@ def build_system_prompt(
             "for one. Do not quote or paraphrase scripture. Be practical."
         )
 
+    # The coaching flow is what stops "I keep procrastinating" turning into a
+    # sermon about duty (Phase 1, section 10).
+    if c.intent in {"procrastination", "task_management", "daily_planning",
+                    "goal_setting", "habit_tracking", "timer", "weekly_review",
+                    "failure_recovery", "motivation"}:
+        blocks.append(COACHING_FLOW)
+
+    if gita_action_block:
+        blocks.append(gita_action_block)
+
     if motivation_cue:
         blocks.append(_motivation_block(motivation_cue))
 
     if memories:
         blocks.append(_memory_block(memories))
+
+    if productivity_context:
+        blocks.append(_productivity_block(productivity_context))
+        blocks.append(PRODUCTIVITY_HONESTY)
+
+    if plan_context:
+        blocks.append(_plan_block(plan_context))
+
+    if c.intent in {"habit_tracking", "failure_recovery", "procrastination"}:
+        blocks.append(NO_SHAME_RULE)
 
     if task_context:
         blocks.append(f"THEIR CURRENT TASKS\n{task_context}")

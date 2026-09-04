@@ -775,6 +775,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  /* Was 21x18 — the collapse chevron was the smallest target in the app. */
+  min-width: 26px;
+  min-height: 26px;
 }
 
 .todo-timer-toggle-btn:hover {
@@ -911,6 +914,12 @@ body {
   border-radius: 4px;
   flex-shrink: 0;
   transition: color var(--transition-fast);
+  /* Was 22x22 — just under the 24px minimum. */
+  min-width: 26px;
+  min-height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .todo-activity-btn-mode:hover {
@@ -1481,6 +1490,13 @@ body {
   cursor: pointer;
   font-size: var(--text-sm);
   padding: 2px;
+  /* Was 20x25 — under the 24px minimum target size. Grown via min-*
+     and centring so the glyph does not shift. */
+  min-width: 26px;
+  min-height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Toggle Switch */

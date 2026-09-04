@@ -37,7 +37,14 @@ MAX_TOOL_ROUNDS = 2
 
 # Action tools the model may invoke when native tool calling is on. Retrieval
 # tools are deliberately excluded — those are already pre-fetched.
-_ACTION_TOOLS = ("createTask", "listTasks", "completeTask", "startFocus", "endFocus", "saveMemory")
+_ACTION_TOOLS = (
+    "createTask", "listTasks", "completeTask", "updateTask",
+    "createGoal", "updateGoal", "linkTaskToGoal",
+    "logHabit", "createHabit",
+    "startFocus", "endFocus", "logTime",
+    "planMyDay", "getWeeklyReview", "getInsights", "createReminder",
+    "saveMemory",
+)
 
 _THINK_TAG = re.compile(r"<think>.*?</think>", re.DOTALL | re.IGNORECASE)
 _THINK_OPEN = re.compile(r"<think>.*$", re.DOTALL | re.IGNORECASE)
@@ -77,6 +84,8 @@ class KrishnaReply:
     tools_used: list[dict[str, Any]] = field(default_factory=list)
     memory_proposal: Optional[dict[str, Any]] = None
     memories_used: int = 0
+    productivity_used: bool = False
+    gita_action: Optional[dict[str, Any]] = None
     classification: dict[str, Any] = field(default_factory=dict)
     events: list[dict[str, Any]] = field(default_factory=list)
     safety_flags: list[str] = field(default_factory=list)
@@ -102,6 +111,8 @@ class KrishnaReply:
             "tools_used": self.tools_used,
             "memory_proposal": self.memory_proposal,
             "memories_used": self.memories_used,
+            "productivity_used": self.productivity_used,
+            "gita_action": self.gita_action,
             "classification": self.classification,
             "events": self.events,
             "safety_flags": self.safety_flags,
@@ -168,19 +179,45 @@ def _retrieve_gita(c: Classification, limit: int = 3) -> tuple[list[dict[str, An
     return enriched, None
 
 
-def _task_context() -> Optional[str]:
-    from context import get_todos
+def _productivity_context(c: Classification, user_id: str) -> Optional[str]:
+    """
+    The productivity brief for this turn, or None.
 
-    todos = get_todos()
-    if not todos:
+    Retrieval is deterministic here for the same reason Gita retrieval is: the
+    backend knows what the user has on, and a plan built from real rows beats
+    one the model improvises. Failures are swallowed — a productivity read
+    going wrong must not cost the user their reply.
+    """
+    if not (c.needs_productivity or c.needs_task):
         return None
-    pending = [t for t in todos if not t["completed"]]
-    done = len(todos) - len(pending)
-    lines = [f"  - {t['text']}" for t in pending[:10]]
-    return (
-        f"{len(pending)} pending, {done} completed.\n" + "\n".join(lines)
-        if lines else f"All {done} task(s) complete."
-    )
+    try:
+        from productivity.brief import build_brief
+
+        return build_brief(
+            user_id,
+            include_plan=c.intent == "daily_planning",
+            include_insights=c.intent in {"weekly_review", "procrastination"},
+        )
+    except Exception:
+        from observability import get_logger
+
+        get_logger("orchestrator").warning("productivity_context.failed", exc_info=True)
+        return None
+
+
+def _plan_context(c: Classification, user_id: str) -> Optional[str]:
+    """A concrete proposed plan, built only when the user asked to plan the day."""
+    if c.intent != "daily_planning":
+        return None
+    try:
+        from productivity.brief import plan_brief
+
+        return plan_brief(user_id)["text"]
+    except Exception:
+        from observability import get_logger
+
+        get_logger("orchestrator").warning("plan_context.failed", exc_info=True)
+        return None
 
 
 # ── Persistence ──────────────────────────────────────────────────────────
@@ -264,11 +301,23 @@ async def respond(
 
     cue = cue_for(c.intent, c.emotion, message).as_dict() if c.needs_motivation else None
 
+    productivity_context = _productivity_context(c, user_id)
+    plan_context = _plan_context(c, user_id)
+
+    # Gita → Action framing (Phase 1, section 11). Static mapping, no scripture:
+    # it shapes the practical advice, and any verse still comes from retrieval.
+    from krishna.gita_action import prompt_block, situation_for
+
+    situation = situation_for(c.intent, c.emotion, message)
+    gita_action = prompt_block(situation) if situation else None
+
     system_prompt = build_system_prompt(
         classification=c, mode=c.mode, user_name=user_name, buddy_name=buddy_name,
         memories=memories, gita_results=gita_results, gita_invalid_message=gita_invalid,
         motivation_cue=cue,
-        task_context=_task_context() if c.needs_task else None,
+        productivity_context=productivity_context,
+        plan_context=plan_context,
+        gita_action_block=gita_action,
     )
     rlog.prompt_chars = len(system_prompt)
 
@@ -281,7 +330,8 @@ async def respond(
     adapter = None
     try:
         use_native = NATIVE_TOOLS_ENABLED and (
-            c.needs_task or c.needs_timer or c.intent == "memory_write"
+            c.needs_task or c.needs_timer or c.needs_productivity
+            or c.intent == "memory_write"
         )
         if use_native:
             text, adapter, tools_used = await _generate_with_tool_loop(
@@ -329,7 +379,10 @@ async def respond(
         ],
         gita_invalid_message=gita_invalid,
         tools_used=tools_used, memory_proposal=memory_proposal,
-        memories_used=len(memories), classification=c.as_dict(),
+        memories_used=len(memories),
+        productivity_used=productivity_context is not None,
+        gita_action=situation.as_dict() if situation else None,
+        classification=c.as_dict(),
         safety_flags=c.safety_flags, request_id=rlog.request_id,
     )
 

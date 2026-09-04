@@ -40,12 +40,23 @@ def test_disabled_tools_are_declared_but_flagged():
 
 
 # ── Never claim success falsely ──────────────────────────────────────────
-@pytest.mark.parametrize("name", ["createGoal", "updateGoal", "logHabit", "createReminder", "searchWeb"])
+# createGoal / updateGoal / logHabit / createReminder were unbuilt in the
+# previous phase and are implemented now; searchWeb is still deliberately off.
+@pytest.mark.parametrize("name", ["searchWeb"])
 def test_unbuilt_tools_fail_honestly(seeded, name):
     res = execute_tool(name, {})
     assert res.ok is False
     assert res.error == "not_implemented"
     assert "not built yet" in res.message
+
+
+@pytest.mark.parametrize("name", ["createGoal", "updateGoal", "logHabit", "createReminder"])
+def test_phase_one_tools_are_no_longer_stubs(seeded, name):
+    """They must fail on missing input, not on 'not built yet'."""
+    res = execute_tool(name, {})
+    assert res.ok is False
+    assert res.error != "not_implemented"
+    assert REGISTRY[name].enabled is True
 
 
 def test_unknown_tool_fails(seeded):

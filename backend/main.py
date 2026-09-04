@@ -25,6 +25,7 @@ from routes.gita import router as gita_router
 from routes.daily import router as daily_router
 from routes.memory import router as memory_router
 from routes.krishna import router as krishna_router
+from routes.productivity import router as productivity_router
 
 
 @asynccontextmanager
@@ -90,6 +91,7 @@ app.include_router(gita_router)
 app.include_router(daily_router)
 app.include_router(memory_router)
 app.include_router(krishna_router)
+app.include_router(productivity_router)
 
 
 # ── Health Check ──────────────────────────────────────────────────
@@ -109,6 +111,14 @@ async def health():
         subsystems["database"] = DB_FILE.exists()
     except Exception as exc:
         subsystems["database_error"] = str(exc)
+    try:
+        from db import GLOBAL_SCOPE, get_setting
+        from productivity.tasks import MIGRATION_KEY
+
+        subsystems["productivity"] = True
+        subsystems["todos_migrated_at"] = get_setting(GLOBAL_SCOPE, MIGRATION_KEY)
+    except Exception as exc:
+        subsystems["productivity_error"] = str(exc)
 
     return {
         "status": "ok",

@@ -57,6 +57,23 @@ _PLANNING = re.compile(
     r"\b(prioriti[sz]e|daily plan|schedule my)\b",
     re.I,
 )
+_GOAL_SETTING = re.compile(
+    r"\b(set (?:a|my) goal|new goal|long[- ]term goal|my goal is|"
+    r"i want to become|i'?m trying to become|goal for (?:this|next) "
+    r"(?:month|year|quarter)|milestone)\b",
+    re.I,
+)
+_HABIT_TRACKING = re.compile(
+    r"\b(habit|streak|every ?day (?:i|for)|daily routine|track (?:my|this)|"
+    r"consisten(?:t|cy)|keep it up daily)\b",
+    re.I,
+)
+_REVIEW = re.compile(
+    r"\b(weekly review|review (?:my|the) week|how (?:did|was) (?:my|this|the) week|"
+    r"how'?s my week|week in review|how am i doing (?:this week|lately)|"
+    r"my (?:progress|stats|numbers))\b",
+    re.I,
+)
 _MEMORY_WRITE = re.compile(
     r"\b(remember (?:that|this)?|don'?t forget|keep in mind|note that|"
     r"save this|store this|from now on)\b",
@@ -154,8 +171,11 @@ _INTENTS: list[tuple[str, re.Pattern[str]]] = [
     ("timer", _TIMER),
     ("task_management", _TASK_VERBS),
     ("daily_planning", _PLANNING),
+    ("weekly_review", _REVIEW),
     ("memory_write", _MEMORY_WRITE),
     ("memory_read", _MEMORY_READ),
+    ("goal_setting", _GOAL_SETTING),
+    ("habit_tracking", _HABIT_TRACKING),
     ("decision_support", _DECISION),
     ("vague_life_question", _VAGUE_LIFE),
     ("web_lookup", _WEB),
@@ -175,6 +195,15 @@ _GITA_EMOTIONS = {"anxious", "sad", "frustrated", "stressed", "confused"}
 
 _MOTIVATION_INTENTS = {"procrastination", "failure_recovery", "motivation"}
 
+# Turns where Madhav's answer is better for knowing what the user actually has
+# on their plate. Everything else gets no productivity context at all — the
+# same discipline that keeps a Python question free of scripture (Part 51).
+_PRODUCTIVITY_INTENTS = {
+    "task_management", "daily_planning", "weekly_review", "goal_setting",
+    "habit_tracking", "timer", "procrastination", "celebration",
+    "failure_recovery", "motivation",
+}
+
 
 @dataclass
 class Classification:
@@ -191,6 +220,7 @@ class Classification:
     needs_timer: bool = False
     needs_tool: bool = False
     needs_motivation: bool = False
+    needs_productivity: bool = False
     gita_reference: Optional[tuple[int, int]] = None
     gita_reference_valid: Optional[bool] = None
     gita_query: Optional[str] = None
@@ -206,6 +236,7 @@ class Classification:
             "needsMemory": self.needs_memory,
             "needsTool": self.needs_tool,
             "needsWeb": self.needs_web,
+            "needsProductivity": self.needs_productivity,
         })
         if self.gita_reference:
             d["gita_reference"] = {
@@ -289,7 +320,11 @@ def classify(
     if c.needs_gita:
         c.gita_query = text if c.gita_reference is None else f"{c.gita_reference[0]}.{c.gita_reference[1]}"
 
-    c.needs_task = c.intent in {"task_management", "daily_planning"}
+    c.needs_task = c.intent in {"task_management", "daily_planning", "weekly_review"}
+    c.needs_productivity = (
+        c.intent in _PRODUCTIVITY_INTENTS
+        or (c.emotion in {"stressed", "tired"} and not c.is_technical)
+    )
     c.needs_timer = c.intent == "timer"
     c.needs_web = c.intent == "web_lookup" and not c.is_technical
     c.needs_memory = c.intent in {"memory_read", "memory_write"} or history_len == 0
@@ -297,6 +332,7 @@ def classify(
         c.emotion in {"sad", "frustrated", "tired"} and c.intent == "emotional_support"
     )
     c.needs_tool = any([c.needs_gita, c.needs_task, c.needs_timer, c.needs_web,
+                        c.needs_productivity,
                         c.intent in {"memory_read", "memory_write"}])
 
     if c.urgency != "crisis":

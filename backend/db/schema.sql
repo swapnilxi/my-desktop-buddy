@@ -148,68 +148,170 @@ CREATE TABLE IF NOT EXISTS daily_teachings (
     teaching_id  TEXT NOT NULL,
     created_at   TEXT NOT NULL
 );
+-- ══════════════════════════════════════════════════════════════════════════
+-- Productivity Intelligence Layer (Phase 1)
+--
+-- `tasks` is the single source of truth for work items. The legacy
+-- ~/.hamsterdesk/todos.json store is migrated in once (see db.migrate_todos_json)
+-- and the legacy /todos API keeps working by projecting these rows through
+-- `seq`, the per-user integer id the old JSON store handed out.
+-- ══════════════════════════════════════════════════════════════════════════
 
--- ── productivity (Phase 2 tables, created now so Phase 1 migrations settle)
+-- status:   TODO | IN_PROGRESS | COMPLETED | CANCELLED
+-- priority: LOW | MEDIUM | HIGH | CRITICAL
 CREATE TABLE IF NOT EXISTS tasks (
-    id            TEXT PRIMARY KEY,
-    user_id       TEXT NOT NULL,
-    title         TEXT NOT NULL,
-    description   TEXT,
-    priority      TEXT NOT NULL DEFAULT 'medium',
-    status        TEXT NOT NULL DEFAULT 'todo',
-    deadline      TEXT,
-    created_at    TEXT NOT NULL,
-    completed_at  TEXT,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    id                TEXT PRIMARY KEY,
+    user_id           TEXT NOT NULL,
+    seq               INTEGER,               -- per-user integer id (legacy /todos)
+    title             TEXT NOT NULL,
+    description       TEXT,
+    priority          TEXT NOT NULL DEFAULT 'MEDIUM',
+    status            TEXT NOT NULL DEFAULT 'TODO',
+    due_date          TEXT,
+    estimated_minutes INTEGER,
+    actual_minutes    INTEGER NOT NULL DEFAULT 0,
+    tags              TEXT NOT NULL DEFAULT '[]',
+    parent_task_id    TEXT,
+    goal_id           TEXT,
+    created_at        TEXT NOT NULL,
+    updated_at        TEXT NOT NULL,
+    completed_at      TEXT,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (parent_task_id) REFERENCES tasks(id) ON DELETE CASCADE
 );
 CREATE INDEX IF NOT EXISTS idx_tasks_user ON tasks(user_id, status);
+CREATE INDEX IF NOT EXISTS idx_tasks_parent ON tasks(user_id, parent_task_id);
+CREATE INDEX IF NOT EXISTS idx_tasks_goal ON tasks(user_id, goal_id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_tasks_seq ON tasks(user_id, seq);
 
+-- status: ACTIVE | COMPLETED | PAUSED | ARCHIVED
 CREATE TABLE IF NOT EXISTS goals (
-    id          TEXT PRIMARY KEY,
-    user_id     TEXT NOT NULL,
-    name        TEXT NOT NULL,
-    reason      TEXT,
-    category    TEXT,
-    deadline    TEXT,
-    progress    INTEGER NOT NULL DEFAULT 0,
-    status      TEXT NOT NULL DEFAULT 'active',
-    created_at  TEXT NOT NULL,
-    updated_at  TEXT NOT NULL,
+    id           TEXT PRIMARY KEY,
+    user_id      TEXT NOT NULL,
+    title        TEXT NOT NULL,
+    description  TEXT,
+    category     TEXT,
+    target_date  TEXT,
+    progress     INTEGER NOT NULL DEFAULT 0,
+    status       TEXT NOT NULL DEFAULT 'ACTIVE',
+    created_at   TEXT NOT NULL,
+    updated_at   TEXT NOT NULL,
+    completed_at TEXT,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+CREATE INDEX IF NOT EXISTS idx_goals_user ON goals(user_id, status);
 
-CREATE TABLE IF NOT EXISTS habits (
-    id          TEXT PRIMARY KEY,
-    user_id     TEXT NOT NULL,
-    name        TEXT NOT NULL,
-    emoji       TEXT,
-    cadence     TEXT NOT NULL DEFAULT 'daily',
-    created_at  TEXT NOT NULL,
+CREATE TABLE IF NOT EXISTS goal_milestones (
+    id           TEXT PRIMARY KEY,
+    goal_id      TEXT NOT NULL,
+    user_id      TEXT NOT NULL,
+    title        TEXT NOT NULL,
+    target       TEXT,
+    completed    INTEGER NOT NULL DEFAULT 0,
+    due_date     TEXT,
+    position     INTEGER NOT NULL DEFAULT 0,
+    completed_at TEXT,
+    created_at   TEXT NOT NULL,
+    FOREIGN KEY (goal_id) REFERENCES goals(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+CREATE INDEX IF NOT EXISTS idx_milestones_goal ON goal_milestones(goal_id, position);
+
+-- frequency: daily | weekly
+CREATE TABLE IF NOT EXISTS habits (
+    id              TEXT PRIMARY KEY,
+    user_id         TEXT NOT NULL,
+    name            TEXT NOT NULL,
+    emoji           TEXT,
+    frequency       TEXT NOT NULL DEFAULT 'daily',
+    target_per_week INTEGER NOT NULL DEFAULT 7,
+    goal_id         TEXT,
+    archived        INTEGER NOT NULL DEFAULT 0,
+    created_at      TEXT NOT NULL,
+    updated_at      TEXT,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_habits_user ON habits(user_id, archived);
 
 CREATE TABLE IF NOT EXISTS habit_logs (
-    id        TEXT PRIMARY KEY,
-    habit_id  TEXT NOT NULL,
-    day       TEXT NOT NULL,
-    done      INTEGER NOT NULL DEFAULT 1,
-    note      TEXT,
+    id         TEXT PRIMARY KEY,
+    habit_id   TEXT NOT NULL,
+    user_id    TEXT,
+    day        TEXT NOT NULL,
+    done       INTEGER NOT NULL DEFAULT 1,
+    note       TEXT,
+    created_at TEXT,
     FOREIGN KEY (habit_id) REFERENCES habits(id) ON DELETE CASCADE
 );
 CREATE UNIQUE INDEX IF NOT EXISTS idx_habit_day ON habit_logs(habit_id, day);
 
+-- category (mode): DEEP_WORK | STUDY | WRITING | CODING | ADMIN | CREATIVE | OTHER
 CREATE TABLE IF NOT EXISTS focus_sessions (
     id            TEXT PRIMARY KEY,
     user_id       TEXT NOT NULL,
     activity      TEXT,
+    category      TEXT NOT NULL DEFAULT 'OTHER',
     planned_secs  INTEGER NOT NULL,
     actual_secs   INTEGER,
     session_type  TEXT NOT NULL DEFAULT 'focus',
+    task_id       TEXT,
+    goal_id       TEXT,
+    intended      TEXT,
+    reflection    TEXT,
+    finished_intent INTEGER,
     started_at    TEXT NOT NULL,
     ended_at      TEXT,
     completed     INTEGER NOT NULL DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+CREATE INDEX IF NOT EXISTS idx_focus_user ON focus_sessions(user_id, started_at);
+
+-- Activity-based time tracking. A focus session that ends writes one of these
+-- too, so "time spent" has a single table to aggregate over.
+CREATE TABLE IF NOT EXISTS time_entries (
+    id          TEXT PRIMARY KEY,
+    user_id     TEXT NOT NULL,
+    task_id     TEXT,
+    goal_id     TEXT,
+    category    TEXT NOT NULL DEFAULT 'OTHER',
+    description TEXT,
+    source      TEXT NOT NULL DEFAULT 'manual',   -- manual | focus
+    started_at  TEXT NOT NULL,
+    ended_at    TEXT,
+    seconds     INTEGER,
+    created_at  TEXT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_time_user ON time_entries(user_id, started_at);
+
+-- A saved "Plan My Day" result. One row per user per day; regenerating
+-- replaces it, so the plan the user accepted is what Today shows.
+CREATE TABLE IF NOT EXISTS daily_plans (
+    id         TEXT PRIMARY KEY,
+    user_id    TEXT NOT NULL,
+    day        TEXT NOT NULL,
+    blocks     TEXT NOT NULL DEFAULT '[]',
+    notes      TEXT,
+    source     TEXT NOT NULL DEFAULT 'generated', -- generated | user
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_plan_day ON daily_plans(user_id, day);
+
+-- Reminders are STORED, not pushed: there is no scheduler yet, so a reminder
+-- surfaces on the Today screen when it is due. The tool says so explicitly.
+CREATE TABLE IF NOT EXISTS reminders (
+    id         TEXT PRIMARY KEY,
+    user_id    TEXT NOT NULL,
+    text       TEXT NOT NULL,
+    remind_at  TEXT,
+    task_id    TEXT,
+    done       INTEGER NOT NULL DEFAULT 0,
+    created_at TEXT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_reminders_user ON reminders(user_id, done);
 
 CREATE TABLE IF NOT EXISTS journal_entries (
     id          TEXT PRIMARY KEY,
@@ -222,6 +324,7 @@ CREATE TABLE IF NOT EXISTS journal_entries (
     updated_at  TEXT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
 
 -- ── settings / notifications / usage ─────────────────────────────────────
 CREATE TABLE IF NOT EXISTS settings (

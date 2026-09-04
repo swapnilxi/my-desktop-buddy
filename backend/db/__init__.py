@@ -52,6 +52,12 @@ def init_db(path: Optional[Path] = None, force: bool = False) -> None:
         if _initialized and not force:
             return
         with _connect(path) as conn:
+            # Migrations run FIRST: schema.sql declares indexes over columns
+            # that an older profile does not have yet, so the ALTER TABLEs have
+            # to land before the script does.
+            from db.migrations import migrate
+
+            migrate(conn)
             conn.executescript(SCHEMA_FILE.read_text(encoding="utf-8"))
             conn.execute(
                 "INSERT OR IGNORE INTO users (id, display_name, created_at, updated_at)"
@@ -109,3 +115,25 @@ def ensure_user(user_id: str, display_name: Optional[str] = None) -> str:
             (user_id, display_name or "Friend", now_iso(), now_iso()),
         )
     return user_id
+
+
+# ── Settings helpers ─────────────────────────────────────────────────────
+GLOBAL_SCOPE = "__global__"
+
+
+def get_setting(user_id: str, key: str, default: Optional[str] = None) -> Optional[str]:
+    with get_conn() as conn:
+        row = conn.execute(
+            "SELECT value FROM settings WHERE user_id = ? AND key = ?", (user_id, key)
+        ).fetchone()
+    return row["value"] if row is not None else default
+
+
+def set_setting(user_id: str, key: str, value: str) -> None:
+    with get_conn() as conn:
+        conn.execute(
+            "INSERT INTO settings (user_id, key, value, updated_at) VALUES (?,?,?,?)"
+            " ON CONFLICT(user_id, key) DO UPDATE SET value = excluded.value,"
+            " updated_at = excluded.updated_at",
+            (user_id, key, value, now_iso()),
+        )
