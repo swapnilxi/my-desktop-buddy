@@ -1,299 +1,545 @@
 """
-Voice routes — STT and TTS endpoints.
+Voice routes — STT, TTS and the end-to-end voice conversation.
 
-TTS supports:
-  - Deepgram Aura (mode="deepgram", requires client key or server DEEPGRAM_API_KEY)
-  - Apple native voices via the macOS `say` CLI (mode="apple")
+Provider selection lives in `voice/providers.py`, not here. This module's job
+is to turn config plus request headers into a chain, hand it to the runner,
+and shape the response. That is what makes the whole thing configurable:
+adding a provider means adding it to the registry, not editing an if-ladder in
+a route.
 
-Both return raw audio bytes that the frontend plays directly.
+STT and TTS are independent. "Sarvam ears, Cartesia voice" is a valid
+combination, each has its own ordered fallback list, and a provider that
+cannot work (no key, wrong capability, not on this OS) is skipped with a
+recorded reason rather than attempted.
+
+`POST /voice/converse` is the one that matters for voice: audio in, and one
+response carrying the transcript, the orchestrated reply (Gita retrieval,
+memory and productivity context included) and the spoken audio. A single round
+trip is what makes voice feel immediate instead of stuttery.
+
+Voice synthesis is never allowed to break a conversation: if every TTS
+provider fails, `/voice/converse` still returns the transcript and the reply,
+with `voice_error` explaining why there is no audio.
 """
-import asyncio
+import base64
+import json
 import os
-import tempfile
-from typing import Optional
+from typing import Any, Optional
 
-import httpx
-from fastapi import APIRouter, HTTPException, Request, Header
+from fastapi import APIRouter, Form, HTTPException, Request, Header
 from fastapi.responses import Response
 from pydantic import BaseModel
 
 from config_manager import get_config
+from voice import gemini_voice as GV
+from voice import providers as P
 
 router = APIRouter(prefix="/voice", tags=["voice"])
 
-DEEPGRAM_TTS_URL = "https://api.deepgram.com/v1/speak"
-DEEPGRAM_STT_URL = "https://api.deepgram.com/v1/listen"
-
-
-try:
-    from voice.fish_audio_manager import synthesize_fish_audio, get_character_reference_id
-except (ImportError, ModuleNotFoundError):
-    from backend.voice.fish_audio_manager import synthesize_fish_audio, get_character_reference_id
-
 
 class SpeakRequest(BaseModel):
-    text: str
+    # Optional so /voice/test can audition a provider with its own sample
+    # sentence. /speak still rejects an empty string with a 400.
+    text: str = ""
     voice: Optional[str] = None
     character: Optional[str] = None
+    provider: Optional[str] = None
+    preset: Optional[str] = None
+    language: Optional[str] = None
 
 
-async def _deepgram_stt(audio_bytes: bytes, content_type: str, model: str, api_key: str) -> str:
-    """Transcribe audio with Deepgram; returns the transcript text."""
-    params = {"model": model, "smart_format": "true", "punctuate": "true"}
-    async with httpx.AsyncClient(timeout=60) as client:
-        resp = await client.post(
-            DEEPGRAM_STT_URL,
-            params=params,
-            headers={
-                "Authorization": f"Token {api_key}",
-                "Content-Type": content_type or "audio/webm",
-            },
-            content=audio_bytes,
-        )
-    if resp.status_code != 200:
-        raise HTTPException(
-            status_code=502,
-            detail=f"Deepgram STT failed ({resp.status_code}): {resp.text[:200]}",
-        )
-    data = resp.json()
-    try:
-        transcript = data["results"]["channels"][0]["alternatives"][0]["transcript"]
-    except (KeyError, IndexError):
-        raise HTTPException(status_code=502, detail="Unexpected Deepgram STT response.")
-    return transcript.strip()
+# ── Turning a request into a chain ───────────────────────────────────────
+def _header_keys(**headers: Optional[str]) -> dict[str, str]:
+    """Client-supplied keys, mapped onto provider ids."""
+    mapping = {
+        "gemini": headers.get("x_gemini_key"),
+        "deepgram": headers.get("x_deepgram_key"),
+        "fish_audio": headers.get("x_fish_audio_key"),
+        "cartesia": headers.get("x_cartesia_key"),
+        "sarvam": headers.get("x_sarvam_key"),
+    }
+    return {pid: v.strip() for pid, v in mapping.items() if v and v.strip()}
 
 
-async def _gemini_stt(audio_bytes: bytes, content_type: str, api_key: str) -> str:
-    """Transcribe audio with Gemini Flash when Deepgram is not configured."""
-    from google import genai
-    from google.genai import types
+def _voice_settings(config: Any, overrides: Optional[dict[str, Any]] = None) -> dict[str, Any]:
+    """The per-provider choices the chain runner needs, config first."""
+    v = config.voice
+    settings: dict[str, Any] = {
+        "gemini_voice": v.gemini_voice,
+        "gemini_tts_model": v.gemini_tts_model,
+        "sarvam_speaker": v.sarvam_speaker,
+        "sarvam_tts_model": v.sarvam_tts_model,
+        "sarvam_stt_model": v.sarvam_stt_model,
+        "cartesia_voice_id": v.cartesia_voice_id,
+        "cartesia_tts_model": v.cartesia_tts_model,
+        "cartesia_stt_model": v.cartesia_stt_model,
+        "deepgram_model": v.deepgram_model,
+        "tts_voice": v.tts_voice,
+        "apple_voice": v.apple_voice,
+        "fish_audio_model": v.fish_audio_model,
+    }
+    settings.update({k: val for k, val in (overrides or {}).items() if val})
+    return settings
 
-    def _sync_transcribe():
-        client = genai.Client(api_key=api_key)
-        mime = content_type.split(";")[0].strip() if content_type else "audio/webm"
-        if not mime or mime == "application/octet-stream":
-            mime = "audio/webm"
-        resp = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=[
-                types.Part.from_bytes(data=audio_bytes, mime_type=mime),
-                "Transcribe this speech audio clip verbatim. Output ONLY the plain transcription text with no preamble or explanation.",
-            ],
-        )
-        return resp.text.strip() if resp.text else ""
 
-    return await asyncio.to_thread(_sync_transcribe)
+def _voice_override(provider: Optional[str], voice: Optional[str]) -> dict[str, Any]:
+    """
+    A one-off `voice` argument, routed to whichever setting that provider uses.
+
+    Each provider names its voice differently (a preset id, a speaker name, a
+    UUID, an Aura model, a macOS voice), so a bare `voice=` has to be mapped
+    rather than passed through.
+    """
+    if not voice:
+        return {}
+    return {
+        "gemini": {"gemini_voice": voice},
+        "sarvam": {"sarvam_speaker": voice},
+        "cartesia": {"cartesia_voice_id": voice},
+        "deepgram": {"tts_voice": voice},
+        "apple": {"apple_voice": voice},
+        "fish_audio": {"fish_audio_reference_id": voice},
+    }.get((provider or "").lower(), {})
 
 
+def _resolve_language(config: Any, requested: Optional[str], text: str = "") -> Optional[str]:
+    """
+    'auto' means detect per reply; anything else is the user pinning it in
+    Config, and that wins over detection.
+    """
+    if requested:
+        return requested
+    configured = (config.voice.voice_language or "auto").strip()
+    if configured and configured.lower() != "auto":
+        return configured
+    return GV.detect_language(text) if text else None
+
+
+async def _read_audio_upload(request: Request) -> tuple[bytes, str]:
+    """Pull audio out of a multipart upload or a raw body."""
+    raw_content_type = request.headers.get("content-type") or ""
+    if raw_content_type.startswith("multipart/form-data"):
+        form = await request.form()
+        upload = form.get("audio")
+        if upload is None or not hasattr(upload, "read"):
+            raise HTTPException(status_code=400, detail="No 'audio' file field in upload.")
+        audio_bytes = await upload.read()
+        content_type = getattr(upload, "content_type", None) or "audio/webm"
+    else:
+        audio_bytes = await request.body()
+        content_type = raw_content_type or "audio/webm"
+    if not audio_bytes:
+        raise HTTPException(status_code=400, detail="Empty audio upload.")
+    return audio_bytes, content_type
+
+
+# ══════════════════════════════════════════════════════════════════════════
+# Introspection — what the Config screen needs
+# ══════════════════════════════════════════════════════════════════════════
+@router.get("/providers")
+async def providers(
+    x_gemini_key: Optional[str] = Header(None),
+    x_deepgram_key: Optional[str] = Header(None),
+    x_fish_audio_key: Optional[str] = Header(None),
+    x_cartesia_key: Optional[str] = Header(None),
+    x_sarvam_key: Optional[str] = Header(None),
+) -> dict[str, Any]:
+    """
+    The capability matrix: every provider, what it can do, whether it is
+    usable right now, and the voices it offers.
+
+    `available: false` always comes with `unavailable_reason`, so the Config
+    screen can say "no API key configured" rather than greying something out
+    without explanation.
+    """
+    config = get_config()
+    keys = P.resolve_keys(config, _header_keys(
+        x_gemini_key=x_gemini_key, x_deepgram_key=x_deepgram_key,
+        x_fish_audio_key=x_fish_audio_key, x_cartesia_key=x_cartesia_key,
+        x_sarvam_key=x_sarvam_key,
+    ))
+    data = await P.catalog(config, keys)
+    v = config.voice
+    data["selected"] = {
+        "tts_provider": v.tts_provider,
+        "stt_provider": v.stt_provider,
+        "tts_fallback": list(v.tts_fallback or []),
+        "stt_fallback": list(v.stt_fallback or []),
+        "language": v.voice_language,
+        "autoplay": v.voice_autoplay,
+        "voices": {
+            "gemini": v.gemini_voice, "sarvam": v.sarvam_speaker,
+            "cartesia": v.cartesia_voice_id, "deepgram": v.tts_voice,
+            "apple": v.apple_voice,
+        },
+    }
+    data["effective_tts_chain"] = P.build_chain(v.tts_provider, list(v.tts_fallback or []), "tts")
+    data["effective_stt_chain"] = P.build_chain(v.stt_provider, list(v.stt_fallback or []), "stt")
+    return data
+
+
+@router.get("/voices")
+async def voices(
+    provider: Optional[str] = None,
+    x_gemini_key: Optional[str] = Header(None),
+    x_cartesia_key: Optional[str] = Header(None),
+) -> dict[str, Any]:
+    """
+    Voices for one provider, or all of them.
+
+    Kept alongside /providers because the Config picker asks for a single
+    provider's voices when the user switches provider.
+    """
+    config = get_config()
+    keys = P.resolve_keys(config, _header_keys(
+        x_gemini_key=x_gemini_key, x_cartesia_key=x_cartesia_key,
+    ))
+    catalog = await P.catalog(config, keys)
+    if provider:
+        pid = provider.strip().lower()
+        if pid not in P.PROVIDERS:
+            raise HTTPException(status_code=404, detail=f"No provider called {provider!r}.")
+        return {"provider": pid, "voices": catalog["voices"].get(pid, [])}
+
+    # Back-compat: this route used to return only the Gemini presets.
+    return {
+        "presets": catalog["voices"]["gemini"],
+        "default": GV.DEFAULT_PRESET,
+        "selected": config.voice.gemini_voice or GV.DEFAULT_PRESET,
+        "gemini_available": "gemini" in keys,
+        "languages": ["hi-IN", "en-IN"],
+        "model": config.voice.gemini_tts_model or GV.TTS_MODEL,
+        "voices": catalog["voices"],
+        "note": (
+            "Gemini prebuilt voices are language-agnostic. The Indian accent and "
+            "the Hindi/Hinglish handling come from the per-preset style "
+            "instruction plus the detected language code, not from a locale-"
+            "specific voice model. Sarvam, Cartesia and macOS `say` do offer "
+            "natively Indian voices."
+        ),
+    }
+
+
+# ══════════════════════════════════════════════════════════════════════════
+# STT
+# ══════════════════════════════════════════════════════════════════════════
 @router.post("/transcribe")
 async def transcribe(
     request: Request,
-    x_deepgram_key: Optional[str] = Header(None),
+    provider: Optional[str] = None,
+    language: Optional[str] = None,
     x_gemini_key: Optional[str] = Header(None),
+    x_deepgram_key: Optional[str] = Header(None),
+    x_cartesia_key: Optional[str] = Header(None),
+    x_sarvam_key: Optional[str] = Header(None),
     x_stt_provider: Optional[str] = Header(None),
-):
+) -> dict[str, Any]:
     """
-    Speech-to-text transcription.
-    Supports Gemini Flash STT and Deepgram STT.
-    Accepts raw audio bytes as the request body.
+    Speech to text, through the configured STT chain.
+
+    Accepts multipart (field "audio") or a raw audio body.
     """
     config = get_config()
-    stt_pref = (x_stt_provider or config.voice.stt_provider or "gemini").lower()
+    keys = P.resolve_keys(config, _header_keys(
+        x_gemini_key=x_gemini_key, x_deepgram_key=x_deepgram_key,
+        x_cartesia_key=x_cartesia_key, x_sarvam_key=x_sarvam_key,
+    ))
+    audio_bytes, content_type = await _read_audio_upload(request)
 
-    deepgram_key = (
-        x_deepgram_key
-        or config.api_keys.deepgram_key
-        or os.getenv("DEEPGRAM_API_KEY")
-        or os.getenv("DEEPGRAM_KEY")
+    chain = P.build_chain(
+        provider or x_stt_provider or config.voice.stt_provider,
+        list(config.voice.stt_fallback or []), "stt",
     )
-    gemini_key = (
-        x_gemini_key
-        or config.api_keys.gemini_key
-        or os.getenv("GEMINI_API_KEY")
-        or os.getenv("GEMINI_KEY")
-    )
-
-    if not deepgram_key and not gemini_key:
-        raise HTTPException(
-            status_code=400,
-            detail=(
-                "Microphone listening (STT) requires a Gemini key or Deepgram key (DEEPGRAM_API_KEY). "
-                "Note: Fish Audio is active for speaking (TTS), not microphone input (STT). "
-                "You can type your message in the chat box, use Apple / Browser dictation, or configure a key in Config."
-            ),
-        )
-
-    audio_bytes = await request.body()
-    if not audio_bytes:
-        raise HTTPException(status_code=400, detail="Empty audio upload.")
-
-    content_type = request.headers.get("content-type") or "audio/webm"
-    if content_type.startswith("multipart/form-data"):
-        content_type = "audio/webm"
-
-    # 1. Prefer Gemini if requested or if Deepgram is missing
-    if (stt_pref == "gemini" and gemini_key) or (gemini_key and not deepgram_key):
-        try:
-            transcript = await _gemini_stt(audio_bytes, content_type, gemini_key)
-            if not transcript:
-                raise HTTPException(status_code=422, detail="Could not understand the audio. Try again!")
-            return {"transcript": transcript, "model": "gemini-2.5-flash"}
-        except HTTPException:
-            raise
-        except Exception as exc:
-            if not deepgram_key:
-                raise HTTPException(status_code=502, detail=f"Gemini speech transcription failed: {exc}")
-
-    # 2. Use Deepgram
-    if deepgram_key:
-        model = config.voice.deepgram_model or "nova-2"
-        transcript = await _deepgram_stt(audio_bytes, content_type, model, deepgram_key)
-        if not transcript:
-            raise HTTPException(status_code=422, detail="Could not understand the audio. Try again!")
-        return {"transcript": transcript, "model": model}
-
-    # 3. Fallback to Gemini if Deepgram failed but Gemini key exists
-    if gemini_key:
-        try:
-            transcript = await _gemini_stt(audio_bytes, content_type, gemini_key)
-            return {"transcript": transcript, "model": "gemini-2.5-flash"}
-        except Exception as exc:
-            raise HTTPException(status_code=502, detail=f"Transcription failed: {exc}")
-
-    raise HTTPException(status_code=400, detail="No STT provider key available.")
-
-
-async def _deepgram_tts(text: str, voice: str, api_key: str) -> bytes:
-    """Synthesize speech with Deepgram Aura; returns MP3 bytes."""
-    async with httpx.AsyncClient(timeout=30) as client:
-        resp = await client.post(
-            DEEPGRAM_TTS_URL,
-            params={"model": voice},
-            headers={
-                "Authorization": f"Token {api_key}",
-                "Content-Type": "application/json",
-            },
-            json={"text": text},
-        )
-    if resp.status_code != 200:
-        raise HTTPException(
-            status_code=502,
-            detail=f"Deepgram TTS failed ({resp.status_code}): {resp.text[:200]}",
-        )
-    return resp.content
-
-
-def _apple_tts_sync(text: str, voice: str) -> bytes:
-    """Synthesize speech with macOS `say`; returns WAV bytes."""
-    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
-        out_path = tmp.name
-
     try:
-        cmd = ["say", "-o", out_path, "--data-format=LEI16@22050"]
-        if voice:
-            cmd += ["-v", voice]
-        cmd.append(text)
-        try:
-            subprocess.run(cmd, check=True, capture_output=True, timeout=60)
-        except subprocess.CalledProcessError:
-            # Named voice may not be installed — retry with system default.
-            cmd = ["say", "-o", out_path, "--data-format=LEI16@22050", text]
-            subprocess.run(cmd, check=True, capture_output=True, timeout=60)
-        with open(out_path, "rb") as f:
-            return f.read()
-    finally:
-        try:
-            os.unlink(out_path)
-        except OSError:
-            pass
+        heard = await P.transcribe_with_chain(
+            audio_bytes, content_type, keys=keys, chain=chain,
+            settings=_voice_settings(config),
+            language=_resolve_language(config, language),
+        )
+    except P.NoProviderError as exc:
+        # "Nothing heard" is a 422 the user can act on; a provider failure is
+        # a 502 they cannot. Distinguishing them is the point.
+        if all(a["error"] == "no speech detected" for a in exc.attempts if a):
+            raise HTTPException(
+                status_code=422,
+                detail="Could not make out any speech. Try again, a little longer.",
+            )
+        raise HTTPException(status_code=502, detail=str(exc)[:500])
+
+    return {
+        "transcript": heard.transcript,
+        "provider": heard.provider,
+        "model": heard.meta.get("model"),
+        "attempts": heard.attempts,
+    }
 
 
-async def _apple_tts(text: str, voice: str) -> bytes:
-    import subprocess
-    return await asyncio.to_thread(_apple_tts_sync, text, voice)
-
-
+# ══════════════════════════════════════════════════════════════════════════
+# TTS
+# ══════════════════════════════════════════════════════════════════════════
 @router.post("/speak")
 async def speak(
     request: SpeakRequest,
+    x_gemini_key: Optional[str] = Header(None),
     x_deepgram_key: Optional[str] = Header(None),
     x_fish_audio_key: Optional[str] = Header(None),
+    x_cartesia_key: Optional[str] = Header(None),
+    x_sarvam_key: Optional[str] = Header(None),
     x_buddy_type: Optional[str] = Header(None),
     x_voice_mode: Optional[str] = Header(None),
+    x_voice_preset: Optional[str] = Header(None),
 ):
     """
-    Text-to-speech synthesis. Returns audio bytes (audio/mpeg or audio/wav).
-    Supports:
-      - Fish Audio TTS (mode="fish_audio", per-character voice model IDs)
-      - Deepgram Aura (mode="deepgram")
-      - Apple native voices (mode="apple") / browser TTS fallback
+    Text to speech through the configured TTS chain.
+
+    The provider and voice that actually spoke come back in
+    `X-Voice-Provider` / `X-Voice-Meta`, which matters when the requested one
+    was rate-limited and the chain fell through to another.
     """
     text = request.text.strip()
     if not text:
         raise HTTPException(status_code=400, detail="No text provided.")
 
     config = get_config()
-    voice_cfg = config.voice
-    mode = (x_voice_mode or voice_cfg.mode or "apple").lower()
+    keys = P.resolve_keys(config, _header_keys(
+        x_gemini_key=x_gemini_key, x_deepgram_key=x_deepgram_key,
+        x_fish_audio_key=x_fish_audio_key, x_cartesia_key=x_cartesia_key,
+        x_sarvam_key=x_sarvam_key,
+    ))
+    character = (
+        request.character or x_buddy_type or config.hamster.buddy_type or "hamster"
+    ).strip().lower()
+    chosen = request.provider or x_voice_mode or config.voice.tts_provider
 
-    # Determine character
-    character = (request.character or x_buddy_type or config.hamster.buddy_type or "hamster").strip().lower()
+    overrides = _voice_override(chosen, request.voice)
+    if request.preset or x_voice_preset:
+        overrides["gemini_voice"] = request.preset or x_voice_preset
 
-    # 1. Fish Audio Mode
-    fish_audio_key = (
-        x_fish_audio_key
-        or config.api_keys.fish_audio_key
-        or os.getenv("FISH_AUDIO_KEY")
-    )
-    if mode == "fish_audio" or (x_voice_mode == "fish_audio"):
-        if not fish_audio_key:
-            raise HTTPException(
-                status_code=400,
-                detail="No Fish Audio API key configured. Enter your key in Config → API Keys or set FISH_AUDIO_KEY in backend/.env.",
-            )
-        ref_id = request.voice or get_character_reference_id(character)
-        if not ref_id:
-            env_var = f"FISH_AUDIO_ID_{character.upper()}"
-            raise HTTPException(
-                status_code=400,
-                detail=f"No Fish Audio voice model ID configured for character '{character}'. Please add {env_var}=<model_id> in backend/.env.",
-            )
-        try:
-            audio = await synthesize_fish_audio(
-                text=text,
-                character=character,
-                api_key=fish_audio_key,
-                reference_id=ref_id,
-                model=voice_cfg.fish_audio_model,
-            )
-            return Response(content=audio, media_type="audio/mpeg")
-        except Exception as exc:
-            raise HTTPException(status_code=502, detail=f"Fish Audio TTS failed: {exc}")
-
-    # 2. Deepgram Aura Mode
-    deepgram_key = (
-        x_deepgram_key
-        or config.api_keys.deepgram_key
-        or os.getenv("DEEPGRAM_API_KEY")
-        or os.getenv("DEEPGRAM_KEY")
-    )
-    if (mode == "deepgram" or x_deepgram_key) and deepgram_key:
-        voice = request.voice or voice_cfg.tts_voice or "aura-asteria-en"
-        audio = await _deepgram_tts(text, voice, deepgram_key)
-        return Response(content=audio, media_type="audio/mpeg")
-
-    # 3. Apple native fallback (macOS)
-    voice = request.voice or voice_cfg.apple_voice or "Samantha"
+    chain = P.build_chain(chosen, list(config.voice.tts_fallback or []), "tts")
     try:
-        import subprocess
-        audio = await _apple_tts(text, voice)
-    except FileNotFoundError:
+        spoken = await P.synthesize_with_chain(
+            text, keys=keys, chain=chain,
+            settings=_voice_settings(config, overrides),
+            language=_resolve_language(config, request.language, text),
+            character=character,
+        )
+    except P.NoProviderError as exc:
+        raise HTTPException(status_code=502, detail=str(exc)[:500])
+
+    return Response(
+        content=spoken.audio,
+        media_type=spoken.media_type,
+        headers={
+            "X-Voice-Provider": spoken.provider,
+            "X-Voice-Meta": json.dumps(
+                {**spoken.meta, "attempts": spoken.attempts}, ensure_ascii=False
+            )[:1800],
+        },
+    )
+
+
+@router.post("/test")
+async def test_voice(
+    request: SpeakRequest,
+    x_gemini_key: Optional[str] = Header(None),
+    x_deepgram_key: Optional[str] = Header(None),
+    x_fish_audio_key: Optional[str] = Header(None),
+    x_cartesia_key: Optional[str] = Header(None),
+    x_sarvam_key: Optional[str] = Header(None),
+) -> dict[str, Any]:
+    """
+    Audition one provider+voice from the Config screen.
+
+    Unlike /speak this does NOT fall back: the point is to find out whether
+    *this* provider works, so a failure is reported as a failure rather than
+    quietly answered by a different voice.
+    """
+    config = get_config()
+    keys = P.resolve_keys(config, _header_keys(
+        x_gemini_key=x_gemini_key, x_deepgram_key=x_deepgram_key,
+        x_fish_audio_key=x_fish_audio_key, x_cartesia_key=x_cartesia_key,
+        x_sarvam_key=x_sarvam_key,
+    ))
+    pid = (request.provider or config.voice.tts_provider or "gemini").strip().lower()
+    if pid not in P.PROVIDERS:
+        raise HTTPException(status_code=404, detail=f"No provider called {pid!r}.")
+
+    text = request.text.strip() or "Namaste dost. Chalo, aaj ka kaam shuru karte hain."
+    overrides = _voice_override(pid, request.voice)
+    try:
+        spoken = await P.synthesize_with_chain(
+            text, keys=keys, chain=[pid],
+            settings=_voice_settings(config, overrides),
+            language=_resolve_language(config, request.language, text),
+            character=(request.character or config.hamster.buddy_type or "krishna").lower(),
+        )
+    except P.NoProviderError as exc:
+        return {
+            "ok": False, "provider": pid, "audio": None,
+            "error": exc.attempts[0]["error"] if exc.attempts else str(exc),
+            "attempts": exc.attempts,
+        }
+
+    return {
+        "ok": True,
+        "provider": spoken.provider,
+        "audio": base64.b64encode(spoken.audio).decode("ascii"),
+        "audio_mime": spoken.media_type,
+        "meta": spoken.meta,
+        "error": None,
+    }
+
+
+# ══════════════════════════════════════════════════════════════════════════
+# End-to-end voice conversation
+# ══════════════════════════════════════════════════════════════════════════
+@router.post("/converse")
+async def converse(
+    request: Request,
+    conversation_id: Optional[str] = Form(None),
+    mode: Optional[str] = Form(None),
+    buddy_name: Optional[str] = Form(None),
+    user_name: Optional[str] = Form(None),
+    speak_reply: bool = Form(True),
+    x_user_id: Optional[str] = Header(None),
+    x_gemini_key: Optional[str] = Header(None),
+    x_deepseek_key: Optional[str] = Header(None),
+    x_deepgram_key: Optional[str] = Header(None),
+    x_fish_audio_key: Optional[str] = Header(None),
+    x_cartesia_key: Optional[str] = Header(None),
+    x_sarvam_key: Optional[str] = Header(None),
+    x_llm_provider: Optional[str] = Header(None),
+    x_gemini_model: Optional[str] = Header(None),
+    x_deepseek_model: Optional[str] = Header(None),
+    x_stt_provider: Optional[str] = Header(None),
+    x_buddy_type: Optional[str] = Header(None),
+    x_voice_mode: Optional[str] = Header(None),
+    x_voice_preset: Optional[str] = Header(None),
+) -> dict[str, Any]:
+    """
+    One round trip: speech in → transcript → orchestrated reply → speech out.
+
+    The reply goes through the same `/krishna/chat` orchestrator, so voice gets
+    the whole pipeline — Gita retrieval, memory, productivity context, tools —
+    rather than the flat legacy prompt the mic used to reach.
+
+    Conversation history is loaded server-side from `conversation_id`, because
+    a multipart audio upload is a bad place to carry a transcript.
+
+    Audio comes back as base64 in `audio` with its `audio_mime`. If every TTS
+    provider fails, `audio` is null and `voice_error` says why — the transcript
+    and the reply are still returned, because losing the answer because the
+    voice failed would be the wrong trade.
+    """
+    from db import DEFAULT_USER_ID
+    from krishna.orchestrator import load_history, respond
+
+    config = get_config()
+    user_id = (x_user_id or DEFAULT_USER_ID).strip() or DEFAULT_USER_ID
+    keys = P.resolve_keys(config, _header_keys(
+        x_gemini_key=x_gemini_key, x_deepgram_key=x_deepgram_key,
+        x_fish_audio_key=x_fish_audio_key, x_cartesia_key=x_cartesia_key,
+        x_sarvam_key=x_sarvam_key,
+    ))
+    audio_bytes, content_type = await _read_audio_upload(request)
+
+    # ── 1. Speech → text ─────────────────────────────────────────────────
+    stt_chain = P.build_chain(
+        x_stt_provider or config.voice.stt_provider,
+        list(config.voice.stt_fallback or []), "stt",
+    )
+    if not any(pid in keys for pid in stt_chain):
         raise HTTPException(
-            status_code=501,
-            detail="Apple TTS unavailable on this server. Configure Fish Audio or Deepgram in Config, or use browser voices.",
+            status_code=400,
+            detail=(
+                "Voice chat needs a speech-recognition key — Gemini, Sarvam, "
+                "Cartesia or Deepgram. Add one in Config → API Keys."
+            ),
+        )
+    try:
+        heard = await P.transcribe_with_chain(
+            audio_bytes, content_type, keys=keys, chain=stt_chain,
+            settings=_voice_settings(config),
+            language=_resolve_language(config, None),
+        )
+    except P.NoProviderError as exc:
+        if all(a["error"] == "no speech detected" for a in exc.attempts if a):
+            raise HTTPException(
+                status_code=422,
+                detail="Could not make out any speech in that clip. Try again, a little longer.",
+            )
+        raise HTTPException(status_code=502, detail=str(exc)[:500])
+
+    # ── 2. Text → orchestrated reply (the RAG pipeline) ──────────────────
+    client_keys: dict[str, str] = {}
+    if x_gemini_key:
+        client_keys["gemini_key"] = x_gemini_key.strip()
+    if x_deepseek_key:
+        client_keys["deepseek_key"] = x_deepseek_key.strip()
+    client_models: dict[str, str] = {}
+    if x_gemini_model:
+        client_models["gemini_model"] = x_gemini_model.strip()
+    if x_deepseek_model:
+        client_models["deepseek_model"] = x_deepseek_model.strip()
+
+    history = load_history(user_id, conversation_id) if conversation_id else []
+
+    try:
+        reply = await respond(
+            message=heard.transcript,
+            history=history,
+            mode=mode,
+            user_id=user_id,
+            user_name=user_name,
+            buddy_name=buddy_name,
+            conversation_id=conversation_id,
+            client_provider=x_llm_provider,
+            client_keys=client_keys or None,
+            client_models=client_models or None,
         )
     except Exception as exc:
-        raise HTTPException(status_code=502, detail=f"TTS failed: {exc}")
+        raise HTTPException(
+            status_code=502,
+            detail=f"Heard you ({heard.transcript!r}) but the reply failed: {exc}",
+        )
 
-    return Response(content=audio, media_type="audio/wav")
+    payload: dict[str, Any] = {
+        **reply.as_dict(),
+        "transcript": heard.transcript,
+        "stt_provider": heard.provider,
+        "stt_model": heard.meta.get("model"),
+        "audio": None,
+        "audio_mime": None,
+        "voice_provider": None,
+        "voice_meta": None,
+        "voice_error": None,
+    }
 
+    # ── 3. Reply → speech ────────────────────────────────────────────────
+    if not speak_reply:
+        return payload
+
+    character = (x_buddy_type or config.hamster.buddy_type or "krishna").strip().lower()
+    overrides = {"gemini_voice": x_voice_preset} if x_voice_preset else {}
+    tts_chain = P.build_chain(
+        x_voice_mode or config.voice.tts_provider,
+        list(config.voice.tts_fallback or []), "tts",
+    )
+    try:
+        spoken = await P.synthesize_with_chain(
+            reply.response, keys=keys, chain=tts_chain,
+            settings=_voice_settings(config, overrides),
+            language=_resolve_language(config, None, reply.response),
+            character=character,
+        )
+        payload["audio"] = base64.b64encode(spoken.audio).decode("ascii")
+        payload["audio_mime"] = spoken.media_type
+        payload["voice_provider"] = spoken.provider
+        payload["voice_meta"] = {**spoken.meta, "attempts": spoken.attempts}
+    except P.NoProviderError as exc:
+        # Deliberately not fatal: the user still gets the answer on screen.
+        payload["voice_error"] = str(exc)[:400]
+    except Exception as exc:
+        payload["voice_error"] = str(exc)[:400]
+
+    return payload

@@ -6,8 +6,17 @@ import { stopSpeaking } from '@/lib/speech';
 import { createBrowserSpeechRecognition, isSpeechRecognitionSupported } from '@/lib/speechRecognition';
 
 interface UseVoiceRecorderOptions {
-    /** Called with the transcript once Deepgram STT returns. */
+    /** Called with the transcript once STT returns. */
     onTranscribed: (transcript: string) => void;
+    /**
+     * When set, the raw recording is handed over instead of being transcribed
+     * here — the caller sends it to `/voice/converse`, which transcribes, runs
+     * the orchestrator and synthesizes the reply in a single round trip.
+     *
+     * The browser-speech-recognition path never reaches this: it produces text
+     * directly and still goes through `onTranscribed`.
+     */
+    onAudio?: (blob: Blob) => Promise<void> | void;
     /** Called when recording actually starts (mic granted). */
     onRecordingStart?: () => void;
     /** Called when recording stops (before transcription). */
@@ -26,9 +35,13 @@ export interface VoiceRecorderState {
 }
 
 /**
- * Reusable mic recorder: records via MediaRecorder, transcribes through
- * the backend (/voice/transcribe → Deepgram), then hands the transcript
- * to `onTranscribed`.
+ * Reusable mic recorder.
+ *
+ * Two paths out, depending on what the caller wants:
+ *   * `onAudio` — the recording goes straight to `/voice/converse` (one round
+ *     trip for transcript + reply + speech). This is the smooth path.
+ *   * `onTranscribed` — the recorder transcribes via `/voice/transcribe` and
+ *     hands back text. Also the path the browser recognizer always takes.
  */
 export function useVoiceRecorder(options: UseVoiceRecorderOptions): VoiceRecorderState {
     const [isRecording, setIsRecording] = useState(false);
@@ -169,6 +182,13 @@ export function useVoiceRecorder(options: UseVoiceRecorderOptions): VoiceRecorde
             setIsTranscribing(true);
             optionsRef.current.onTranscribingStart?.();
             try {
+                const handleAudio = optionsRef.current.onAudio;
+                if (handleAudio) {
+                    await handleAudio(blob);
+                    setIsTranscribing(false);
+                    optionsRef.current.onDone?.();
+                    return;
+                }
                 const { transcript } = await transcribeAudio(blob);
                 setIsTranscribing(false);
                 optionsRef.current.onTranscribed(transcript);

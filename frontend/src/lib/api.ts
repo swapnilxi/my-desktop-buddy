@@ -38,13 +38,35 @@ export interface LLMConfig {
   ollama_endpoint: string;
 }
 
+export type VoiceProviderId =
+  | 'gemini' | 'sarvam' | 'cartesia' | 'deepgram' | 'fish_audio' | 'apple' | 'browser';
+
 export interface VoiceConfig {
+  /** Legacy alias for tts_provider; the backend keeps the two in sync. */
   mode: string;
+  tts_provider?: string;
   stt_provider?: string;
+  /** Tried in order when the chosen provider fails. */
+  tts_fallback?: string[];
+  stt_fallback?: string[];
+
+  // Per-provider settings
+  gemini_voice?: string;
+  gemini_tts_model?: string;
+  sarvam_speaker?: string;
+  sarvam_tts_model?: string;
+  sarvam_stt_model?: string;
+  cartesia_voice_id?: string;
+  cartesia_tts_model?: string;
+  cartesia_stt_model?: string;
   deepgram_model: string;
   tts_voice: string;
   apple_voice: string;
   fish_audio_model?: string;
+
+  /** 'auto' | 'hi-IN' | 'en-IN' */
+  voice_language?: string;
+  voice_autoplay?: boolean;
 }
 
 export interface RAGConfig {
@@ -71,6 +93,8 @@ export interface APIKeysConfig {
   deepseek_key: string;
   deepgram_key: string;
   fish_audio_key?: string;
+  cartesia_key?: string;
+  sarvam_key?: string;
 }
 
 export interface ServerCapabilities {
@@ -98,13 +122,19 @@ export type BuddyMood = HamsterMood;
 
 export function getClientApiKeys(): APIKeysConfig {
   if (typeof window === 'undefined') {
-    return { gemini_key: '', deepseek_key: '', deepgram_key: '', fish_audio_key: '' };
+    return {
+      gemini_key: '', deepseek_key: '', deepgram_key: '',
+      fish_audio_key: '', cartesia_key: '', sarvam_key: '',
+    };
   }
   try {
     const raw = localStorage.getItem(KEYS_STORAGE_KEY);
     return raw ? JSON.parse(raw) : { gemini_key: '', deepseek_key: '', deepgram_key: '', fish_audio_key: '' };
   } catch {
-    return { gemini_key: '', deepseek_key: '', deepgram_key: '', fish_audio_key: '' };
+    return {
+      gemini_key: '', deepseek_key: '', deepgram_key: '',
+      fish_audio_key: '', cartesia_key: '', sarvam_key: '',
+    };
   }
 }
 
@@ -159,6 +189,12 @@ export function getClientAuthHeaders(): Record<string, string> {
   if (keys.fish_audio_key && !keys.fish_audio_key.includes('•')) {
     headers['X-Fish-Audio-Key'] = keys.fish_audio_key.trim();
   }
+  if (keys.cartesia_key && !keys.cartesia_key.includes('•')) {
+    headers['X-Cartesia-Key'] = keys.cartesia_key.trim();
+  }
+  if (keys.sarvam_key && !keys.sarvam_key.includes('•')) {
+    headers['X-Sarvam-Key'] = keys.sarvam_key.trim();
+  }
 
   if (savedConfig?.voice?.mode) {
     headers['X-Voice-Mode'] = savedConfig.voice.mode;
@@ -183,6 +219,16 @@ export function getClientAuthHeaders(): Record<string, string> {
   if (savedConfig?.hamster?.name) {
     headers['X-Buddy-Name'] = savedConfig.hamster.name;
   }
+
+  if (savedConfig?.voice?.gemini_voice) {
+    headers['X-Voice-Preset'] = savedConfig.voice.gemini_voice;
+  }
+
+  // Every call carries the user id, not just the Krishna ones. Without it the
+  // legacy /todos endpoints resolve to 'local-user' while the tools resolve to
+  // this browser's id, and the To-Do tab and the buddy end up looking at two
+  // different people's tasks.
+  headers['X-User-Id'] = getUserId();
 
   return headers;
 }
@@ -597,10 +643,30 @@ export interface KrishnaChatResponse {
   tools_used: { name: string; arguments: Record<string, unknown>; result: Record<string, unknown> }[];
   memory_proposal?: MemoryProposal | null;
   memories_used: number;
+  productivity_used?: boolean;
+  gita_action?: GitaActionSituation | null;
   classification: Record<string, unknown>;
   events: { event: string; at: string; presentation: Record<string, unknown> }[];
   safety_flags: string[];
   request_id: string;
+  conversation_id?: string | null;
+}
+
+/**
+ * A situation from the Gita → Action map. `actions` are a modern
+ * interpretation, never a quotation — `action_label` and `disclaimer` carry
+ * that and must be shown if the actions are.
+ */
+export interface GitaActionSituation {
+  id: string;
+  label: string;
+  concepts: string[];
+  search_themes: string[];
+  actions: string[];
+  action_label: string;
+  tool_hint?: string | null;
+  avoid: string[];
+  disclaimer: string;
 }
 
 export interface GitaSources {
@@ -804,4 +870,212 @@ export async function runKrishnaTool(
     method: 'POST',
     body: JSON.stringify({ name, arguments: args }),
   });
+}
+
+// ══════════════════════════════════════════════════════════════════
+// Sessions — "New chat" / restart
+// ══════════════════════════════════════════════════════════════════
+
+export interface ChatSession {
+  id: string;
+  user_id: string;
+  title?: string | null;
+  mode: string;
+  created_at: string;
+  updated_at: string;
+  message_count: number;
+}
+
+/** Start a fresh conversation. The previous one is kept, not deleted. */
+export async function createChatSession(
+  mode: KrishnaModeId = 'friend',
+  title?: string,
+): Promise<ChatSession> {
+  return krishnaRequest<ChatSession>('/krishna/sessions', {
+    method: 'POST',
+    body: JSON.stringify({ mode, title }),
+  });
+}
+
+export async function fetchChatSessions(limit = 20): Promise<{ sessions: ChatSession[] }> {
+  return krishnaRequest(`/krishna/sessions?limit=${limit}`);
+}
+
+export async function fetchSessionMessages(
+  conversationId: string,
+  limit = 50,
+): Promise<{ conversation_id: string; messages: ChatMessage[] }> {
+  return krishnaRequest(`/krishna/sessions/${conversationId}?limit=${limit}`);
+}
+
+export async function deleteChatSession(conversationId: string): Promise<void> {
+  return krishnaRequest<void>(`/krishna/sessions/${conversationId}`, { method: 'DELETE' });
+}
+
+// ══════════════════════════════════════════════════════════════════
+// Voice
+// ══════════════════════════════════════════════════════════════════
+
+export interface VoicePreset {
+  id: string;
+  label: string;
+  voice: string;
+  description: string;
+  default_for: string[];
+}
+
+export interface VoicePresetsResponse {
+  presets: VoicePreset[];
+  default: string;
+  selected: string;
+  gemini_available: boolean;
+  languages: string[];
+  model: string;
+  note: string;
+  voices: Record<string, ProviderVoice[]>;
+}
+
+export async function fetchVoicePresets(): Promise<VoicePresetsResponse> {
+  return krishnaRequest('/voice/voices');
+}
+
+/** A voice offered by one provider. Ids mean different things per provider —
+ *  a Gemini preset id, a Sarvam speaker name, a Cartesia UUID, a macOS voice. */
+export interface ProviderVoice {
+  id: string;
+  label: string;
+  language?: string | null;
+  gender?: string | null;
+  description?: string;
+}
+
+export interface VoiceProvider {
+  id: VoiceProviderId;
+  label: string;
+  supports_tts: boolean;
+  supports_stt: boolean;
+  description: string;
+  key_field: string | null;
+  client_side: boolean;
+  local: boolean;
+  /** 'native' — real Indian voices; 'directed' — accent via prompt; 'none'. */
+  indian_voices: 'native' | 'directed' | 'none';
+  languages: string[];
+  notes: string;
+  available: boolean;
+  unavailable_reason: string | null;
+}
+
+export interface VoiceProvidersResponse {
+  providers: VoiceProvider[];
+  voices: Record<string, ProviderVoice[]>;
+  tts_providers: string[];
+  stt_providers: string[];
+  default_tts_chain: string[];
+  default_stt_chain: string[];
+  effective_tts_chain: string[];
+  effective_stt_chain: string[];
+  selected: {
+    tts_provider: string;
+    stt_provider: string;
+    tts_fallback: string[];
+    stt_fallback: string[];
+    language: string;
+    autoplay: boolean;
+    voices: Record<string, string>;
+  };
+}
+
+/** The full capability matrix: who can do what, and what is usable right now. */
+export async function fetchVoiceProviders(): Promise<VoiceProvidersResponse> {
+  return krishnaRequest('/voice/providers');
+}
+
+export interface VoiceTestResponse {
+  ok: boolean;
+  provider: string;
+  audio: string | null;
+  audio_mime?: string;
+  meta?: Record<string, unknown>;
+  error: string | null;
+  attempts?: { provider: string; error: string }[];
+}
+
+/**
+ * Audition one provider+voice.
+ *
+ * Deliberately does NOT fall back — the point is to find out whether *this*
+ * provider works, so a failure is reported rather than quietly answered by a
+ * different voice.
+ */
+export async function testVoice(
+  provider: string,
+  options: { voice?: string; text?: string; language?: string } = {},
+): Promise<VoiceTestResponse> {
+  return krishnaRequest<VoiceTestResponse>('/voice/test', {
+    method: 'POST',
+    body: JSON.stringify({
+      provider,
+      voice: options.voice,
+      text: options.text ?? '',
+      language: options.language,
+    }),
+  });
+}
+
+/**
+ * One round trip for a spoken turn: audio in → transcript + orchestrated
+ * reply + spoken audio out.
+ *
+ * `audio` is base64; it is null when synthesis failed, in which case
+ * `voice_error` says why. The transcript and reply are always present, so a
+ * TTS outage costs the voice, not the answer.
+ */
+export interface VoiceConverseResponse extends KrishnaChatResponse {
+  transcript: string;
+  stt_model: string;
+  audio: string | null;
+  audio_mime: string | null;
+  voice_provider: string | null;
+  voice_meta: Record<string, unknown> | null;
+  voice_error: string | null;
+}
+
+export async function converseWithVoice(
+  blob: Blob,
+  options: {
+    conversationId?: string;
+    mode?: KrishnaModeId;
+    buddyName?: string;
+    speakReply?: boolean;
+  } = {},
+): Promise<VoiceConverseResponse> {
+  const form = new FormData();
+  const ext = blob.type.includes('mp4') ? 'mp4' : blob.type.includes('wav') ? 'wav' : 'webm';
+  form.append('audio', blob, `speech.${ext}`);
+  if (options.conversationId) form.append('conversation_id', options.conversationId);
+  if (options.mode) form.append('mode', options.mode);
+  if (options.buddyName) form.append('buddy_name', options.buddyName);
+  form.append('speak_reply', String(options.speakReply !== false));
+
+  // Note: no Content-Type header — the browser must set the multipart boundary.
+  const response = await fetch(`${API_BASE}/voice/converse`, {
+    method: 'POST',
+    headers: krishnaHeaders(),
+    body: form,
+  });
+
+  if (!response.ok) {
+    let detail: unknown = null;
+    try {
+      detail = (await response.json())?.detail ?? null;
+    } catch {
+      /* non-JSON error body */
+    }
+    const message =
+      typeof detail === 'string' ? detail : `Voice chat failed (${response.status})`;
+    throw new KrishnaApiError(message, response.status, detail);
+  }
+
+  return response.json();
 }

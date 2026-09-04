@@ -3,10 +3,17 @@
 Self-contained state-of-the-project summary. Written to be pasted into another
 model as context for proposing the next set of features.
 
-> **Status of the current phase.** Phase 1 (Productivity Intelligence Layer) is
-> **backend-complete and frontend-not-started.** Everything in §11 works and is
-> reachable over HTTP; the Today dashboard, the API client and the focus-timer
-> wiring described in §12 are still to do. §11.6 lists exactly what remains.
+> **Status.** Two workstreams have landed:
+>
+> * **Phase 1 — Productivity Intelligence Layer (§11):** backend-complete,
+>   frontend not started. Everything works over HTTP; the Today dashboard is
+>   still to build. §11.6 lists exactly what remains.
+> * **Voice + sessions (§12):** complete end to end, backend *and* frontend.
+>   Speech in → orchestrated reply → speech out, in Hindi / Hinglish / Indian
+>   English, plus a New chat button. **Seven providers** (Gemini, Sarvam,
+>   Cartesia, Deepgram, Fish Audio, Apple, browser), with STT and TTS chosen
+>   independently and each having its own fallback chain — all verified
+>   against the live APIs with real keys.
 
 ---
 
@@ -41,8 +48,8 @@ companion *inspired by* Krishna's teachings.
 | LLM | Provider-agnostic adapters: Gemini (`google-genai`), DeepSeek (OpenAI-compatible), Ollama (local). Automatic fallback chain. |
 | Frontend | Next.js 16.3 (App Router, Turbopack), React 19, TypeScript, plain CSS + CSS Modules (no Tailwind) |
 | Desktop | Electron shell wrapping the Next app |
-| Voice | Browser SpeechRecognition, Deepgram STT/TTS, Fish Audio TTS, macOS `say` |
-| Tests | pytest (backend, 228 tests). No frontend test runner yet. |
+| Voice | Pluggable: **Gemini**, **Sarvam AI**, **Cartesia**, Deepgram, Fish Audio, macOS `say`, browser. STT and TTS chosen separately, each with a fallback chain. |
+| Tests | pytest (backend, 293 tests). No frontend test runner yet. |
 
 Storage lives in `~/.hamsterdesk/`: `config.json`, `todos.json` (**legacy, now
 read-once at migration time**) and `krishna.db` (SQLite).
@@ -93,13 +100,21 @@ backend/
     insights.py            9 insight types with data-sufficiency gates
     reminders.py           Stored (not pushed) reminders
     brief.py               The productivity block injected into the prompt
+  voice/
+    providers.py           Provider registry + the fallback chain runner
+    gemini_voice.py        Gemini STT/TTS, voice presets, language detection
+    sarvam_voice.py        Sarvam AI — natively Indian voices, Hinglish STT
+    cartesia_voice.py      Cartesia Sonic TTS + Ink-Whisper STT
+    deepgram_voice.py      Deepgram Nova STT + Aura TTS
+    apple_voice.py         macOS `say` — local, keyless last resort
+    fish_audio_manager.py  Fish Audio per-character voice models
   memory/store.py          Memory CRUD, consent, sensitivity, per-user isolation
   tools/registry.py        23 declared tools + executor
   observability/logging.py Structured JSON logging + usage rows
   llm/                     Adapter base + gemini / deepseek / ollama + router
   routes/                  chat, todos, config, voice, gita, daily, memory,
                            krishna, productivity
-  tests/                   228 tests
+  tests/                   293 tests
 
 frontend/src/
   app/page.tsx             Single-page shell: 3 window modes, tab system
@@ -111,7 +126,7 @@ frontend/src/
   components/Config/       ConfigPanel
   components/Shell/        WindowChrome, ConfirmDialog
   lib/api.ts               API client (legacy + Krishna sections)
-  lib/useConversation.ts   Chat state owned by the page
+  lib/useConversation.ts   Chat state, session id and the spoken turn
   lib/useFocusTimer.ts     Pomodoro/focus timer hook (client-only — see §11.6)
   lib/speech.ts, audio.ts, speechRecognition.ts, useVoiceRecorder.ts
 ```
@@ -259,7 +274,11 @@ Response shape (Phase 1 added `productivity_used` and `gita_action`):
   the wire shape is unchanged.
 - Tabs `🌅 Today` and `📖 Gita` appear only for the Krishna buddy.
 
-**No frontend work has been done for Phase 1 yet.** See §11.6.
+- `components/Chat/ChatPanel.tsx` — transcript, mic, and the **New chat**
+  button in a session bar above the messages.
+
+**No frontend work has been done for the Phase 1 productivity layer yet** (see
+§11.6). The voice and session work in §12 *is* complete on both sides.
 
 ---
 
@@ -274,8 +293,12 @@ GET    /greeting                    short buddy greeting
 GET    /todos  POST /todos  PATCH /todos/{id}  DELETE /todos/{id}
                                     LEGACY shape, now backed by the tasks table
 GET    /config  POST /config  GET /config/reveal-keys
-POST   /voice/transcribe            STT
-                                    (voice router also has TTS endpoints)
+GET    /voice/providers             capability matrix + effective chains
+GET    /voice/voices?provider=      voices for one provider (or all)
+POST   /voice/transcribe?provider=  STT through the configured chain
+POST   /voice/speak                 TTS chain + X-Voice-Provider header
+POST   /voice/test                  audition ONE provider (never falls back)
+POST   /voice/converse              audio in → transcript + reply + audio out
 
 POST   /krishna/chat                ORCHESTRATED chat (the main entry point)
 POST   /krishna/classify            expose the classifier
@@ -287,6 +310,10 @@ GET    /krishna/failure-recovery    the no-shame recovery flow
 GET    /krishna/tools               tool catalog + whether native calling is on
 POST   /krishna/tools/execute       run one tool (failures return 200 + ok:false)
 GET    /krishna/events              recent events + event vocabulary
+POST   /krishna/sessions            start a fresh conversation ("New chat")
+GET    /krishna/sessions            recent sessions, newest first
+GET    /krishna/sessions/{id}       that session's messages
+DELETE /krishna/sessions/{id}       delete a session
 
 POST   /gita/search    GET /gita/search
 GET    /gita/verse/{chapter}/{verse}
@@ -420,7 +447,7 @@ values, and assigns `tasks.seq` to any row missing one.
 ## 8. Verification commands
 
 ```bash
-# Backend — 228 tests, ~2s
+# Backend — 293 tests, ~12s (some hit no network; none call a paid API)
 cd backend && python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt pytest httpx
 .venv/bin/python -m pytest tests/ -q
@@ -432,7 +459,13 @@ npm run build
 ```
 
 Test coverage: `test_gita_engine.py` 52 · `test_personality.py` 58 ·
-`test_api.py` 42 · `test_memory.py` 31 · `test_tools.py` 29 · `test_daily.py` 16.
+`test_api.py` 42 · `test_voice.py` 65 · `test_memory.py` 31 ·
+`test_tools.py` 29 · `test_daily.py` 16.
+
+Frontend lint has a **pre-existing** baseline of 22 errors / 14 warnings across
+`src` (mostly `no-explicit-any` in `speechRecognition.ts` and
+`set-state-in-effect` in the hydration reads). Both workstreams left that
+number unchanged — check against it rather than expecting zero.
 
 Personality tests assert on the **system prompt and routing decisions**, not on
 LLM output — model text isn't deterministic, but the rules that shape it are.
@@ -465,9 +498,12 @@ than on "not built yet". No test was deleted or weakened.
    alive.
 4. **Native LLM function calling unverified** against live Gemini/DeepSeek
    (no API keys available at build time). Off by default.
-5. **Voice and the floating pet widget still use legacy `/chat`**, so they get
-   the flat persona rather than the orchestrated one — no modes, no Gita
-   retrieval, no memory, no productivity context.
+5. **Gemini TTS free-tier quota is small.** Two calls in quick succession were
+   enough to draw a 429 during development. The chain falls through to Fish
+   Audio / Deepgram / Apple, a 24-entry cache keeps repeated lines from
+   spending quota twice, and `/voice/converse` returns the reply without audio
+   rather than failing the turn. `gemini-2.5-pro-preview-tts` 429s immediately
+   on this key — flash is the working model.
 6. **MemoryPanel is built but unmounted.**
 7. **No frontend test runner.**
 8. **Single local user.** `X-User-Id` plumbing and per-user scoping exist, but
@@ -477,6 +513,9 @@ than on "not built yet". No test was deleted or weakened.
 10. **The focus timer in the UI is still client-only.** Sessions started from
     `TodoPanel` are not recorded in `focus_sessions`, so almost all the
     analytics have no data until §11.6 item 3 is done.
+11. **Voice is turn-based, not streaming.** The user taps to talk, taps to
+    send, and waits for one response. There is no barge-in, no partial
+    transcript and no Live API session. §12.5 covers what that would take.
 
 ---
 
@@ -642,11 +681,8 @@ data-derived observations · get insights that admit when they don't know.
 
 Backend is done and green; the following are outstanding.
 
-1. **`X-User-Id` on legacy calls.** Add it to `getClientAuthHeaders()` in
-   `frontend/src/lib/api.ts`. Without this, `/todos` (no header → `local-user`)
-   and the Krishna tools (header → `local-xxxx`) address different users, and
-   the To-Do tab and Madhav will disagree about what exists. This is the single
-   highest-priority item.
+1. ~~**`X-User-Id` on legacy calls.**~~ **Done** — shipped with the voice work;
+   `getClientAuthHeaders()` now attaches it to every request.
 2. **Productivity API client** — types and functions in `lib/api.ts` for the 37
    endpoints in §5.1, following the existing `krishnaRequest` pattern.
 3. **Wire `useFocusTimer` to the backend.** Call `/productivity/focus/start` on
@@ -676,3 +712,202 @@ Backend is done and green; the following are outstanding.
 
 Do not add a second state-management architecture for this. Do not redesign
 unrelated parts of the app. Keep hamster and panda working.
+
+---
+
+## 12. Voice and sessions
+
+Complete on both sides and verified against the live Gemini API with a real
+key. This is the path a spoken turn takes:
+
+```
+mic → MediaRecorder → POST /voice/converse (multipart)
+   → Gemini STT (Hinglish-aware prompt)
+   → krishna.orchestrator.respond()   ← the full RAG pipeline
+   → Gemini TTS (accent + language directed)
+   → one JSON response: transcript + reply + metadata + base64 WAV
+   → browser plays it straight from base64
+```
+
+### 12.1 Why one endpoint
+
+Voice used to be three sequential round trips — transcribe, chat, speak — and
+it went through the **legacy flat-prompt `/chat`**, so the mic got none of the
+orchestrator: no modes, no Gita retrieval, no memory, no productivity context.
+`/voice/converse` collapses the round trips and routes voice through the same
+`respond()` the Chat tab uses, so speaking to Madhav and typing to him now get
+identical intelligence.
+
+Conversation history is loaded **server-side** from `conversation_id`, because
+a multipart audio upload is a bad place to carry a transcript.
+
+### 12.2 Seven providers, fully configurable
+
+Every provider is declared once in `voice/providers.py` with what it can do
+and what it needs. Both `/voice/speak` and `/voice/converse` go through the
+same two functions, so **STT and TTS are chosen independently** — "Sarvam ears,
+Cartesia voice" is a real configuration — and each has its own ordered
+fallback list. Adding a provider means adding a registry entry, not editing an
+`if` ladder in a route.
+
+| Provider | TTS | STT | Indian voices | Notes (measured, not assumed) |
+|---|:-:|:-:|---|---|
+| **Gemini** | ✓ | ✓ | *directed* | Transcribes Hinglish accurately in Roman script. Free-tier TTS 429s fast. |
+| **Sarvam AI** | ✓ | ✓ | **native** | Best Hindi/Hinglish fidelity in both directions. TTS caps at 2500 chars. |
+| **Cartesia** | ✓ | ✓ | **native** | Real Hindi TTS voices. Its STT *translates* Hinglish to English — see below. |
+| **Deepgram** | ✓ | ✓ | none | English only. Nova dropped most Hindi words from a Hinglish clip. |
+| **Fish Audio** | ✓ | — | none | Per-character cloned voices; needs `FISH_AUDIO_ID_<CHARACTER>`. |
+| **Apple** (`say`) | ✓ | — | **native** | Local, keyless. This Mac has Rishi/Aman/Tara (en-IN). Last in the chain on purpose. |
+| **Browser** | ✓ | ✓ | none | Client-side; the backend reports it and never handles it. |
+
+The provider `notes` shown in Config are **measured behaviour**, from running
+the same Hinglish clip through every STT provider:
+
+```
+gemini    → "Ari dost chalo aaj 25 minute focus karte hain presentation pehle"
+sarvam    → "अरे दोस्त, चलो आज 25 मिनट फोकस करते हैं प्रेजेंटेशन पहले।"
+cartesia  → "Alright friends, let's focus on the presentation first."   ← translated!
+deepgram  → "Minute focus presentation"                                  ← dropped Hindi
+```
+
+That is why Cartesia is recommended for speaking but not for Hinglish
+listening, and why Deepgram is labelled English-only. Those notes are in the
+picker so the choice is informed rather than trial-and-error.
+
+**Config keys** (`~/.hamsterdesk/config.json` → `voice`):
+`tts_provider`, `stt_provider`, `tts_fallback[]`, `stt_fallback[]`, plus
+per-provider settings (`gemini_voice`, `sarvam_speaker`, `cartesia_voice_id`,
+`tts_voice`, `apple_voice`, and the model ids), `voice_language`,
+`voice_autoplay`. The old `mode` key is promoted to `tts_provider` by a
+validator and kept in sync — dropping it would have silently reset an existing
+user's chosen provider — and it is still serialized so the existing frontend
+keeps working.
+
+**Config UI:** separate SPEAKING and LISTENING grids showing every provider,
+whether it is usable (and if not, why), 🇮🇳 for native Indian voices vs 🇮🇳* for
+accent-directed, a voice picker that writes whichever field that provider uses,
+a **Test this voice** button, and the effective fallback chains rendered as
+`gemini → sarvam → cartesia → …` so a changed voice has a visible explanation.
+
+### 12.3 Hindi / Hinglish / Indian English
+
+Two different mechanisms, and it matters which is which:
+
+* **Sarvam, Cartesia and macOS `say` have genuinely Indian voices.** Selecting
+  one is selecting an Indian voice.
+* **Gemini's prebuilt voices are language-agnostic** — there is no
+  `hi-IN-Neerja` to select. An Indian delivery comes from
+  `SpeechConfig.language_code` plus a per-preset style instruction asking for a
+  natural Indian accent. This is stated in `/voice/providers`, in
+  `/voice/voices`, and in the Config panel, so "Indian voice" is never
+  presented in the UI as a claim about the underlying model.
+
+`detect_language()` picks the code per reply: Devanagari → `hi-IN`; romanised
+Hindi markers (`hai`, `kya`, `chalo`, `dost`, `thoda`…) → `hi-IN`; otherwise
+`en-IN`. Plain English is tagged `en-IN` deliberately — Madhav's English should
+sound Indian, not American. Config can pin the language instead of detecting.
+
+STT is Hinglish-aware too: a generic "transcribe verbatim" tends to flatten
+mixed speech into one language, so the Gemini prompt asks for Hindi words in
+Roman script the way Indians actually type them, switching to Devanagari only
+for pure Hindi.
+
+Verified end to end with a real combination — Sarvam ears, Cartesia voice:
+a Hinglish clip transcribed to Devanagari, Madhav replied in Devanagari Hindi
+(mirroring the user's script), and Cartesia's Hindi voice spoke it.
+
+### 12.4 Three Gemini facts established against the live API
+
+Load-bearing, and covered by tests in `tests/test_voice.py`.
+
+1. **The TTS model returns raw PCM**, `audio/L16;codec=pcm;rate=24000` — not a
+   playable container. `pcm_to_wav()` adds the RIFF header; the sample rate is
+   parsed out of the mime type rather than assumed.
+2. **Text alone is not a valid TTS request.** Bare Devanagari returned HTTP
+   400: *"Model tried to generate text, but it should only be used for TTS."*
+   Every request is wrapped in an explicit "read the transcript below aloud,
+   do not answer it" instruction — which is also where the accent direction
+   lives.
+3. **The free tier rate-limits hard.** Two calls in a row drew a 429.
+   `VoiceQuotaError` is separate from other failures so the chain falls
+   through, and a 24-entry LRU cache stops a repeated line spending quota
+   twice. `gemini-2.5-pro-preview-tts` 429s immediately;
+   `gemini-2.5-flash-preview-tts` is the working model.
+
+### 12.5 Failure behaviour
+
+The rule: **a voice failure costs the voice, never the answer.**
+
+* A provider that cannot work — no key, wrong capability, not on this OS — is
+  **skipped, not attempted**, and the reason is recorded.
+* Every failure lands in `attempts`, returned in `X-Voice-Meta` on `/speak` and
+  in `voice_meta` on `/converse`, so a fallback can be explained rather than
+  silently sounding different.
+* `/voice/converse` returns the transcript and reply with `audio: null` and
+  `voice_error` set. The frontend shows a calm amber notice ("Reply is above —
+  couldn't speak it: …"), distinct from the red error styling, and falls back
+  to browser speech synthesis.
+* On STT, "heard nothing" is treated as *try the next set of ears*, and is
+  reported as a 422 the user can act on rather than a 502 they cannot.
+* `/voice/test` deliberately does **not** fall back — auditioning is for
+  finding out whether *that* provider works.
+
+A latent bug was fixed in passing: `_apple_tts_sync` used `subprocess`, but the
+import sat inside the *async wrapper*, so the sync function — running in a
+worker thread — had no binding for it and every Apple-TTS call would have
+raised `NameError`. Apple TTS is now verified working.
+
+### 12.6 Sessions / New chat
+
+Turns are persisted against a `conversations` row. `useConversation` owns the
+session id, persists it to `localStorage`, and passes it on every turn;
+`/krishna/chat` loads history server-side when a `conversation_id` is given but
+no history is, so a client no longer has to re-send the whole transcript.
+
+**New chat** (`POST /krishna/sessions`) starts a clean slate — it does **not**
+delete the previous conversation, which stays in `GET /krishna/sessions`. The
+button appears in two places, because pet mode has no tab bar:
+
+* the session bar above the chat transcript (compact + fullscreen)
+* the floating toolbar (pet mode)
+
+If the backend is unreachable the screen still clears and the id is dropped, so
+the button never feels broken offline. Hamster and panda skip session creation
+entirely — they use the stateless legacy `/chat`, so there is no server-side
+session to make.
+
+`load_history()` is scoped by `user_id` *and* conversation id, so a guessed
+conversation id cannot read another user's messages. Tested.
+
+### 12.7 Config
+
+`~/.hamsterdesk/config.json` was switched to `tts_provider: "gemini"` /
+`stt_provider: "gemini"` (backup at `config.json.bak`). Everything in §12.2 is
+settable from Config → Voice; nothing about provider choice is hard-coded in a
+route.
+
+`VoiceConfig` fields: `tts_provider`, `stt_provider`, `tts_fallback[]`,
+`stt_fallback[]`, `gemini_voice`, `gemini_tts_model`, `sarvam_speaker`,
+`sarvam_tts_model`, `sarvam_stt_model`, `cartesia_voice_id`,
+`cartesia_tts_model`, `cartesia_stt_model`, `deepgram_model`, `tts_voice`,
+`apple_voice`, `fish_audio_model`, `voice_language`, `voice_autoplay` — plus
+`mode`, the legacy alias kept in sync with `tts_provider`.
+
+API keys for Cartesia and Sarvam are in Config → API Keys and travel as
+`X-Cartesia-Key` / `X-Sarvam-Key`, so like the others they live in browser
+LocalStorage and never touch server disk.
+
+### 12.8 What voice does NOT do yet
+
+* **No streaming / barge-in.** Turn-based only: tap to talk, tap to send, wait.
+  Real-time interruption needs the Gemini **Live API**
+  (`gemini-live-2.5-flash-preview`), which is a WebSocket session rather than
+  request/response — a different transport for the whole voice path, not a
+  parameter change.
+* **No partial transcripts** while speaking.
+* **The `presentation` payload is still unconsumed** — `/voice/converse`
+  returns `animation` / `chakra` / `voiceMode` per turn, and the sprite still
+  animates off the legacy mood string. Wiring it is now a small job and the
+  shortest path to making Madhav feel alive while speaking.
+* **Audio is base64 in JSON**, which inflates it ~33%. Fine on localhost; if
+  this ever goes over a network, stream the audio separately.

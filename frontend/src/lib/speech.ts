@@ -31,16 +31,32 @@ export interface SpeakOptions {
   rate?: number;
   pitch?: number;
   buddyType?: string;
+  /** Gemini voice preset id — falls back to the saved config, then the default. */
+  preset?: string;
   onStart?: () => void;
   onEnd?: () => void;
 }
 
+/** Which provider actually spoke last, for the Config panel to display. */
+let lastVoiceProvider: string | null = null;
+
+export function getLastVoiceProvider(): string | null {
+  return lastVoiceProvider;
+}
+
 /** Fetch TTS audio from the backend. Returns null on failure. */
-async function fetchBackendTts(text: string, buddyType?: string): Promise<Blob | null> {
+async function fetchBackendTts(
+  text: string,
+  buddyType?: string,
+  preset?: string,
+): Promise<Blob | null> {
   try {
     const clientHeaders = getClientAuthHeaders();
     if (buddyType) {
       clientHeaders['X-Buddy-Type'] = buddyType;
+    }
+    if (preset) {
+      clientHeaders['X-Voice-Preset'] = preset;
     }
     const resp = await fetch(`${API_BASE}/voice/speak`, {
       method: 'POST',
@@ -51,13 +67,58 @@ async function fetchBackendTts(text: string, buddyType?: string): Promise<Blob |
       body: JSON.stringify({
         text,
         character: buddyType,
+        preset,
       }),
     });
     if (!resp.ok) return null;
+    lastVoiceProvider = resp.headers.get('X-Voice-Provider');
     const blob = await resp.blob();
     return blob.size > 0 ? blob : null;
   } catch {
     return null;
+  }
+}
+
+/**
+ * Play audio the backend already synthesized (the `/voice/converse` path).
+ *
+ * Going straight from base64 to playback is what makes spoken replies feel
+ * immediate — there is no second network round trip to /voice/speak, because
+ * the audio came back with the reply.
+ */
+export function playAudioBase64(
+  base64: string,
+  mime: string = 'audio/wav',
+  options: { onStart?: () => void; onEnd?: () => void } = {},
+): boolean {
+  if (muted || !base64) {
+    options.onEnd?.();
+    return false;
+  }
+  try {
+    stopSpeaking();
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
+    const url = URL.createObjectURL(new Blob([bytes], { type: mime }));
+
+    const audio = new Audio(url);
+    currentAudio = audio;
+    options.onStart?.();
+    audio.onended = () => {
+      URL.revokeObjectURL(url);
+      if (currentAudio === audio) currentAudio = null;
+      options.onEnd?.();
+    };
+    audio.onerror = () => {
+      URL.revokeObjectURL(url);
+      options.onEnd?.();
+    };
+    void audio.play().catch(() => options.onEnd?.());
+    return true;
+  } catch {
+    options.onEnd?.();
+    return false;
   }
 }
 
@@ -111,8 +172,8 @@ function speakWithBrowser(text: string, options: SpeakOptions): boolean {
 }
 
 /**
- * Speak text aloud. Tries backend TTS first (Deepgram / Apple native),
- * then falls back to the browser's built-in speech synthesis.
+ * Speak text aloud. Tries backend TTS first (Gemini → Fish Audio → Deepgram →
+ * Apple `say`), then falls back to the browser's built-in speech synthesis.
  */
 export async function speak(text: string, options: SpeakOptions = {}): Promise<void> {
   const cleaned = cleanForSpeech(text);
@@ -124,7 +185,7 @@ export async function speak(text: string, options: SpeakOptions = {}): Promise<v
   stopSpeaking();
   options.onStart?.();
 
-  const blob = await fetchBackendTts(cleaned, options.buddyType);
+  const blob = await fetchBackendTts(cleaned, options.buddyType, options.preset);
   if (blob && !muted) {
     try {
       const audio = new Audio(URL.createObjectURL(blob));

@@ -90,6 +90,7 @@ class KrishnaReply:
     events: list[dict[str, Any]] = field(default_factory=list)
     safety_flags: list[str] = field(default_factory=list)
     request_id: str = ""
+    conversation_id: Optional[str] = None
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -117,6 +118,7 @@ class KrishnaReply:
             "events": self.events,
             "safety_flags": self.safety_flags,
             "request_id": self.request_id,
+            "conversation_id": self.conversation_id,
         }
 
 
@@ -253,6 +255,67 @@ def _persist(user_id: str, conversation_id: Optional[str], user_msg: str,
         conn.execute("UPDATE conversations SET updated_at = ? WHERE id = ?",
                      (now_iso(), conversation_id))
     return conversation_id
+
+
+# ── Sessions (conversation lifecycle) ────────────────────────────────────
+def create_session(user_id: str, title: Optional[str] = None,
+                   mode: str = "friend") -> dict[str, Any]:
+    """Start a fresh conversation. This is what the 'New chat' button calls."""
+    from db import ensure_user
+
+    ensure_user(user_id)
+    cid = new_id()
+    ts = now_iso()
+    with get_conn() as conn:
+        conn.execute(
+            "INSERT INTO conversations (id, user_id, title, mode, created_at, updated_at)"
+            " VALUES (?,?,?,?,?,?)",
+            (cid, user_id, title, mode, ts, ts),
+        )
+    return {"id": cid, "user_id": user_id, "title": title, "mode": mode,
+            "created_at": ts, "updated_at": ts, "message_count": 0}
+
+
+def list_sessions(user_id: str, limit: int = 20) -> list[dict[str, Any]]:
+    with get_conn() as conn:
+        rows = conn.execute(
+            "SELECT c.*, ("
+            "  SELECT COUNT(*) FROM messages m WHERE m.conversation_id = c.id"
+            ") AS message_count"
+            " FROM conversations c WHERE c.user_id = ?"
+            " ORDER BY c.updated_at DESC LIMIT ?",
+            (user_id, max(1, min(limit, 100))),
+        ).fetchall()
+    return [dict(r) for r in rows]
+
+
+def load_history(user_id: str, conversation_id: str,
+                 limit: int = 20) -> list[dict[str, str]]:
+    """
+    Recent turns for a conversation, oldest first.
+
+    Scoped by user_id as well as conversation id, so a guessed conversation id
+    cannot read another user's messages.
+    """
+    if not conversation_id:
+        return []
+    with get_conn() as conn:
+        rows = conn.execute(
+            "SELECT role, content FROM messages"
+            " WHERE conversation_id = ? AND user_id = ?"
+            " ORDER BY created_at DESC, rowid DESC LIMIT ?",
+            (conversation_id, user_id, max(1, min(limit, 100))),
+        ).fetchall()
+    return [{"role": r["role"], "content": r["content"]} for r in reversed(rows)]
+
+
+def delete_session(user_id: str, conversation_id: str) -> bool:
+    with get_conn() as conn:
+        cur = conn.execute(
+            "DELETE FROM conversations WHERE id = ? AND user_id = ?",
+            (conversation_id, user_id),
+        )
+        return bool(cur.rowcount)
 
 
 # ── The pipeline ─────────────────────────────────────────────────────────
@@ -392,12 +455,16 @@ async def respond(
 
     if persist:
         try:
-            _persist(user_id, conversation_id, message, text, c,
-                     [t["name"] for t in tools_used])
+            reply.conversation_id = _persist(
+                user_id, conversation_id, message, text, c,
+                [t["name"] for t in tools_used]
+            )
         except Exception:
             from observability import get_logger
 
             get_logger("orchestrator").warning("persist.failed", exc_info=True)
+    else:
+        reply.conversation_id = conversation_id
 
     rlog.close()
     return reply

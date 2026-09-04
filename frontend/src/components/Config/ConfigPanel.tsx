@@ -10,7 +10,17 @@ import {
   clearClientApiKeys,
   getClientSavedConfig,
   saveClientSavedConfig,
+  fetchVoiceProviders,
+  testVoice,
 } from '@/lib/api';
+import type {
+  ProviderVoice,
+  VoiceConfig,
+  VoiceProvider,
+  VoiceProvidersResponse,
+  VoiceTestResponse,
+} from '@/lib/api';
+import { playAudioBase64 } from '@/lib/speech';
 import { BUDDY_REGISTRY, getBuddyDefinition } from '@/components/Buddies/registry';
 import type { BuddyType } from '@/components/Buddies/types';
 
@@ -23,12 +33,20 @@ const DEFAULT_CONFIG: AppConfig = {
     ollama_endpoint: 'http://localhost:11434',
   },
   voice: {
-    mode: 'fish_audio',
-    stt_provider: 'apple',
+    mode: 'gemini',
+    stt_provider: 'gemini',
     deepgram_model: 'nova-2',
     tts_voice: 'aura-asteria-en',
     apple_voice: 'Samantha',
     fish_audio_model: 's2.1-pro-free',
+    tts_provider: 'gemini',
+    tts_fallback: ['sarvam', 'cartesia', 'deepgram', 'apple'],
+    stt_fallback: ['sarvam', 'cartesia', 'deepgram'],
+    gemini_voice: 'madhav_warm',
+    sarvam_speaker: 'anand',
+    cartesia_voice_id: '',
+    voice_language: 'auto',
+    voice_autoplay: true,
   },
   rag: {
     enabled: false,
@@ -50,6 +68,8 @@ const DEFAULT_CONFIG: AppConfig = {
     deepseek_key: '',
     deepgram_key: '',
     fish_audio_key: '',
+    cartesia_key: '',
+    sarvam_key: '',
   },
 };
 
@@ -63,6 +83,40 @@ interface ConfigPanelProps {
   onBuddyTypeChange?: (type: string) => void;
   onPoseChange?: (pose: string) => void;
 }
+
+/**
+ * Krishna's config-picker thumbnail — the actual peacock feather worn in his
+ * hair, cropped straight out of `krishna_hair.png` (the same asset the live
+ * sprite renders), not a redrawn icon. Scoped to this one thumbnail only —
+ * the shared `emoji` field elsewhere (favicon, tab title, chat header) still
+ * needs a plain string, so it is left untouched.
+ */
+function PeacockFeatherThumbnail() {
+  return (
+    // eslint-disable-next-line @next/next/no-img-element -- fixed decorative crop, not a content image worth next/image's overhead
+    <img
+      src="/characters/krishna_peacock_feather_icon.png"
+      alt=""
+      aria-hidden="true"
+      style={{ width: '36px', height: 'auto', display: 'block' }}
+    />
+  );
+}
+
+/**
+ * Shown only when /voice/providers is unreachable. The backend list is the
+ * real one; this exists so an offline Config panel still renders a usable
+ * picker instead of an empty grid.
+ */
+const FALLBACK_PROVIDERS: VoiceProvider[] = [
+  { id: 'gemini', label: 'Gemini', supports_tts: true, supports_stt: true, description: 'Google Gemini.', key_field: 'gemini_key', client_side: false, local: false, indian_voices: 'directed', languages: ['hi-IN', 'en-IN'], notes: '', available: false, unavailable_reason: 'backend offline' },
+  { id: 'sarvam', label: 'Sarvam AI', supports_tts: true, supports_stt: true, description: 'Built for Indian languages.', key_field: 'sarvam_key', client_side: false, local: false, indian_voices: 'native', languages: ['hi-IN', 'en-IN'], notes: '', available: false, unavailable_reason: 'backend offline' },
+  { id: 'cartesia', label: 'Cartesia', supports_tts: true, supports_stt: true, description: 'Sonic TTS, Ink-Whisper STT.', key_field: 'cartesia_key', client_side: false, local: false, indian_voices: 'native', languages: ['hi', 'en'], notes: '', available: false, unavailable_reason: 'backend offline' },
+  { id: 'deepgram', label: 'Deepgram', supports_tts: true, supports_stt: true, description: 'Nova STT, Aura TTS.', key_field: 'deepgram_key', client_side: false, local: false, indian_voices: 'none', languages: ['en'], notes: '', available: false, unavailable_reason: 'backend offline' },
+  { id: 'fish_audio', label: 'Fish Audio', supports_tts: true, supports_stt: false, description: 'Per-character cloned voices.', key_field: 'fish_audio_key', client_side: false, local: false, indian_voices: 'none', languages: [], notes: '', available: false, unavailable_reason: 'backend offline' },
+  { id: 'apple', label: 'Apple (local)', supports_tts: true, supports_stt: false, description: 'macOS `say`.', key_field: null, client_side: false, local: true, indian_voices: 'native', languages: ['en-IN'], notes: '', available: false, unavailable_reason: 'backend offline' },
+  { id: 'browser', label: 'Browser (local)', supports_tts: true, supports_stt: true, description: 'Browser speech APIs.', key_field: null, client_side: true, local: true, indian_voices: 'none', languages: [], notes: '', available: false, unavailable_reason: 'backend offline' },
+];
 
 export default function ConfigPanel({
   currentBuddyType: propBuddyType,
@@ -82,8 +136,81 @@ export default function ConfigPanel({
     deepseek: false,
     deepgram: false,
     fish_audio: false,
+    cartesia: false,
+    sarvam: false,
   });
   const [clearedNotice, setClearedNotice] = useState(false);
+  const [voiceProviders, setVoiceProviders] = useState<VoiceProvidersResponse | null>(null);
+  const [testingVoice, setTestingVoice] = useState(false);
+  const [testResult, setTestResult] = useState<VoiceTestResponse | null>(null);
+
+  // The provider matrix comes from the backend so the picker cannot claim a
+  // provider works when it has no key, and cannot drift from the voices that
+  // actually exist. Offline, the local fallback keeps the picker usable.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const data = await fetchVoiceProviders();
+        if (!cancelled) setVoiceProviders(data);
+      } catch {
+        /* backend offline — FALLBACK_PROVIDERS covers the picker */
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  const allProviders: VoiceProvider[] = voiceProviders?.providers || FALLBACK_PROVIDERS;
+  const ttsProviders = allProviders.filter((p) => p.supports_tts);
+  const sttProviders = allProviders.filter((p) => p.supports_stt);
+
+  const ttsProvider = config.voice.tts_provider || config.voice.mode || 'gemini';
+  const sttProvider = config.voice.stt_provider || 'gemini';
+  const selectedTtsProvider = allProviders.find((p) => p.id === ttsProvider);
+  const selectedSttProvider = allProviders.find((p) => p.id === sttProvider);
+
+  /**
+   * Which config field holds this provider's voice.
+   *
+   * They are genuinely different things — a Gemini preset id, a Sarvam speaker
+   * name, a Cartesia UUID, an Aura model, a macOS voice name — so one shared
+   * "voice" field would be wrong.
+   */
+  const VOICE_FIELD_BY_PROVIDER: Record<string, keyof VoiceConfig> = {
+    gemini: 'gemini_voice',
+    sarvam: 'sarvam_speaker',
+    cartesia: 'cartesia_voice_id',
+    deepgram: 'tts_voice',
+    apple: 'apple_voice',
+  };
+  const ttsVoiceField = VOICE_FIELD_BY_PROVIDER[ttsProvider];
+  const ttsVoiceOptions: ProviderVoice[] = voiceProviders?.voices?.[ttsProvider] || [];
+
+  const providerLabel = (id: string) =>
+    allProviders.find((p) => p.id === id)?.label || id;
+
+  const handleTestVoice = async () => {
+    setTestingVoice(true);
+    setTestResult(null);
+    try {
+      const voice = ttsVoiceField ? (config.voice[ttsVoiceField] as string) : undefined;
+      const result = await testVoice(ttsProvider, {
+        voice: voice || undefined,
+        language: config.voice.voice_language === 'auto' ? undefined : config.voice.voice_language,
+      });
+      setTestResult(result);
+      if (result.ok && result.audio) {
+        playAudioBase64(result.audio, result.audio_mime || 'audio/wav');
+      }
+    } catch (err) {
+      setTestResult({
+        ok: false, provider: ttsProvider, audio: null,
+        error: err instanceof Error ? err.message : 'Test failed',
+      });
+    } finally {
+      setTestingVoice(false);
+    }
+  };
 
   const currentBuddyType = (propBuddyType || config.hamster?.buddy_type || 'hamster') as BuddyType;
   const currentBuddyDef = getBuddyDefinition(currentBuddyType);
@@ -118,6 +245,8 @@ export default function ConfigPanel({
           deepseek_key: localKeys.deepseek_key || '',
           deepgram_key: localKeys.deepgram_key || '',
           fish_audio_key: localKeys.fish_audio_key || '',
+          cartesia_key: localKeys.cartesia_key || '',
+          sarvam_key: localKeys.sarvam_key || '',
         },
         server_capabilities: serverConfig.server_capabilities,
       };
@@ -208,13 +337,18 @@ export default function ConfigPanel({
     clearClientApiKeys();
     setConfig((prev) => ({
       ...prev,
-      api_keys: { gemini_key: '', deepseek_key: '', deepgram_key: '', fish_audio_key: '' },
+      api_keys: {
+        gemini_key: '', deepseek_key: '', deepgram_key: '',
+        fish_audio_key: '', cartesia_key: '', sarvam_key: '',
+      },
     }));
     setClearedNotice(true);
     setTimeout(() => setClearedNotice(false), 3000);
   };
 
-  const toggleKeyVisibility = (toggle: 'gemini' | 'deepseek' | 'deepgram' | 'fish_audio') => {
+  const toggleKeyVisibility = (
+    toggle: 'gemini' | 'deepseek' | 'deepgram' | 'fish_audio' | 'cartesia' | 'sarvam',
+  ) => {
     setShowKeys((prev) => ({ ...prev, [toggle]: !prev[toggle] }));
   };
 
@@ -272,7 +406,9 @@ export default function ConfigPanel({
                   textAlign: 'center',
                 }}
               >
-                <div style={{ fontSize: '36px', marginBottom: '4px' }}>{buddy.emoji}</div>
+                <div style={{ fontSize: '36px', marginBottom: '4px' }}>
+                  {buddy.id === 'krishna' ? <PeacockFeatherThumbnail /> : buddy.emoji}
+                </div>
                 <div style={{ fontWeight: 700, fontSize: '13px', color: isSelected ? 'var(--accent-primary, #F4A460)' : 'var(--text-primary)' }}>
                   {buddy.name}
                 </div>
@@ -441,155 +577,175 @@ export default function ConfigPanel({
         </div>
       </div>
 
-      {/* Voice Mode */}
+      {/* ── Voice ──────────────────────────────────────────────────
+          STT and TTS are chosen independently and each has its own fallback
+          order, so "Sarvam ears, Cartesia voice" is a real configuration. */}
       <div className="config-section">
-        <div className="config-section-title">🎙️ Voice Mode</div>
+        <div className="config-section-title">🎙️ Voice</div>
+
         <div className="config-group">
-          <div className="radio-group" style={{ flexWrap: 'wrap' }}>
-            <label className={`radio-option ${config.voice.mode === 'fish_audio' ? 'selected' : ''}`}>
-              <input
-                type="radio"
-                name="voice-mode"
-                value="fish_audio"
-                checked={config.voice.mode === 'fish_audio'}
-                onChange={() => updateConfig('voice.mode', 'fish_audio')}
-              />
-              🐟 Fish Audio (Character Voice)
-            </label>
-            <label className={`radio-option ${config.voice.mode === 'deepgram' ? 'selected' : ''}`}>
-              <input
-                type="radio"
-                name="voice-mode"
-                value="deepgram"
-                checked={config.voice.mode === 'deepgram'}
-                onChange={() => updateConfig('voice.mode', 'deepgram')}
-              />
-              ☁️ Deepgram (Cloud)
-            </label>
-            <label className={`radio-option ${config.voice.mode === 'apple' ? 'selected' : ''}`}>
-              <input
-                type="radio"
-                name="voice-mode"
-                value="apple"
-                checked={config.voice.mode === 'apple'}
-                onChange={() => updateConfig('voice.mode', 'apple')}
-              />
-              🍎 Apple / Browser TTS
-            </label>
+          {/* ── Speaking ── */}
+          <div className="voice-block-label">🔊 SPEAKING (TTS)</div>
+          <div className="voice-provider-grid">
+            {ttsProviders.map((provider) => (
+              <button
+                type="button"
+                key={provider.id}
+                className={`voice-provider-card ${ttsProvider === provider.id ? 'selected' : ''} ${provider.available ? '' : 'unavailable'}`}
+                onClick={() => updateConfig('voice.tts_provider', provider.id)}
+                title={provider.unavailable_reason || provider.description}
+              >
+                <span className="voice-provider-name">
+                  {provider.label}
+                  {provider.indian_voices === 'native' && (
+                    <span className="voice-badge native" title="Genuine Indian voices">🇮🇳</span>
+                  )}
+                  {provider.indian_voices === 'directed' && (
+                    <span className="voice-badge directed" title="Indian accent via style instruction">🇮🇳*</span>
+                  )}
+                  {provider.local && <span className="voice-badge local">local</span>}
+                </span>
+                <span className="voice-provider-status">
+                  {provider.available ? '● ready' : `○ ${provider.unavailable_reason}`}
+                </span>
+              </button>
+            ))}
           </div>
 
-          {config.voice.mode === 'fish_audio' && (
-            <div style={{ marginTop: '12px' }}>
-              <div className="config-row">
-                <span className="config-label">Model</span>
-                <select
-                  className="config-select"
-                  value={config.voice.fish_audio_model || 's2.1-pro-free'}
-                  onChange={(e) => updateConfig('voice.fish_audio_model', e.target.value)}
-                >
-                  <option value="s2.1-pro-free">s2.1-pro-free (Free Tier — No Credit Needed)</option>
-                  <option value="s2.1-pro">s2.1-pro (Paid Credit Model)</option>
-                  <option value="s2.1">s2.1</option>
-                </select>
-              </div>
+          {selectedTtsProvider && (
+            <p className="config-hint">{selectedTtsProvider.description}</p>
+          )}
+          {selectedTtsProvider?.notes && (
+            <p className="config-hint">{selectedTtsProvider.notes}</p>
+          )}
 
-              {/* Character Voice ID Status Card */}
-              <div
-                style={{
-                  marginTop: '12px',
-                  padding: '12px 14px',
-                  borderRadius: '10px',
-                  background: 'rgba(56, 189, 248, 0.08)',
-                  border: '1px solid rgba(56, 189, 248, 0.25)',
-                  fontSize: '12px',
-                }}
+          {/* Voice picker for whichever provider is selected. Each provider
+              names its voices differently, so the field it writes differs. */}
+          {ttsVoiceField && ttsVoiceOptions.length > 0 && (
+            <div className="config-row">
+              <span className="config-label">Voice</span>
+              <select
+                className="config-select"
+                value={(config.voice[ttsVoiceField] as string) || ''}
+                onChange={(e) => updateConfig(`voice.${ttsVoiceField}`, e.target.value)}
               >
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-                  <span style={{ fontWeight: 600, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span>{currentBuddyDef.emoji}</span>
-                    <span>{currentBuddyDef.name} Voice Model ID:</span>
-                  </span>
-                  {caps?.fish_audio_ids?.[currentBuddyType] ? (
-                    <span style={{ color: '#10b981', fontWeight: 600, fontSize: '11px' }}>
-                      ● Active in .env
-                    </span>
-                  ) : (
-                    <span style={{ color: '#f59e0b', fontWeight: 600, fontSize: '11px' }}>
-                      ○ Not set in .env
-                    </span>
-                  )}
-                </div>
+                {ttsVoiceField === 'cartesia_voice_id' && <option value="">Default (Hindi)</option>}
+                {ttsVoiceOptions.map((v) => (
+                  <option key={v.id} value={v.id}>
+                    {v.label}{v.language ? ` — ${v.language}` : ''}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
-                <div style={{ color: 'var(--text-muted)', fontSize: '11px', lineHeight: '1.5' }}>
-                  Configure each character&apos;s Fish Audio ID in <code style={{ color: '#38bdf8', padding: '1px 4px', background: 'rgba(0,0,0,0.2)', borderRadius: '4px' }}>backend/.env</code>:
-                  <div style={{ background: 'rgba(0,0,0,0.3)', padding: '8px 10px', borderRadius: '6px', marginTop: '6px', fontFamily: 'monospace' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '2px 0' }}>
-                      <span>FISH_AUDIO_ID_KRISHNA=...</span>
-                      <span>{caps?.fish_audio_ids?.['krishna'] ? '✅ Active' : '⚪ Pending'}</span>
+          <div className="config-row">
+            <span className="config-label">Language</span>
+            <select
+              className="config-select"
+              value={config.voice.voice_language || 'auto'}
+              onChange={(e) => updateConfig('voice.voice_language', e.target.value)}
+            >
+              <option value="auto">Auto — detect Hindi / Hinglish per reply</option>
+              <option value="hi-IN">Always Hindi / Hinglish (hi-IN)</option>
+              <option value="en-IN">Always Indian English (en-IN)</option>
+            </select>
+          </div>
+
+          <div className="voice-test-row">
+            <button
+              type="button"
+              className="voice-test-btn"
+              onClick={handleTestVoice}
+              disabled={testingVoice || !selectedTtsProvider?.available}
+            >
+              {testingVoice ? 'Speaking…' : '▶ Test this voice'}
+            </button>
+            {testResult && (
+              <span className={`voice-test-result ${testResult.ok ? 'ok' : 'fail'}`}>
+                {testResult.ok ? `✓ ${testResult.provider}` : `✗ ${testResult.error}`}
+              </span>
+            )}
+          </div>
+
+          {/* ── Listening ── */}
+          <div className="voice-block-label" style={{ marginTop: '18px' }}>🎤 LISTENING (STT)</div>
+          <div className="voice-provider-grid">
+            {sttProviders.map((provider) => (
+              <button
+                type="button"
+                key={provider.id}
+                className={`voice-provider-card ${sttProvider === provider.id ? 'selected' : ''} ${provider.available ? '' : 'unavailable'}`}
+                onClick={() => updateConfig('voice.stt_provider', provider.id)}
+                title={provider.unavailable_reason || provider.description}
+              >
+                <span className="voice-provider-name">
+                  {provider.label}
+                  {provider.local && <span className="voice-badge local">local</span>}
+                </span>
+                <span className="voice-provider-status">
+                  {provider.available ? '● ready' : `○ ${provider.unavailable_reason}`}
+                </span>
+              </button>
+            ))}
+          </div>
+          {selectedSttProvider?.notes && (
+            <p className="config-hint">{selectedSttProvider.notes}</p>
+          )}
+
+          {/* ── Fallback order ──
+              Shown rather than hidden: when a provider is rate-limited the
+              user hears a different voice, and this is the explanation. */}
+          {voiceProviders && (
+            <div className="voice-chain-box">
+              <div className="voice-chain-row">
+                <span className="voice-chain-label">Speaking falls back to</span>
+                <span className="voice-chain-list">
+                  {voiceProviders.effective_tts_chain.map((pid, i) => (
+                    <span key={pid} className={`voice-chain-step ${i === 0 ? 'first' : ''}`}>
+                      {providerLabel(pid)}
+                    </span>
+                  ))}
+                </span>
+              </div>
+              <div className="voice-chain-row">
+                <span className="voice-chain-label">Listening falls back to</span>
+                <span className="voice-chain-list">
+                  {voiceProviders.effective_stt_chain.map((pid, i) => (
+                    <span key={pid} className={`voice-chain-step ${i === 0 ? 'first' : ''}`}>
+                      {providerLabel(pid)}
+                    </span>
+                  ))}
+                </span>
+              </div>
+              <p className="config-hint" style={{ margin: 0 }}>
+                Tried left to right. A provider with no key, or one that is rate-limited,
+                is skipped — you still get audio, just in a different voice.
+              </p>
+            </div>
+          )}
+
+          <p className="config-hint">
+            🇮🇳 marks providers with genuine Indian voices. 🇮🇳* means the Indian accent
+            comes from a style instruction rather than a locale-specific voice model.
+          </p>
+
+          {/* Fish Audio still needs its per-character model ids. */}
+          {ttsProvider === 'fish_audio' && (
+            <div className="voice-chain-box">
+              <div style={{ color: 'var(--text-muted)', fontSize: '11px', lineHeight: '1.5' }}>
+                Each character needs a Fish Audio model id in <code>backend/.env</code>:
+                <div style={{ background: 'rgba(0,0,0,0.3)', padding: '8px 10px', borderRadius: '6px', marginTop: '6px', fontFamily: 'monospace' }}>
+                  {['krishna', 'hamster', 'panda'].map((name) => (
+                    <div key={name} style={{ display: 'flex', justifyContent: 'space-between', padding: '2px 0' }}>
+                      <span>FISH_AUDIO_ID_{name.toUpperCase()}=…</span>
+                      <span>{caps?.fish_audio_ids?.[name] ? '✅ Active' : '⚪ Pending'}</span>
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '2px 0' }}>
-                      <span>FISH_AUDIO_ID_HAMSTER=...</span>
-                      <span>{caps?.fish_audio_ids?.['hamster'] ? '✅ Active' : '⚪ Pending'}</span>
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '2px 0' }}>
-                      <span>FISH_AUDIO_ID_PANDA=...</span>
-                      <span>{caps?.fish_audio_ids?.['panda'] ? '✅ Active' : '⚪ Pending'}</span>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>
           )}
-        </div>
-
-        {/* Microphone Transcription (STT) */}
-        <div style={{ marginTop: '16px' }}>
-          <div style={{ fontWeight: 600, fontSize: '12px', color: 'var(--text-muted)', marginBottom: '8px' }}>
-            🎙️ MICROPHONE TRANSCRIBE (STT)
-          </div>
-          <div className="radio-group" style={{ flexWrap: 'wrap' }}>
-            <label className={`radio-option ${(config.voice.stt_provider || 'apple') === 'apple' ? 'selected' : ''}`}>
-              <input
-                type="radio"
-                name="stt-provider"
-                value="apple"
-                checked={(config.voice.stt_provider || 'apple') === 'apple'}
-                onChange={() => updateConfig('voice.stt_provider', 'apple')}
-              />
-              🍎 Apple / Browser Speech
-            </label>
-            <label className={`radio-option ${config.voice.stt_provider === 'gemini' ? 'selected' : ''}`}>
-              <input
-                type="radio"
-                name="stt-provider"
-                value="gemini"
-                checked={config.voice.stt_provider === 'gemini'}
-                onChange={() => updateConfig('voice.stt_provider', 'gemini')}
-              />
-              ✨ Gemini Transcribe
-            </label>
-            <label className={`radio-option ${config.voice.stt_provider === 'deepgram' ? 'selected' : ''}`}>
-              <input
-                type="radio"
-                name="stt-provider"
-                value="deepgram"
-                checked={config.voice.stt_provider === 'deepgram'}
-                onChange={() => updateConfig('voice.stt_provider', 'deepgram')}
-              />
-              ☁️ Deepgram STT
-            </label>
-          </div>
-          <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '8px' }}>
-            {(config.voice.stt_provider || 'apple') === 'apple' && (
-              <span>🍎 Uses Apple / Browser Speech Recognition natively — free, zero API key required.</span>
-            )}
-            {config.voice.stt_provider === 'gemini' && (
-              <span>✨ Uses Gemini Flash for high-accuracy audio transcription (uses Gemini API key).</span>
-            )}
-            {config.voice.stt_provider === 'deepgram' && (
-              <span>☁️ Uses Deepgram Nova-2 cloud speech transcription.</span>
-            )}
-          </div>
         </div>
       </div>
 
@@ -648,7 +804,9 @@ export default function ConfigPanel({
       <div className="config-section">
         <div className="config-section-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span>🔑 API Keys (LocalStorage)</span>
-          {(config.api_keys.gemini_key || config.api_keys.deepseek_key || config.api_keys.deepgram_key || config.api_keys.fish_audio_key) && (
+          {(config.api_keys.gemini_key || config.api_keys.deepseek_key
+            || config.api_keys.deepgram_key || config.api_keys.fish_audio_key
+            || config.api_keys.cartesia_key || config.api_keys.sarvam_key) && (
             <button
               onClick={handleClearKeys}
               style={{
@@ -695,6 +853,20 @@ export default function ConfigPanel({
               show: showKeys.fish_audio,
               toggle: 'fish_audio' as const,
               serverFallback: caps?.server_has_fish_audio,
+            },
+            {
+              key: 'sarvam_key' as const,
+              label: 'Sarvam AI',
+              show: showKeys.sarvam,
+              toggle: 'sarvam' as const,
+              serverFallback: undefined,
+            },
+            {
+              key: 'cartesia_key' as const,
+              label: 'Cartesia',
+              show: showKeys.cartesia,
+              toggle: 'cartesia' as const,
+              serverFallback: undefined,
             },
           ].map(({ key, label, show, toggle, serverFallback }) => (
             <div className="config-row" key={key}>

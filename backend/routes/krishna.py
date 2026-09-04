@@ -16,7 +16,14 @@ from db import DEFAULT_USER_ID
 from krishna import classify, list_modes, persona_summary
 from krishna.events import EVENT_NAMES, bus
 from krishna.motivation import celebration_signal, cue_for, failure_recovery_flow
-from krishna.orchestrator import NATIVE_TOOLS_ENABLED, respond
+from krishna.orchestrator import (
+    NATIVE_TOOLS_ENABLED,
+    create_session,
+    delete_session,
+    list_sessions,
+    load_history,
+    respond,
+)
 from tools import execute_tool, tool_catalog
 
 router = APIRouter(prefix="/krishna", tags=["krishna"])
@@ -65,10 +72,16 @@ async def krishna_chat(
     if x_deepseek_model:
         client_models["deepseek_model"] = x_deepseek_model.strip()
 
+    history = [m.model_dump() for m in req.history]
+    # A client that tracks a session id no longer has to re-send the whole
+    # transcript every turn — and voice callers cannot practically send one.
+    if not history and req.conversation_id:
+        history = load_history(_user(x_user_id), req.conversation_id)
+
     try:
         reply = await respond(
             message=req.message,
-            history=[m.model_dump() for m in req.history],
+            history=history,
             mode=req.mode,
             user_id=_user(x_user_id),
             user_name=req.user_name,
@@ -84,6 +97,54 @@ async def krishna_chat(
         raise HTTPException(status_code=502, detail=f"LLM error: {exc}")
 
     return reply.as_dict()
+
+
+# ── Sessions (Part 1 of "New chat") ──────────────────────────────────────
+class SessionRequest(BaseModel):
+    title: Optional[str] = None
+    mode: str = "friend"
+
+
+@router.post("/sessions", status_code=201)
+async def new_session(
+    req: SessionRequest, x_user_id: Optional[str] = Header(None)
+) -> dict[str, Any]:
+    """
+    Start a fresh conversation.
+
+    Nothing is deleted — the previous session stays in history. This only
+    means "start talking from a clean slate", which is what a New chat button
+    should do.
+    """
+    return create_session(_user(x_user_id), title=req.title, mode=req.mode)
+
+
+@router.get("/sessions")
+async def sessions(
+    limit: int = 20, x_user_id: Optional[str] = Header(None)
+) -> dict[str, Any]:
+    return {"sessions": list_sessions(_user(x_user_id), limit=limit)}
+
+
+@router.get("/sessions/{conversation_id}")
+async def session_messages(
+    conversation_id: str, limit: int = 50, x_user_id: Optional[str] = Header(None)
+) -> dict[str, Any]:
+    user = _user(x_user_id)
+    messages = load_history(user, conversation_id, limit=limit)
+    if not messages:
+        found = [s for s in list_sessions(user, limit=100) if s["id"] == conversation_id]
+        if not found:
+            raise HTTPException(status_code=404, detail="No such session for this user.")
+    return {"conversation_id": conversation_id, "messages": messages}
+
+
+@router.delete("/sessions/{conversation_id}", status_code=204)
+async def remove_session(
+    conversation_id: str, x_user_id: Optional[str] = Header(None)
+):
+    if not delete_session(_user(x_user_id), conversation_id):
+        raise HTTPException(status_code=404, detail="No such session for this user.")
 
 
 class ClassifyRequest(BaseModel):

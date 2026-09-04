@@ -149,7 +149,11 @@ export default function Home() {
   }, []);
 
   // Owned here, above the mode branches, so it survives every mode switch.
-  const conversation = useConversation({ onMoodChange: handleMoodChange });
+  const conversation = useConversation({
+    onMoodChange: handleMoodChange,
+    buddyType,
+    buddyName: hamsterName,
+  });
 
   // Synchronize document title, favicon, and electron tray/dock when buddy changes
   useEffect(() => {
@@ -461,10 +465,13 @@ export default function Home() {
     saveClientSavedConfig(saved);
   };
 
-  // Tap to Talk: stays in whatever mode you are in — records, transcribes,
+  // Tap to Talk: stays in whatever mode you are in — records, understands,
   // asks the LLM and speaks the reply aloud. The turn lands in the same
   // conversation the Chat tab shows, so the buddy remembers it and the user
   // can scroll back to it.
+  //
+  // The browser recognizer hands back text (this path); the MediaRecorder path
+  // hands back audio and goes through /voice/converse below.
   const handleVoiceTranscribed = useCallback(async (transcript: string) => {
     showImportantMessage(`You said: “${transcript}”`, 30000);
     const reply = await conversation.send(transcript);
@@ -476,8 +483,24 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showImportantMessage]);
 
+  /**
+   * One round trip: the recording goes up, and the transcript, the reply and
+   * the spoken audio come back together. Nothing is shown until it is real,
+   * so the bubble never displays a transcript for a turn that then failed.
+   */
+  const handleVoiceAudio = useCallback(async (blob: Blob) => {
+    const reply = await conversation.sendVoice(blob);
+    if (reply) {
+      showImportantMessage(reply);
+    } else {
+      showImportantMessage('😵 Could not reach the backend — check the status dot.');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showImportantMessage]);
+
   const voiceRecorder = useVoiceRecorder({
     onTranscribed: handleVoiceTranscribed,
+    onAudio: handleVoiceAudio,
     onRecordingStart: () => {
       setIsListening(true);
       setHamsterMood('listening');
@@ -486,7 +509,7 @@ export default function Home() {
     onRecordingStop: () => setIsListening(false),
     onTranscribingStart: () => {
       setHamsterMood('thinking');
-      showImportantMessage('🤔 Understanding…', 30000);
+      showImportantMessage('🤔 Sun raha hoon…', 30000);
     },
   });
 
@@ -501,6 +524,12 @@ export default function Home() {
   const handleTapToTalk = () => {
     voiceRecorder.toggle();
   };
+
+  const handleNewSession = useCallback(async () => {
+    await conversation.newSession();
+    showImportantMessage('✨ Fresh start. What\u2019s on your mind?', 20000);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showImportantMessage]);
 
   const timer = useFocusTimer({ onMoodChange: handleMoodChange });
 
@@ -731,6 +760,18 @@ export default function Home() {
             title={isListening ? 'Listening — tap to stop' : 'Tap to Talk'}
           >
             <span aria-hidden="true">{isListening ? '🔴' : '🎙️'}</span>
+          </button>
+
+          {/* New chat. Pet mode has no tab bar, so without this the only way
+              to start fresh is to leave the widget. */}
+          <button
+            type="button"
+            className="floating-btn"
+            onClick={handleNewSession}
+            aria-label="Start a new conversation"
+            title="New chat — start fresh (earlier chats are kept)"
+          >
+            <span aria-hidden="true">✨</span>
           </button>
 
           {/* Krishna's flute is an action, so it lives with the other actions.

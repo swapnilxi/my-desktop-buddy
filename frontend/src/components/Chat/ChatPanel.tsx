@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import type { HamsterMood } from '@/lib/api';
-import { transcribeAudio, getClientSavedConfig } from '@/lib/api';
+import { getClientSavedConfig } from '@/lib/api';
 import { stopSpeaking } from '@/lib/speech';
 import { createBrowserSpeechRecognition, isSpeechRecognitionSupported } from '@/lib/speechRecognition';
 import type { BuddyDefinition, BuddyType } from '../Buddies/types';
@@ -39,9 +39,13 @@ export default function ChatPanel({
     isSending: isLoading,
     error,
     setError,
+    voiceNotice,
+    setVoiceNotice,
     useRag,
     setUseRag,
     send,
+    sendVoice,
+    newSession,
   } = conversation;
   const [isRecording, setIsRecording] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
@@ -129,27 +133,19 @@ export default function ChatPanel({
       };
       recorder.onstop = async () => {
         const blob = new Blob(chunksRef.current, { type: mimeType || 'audio/webm' });
-        console.log('[Voice] Recorded audio blob size:', blob.size, 'bytes');
         if (blob.size < 1000) {
-          const msg = "Didn't catch that — try speaking a bit longer!";
-          console.warn('[Voice]', msg);
-          setError(msg);
+          setError("Didn't catch that — try speaking a bit longer!");
           onMoodChange('idle');
           return;
         }
+        // One request does transcribe → orchestrated reply → speech, instead
+        // of three sequential round trips. The transcript comes back with the
+        // reply, so nothing is appended to the chat until it is real.
         setIsTranscribing(true);
-        onMoodChange('thinking');
         try {
-          console.log('[Voice] Transcribing audio with STT...');
-          const { transcript } = await transcribeAudio(blob);
-          console.log('[Voice] Transcript result:', transcript);
+          await sendVoice(blob);
+        } finally {
           setIsTranscribing(false);
-          await handleSend(transcript);
-        } catch (err) {
-          console.error('[Voice STT Error]', err);
-          setIsTranscribing(false);
-          setError(err instanceof Error ? err.message : 'Voice transcription failed');
-          onMoodChange('idle');
         }
       };
 
@@ -233,8 +229,34 @@ export default function ChatPanel({
     };
   }, []);
 
+  const handleNewSession = async () => {
+    if (isLoading || isRecording || isTranscribing) return;
+    await newSession();
+    inputRef.current?.focus();
+  };
+
   return (
     <div className="chat-panel">
+      {/* Session bar — a way back to a blank slate without losing the app */}
+      <div className="chat-session-bar">
+        <span className="chat-session-label">
+          {messages.length === 0
+            ? 'New conversation'
+            : `${messages.length} message${messages.length === 1 ? '' : 's'}`}
+        </span>
+        <button
+          type="button"
+          className="chat-new-session-btn"
+          onClick={handleNewSession}
+          disabled={isLoading || isRecording || isTranscribing}
+          title="Start a fresh conversation (your earlier chats are kept)"
+          aria-label="Start a new conversation"
+        >
+          <span aria-hidden="true">✨</span>
+          <span>New chat</span>
+        </button>
+      </div>
+
       {/* Messages */}
       <div className="chat-messages">
         {messages.length === 0 ? (
@@ -294,9 +316,26 @@ export default function ChatPanel({
           ) : (
             <>
               <span className="voice-spinner" />
-              <span>Understanding what you said…</span>
+              <span>Listening back and thinking…</span>
             </>
           )}
+        </div>
+      )}
+
+      {/* The reply arrived but could not be spoken. Not an error — the answer
+          is on screen — so it gets its own quieter treatment. */}
+      {voiceNotice && !isRecording && !isTranscribing && (
+        <div className="voice-status-banner notice">
+          <span aria-hidden="true">🔇</span>
+          <span>Reply is above — couldn&apos;t speak it: {voiceNotice}</span>
+          <button
+            type="button"
+            className="voice-notice-dismiss"
+            onClick={() => setVoiceNotice(null)}
+            aria-label="Dismiss"
+          >
+            ✕
+          </button>
         </div>
       )}
 
