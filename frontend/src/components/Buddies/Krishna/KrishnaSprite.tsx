@@ -772,6 +772,68 @@ export function LittleKrishna({
             <filter id="kChakraGlowFilter" x="-40%" y="-40%" width="180%" height="180%">
               <feDropShadow dx="0" dy="0" stdDeviation="6" floodColor="#F59E0B" floodOpacity="0.7" />
             </filter>
+
+            {/* ── Targeted Behind-Ear & Neck-Side Hair Supplement ── */}
+            {/* Colors sampled DIRECTLY from the existing PNG hair asset: */}
+            {/* Base Hair: #0D1B49  |  Dark Shadow: #040A25  |  Midtone: #22377C  |  Cool Highlight: #0B94B4 */}
+
+            {/* Left Behind-Ear Volumetric 4-Color Gradient */}
+            <linearGradient id="kBehindEarL" x1="100%" y1="20%" x2="0%" y2="80%">
+              <stop offset="0%" stopColor="#040A25" stopOpacity="0.95" />
+              <stop offset="30%" stopColor="#0D1B49" stopOpacity="0.95" />
+              <stop offset="65%" stopColor="#22377C" stopOpacity="0.90" />
+              <stop offset="88%" stopColor="#0B94B4" stopOpacity="0.80" />
+              <stop offset="100%" stopColor="#040A25" stopOpacity="0.60" />
+            </linearGradient>
+
+            {/* Right Behind-Ear Volumetric 4-Color Gradient */}
+            <linearGradient id="kBehindEarR" x1="0%" y1="20%" x2="100%" y2="80%">
+              <stop offset="0%" stopColor="#040A25" stopOpacity="0.95" />
+              <stop offset="30%" stopColor="#0D1B49" stopOpacity="0.95" />
+              <stop offset="65%" stopColor="#22377C" stopOpacity="0.90" />
+              <stop offset="88%" stopColor="#0B94B4" stopOpacity="0.80" />
+              <stop offset="100%" stopColor="#040A25" stopOpacity="0.60" />
+            </linearGradient>
+
+            {/* Left Neck-Side Falling Hair Gradient */}
+            <linearGradient id="kNeckSideHairL" x1="80%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#0D1B49" stopOpacity="0.95" />
+              <stop offset="35%" stopColor="#22377C" stopOpacity="0.90" />
+              <stop offset="75%" stopColor="#0B94B4" stopOpacity="0.80" />
+              <stop offset="100%" stopColor="#040A25" stopOpacity="0.75" />
+            </linearGradient>
+
+            {/* Right Neck-Side Falling Hair Gradient */}
+            <linearGradient id="kNeckSideHairR" x1="20%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#0D1B49" stopOpacity="0.95" />
+              <stop offset="35%" stopColor="#22377C" stopOpacity="0.90" />
+              <stop offset="75%" stopColor="#0B94B4" stopOpacity="0.80" />
+              <stop offset="100%" stopColor="#040A25" stopOpacity="0.75" />
+            </linearGradient>
+
+            {/* Wavy Strand Cool Sheen Overlay Gradient */}
+            <linearGradient id="kHairHighlightSheen" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#22377C" stopOpacity="0.85" />
+              <stop offset="50%" stopColor="#0B94B4" stopOpacity="0.95" />
+              <stop offset="100%" stopColor="#22377C" stopOpacity="0.30" />
+            </linearGradient>
+
+            {/* Generous clip zones allowing full wavy hair volume without hard rectangle cutoffs */}
+            <clipPath id="kClipBehindEarL">
+              <rect x="40" y="115" width="85" height="90" />
+            </clipPath>
+
+            <clipPath id="kClipBehindEarR">
+              <rect x="255" y="115" width="85" height="90" />
+            </clipPath>
+
+            <clipPath id="kClipNeckSideL">
+              <rect x="50" y="165" width="100" height="105" />
+            </clipPath>
+
+            <clipPath id="kClipNeckSideR">
+              <rect x="230" y="165" width="100" height="105" />
+            </clipPath>
           </defs>
 
 
@@ -1800,6 +1862,7 @@ export function LittleKrishna({
             </g>
           </g>
 
+
           {/* ════════════════ LAYER 5: SCULPTED TODDLER TORSO & NECK ════════════════ */}
           <g id="torso">
             {/* Unified Continuous Toddler Skin Form: Neck Pillar (Width 50 near jaw, 60 at base) → Trapezius → Upper Chest → Torso */}
@@ -1936,6 +1999,7 @@ export function LittleKrishna({
             <KrishnaArms pose={pose} renderSide="all" renderLayer="all" />
           )}
 
+
           {/* ════════════════ LAYER 6: HEAD & FACE ════════════════ */}
           {/* Scaled down around the chin anchor (190,217) to reduce oversized-head / chibi look.
               Outer wrapper carries the persistent scale so CSS head-tilt animations on #headGroup
@@ -1943,9 +2007,13 @@ export function LittleKrishna({
           <g transform="translate(190,217) scale(0.85) translate(-190,-217)">
             <g id="headGroup" transform="translate(0, -32)">
 
+
+
               <g id="headBase">
 
                 {/* 3D Sculpted Head Base: Reference-Matched Pixar Little Krishna Silhouette */}
+                {/* Subtle face shape refinement: jaw narrowed ~3% via scaleX transform around chin center */}
+                <g transform="translate(190, 155) scale(0.97, 1) translate(-190, -155)">
                 <path
                   d="M 190 48
                    C 230 48, 258 70, 264 105
@@ -2009,6 +2077,7 @@ export function LittleKrishna({
                 {/* Subtle Rosy Toddler Blush on Cheek Apples */}
                 <ellipse cx="149" cy="163" rx="15" ry="10" fill="url(#kCheekBlush)" transform="rotate(-4 149 163)" />
                 <ellipse cx="231" cy="163" rx="15" ry="10" fill="url(#kCheekBlush)" transform="rotate(4 231 163)" />
+                </g>{/* end face shape refinement scaleX group */}
               </g>
 
               {/* Master Face Details — Stylized, Expressive & High Fidelity */}
@@ -2387,6 +2456,7 @@ export function LittleKrishna({
               </g>
 
               {/* ════════════════ LITTLE KRISHNA HAIR & PEACOCK FEATHER (DIRECT IMAGE) ════════════════ */}
+              {/* EXISTING PNG HAIR MASK — PRESERVED AS BASE HAIR STRUCTURE. DO NOT REMOVE. */}
               <image
                 id="krishnaHairOverlay"
                 href={krishnaHairImg.src || '/characters/krishna_hair.png'}
@@ -2397,6 +2467,62 @@ export function LittleKrishna({
                 preserveAspectRatio="xMidYMid meet"
                 style={{ pointerEvents: 'none' }}
               />
+
+              {/* ════════════════ WAVY SUPPLEMENTAL HAIR TO FILL GAPS BEHIND EARS & NECK ════════════════ */}
+              {/* Positioned right over gaps between ears/neck and mask; layered underneath ears */}
+              <g id="krishnaHairGapFill" style={{ pointerEvents: 'none' }}>
+                {/* ── Left Side Behind Ear & Posterior Neck Hair Lock ── */}
+                <g id="hairGapLeft">
+                  {/* Natural Tapering S-Curl Lock emerging under PNG mask & flowing down posterior neck */}
+                  <path
+                    d="M 104 142
+                       C 84 150, 78 162, 82 176
+                       C 86 192, 98 204, 92 220
+                       C 89 228, 98 226, 102 218
+                       C 106 206, 114 190, 110 170
+                       C 107 156, 106 148, 108 144
+                       Z"
+                    fill="url(#kBehindEarL)"
+                  />
+                  {/* Soft Directional Sheen Highlight along the full S-curl path */}
+                  <path
+                    d="M 102 144
+                       C 85 152, 80 166, 85 180
+                       C 89 194, 96 208, 93 220"
+                    fill="none"
+                    stroke="url(#kHairHighlightSheen)"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                    opacity="0.85"
+                  />
+                </g>
+
+                {/* ── Right Side Behind Ear & Posterior Neck Hair Lock ── */}
+                <g id="hairGapRight">
+                  {/* Natural Tapering S-Curl Lock emerging under PNG mask & flowing down posterior neck */}
+                  <path
+                    d="M 276 142
+                       C 296 150, 302 162, 298 176
+                       C 294 192, 282 204, 288 220
+                       C 291 228, 282 226, 278 218
+                       C 274 206, 266 190, 270 170
+                       C 273 156, 274 148, 272 144
+                       Z"
+                    fill="url(#kBehindEarR)"
+                  />
+                  {/* Soft Directional Sheen Highlight along the full S-curl path */}
+                  <path
+                    d="M 278 144
+                       C 295 152, 300 166, 295 180
+                       C 291 194, 284 208, 287 220"
+                    fill="none"
+                    stroke="url(#kHairHighlightSheen)"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                    opacity="0.85"
+                  />
+                </g>
+              </g>
 
               {/* ════════════════ LITTLE KRISHNA EARS & GOLD BALI ORNAMENTS ════════════════ */}
               <g id="krishnaEars">

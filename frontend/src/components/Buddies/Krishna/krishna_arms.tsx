@@ -49,19 +49,58 @@ export const ParametricUpperArm = ({ isFlipped = false }: { isFlipped?: boolean 
     C ${-t*0.8} ${-capH}, ${-t - axillaOverlap} ${-capH*0.5}, ${-t} 0 
     Z`;
     
-  const hl = `M 0 5 C 2 ${len*0.3}, 2 ${len*0.7}, 0 ${len - 5}`;
-  const shL = `M ${-m*0.85} 15 C ${-m*0.85} ${len*0.4}, ${-b*0.85} ${len*0.8}, ${-b*0.85} ${len - 5}`;
-  const shR = `M ${m*0.85} 15 C ${m*0.85} ${len*0.4}, ${b*0.85} ${len*0.8}, ${b*0.85} ${len - 5}`;
+  // Directional 3D volumetric lighting: soft highlight on light side, gentle shadow on underside
+  const hl = `M ${-m*0.2} 5 C ${-m*0.1} ${len*0.3}, ${-b*0.1} ${len*0.7}, 0 ${len - 5}`;
+  const softShadow = `M ${m*0.7} 15 C ${m*0.7} ${len*0.4}, ${b*0.7} ${len*0.8}, ${b*0.6} ${len - 5}`;
   
   const transform = isFlipped ? 'scale(-1, 1)' : '';
 
   return (
     <g className="parametric-upper-arm">
+      {/* Continuous Toddler Skin Fill */}
       <path d={path} fill="url(#kSkinBody)" transform={transform} />
       <path d={path} fill="url(#kArmSkinGrad)" transform={transform} />
-      <path d={hl} fill="none" stroke="#A9CCFF" strokeWidth={u(5)} strokeLinecap="round" opacity="0.28" transform={transform} />
-      <path d={shL} fill="none" stroke="#4E82D1" strokeWidth={u(3)} strokeLinecap="round" opacity="0.2" transform={transform} />
-      <path d={shR} fill="none" stroke="#4E82D1" strokeWidth={u(3)} strokeLinecap="round" opacity="0.2" transform={transform} />
+
+      {/* Shoulder Cap Smooth Overlap Blend into Torso Socket */}
+      <circle cx={0} cy={0} r={t} fill="url(#kSkinBody)" transform={transform} />
+      <circle cx={0} cy={0} r={t} fill="url(#kArmSkinGrad)" transform={transform} />
+
+      {/* Volumetric Longitudinal Highlight */}
+      <path d={hl} fill="none" stroke="#A9CCFF" strokeWidth={u(5)} strokeLinecap="round" opacity="0.25" transform={transform} />
+      {/* Soft Medial Underside Shading (no dual harsh outlines) */}
+      <path d={softShadow} fill="none" stroke="#4E82D1" strokeWidth={u(3.2)} strokeLinecap="round" opacity="0.18" transform={transform} />
+
+      {/* ── Refined Child-Proportioned Gold Upper Armlet (Keyur) ── */}
+      <g className="upper-armlet" transform={transform}>
+        {/* Ambient contact shadow under armlet */}
+        <path
+          d={`M ${-m * 0.85} ${len * 0.44} C ${-m * 0.4} ${len * 0.49}, ${m * 0.4} ${len * 0.49}, ${m * 0.85} ${len * 0.44}`}
+          fill="none"
+          stroke="#1E3A8A"
+          strokeWidth={u(2.8)}
+          opacity="0.22"
+        />
+        {/* Main 3D Gold Armlet Band wrapping arm contour */}
+        <path
+          d={`M ${-m * 0.83} ${len * 0.42} C ${-m * 0.4} ${len * 0.47}, ${m * 0.4} ${len * 0.47}, ${m * 0.83} ${len * 0.42}`}
+          fill="none"
+          stroke="url(#kJewelGoldGrad)"
+          strokeWidth={u(4.2)}
+          strokeLinecap="round"
+        />
+        {/* Gold Band Light Specular Highlight */}
+        <path
+          d={`M ${-m * 0.65} ${len * 0.415} C ${-m * 0.3} ${len * 0.46}, ${m * 0.3} ${len * 0.46}, ${m * 0.65} ${len * 0.415}`}
+          fill="none"
+          stroke="url(#kJewelGoldLight)"
+          strokeWidth={u(1.4)}
+          strokeLinecap="round"
+          opacity="0.9"
+        />
+        {/* Central Ornamental Gem Motif */}
+        <circle cx={0} cy={len * 0.455} r={u(2.2)} fill="url(#kJewelRuby)" stroke="url(#kJewelGoldGrad)" strokeWidth={u(0.8)} />
+        <circle cx={-u(0.6)} cy={len * 0.445} r={u(0.6)} fill="#FFFFFF" opacity="0.85" />
+      </g>
     </g>
   );
 };
@@ -72,19 +111,36 @@ export const ParametricForearm = () => {
   const t = topW / 2, m = maxW / 2, b = botW / 2, e = blendW / 2;
   
   const path = `M ${-t} 0 C ${-e} ${-ov}, ${e} ${-ov}, ${t} 0 C ${m} ${len*0.3}, ${b} ${len*0.7}, ${b} ${len} L ${-b} ${len} C ${-b} ${len*0.7}, ${-m} ${len*0.3}, ${-t} 0 Z`;
-  const hl = `M 0 5 C 2 ${len*0.3}, 2 ${len*0.7}, 0 ${len - 3}`;
-  const shL = `M ${-m*0.85} 10 C ${-m*0.85} ${len*0.4}, ${-b*0.85} ${len*0.8}, ${-b*0.85} ${len - 5}`;
-  const shR = `M ${m*0.85} 10 C ${m*0.85} ${len*0.4}, ${b*0.85} ${len*0.8}, ${b*0.85} ${len - 5}`;
+  const hl = `M ${-m*0.15} 5 C 0 ${len*0.3}, 0 ${len*0.7}, 0 ${len - 3}`;
+  const softShadow = `M ${m*0.7} 10 C ${m*0.7} ${len*0.4}, ${b*0.7} ${len*0.8}, ${b*0.6} ${len - 5}`;
 
   return (
     <g className="parametric-forearm">
+      {/* Continuous Toddler Skin Fill */}
       <path d={path} fill="url(#kSkinBody)" />
       <path d={path} fill="url(#kArmSkinGrad)" />
-      <path d={hl} fill="none" stroke="#A9CCFF" strokeWidth={u(4.5)} strokeLinecap="round" opacity="0.3" />
-      <path d={shL} fill="none" stroke="#4E82D1" strokeWidth={u(2.8)} strokeLinecap="round" opacity="0.2" />
-      <path d={shR} fill="none" stroke="#4E82D1" strokeWidth={u(2.8)} strokeLinecap="round" opacity="0.2" />
+
+      {/* Forearm Top Overlap into Elbow Joint */}
+      <circle cx={0} cy={0} r={t} fill="url(#kSkinBody)" />
+      <circle cx={0} cy={0} r={t} fill="url(#kArmSkinGrad)" />
+
+      {/* Seamless Highlight flowing along arm vector */}
+      <path d={hl} fill="none" stroke="#A9CCFF" strokeWidth={u(4.2)} strokeLinecap="round" opacity="0.28" />
+      {/* Soft Underside Shadow */}
+      <path d={softShadow} fill="none" stroke="#4E82D1" strokeWidth={u(2.6)} strokeLinecap="round" opacity="0.18" />
+
       {/* Seamless Forearm-to-Wrist Highlight Transition */}
-      <ellipse cx={0} cy={len - u(1)} rx={b * 0.75} ry={u(2.5)} fill="#A9CCFF" opacity="0.18" />
+      <ellipse cx={0} cy={len - u(1)} rx={b * 0.75} ry={u(2.5)} fill="#A9CCFF" opacity="0.2" />
+
+      {/* ── Subtle Forearm Vertical Vaishnav Motif ── */}
+      <g className="forearm-vaishnav-mark" transform={`translate(0, ${len - u(16)})`}>
+        <path
+          d={`M ${-u(1.1)} ${-u(6)} L ${-u(1.1)} ${u(4)} C ${-u(1.1)} ${u(6.5)}, ${u(1.1)} ${u(6.5)}, ${u(1.1)} ${u(4)} L ${u(1.1)} ${-u(6)} Z`}
+          fill="url(#kVaishnavIvory)"
+          opacity="0.85"
+        />
+        <circle cx={0} cy={u(1.5)} r={u(0.85)} fill="#FFD45A" />
+      </g>
     </g>
   );
 };
@@ -316,10 +372,85 @@ export const ParametricHand = ({
             <circle cx={(midX + idxX) / 2} cy={h - u(2)} r={u(1.5)} fill="#315EA8" opacity="0.15" />
           </g>
 
+          {/* ── REFINED WRIST BANGLES, HAND CHAIN & FINGER JEWELLERY ── */}
+          <g className="hand-jewellery">
+            {/* 1. Form-Fitting Dual Wrist Bangles wrapping 24-unit wrist contour */}
+            <g className="wrist-bangles">
+              {/* Ambient skin contact shadow under bangle */}
+              <path
+                d={`M ${-w * 0.95} ${-u(5)} C ${-w * 0.45} ${-u(2)}, ${w * 0.45} ${-u(2)}, ${w * 0.95} ${-u(5)}`}
+                fill="none"
+                stroke="#1E3A8A"
+                strokeWidth={u(2.4)}
+                opacity="0.22"
+              />
+              {/* Primary 3D Gold Bangle Band */}
+              <path
+                d={`M ${-w * 0.92} ${-u(5.5)} C ${-w * 0.45} ${-u(2.5)}, ${w * 0.45} ${-u(2.5)}, ${w * 0.92} ${-u(5.5)}`}
+                fill="none"
+                stroke="url(#kJewelGoldGrad)"
+                strokeWidth={u(3.4)}
+                strokeLinecap="round"
+              />
+              {/* Primary Bangle Light Specular Sheen */}
+              <path
+                d={`M ${-w * 0.7} ${-u(5.8)} C ${-w * 0.3} ${-u(2.8)}, ${w * 0.3} ${-u(2.8)}, ${w * 0.7} ${-u(5.8)}`}
+                fill="none"
+                stroke="#FFF0A3"
+                strokeWidth={u(1.0)}
+                opacity="0.9"
+              />
+              {/* Secondary Beaded Gold Bangle */}
+              <path
+                d={`M ${-w * 0.88} ${-u(1.5)} C ${-w * 0.4} ${u(1.2)}, ${w * 0.4} ${u(1.2)}, ${w * 0.88} ${-u(1.5)}`}
+                fill="none"
+                stroke="url(#kJewelGoldGrad)"
+                strokeWidth={u(2.0)}
+                strokeDasharray={`${u(1.4)}, ${u(1.4)}`}
+                strokeLinecap="round"
+              />
+            </g>
+
+            {/* 2. Traditional Hand Chain (Hathphool) anchored to Wrist & Middle Finger */}
+            <g className="hand-chain">
+              {/* Central Wrist Anchor Bead */}
+              <circle cx={0} cy={-u(2.5)} r={u(1.4)} fill="url(#kJewelGoldGrad)" stroke="#B86A00" strokeWidth={u(0.4)} />
+              
+              {/* Delicate Beaded Chain running down back of hand */}
+              <path
+                d={`M 0 ${-u(2.5)} Q ${midX * 0.5} ${h * 0.3}, ${midX} ${h * 0.52}`}
+                fill="none"
+                stroke="url(#kJewelGoldGrad)"
+                strokeWidth={u(1.2)}
+                strokeDasharray={`${u(1.1)}, ${u(1.1)}`}
+                strokeLinecap="round"
+              />
+              
+              {/* Central Hand Medallion Accent */}
+              <circle cx={midX} cy={h * 0.52} r={u(1.8)} fill="url(#kJewelGoldGrad)" />
+              <circle cx={midX} cy={h * 0.52} r={u(0.9)} fill="url(#kJewelRuby)" />
+              
+              {/* Chain Continuation down to Middle Finger Root */}
+              <path
+                d={`M ${midX} ${h * 0.52} L ${midX} ${h - u(2)}`}
+                fill="none"
+                stroke="url(#kJewelGoldGrad)"
+                strokeWidth={u(1.1)}
+                strokeDasharray={`${u(1.0)}, ${u(1.0)}`}
+                strokeLinecap="round"
+              />
+            </g>
+          </g>
+
           {/* ANATOMICAL DIGITS: Permanent semantic IDs and dimensions */}
           <ParametricDigit len={little.l} baseW={little.base} tipW={little.tip} transform={`translate(${litX}, ${h - u(6)}) rotate(${9 + f.little})`} />
           <ParametricDigit len={ring.l} baseW={ring.base} tipW={ring.tip} transform={`translate(${rngX}, ${h - u(2)}) rotate(${4 + f.ring})`} />
-          <ParametricDigit len={middle.l} baseW={middle.base} tipW={middle.tip} transform={`translate(${midX}, ${h}) rotate(${0 + f.middle})`} />
+          <g transform={`translate(${midX}, ${h}) rotate(${0 + f.middle})`}>
+            <ParametricDigit len={middle.l} baseW={middle.base} tipW={middle.tip} />
+            {/* Delicate Gold Ring around middle finger root */}
+            <ellipse cx={0} cy={u(2)} rx={middle.base / 2 + u(0.6)} ry={u(1.8)} fill="none" stroke="url(#kJewelGoldGrad)" strokeWidth={u(1.6)} />
+            <ellipse cx={0} cy={u(1.6)} rx={middle.base / 2 + u(0.2)} ry={u(1.0)} fill="none" stroke="#FFF0A3" strokeWidth={u(0.6)} opacity="0.85" />
+          </g>
           <ParametricDigit
             len={index.l}
             baseW={index.base}
@@ -385,7 +516,7 @@ export const KrishnaArms = ({
   const showHand = renderLayer === 'all' || renderLayer === 'forearmAndHand' || isSpecialHandPart;
 
   return (
-    <g id={`armRoots-${renderLayer}-${renderHandPart}`} filter="url(#kSoftShadow)">
+    <g id={`armRoots-${renderLayer}-${renderHandPart}`}>
       {/* Embedded Master Skin Shaders ensuring continuous material across arm, wrist, and hand */}
       <defs>
         <linearGradient id="kArmSkinGrad" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -420,6 +551,34 @@ export const KrishnaArms = ({
           <stop offset="50%" stopColor="#84B5FA" stopOpacity="0.2" />
           <stop offset="100%" stopColor="#6BA7FF" stopOpacity="0" />
         </radialGradient>
+
+        {/* ── Master Jewellery & Vaishnav Decoration Gradients ── */}
+        <linearGradient id="kJewelGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#B86A00" />
+          <stop offset="25%" stopColor="#F5A900" />
+          <stop offset="50%" stopColor="#FFD45A" />
+          <stop offset="75%" stopColor="#FFF0A3" />
+          <stop offset="90%" stopColor="#F5A900" />
+          <stop offset="100%" stopColor="#B86A00" />
+        </linearGradient>
+
+        <linearGradient id="kJewelGoldLight" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#FFD45A" />
+          <stop offset="50%" stopColor="#FFF0A3" />
+          <stop offset="100%" stopColor="#FFD45A" />
+        </linearGradient>
+
+        <radialGradient id="kJewelRuby" cx="40%" cy="35%" r="60%">
+          <stop offset="0%" stopColor="#F87171" />
+          <stop offset="50%" stopColor="#DC2626" />
+          <stop offset="100%" stopColor="#7F1D1D" />
+        </radialGradient>
+
+        <linearGradient id="kVaishnavIvory" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.95" />
+          <stop offset="50%" stopColor="#F8F9FF" stopOpacity="0.90" />
+          <stop offset="100%" stopColor="#E2E8F0" stopOpacity="0.75" />
+        </linearGradient>
       </defs>
 
       {/* KRISHNA'S ANATOMICAL RIGHT ARM (Viewer's Left side) — chakra hand */}
@@ -434,12 +593,29 @@ export const KrishnaArms = ({
 
             {/* Elbow Pivot Joint */}
             <g id={`leftElbowPivot-${renderLayer}-${renderHandPart}`} transform={`translate(0, ${ARM_SPEC.upper.len}) rotate(${config.right.elbow})`}>
+              {/* Seamless Anatomical Elbow Capsule Blend */}
+              {showUpperArm && showForearm && (
+                <g className="elbow-joint-blend">
+                  <circle cx={0} cy={0} r={ARM_SPEC.elbow.blendW / 2} fill="url(#kSkinBody)" />
+                  <circle cx={0} cy={0} r={ARM_SPEC.elbow.blendW / 2} fill="url(#kArmSkinGrad)" />
+                  <ellipse cx={0} cy={0} rx={(ARM_SPEC.elbow.blendW / 2) * 0.75} ry={u(3)} fill="#A9CCFF" opacity="0.18" />
+                </g>
+              )}
+
               <g id={`leftForearm-${renderLayer}-${renderHandPart}`}>
                 {showForearm && <ParametricForearm />}
 
                 {/* Wrist Pivot Joint & Hand */}
                 {showHand && (
                 <g id={`leftWristPivot-${renderLayer}-${renderHandPart}`} transform={`translate(0, ${ARM_SPEC.forearm.len}) rotate(${config.right.wrist})`}>
+                  {/* Seamless Anatomical Wrist Capsule Blend */}
+                  {showForearm && (
+                    <g className="wrist-joint-blend">
+                      <ellipse cx={0} cy={0} rx={ARM_SPEC.wrist.width / 2} ry={u(3.5)} fill="url(#kSkinBody)" />
+                      <ellipse cx={0} cy={0} rx={(ARM_SPEC.wrist.width / 2) * 0.75} ry={u(2.2)} fill="#A9CCFF" opacity="0.18" />
+                    </g>
+                  )}
+
                   {/* Character's Right Hand (Chakra Hand) */}
                   <ParametricHand
                     side="characterRight"
@@ -468,12 +644,29 @@ export const KrishnaArms = ({
 
             {/* Elbow Pivot Joint */}
             <g id={`rightElbowPivot-${renderLayer}-${renderHandPart}`} transform={`translate(0, ${ARM_SPEC.upper.len}) rotate(${config.left.elbow})`}>
+              {/* Seamless Anatomical Elbow Capsule Blend */}
+              {showUpperArm && showForearm && (
+                <g className="elbow-joint-blend">
+                  <circle cx={0} cy={0} r={ARM_SPEC.elbow.blendW / 2} fill="url(#kSkinBody)" />
+                  <circle cx={0} cy={0} r={ARM_SPEC.elbow.blendW / 2} fill="url(#kArmSkinGrad)" />
+                  <ellipse cx={0} cy={0} rx={(ARM_SPEC.elbow.blendW / 2) * 0.75} ry={u(3)} fill="#A9CCFF" opacity="0.18" />
+                </g>
+              )}
+
               <g id={`rightForearm-${renderLayer}-${renderHandPart}`}>
                 {showForearm && <ParametricForearm />}
 
                 {/* Wrist Pivot Joint & Hand */}
                 {showHand && (
                 <g id={`rightWristPivot-${renderLayer}-${renderHandPart}`} transform={`translate(0, ${ARM_SPEC.forearm.len}) rotate(${config.left.wrist})`}>
+                  {/* Seamless Anatomical Wrist Capsule Blend */}
+                  {showForearm && (
+                    <g className="wrist-joint-blend">
+                      <ellipse cx={0} cy={0} rx={ARM_SPEC.wrist.width / 2} ry={u(3.5)} fill="url(#kSkinBody)" />
+                      <ellipse cx={0} cy={0} rx={(ARM_SPEC.wrist.width / 2) * 0.75} ry={u(2.2)} fill="#A9CCFF" opacity="0.18" />
+                    </g>
+                  )}
+
                   {/* Character's Left Hand */}
                   <ParametricHand
                     side="characterLeft"
