@@ -524,13 +524,13 @@ export function LittleKrishna({
             </radialGradient>
 
             {/* ── 3D Multi-Layer Volumetric Dhoti Fabric & Waistband Gradients ── */}
-            {/* Belt / Waistband Rich Golden Orange & Gold Rim Shaders */}
+            {/* Belt / Waistband Orange Fabric Wrap Shader (Bright Bhagwa / Saffron Orange Palette) */}
             <linearGradient id="kDhotiWaistGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#FFAE5C" />
-              <stop offset="18%" stopColor="#F97316" />
-              <stop offset="55%" stopColor="#EA580C" />
-              <stop offset="85%" stopColor="#C2410C" />
-              <stop offset="100%" stopColor="#7C2D12" />
+              <stop offset="0%" stopColor="#FF9A2E" />
+              <stop offset="25%" stopColor="#FF7A00" />
+              <stop offset="58%" stopColor="#FF6A00" />
+              <stop offset="85%" stopColor="#E65300" />
+              <stop offset="100%" stopColor="#B93D00" />
             </linearGradient>
 
             <linearGradient id="kGoldBeltRim" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -592,109 +592,109 @@ export function LittleKrishna({
 
             {/* Base Under-wrap gradient */}
             <linearGradient id="kDhotiBaseGrad" x1="20%" y1="0%" x2="80%" y2="100%">
-              <stop offset="0%" stopColor="#FFF4AD" />
-              <stop offset="22%" stopColor="#FBBF24" />
-              <stop offset="58%" stopColor="#E08B00" />
-              <stop offset="88%" stopColor="#B45F00" />
-              <stop offset="100%" stopColor="#7C3B00" />
+              <stop offset="0%" stopColor="#FFD95A" />
+              <stop offset="25%" stopColor="#FFC238" />
+              <stop offset="55%" stopColor="#F8A916" />
+              <stop offset="85%" stopColor="#D87900" />
+              <stop offset="100%" stopColor="#B85C00" />
             </linearGradient>
 
             {/* Left Fabric Mass (Key-lit from upper-left) */}
             <radialGradient id="kDhotiLeftMassGrad" cx="32%" cy="26%" r="72%">
-              <stop offset="0%" stopColor="#FFFDEB" />
-              <stop offset="28%" stopColor="#FCD34D" />
-              <stop offset="62%" stopColor="#F59E0B" />
-              <stop offset="88%" stopColor="#C97300" />
-              <stop offset="100%" stopColor="#924700" />
+              <stop offset="0%" stopColor="#FFD95A" />
+              <stop offset="30%" stopColor="#FFC238" />
+              <stop offset="60%" stopColor="#F8A916" />
+              <stop offset="88%" stopColor="#D87900" />
+              <stop offset="100%" stopColor="#B85C00" />
             </radialGradient>
 
             {/* Right Fabric Mass (Ambient warmth) */}
             <radialGradient id="kDhotiRightMassGrad" cx="44%" cy="30%" r="70%">
-              <stop offset="0%" stopColor="#FEF08A" />
-              <stop offset="32%" stopColor="#FBBF24" />
-              <stop offset="68%" stopColor="#D97706" />
-              <stop offset="92%" stopColor="#A45100" />
-              <stop offset="100%" stopColor="#783400" />
+              <stop offset="0%" stopColor="#FFD95A" />
+              <stop offset="32%" stopColor="#FFC238" />
+              <stop offset="65%" stopColor="#F8A916" />
+              <stop offset="90%" stopColor="#D87900" />
+              <stop offset="100%" stopColor="#B85C00" />
             </radialGradient>
 
-            {/* 6 Large Sculptural Fabric Folds */}
+            {/* Sculptural Yellow Fabric Fold Gradients */}
             <linearGradient id="kDhotiFoldL1Grad" x1="15%" y1="10%" x2="85%" y2="90%">
-              <stop offset="0%" stopColor="#FFFFF4" />
-              <stop offset="20%" stopColor="#FDE68A" />
-              <stop offset="55%" stopColor="#F59E0B" />
-              <stop offset="85%" stopColor="#C26500" />
-              <stop offset="100%" stopColor="#8A4200" />
+              <stop offset="0%" stopColor="#FFD95A" />
+              <stop offset="25%" stopColor="#FFC238" />
+              <stop offset="60%" stopColor="#F8A916" />
+              <stop offset="85%" stopColor="#D87900" />
+              <stop offset="100%" stopColor="#B85C00" />
             </linearGradient>
 
             <linearGradient id="kDhotiFoldL2Grad" x1="12%" y1="18%" x2="88%" y2="82%">
-              <stop offset="0%" stopColor="#FFFCE6" />
-              <stop offset="24%" stopColor="#FCD34D" />
-              <stop offset="60%" stopColor="#E28900" />
-              <stop offset="88%" stopColor="#A85700" />
-              <stop offset="100%" stopColor="#753500" />
+              <stop offset="0%" stopColor="#FFD95A" />
+              <stop offset="28%" stopColor="#FFC238" />
+              <stop offset="62%" stopColor="#F8A916" />
+              <stop offset="88%" stopColor="#D87900" />
+              <stop offset="100%" stopColor="#B85C00" />
             </linearGradient>
 
             <linearGradient id="kDhotiFoldL3Grad" x1="10%" y1="20%" x2="90%" y2="80%">
-              <stop offset="0%" stopColor="#FFF9D2" />
-              <stop offset="26%" stopColor="#FBBF24" />
-              <stop offset="64%" stopColor="#D97706" />
-              <stop offset="90%" stopColor="#9E4E00" />
-              <stop offset="100%" stopColor="#6E3000" />
+              <stop offset="0%" stopColor="#FFD95A" />
+              <stop offset="30%" stopColor="#FFC238" />
+              <stop offset="65%" stopColor="#F8A916" />
+              <stop offset="90%" stopColor="#D87900" />
+              <stop offset="100%" stopColor="#B85C00" />
             </linearGradient>
 
             <linearGradient id="kDhotiFoldR1Grad" x1="85%" y1="10%" x2="15%" y2="90%">
-              <stop offset="0%" stopColor="#FEF08A" />
-              <stop offset="28%" stopColor="#FBBF24" />
-              <stop offset="65%" stopColor="#D97706" />
-              <stop offset="88%" stopColor="#A85700" />
-              <stop offset="100%" stopColor="#7C3B00" />
+              <stop offset="0%" stopColor="#FFD95A" />
+              <stop offset="28%" stopColor="#FFC238" />
+              <stop offset="65%" stopColor="#F8A916" />
+              <stop offset="88%" stopColor="#D87900" />
+              <stop offset="100%" stopColor="#B85C00" />
             </linearGradient>
 
             <linearGradient id="kDhotiFoldR2Grad" x1="80%" y1="20%" x2="20%" y2="80%">
-              <stop offset="0%" stopColor="#FFF3A8" />
-              <stop offset="28%" stopColor="#F59E0B" />
-              <stop offset="65%" stopColor="#C97300" />
-              <stop offset="92%" stopColor="#924700" />
-              <stop offset="100%" stopColor="#662C00" />
+              <stop offset="0%" stopColor="#FFD95A" />
+              <stop offset="28%" stopColor="#FFC238" />
+              <stop offset="65%" stopColor="#F8A916" />
+              <stop offset="92%" stopColor="#D87900" />
+              <stop offset="100%" stopColor="#B85C00" />
             </linearGradient>
 
             {/* Central Cascading Pleat Gradients */}
             <linearGradient id="kDhotiPleatTopGrad" x1="30%" y1="0%" x2="70%" y2="100%">
               <stop offset="0%" stopColor="#FFFFFF" />
-              <stop offset="20%" stopColor="#FEF3C7" />
-              <stop offset="55%" stopColor="#FBBF24" />
-              <stop offset="85%" stopColor="#D97706" />
-              <stop offset="100%" stopColor="#9E4E00" />
+              <stop offset="20%" stopColor="#FFD95A" />
+              <stop offset="55%" stopColor="#FFC238" />
+              <stop offset="85%" stopColor="#F8A916" />
+              <stop offset="100%" stopColor="#D87900" />
             </linearGradient>
 
             <linearGradient id="kDhotiPleatMidGrad" x1="40%" y1="0%" x2="60%" y2="100%">
-              <stop offset="0%" stopColor="#FEF3C7" />
-              <stop offset="28%" stopColor="#F59E0B" />
-              <stop offset="68%" stopColor="#C97300" />
-              <stop offset="100%" stopColor="#8A3E00" />
+              <stop offset="0%" stopColor="#FFD95A" />
+              <stop offset="28%" stopColor="#FFC238" />
+              <stop offset="68%" stopColor="#F8A916" />
+              <stop offset="100%" stopColor="#D87900" />
             </linearGradient>
 
             <linearGradient id="kDhotiPleatDeepGrad" x1="50%" y1="0%" x2="50%" y2="100%">
-              <stop offset="0%" stopColor="#E28900" />
-              <stop offset="50%" stopColor="#B45F00" />
-              <stop offset="100%" stopColor="#6C2E00" />
+              <stop offset="0%" stopColor="#F8A916" />
+              <stop offset="50%" stopColor="#D87900" />
+              <stop offset="100%" stopColor="#B85C00" />
             </linearGradient>
 
-            {/* Orange Hanging Silk Side Cloth (2 broad volumetric rounded folds) */}
+            {/* Orange Hanging Silk Side Cloth (Bright Bhagwa / Saffron Orange Palette: #FF6A00 Base) */}
             <linearGradient id="kDhotiOrangeSash1" x1="15%" y1="0%" x2="85%" y2="100%">
-              <stop offset="0%" stopColor="#FFC685" />
-              <stop offset="26%" stopColor="#FF8B1F" />
-              <stop offset="65%" stopColor="#D95600" />
-              <stop offset="90%" stopColor="#A83900" />
-              <stop offset="100%" stopColor="#752100" />
+              <stop offset="0%" stopColor="#FF9A2E" />
+              <stop offset="25%" stopColor="#FF7A00" />
+              <stop offset="58%" stopColor="#FF6A00" />
+              <stop offset="85%" stopColor="#E65300" />
+              <stop offset="100%" stopColor="#B93D00" />
             </linearGradient>
 
             <linearGradient id="kDhotiOrangeSash2" x1="20%" y1="0%" x2="80%" y2="100%">
-              <stop offset="0%" stopColor="#FFE4C2" />
-              <stop offset="24%" stopColor="#FFA64D" />
-              <stop offset="58%" stopColor="#EA580C" />
-              <stop offset="88%" stopColor="#B43800" />
-              <stop offset="100%" stopColor="#7C1D00" />
+              <stop offset="0%" stopColor="#FF9A2E" />
+              <stop offset="28%" stopColor="#FF7A00" />
+              <stop offset="62%" stopColor="#FF6A00" />
+              <stop offset="88%" stopColor="#E65300" />
+              <stop offset="100%" stopColor="#B93D00" />
             </linearGradient>
 
             {/* ── Sudarshan Chakra Glow & Core ── */}
@@ -1058,88 +1058,69 @@ export function LittleKrishna({
           {/* ════════════════ LAYER 4: 3D WRAPPED LAYERED DHOTI, SCULPTED WAISTBAND & SILK SASH ════════════════ */}
           <g id="dhoti" filter="url(#kSoftShadow)" transform="translate(190,290) scale(1,1.06) translate(-190,-290)">
 
-            {/* ── 1. BASE WRAP SILHOUETTE (Full-Length Anatomical Leg Wraps) ── */}
+            {/* ── 1. BASE FABRIC UNDER-LAYER (Soft ambient occlusion shadow under waistband) ── */}
             <g id="dhotiBaseStructure">
-              {/* Soft ambient occlusion shadow under waistband */}
-              <ellipse cx="190" cy="288" rx="64" ry="10" fill="#7C2D12" opacity="0.32" />
-
-              {/* Full-length base silhouette reaching ankles with distinct two-leg separation */}
-              <path
-                d="M 124 296
-                   C 114 330, 115 368, 122 396
-                   C 126 405, 136 408, 150 408
-                   C 162 408, 170 403, 174 394
-                   C 178 376, 184 356, 190 354
-                   C 196 356, 202 376, 206 394
-                   C 210 403, 218 408, 230 408
-                   C 244 408, 254 405, 258 396
-                   C 265 368, 266 330, 256 296
-                   C 246 286, 224 282, 190 282
-                   C 156 282, 134 286, 124 296 Z"
-                fill="url(#kDhotiBaseGrad)"
-                stroke="#A85700"
-                strokeWidth="1.0"
-              />
-
-              {/* Inseam Shadow Crease (Separation between the two wrapped legs) */}
-              <path
-                d="M 174 394
-                   C 182 374, 186 356, 190 354
-                   C 194 356, 198 374, 206 394
-                   C 200 388, 194 382, 190 382
-                   C 186 382, 180 388, 174 394 Z"
-                fill="#5B2305"
-                opacity="0.48"
-              />
+              <ellipse cx="190" cy="288" rx="64" ry="10" fill="#B85C00" opacity="0.35" />
             </g>
 
-            {/* ── 2. LEFT & RIGHT MAJOR FRONT FABRIC MASSES ── */}
-            <g id="dhotiMajorFabricMasses">
-              {/* Left Front Thigh & Shin Mass */}
+            {/* ── 2. INDIVIDUAL LEFT & RIGHT LEG FABRIC WRAPS (WITH CLEAR 14-22 UNIT CENTRAL GAP) ── */}
+            <g id="dhotiLegWraps">
+              {/* LEFT LEG FABRIC DRAPE (Wraps Left Leg centered at X=148) */}
               <path
-                d="M 124 296
-                   C 116 330, 116 368, 124 394
-                   C 128 405, 140 408, 152 408
-                   C 162 408, 170 403, 174 392
-                   C 176 372, 166 342, 152 318
-                   C 142 304, 132 296, 124 296 Z"
+                d="M 124 294
+                   C 114 330, 115 365, 122 396
+                   C 126 405, 136 408, 150 408
+                   C 164 408, 174 403, 178 394
+                   C 180 370, 180 340, 184 308
+                   C 166 294, 142 286, 124 294 Z"
                 fill="url(#kDhotiLeftMassGrad)"
-                stroke="#B45F00"
-                strokeWidth="0.9"
+                stroke="#D87900"
+                strokeWidth="0.8"
               />
 
-              {/* Left Fabric Mass Soft Crest Highlight */}
+              {/* Left Fabric Mass Soft Crest Highlight (Key-lit from upper-left) */}
               <path
-                d="M 130 304
-                   C 124 332, 126 364, 134 388
-                   C 138 402, 146 405, 154 403
-                   C 150 394, 144 380, 142 362
-                   C 140 338, 136 320, 130 304 Z"
-                fill="#FFFFF0"
-                opacity="0.45"
+                d="M 128 302
+                   C 122 330, 124 362, 132 386
+                   C 136 400, 144 404, 154 404
+                   C 148 392, 142 376, 140 358
+                   C 138 334, 134 316, 128 302 Z"
+                fill="#FFD95A"
+                opacity="0.5"
               />
 
-              {/* Right Front Thigh & Shin Mass */}
+              {/* RIGHT LEG FABRIC DRAPE (Wraps Right Leg centered at X=228) */}
               <path
-                d="M 256 296
-                   C 264 330, 264 368, 256 394
-                   C 252 405, 240 408, 228 408
-                   C 218 408, 210 403, 206 392
-                   C 204 372, 214 342, 228 318
-                   C 238 304, 248 296, 256 296 Z"
+                d="M 256 294
+                   C 266 330, 265 365, 258 396
+                   C 254 405, 244 408, 230 408
+                   C 216 408, 206 403, 202 394
+                   C 200 370, 200 340, 196 308
+                   C 214 294, 238 286, 256 294 Z"
                 fill="url(#kDhotiRightMassGrad)"
-                stroke="#B45F00"
-                strokeWidth="0.9"
+                stroke="#D87900"
+                strokeWidth="0.8"
               />
 
               {/* Right Fabric Mass Soft Ambient Shading */}
               <path
-                d="M 252 306
-                   C 258 334, 258 366, 252 388
-                   C 248 402, 240 405, 232 405
-                   C 238 396, 244 384, 248 372
-                   C 252 348, 252 326, 252 306 Z"
-                fill="#783400"
+                d="M 252 304
+                   C 258 332, 258 364, 252 386
+                   C 248 400, 240 404, 232 404
+                   C 238 394, 244 380, 248 368
+                   C 252 344, 252 322, 252 304 Z"
+                fill="#B85C00"
+                opacity="0.25"
+              />
+
+              {/* Subtle Natural Leg Separation Inseam Shadow (Soft & Organic, NOT a black cutout) */}
+              <path
+                d="M 178 394
+                   C 182 374, 185 348, 186 316
+                   C 194 316, 197 348, 202 394
+                   C 198 386, 194 380, 190 380
+                   C 186 380, 182 386, 178 394 Z"
+                fill="#B85C00"
                 opacity="0.22"
               />
             </g>
@@ -1148,250 +1129,212 @@ export function LittleKrishna({
             <g id="dhotiWaistGathers">
               {/* Soft contact shadow beneath belt */}
               <path
-                d="M 128 292
-                   C 158 308, 222 308, 252 292
-                   C 250 302, 222 316, 190 316
-                   C 158 316, 130 302, 128 292 Z"
-                fill="#451A03"
-                opacity="0.55"
+                d="M 128 290
+                   C 158 306, 222 306, 252 290
+                   C 250 300, 222 314, 190 314
+                   C 158 314, 130 300, 128 290 Z"
+                fill="#B85C00"
+                opacity="0.45"
               />
 
-              {/* Fabric gather puckers emerging under the waistband */}
+              {/* Fabric gather puckers with staggered origins emerging under the waistband */}
               {[
-                { x1: 140, y1: 288, x2: 142, y2: 308 },
-                { x1: 158, y1: 294, x2: 162, y2: 314 },
-                { x1: 176, y1: 298, x2: 178, y2: 318 },
-                { x1: 204, y1: 298, x2: 202, y2: 318 },
-                { x1: 222, y1: 294, x2: 218, y2: 314 },
-                { x1: 240, y1: 288, x2: 238, y2: 308 },
+                { x1: 140, y1: 286, x2: 142, y2: 306 },
+                { x1: 156, y1: 292, x2: 160, y2: 312 },
+                { x1: 174, y1: 296, x2: 176, y2: 316 },
+                { x1: 206, y1: 296, x2: 204, y2: 316 },
+                { x1: 224, y1: 292, x2: 220, y2: 312 },
+                { x1: 240, y1: 286, x2: 238, y2: 306 },
               ].map((g, idx) => (
                 <g key={`gather-${idx}`}>
-                  <path d={`M ${g.x1} ${g.y1} Q ${g.x2} ${g.y2 - 5}, ${g.x2} ${g.y2}`} fill="none" stroke="#662200" strokeWidth="1.6" opacity="0.35" strokeLinecap="round" />
-                  <path d={`M ${g.x1 + 1.5} ${g.y1} Q ${g.x2 + 1.5} ${g.y2 - 5}, ${g.x2 + 1.5} ${g.y2}`} fill="none" stroke="#FFFDEB" strokeWidth="1.2" opacity="0.75" strokeLinecap="round" />
+                  <path d={`M ${g.x1} ${g.y1} Q ${g.x2} ${g.y2 - 4}, ${g.x2} ${g.y2}`} fill="none" stroke="#D87900" strokeWidth="1.6" opacity="0.4" strokeLinecap="round" />
+                  <path d={`M ${g.x1 + 1.2} ${g.y1} Q ${g.x2 + 1.2} ${g.y2 - 4}, ${g.x2 + 1.2} ${g.y2}`} fill="none" stroke="#FFD95A" strokeWidth="1.2" opacity="0.8" strokeLinecap="round" />
                 </g>
               ))}
             </g>
 
-            {/* ── 4. BROAD OVERLAPPING SCULPTURAL FABRIC FOLDS (5 MAJOR FOLDS) ── */}
-            <g id="dhotiSculpturalFolds">
+            {/* ── 4. SIDE FABRIC FOLDS (2-3 MAJOR FOLDS PER SIDE FOLLOWING GRAVITY & BODY TENSION) ── */}
+            <g id="dhotiSideFolds">
               {/* ── LEFT FOLD 1: Upper Left-to-Center Diagonal Gather Fold ── */}
               <path
-                d="M 122 312
-                   C 142 336, 166 356, 188 368
-                   C 190 374, 186 378, 180 376
-                   C 158 364, 134 340, 118 318 Z"
-                fill="#5B2305"
-                opacity="0.35"
-              />
-              <path
-                d="M 122 302
-                   C 142 328, 166 350, 188 364
-                   C 190 368, 186 372, 180 370
-                   C 158 356, 132 332, 118 308
-                   C 119 304, 120 302, 122 302 Z"
-                fill="url(#kDhotiFoldL1Grad)"
-                stroke="#B45F00"
-                strokeWidth="0.8"
-              />
-              <path
-                d="M 124 304
-                   C 144 328, 166 348, 184 362"
-                fill="none"
-                stroke="#FFFFF0"
-                strokeWidth="2.8"
-                strokeLinecap="round"
-                opacity="0.65"
-              />
-
-              {/* ── LEFT FOLD 2: Mid Sweeping J-Fold (Reference curvature) ── */}
-              <path
-                d="M 118 346
-                   C 134 374, 156 394, 180 404
-                   C 182 410, 176 414, 170 410
-                   C 148 398, 128 372, 114 348 Z"
-                fill="#5B2305"
-                opacity="0.32"
-              />
-              <path
-                d="M 118 338
-                   C 134 366, 158 388, 180 398
-                   C 182 402, 178 406, 172 404
-                   C 150 392, 128 368, 114 340
-                   C 115 338, 116 338, 118 338 Z"
-                fill="url(#kDhotiFoldL2Grad)"
-                stroke="#A85700"
-                strokeWidth="0.8"
-              />
-              <path
-                d="M 120 340
-                   C 136 366, 158 386, 174 394"
-                fill="none"
-                stroke="#FFFCE8"
-                strokeWidth="2.6"
-                strokeLinecap="round"
-                opacity="0.6"
-              />
-
-              {/* ── LEFT FOLD 3: Lower Calf Wrap Fold ── */}
-              <path
-                d="M 120 380
-                   C 136 404, 152 414, 168 416
-                   C 170 420, 164 422, 156 420
-                   C 140 416, 126 402, 116 384 Z"
-                fill="#5B2305"
+                d="M 122 308
+                   C 142 332, 164 352, 184 364
+                   C 186 370, 182 374, 176 372
+                   C 156 360, 134 336, 118 314 Z"
+                fill="#B85C00"
                 opacity="0.3"
               />
               <path
-                d="M 120 372
-                   C 136 396, 154 410, 168 414
-                   C 170 418, 166 420, 158 418
-                   C 142 412, 128 398, 116 376
-                   Z"
-                fill="url(#kDhotiFoldL3Grad)"
-                stroke="#A85700"
+                d="M 122 300
+                   C 142 325, 164 347, 184 360
+                   C 186 364, 182 368, 176 366
+                   C 156 352, 132 328, 118 304
+                   C 119 300, 120 300, 122 300 Z"
+                fill="url(#kDhotiFoldL1Grad)"
+                stroke="#D87900"
                 strokeWidth="0.8"
               />
               <path
-                d="M 122 374
-                   C 138 396, 154 408, 166 412"
+                d="M 124 302
+                   C 144 325, 164 345, 180 358"
                 fill="none"
-                stroke="#FFF9D2"
-                strokeWidth="2.4"
-                strokeLinecap="round"
-                opacity="0.55"
-              />
-
-              {/* ── RIGHT FOLD 1: Upper Right-to-Center Diagonal Wrap Fold ── */}
-              <path
-                d="M 258 312
-                   C 238 336, 214 356, 192 368
-                   C 190 374, 194 378, 200 376
-                   C 222 364, 246 340, 262 318 Z"
-                fill="#5B2305"
-                opacity="0.35"
-              />
-              <path
-                d="M 258 302
-                   C 238 328, 214 350, 192 364
-                   C 190 368, 194 372, 200 370
-                   C 222 356, 248 332, 262 308
-                   C 261 304, 260 302, 258 302 Z"
-                fill="url(#kDhotiFoldR1Grad)"
-                stroke="#B45F00"
-                strokeWidth="0.8"
-              />
-              <path
-                d="M 256 304
-                   C 236 328, 214 348, 196 362"
-                fill="none"
-                stroke="#FEF08A"
+                stroke="#FFD95A"
                 strokeWidth="2.6"
                 strokeLinecap="round"
-                opacity="0.6"
+                opacity="0.75"
               />
 
-              {/* ── RIGHT FOLD 2: Lower Right Wrapping Calf Fold ── */}
+              {/* ── LEFT FOLD 2: Mid Sweeping J-Fold (Reference curvature wrapping thigh) ── */}
               <path
-                d="M 262 364
-                   C 246 390, 226 410, 210 414
-                   C 208 420, 214 422, 222 420
-                   C 240 414, 258 392, 266 370 Z"
-                fill="#5B2305"
-                opacity="0.32"
+                d="M 118 342
+                   C 134 370, 154 390, 176 400
+                   C 178 406, 172 410, 166 406
+                   C 146 394, 128 368, 114 344 Z"
+                fill="#B85C00"
+                opacity="0.28"
               />
               <path
-                d="M 262 354
-                   C 246 382, 224 402, 208 410
-                   C 206 414, 212 418, 220 416
-                   C 238 408, 256 384, 266 362
-                   C 265 358, 264 356, 262 354 Z"
-                fill="url(#kDhotiFoldR2Grad)"
-                stroke="#A85700"
+                d="M 118 334
+                   C 134 362, 156 384, 176 394
+                   C 178 398, 174 402, 168 400
+                   C 148 388, 128 364, 114 336
+                   C 115 334, 116 334, 118 334 Z"
+                fill="url(#kDhotiFoldL2Grad)"
+                stroke="#D87900"
                 strokeWidth="0.8"
               />
               <path
-                d="M 260 356
-                   C 244 382, 224 400, 210 408"
+                d="M 120 336
+                   C 136 362, 156 382, 170 390"
                 fill="none"
-                stroke="#FFF9D2"
+                stroke="#FFD95A"
                 strokeWidth="2.4"
-                strokeLinecap="round"
-                opacity="0.55"
-              />
-            </g>
-
-            {/* ── 5. CENTRAL OVERLAPPING PLEAT CASCADE (MULTI-LAYER DEPTH) ── */}
-            <g id="dhotiCentralPleatCascade">
-              {/* Pleat Tier 1: Deep Underlying Central Drape */}
-              <path
-                d="M 182 292
-                   C 180 326, 180 364, 186 394
-                   C 188 400, 192 400, 194 394
-                   C 200 364, 200 326, 198 292
-                   Z"
-                fill="url(#kDhotiPleatDeepGrad)"
-                opacity="0.85"
-              />
-              <path
-                d="M 188 296 C 187 328, 187 362, 190 392"
-                fill="none"
-                stroke="#451A03"
-                strokeWidth="2.8"
-                strokeLinecap="round"
-                opacity="0.38"
-              />
-
-              {/* Pleat Tier 2: Mid Cascading Pleat */}
-              <path
-                d="M 178 298
-                   C 176 324, 176 352, 182 378
-                   C 185 384, 195 384, 198 378
-                   C 204 352, 204 324, 202 298
-                   Z"
-                fill="#451A03"
-                opacity="0.32"
-              />
-              <path
-                d="M 178 296
-                   C 176 322, 176 350, 182 376
-                   C 185 382, 195 382, 198 376
-                   C 204 350, 204 322, 202 296
-                   Z"
-                fill="url(#kDhotiPleatMidGrad)"
-                stroke="#A85700"
-                strokeWidth="0.8"
-              />
-              <path
-                d="M 180 300 C 178 324, 178 350, 184 372"
-                fill="none"
-                stroke="#FEF3C7"
-                strokeWidth="1.8"
                 strokeLinecap="round"
                 opacity="0.7"
               />
 
-              {/* Pleat Tier 3: Foreground Central Tucked Fold */}
+              {/* ── LEFT FOLD 3: Lower Calf Wrap Fold ── */}
               <path
-                d="M 180 292
-                   C 178 314, 178 334, 182 356
-                   C 185 362, 195 362, 198 356
-                   C 202 334, 202 314, 200 292
-                   Z"
-                fill="#451A03"
-                opacity="0.38"
-              />
-              <path
-                d="M 182 290
-                   C 180 312, 180 332, 184 354
-                   C 186 360, 194 360, 196 354
-                   C 200 332, 200 312, 198 290
-                   Z"
-                fill="url(#kDhotiPleatTopGrad)"
-                stroke="#C26500"
+                d="M 120 370
+                   C 136 394, 152 408, 166 412
+                   C 168 416, 164 418, 156 416
+                   C 140 410, 126 396, 116 374 Z"
+                fill="url(#kDhotiFoldL3Grad)"
+                stroke="#D87900"
                 strokeWidth="0.8"
               />
               <path
-                d="M 184 294 C 182 312, 182 332, 186 350"
+                d="M 122 372
+                   C 138 394, 152 406, 164 410"
+                fill="none"
+                stroke="#FFD95A"
+                strokeWidth="2.0"
+                strokeLinecap="round"
+                opacity="0.6"
+              />
+
+              {/* ── RIGHT FOLD 1: Upper Right-to-Center Diagonal Wrap Fold ── */}
+              <path
+                d="M 258 308
+                   C 238 332, 216 352, 196 364
+                   C 194 370, 198 374, 204 372
+                   C 224 360, 246 336, 262 314 Z"
+                fill="#B85C00"
+                opacity="0.3"
+              />
+              <path
+                d="M 258 300
+                   C 238 325, 216 347, 196 360
+                   C 194 364, 198 368, 204 366
+                   C 224 352, 248 328, 262 304
+                   C 261 300, 260 300, 258 300 Z"
+                fill="url(#kDhotiFoldR1Grad)"
+                stroke="#D87900"
+                strokeWidth="0.8"
+              />
+              <path
+                d="M 256 302
+                   C 236 325, 216 345, 200 358"
+                fill="none"
+                stroke="#FFD95A"
+                strokeWidth="2.4"
+                strokeLinecap="round"
+                opacity="0.7"
+              />
+
+              {/* ── RIGHT FOLD 2: Lower Right Wrapping Calf Fold ── */}
+              <path
+                d="M 262 350
+                   C 246 378, 224 398, 208 406
+                   C 206 410, 212 414, 220 412
+                   C 238 404, 256 380, 266 358 Z"
+                fill="url(#kDhotiFoldR2Grad)"
+                stroke="#D87900"
+                strokeWidth="0.8"
+              />
+              <path
+                d="M 260 352
+                   C 244 378, 224 396, 210 404"
+                fill="none"
+                stroke="#FFD95A"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                opacity="0.6"
+              />
+            </g>
+
+            {/* ── 5. CENTRAL V-CONVERGING PLEAT STRUCTURE (5 FOLDS WITH SOFT DISTINCTION) ── */}
+            <g id="dhotiCentralPleats">
+              {/* Pleat 1 (Center-Left Diverging Pleat) */}
+              <path
+                d="M 184 288
+                   C 181 316, 178 344, 176 376
+                   C 179 382, 183 382, 185 376
+                   C 187 344, 189 316, 188 288 Z"
+                fill="url(#kDhotiPleatMidGrad)"
+                stroke="#D87900"
+                strokeWidth="0.7"
+              />
+              <path
+                d="M 185 290 C 182 316, 179 344, 177 372"
+                fill="none"
+                stroke="#FFD95A"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                opacity="0.8"
+              />
+
+              {/* Pleat 2 (Center-Right Diverging Pleat) */}
+              <path
+                d="M 196 288
+                   C 199 316, 202 344, 204 376
+                   C 201 382, 197 382, 195 376
+                   C 193 344, 191 316, 192 288 Z"
+                fill="url(#kDhotiPleatMidGrad)"
+                stroke="#D87900"
+                strokeWidth="0.7"
+              />
+              <path
+                d="M 195 290 C 198 316, 201 344, 203 372"
+                fill="none"
+                stroke="#FFD95A"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                opacity="0.8"
+              />
+
+              {/* Pleat 3 (Main Foreground Central Pleat) */}
+              <path
+                d="M 187 286
+                   C 186 312, 186 338, 188 364
+                   C 190 369, 194 369, 196 364
+                   C 198 338, 198 312, 197 286 Z"
+                fill="url(#kDhotiPleatTopGrad)"
+                stroke="#D87900"
+                strokeWidth="0.8"
+              />
+              <path
+                d="M 189 288 C 188 312, 188 338, 190 360"
                 fill="none"
                 stroke="#FFFFFF"
                 strokeWidth="2.0"
@@ -1399,34 +1342,34 @@ export function LittleKrishna({
                 opacity="0.85"
               />
               <path
-                d="M 190 292 C 189 312, 189 334, 191 352"
+                d="M 194 290 C 193 312, 193 338, 194 358"
                 fill="none"
-                stroke="#B45F00"
+                stroke="#D87900"
                 strokeWidth="1.2"
                 strokeLinecap="round"
                 opacity="0.45"
               />
             </g>
 
-            {/* ── 6. LOWER HEM PIPING & ACCENT (Full-Length Ankle Cuffs) ── */}
+            {/* ── 6. LOWER HEM PIPING & ACCENTS (Full-Length Ankle Cuffs) ── */}
             <g id="dhotiHemAccents">
               {/* Left Hem Gold Accent Rim at Ankle */}
               <path
-                d="M 126 400
-                   C 134 408, 146 408, 156 408
-                   C 164 408, 170 404, 174 394"
+                d="M 126 398
+                   C 134 406, 146 406, 156 406
+                   C 164 406, 170 402, 174 392"
                 fill="none"
-                stroke="#FEF08A"
+                stroke="#FFD95A"
                 strokeWidth="2.0"
                 strokeLinecap="round"
                 opacity="0.85"
               />
               <path
-                d="M 126 402
-                   C 134 410, 146 410, 156 410
-                   C 164 410, 170 406, 174 396"
+                d="M 126 400
+                   C 134 408, 146 408, 156 408
+                   C 164 408, 170 404, 174 394"
                 fill="none"
-                stroke="#5B2305"
+                stroke="#B85C00"
                 strokeWidth="1.2"
                 strokeLinecap="round"
                 opacity="0.6"
@@ -1434,162 +1377,302 @@ export function LittleKrishna({
 
               {/* Right Hem Gold Accent Rim at Ankle */}
               <path
-                d="M 206 394
-                   C 210 404, 216 408, 224 408
-                   C 234 408, 246 408, 254 400"
+                d="M 206 392
+                   C 210 402, 216 406, 224 406
+                   C 234 406, 246 406, 254 398"
                 fill="none"
-                stroke="#FEF08A"
+                stroke="#FFD95A"
                 strokeWidth="2.0"
                 strokeLinecap="round"
                 opacity="0.85"
               />
               <path
-                d="M 206 396
-                   C 210 406, 216 410, 224 410
-                   C 234 410, 246 410, 254 402"
+                d="M 206 394
+                   C 210 404, 216 408, 224 408
+                   C 234 408, 246 408, 254 400"
                 fill="none"
-                stroke="#5B2305"
+                stroke="#B85C00"
                 strokeWidth="1.2"
                 strokeLinecap="round"
                 opacity="0.6"
               />
             </g>
 
-            {/* ── 7. SEPARATE ORANGE SILK SIDE DRAPE (2 Broad Volumetric Folds) ── */}
+            {/* ── 7. SEPARATE ORANGE SILK SIDE DRAPE (NATURAL FABRIC BEHAVIOR & CONTINUOUS COLOR) ── */}
             <g id="orangeSashVertical">
-              {/* Deep contact shadow cast by orange drape onto dhoti fabric */}
+              {/* Soft contact shadow cast by orange drape onto yellow dhoti fabric */}
               <path
-                d="M 230 294
-                   C 230 334, 232 376, 234 412
-                   C 240 420, 264 420, 266 410
-                   C 264 368, 260 326, 258 292 Z"
-                fill="#451A03"
-                opacity="0.45"
+                d="M 230 278
+                   C 230 324, 232 368, 234 408
+                   C 240 418, 264 418, 266 408
+                   C 264 366, 260 324, 258 278 Z"
+                fill="#B93D00"
+                opacity="0.38"
               />
 
-              {/* ── Fold 1 (Outer Broad Fold) ── */}
+              {/* ── Outer Main Fold (Curved drape following gravity & hips, seamless top overlap) ── */}
               <path
-                d="M 246 294
-                   C 246 334, 248 376, 250 412
-                   C 254 418, 264 416, 265 408
-                   C 263 366, 260 326, 258 292 Z"
+                d="M 246 276
+                   C 246 324, 249 368, 252 408
+                   C 256 416, 265 414, 266 406
+                   C 264 364, 260 324, 258 276 Z"
                 fill="url(#kDhotiOrangeSash1)"
-                stroke="#752100"
-                strokeWidth="0.9"
+                stroke="#B93D00"
+                strokeWidth="0.8"
               />
+              {/* Light Ridge Highlight along Outer Fold */}
               <path
-                d="M 254 296 C 254 334, 256 376, 258 408"
+                d="M 254 280 C 254 326, 257 370, 259 406"
                 fill="none"
-                stroke="#FFC278"
-                strokeWidth="2.0"
+                stroke="#FF9A2E"
+                strokeWidth="2.2"
                 strokeLinecap="round"
                 opacity="0.85"
               />
 
-              {/* ── Fold 2 (Inner Rounded Fold) ── */}
+              {/* ── Inner Rounded Overlapping Fold ── */}
               <path
-                d="M 234 296
-                   C 234 336, 236 378, 238 414
-                   C 242 420, 250 418, 250 410
-                   C 248 368, 246 330, 244 294 Z"
+                d="M 234 278
+                   C 233 326, 235 372, 237 410
+                   C 241 418, 250 416, 250 408
+                   C 248 366, 245 328, 244 278 Z"
                 fill="url(#kDhotiOrangeSash2)"
-                stroke="#7C1D00"
-                strokeWidth="0.9"
+                stroke="#B93D00"
+                strokeWidth="0.8"
               />
+              {/* Warm Light Highlight along Inner Fold */}
               <path
-                d="M 242 298 C 242 338, 243 380, 244 410"
+                d="M 242 282 C 241 328, 242 374, 244 408"
                 fill="none"
-                stroke="#FFFBEB"
-                strokeWidth="1.8"
+                stroke="#FF7A00"
+                strokeWidth="2.0"
                 strokeLinecap="round"
                 opacity="0.9"
               />
+              {/* Shadow Recess inside Inner Fold Valley */}
               <path
-                d="M 237 298 C 237 338, 238 380, 239 410"
+                d="M 237 282 C 236 328, 237 374, 238 408"
                 fill="none"
-                stroke="#7C1D00"
+                stroke="#E65300"
                 strokeWidth="1.8"
                 strokeLinecap="round"
-                opacity="0.45"
+                opacity="0.5"
+              />
+
+              {/* Organic Soft Curved Lower Edge Hem (Not flat horizontal rectangle) */}
+              <path
+                d="M 237 410 C 242 417, 249 416, 252 408 C 256 415, 264 413, 266 406"
+                fill="none"
+                stroke="#B93D00"
+                strokeWidth="1.2"
+                strokeLinecap="round"
               />
             </g>
 
-            {/* ── 8. SLIMMER, 3D CURVED ORNAMENTAL WAISTBAND WITH 6 DOME STUDS ── */}
+            {/* ── 8. ORANGE WAIST CLOTH WRAP & 3D GOLD KAMARBANDH SYSTEM ── */}
             <g id="studdedBeltGroup">
-              {/* Main Waistband Belt Contour (Slimmer, wrapping naturally around child waist) */}
+              {/* Soft Ambient Contact Shadow beneath entire waist ornament onto dhoti fabric */}
               <path
-                d="M 130 278
-                   C 158 266, 222 266, 250 278
-                   C 256 294, 224 306, 190 306
-                   C 156 306, 124 294, 130 278 Z"
-                fill="url(#kDhotiWaistGrad)"
-                stroke="#662200"
-                strokeWidth="1.2"
+                d="M 125 272 C 158 260, 222 260, 255 272 C 260 296, 224 310, 190 310 C 156 310, 120 296, 125 272 Z"
+                fill="#B86A00"
+                opacity="0.28"
               />
 
-              {/* Belt Top Edge Rolled Gold Piping Rim */}
+              {/* Orange Waist Cloth Wrap (Visible above & below the gold Kamarbandh) */}
               <path
-                d="M 131 278 C 158 267, 222 267, 249 278"
+                d="M 126 270
+                   C 158 258, 222 258, 254 270
+                   C 260 294, 224 306, 190 306
+                   C 156 306, 120 294, 126 270 Z"
+                fill="url(#kDhotiWaistGrad)"
+                stroke="#B93D00"
+                strokeWidth="0.8"
+              />
+
+              {/* Compressed Fabric Gather Folds immediately beneath waist wrap */}
+              <g className="waist-fabric-compression">
+                <path d="M 148 296 C 152 305, 160 306, 166 298" fill="none" stroke="#E65300" strokeWidth="1.2" opacity="0.6" />
+                <path d="M 172 299 C 178 308, 186 308, 190 300" fill="none" stroke="#E65300" strokeWidth="1.2" opacity="0.6" />
+                <path d="M 190 300 C 194 308, 202 308, 208 299" fill="none" stroke="#E65300" strokeWidth="1.2" opacity="0.6" />
+                <path d="M 214 298 C 220 306, 228 305, 232 296" fill="none" stroke="#E65300" strokeWidth="1.2" opacity="0.6" />
+              </g>
+
+              {/* ── Main Gold Kamarbandh Band (Sitting physically ON TOP of the orange fabric) ── */}
+              <path
+                d="M 129 275
+                   C 158 264, 222 264, 251 275
+                   C 255 287, 223 299, 190 299
+                   C 157 299, 125 287, 129 275 Z"
+                fill="url(#kGoldGrad)"
+                stroke="#662200"
+                strokeWidth="0.9"
+              />
+
+              {/* Contact Shadow cast by Gold Belt onto Orange Fabric */}
+              <path
+                d="M 129 288 C 158 299, 222 299, 251 288 C 255 292, 223 301, 190 301 C 157 301, 125 292, 129 288 Z"
+                fill="#B86A00"
+                opacity="0.35"
+              />
+
+              {/* Belt Top Edge Rolled Gold Piping Rim with Tapering Arc */}
+              <path
+                d="M 130 275 C 158 264, 222 264, 250 275"
+                fill="none"
+                stroke="url(#kGoldBeltRim)"
+                strokeWidth="2.4"
+                strokeLinecap="round"
+              />
+              {/* Top rim specular highlight glint */}
+              <path
+                d="M 154 269 C 176 266, 204 266, 226 269"
+                fill="none"
+                stroke="#FFFFFF"
+                strokeWidth="1.1"
+                strokeLinecap="round"
+                opacity="0.9"
+              />
+
+              {/* Belt Bottom Edge Rolled Gold Piping Rim */}
+              <path
+                d="M 130 289 C 158 299, 222 299, 250 289"
                 fill="none"
                 stroke="url(#kGoldBeltRim)"
                 strokeWidth="2.2"
                 strokeLinecap="round"
               />
-              {/* Top rim specular highlight glint */}
-              <path
-                d="M 154 271 C 176 268, 204 268, 226 271"
-                fill="none"
-                stroke="#FFFFFF"
-                strokeWidth="1.0"
-                strokeLinecap="round"
-                opacity="0.85"
-              />
-
-              {/* Belt Bottom Edge Rolled Gold Piping Rim */}
-              <path
-                d="M 131 292 C 158 304, 222 304, 249 292"
-                fill="none"
-                stroke="url(#kGoldBeltRim)"
-                strokeWidth="2.0"
-                strokeLinecap="round"
-              />
               {/* Belt Bottom Edge Deep Shadow Crease */}
               <path
-                d="M 131 294 C 158 306, 222 306, 249 294"
+                d="M 130 291 C 158 301, 222 301, 250 291"
                 fill="none"
                 stroke="#3D1200"
                 strokeWidth="1.4"
                 opacity="0.75"
               />
 
-              {/* 6 Raised 3D Gold Dome Studs Following Curved Waistline */}
+              {/* ── NATURAL CURVED / FOLDED BELT END TERMINATION ── */}
+              <g id="beltEndClothFold">
+                {/* Belt Termination Shadow Crease beneath folded end */}
+                <path
+                  d="M 242 274 C 252 278, 260 284, 264 292 C 260 300, 248 302, 240 296 Z"
+                  fill="#B93D00"
+                  opacity="0.4"
+                />
+
+                {/* Curved Overlapping Belt-End Fabric Extension */}
+                <path
+                  d="M 238 272
+                     C 248 274, 258 280, 264 290
+                     C 266 296, 256 302, 246 300
+                     C 238 296, 234 288, 238 272 Z"
+                  fill="url(#kDhotiOrangeSash1)"
+                  stroke="#B93D00"
+                  strokeWidth="0.9"
+                />
+
+                {/* Belt-End Curved Fold Highlight Ridge */}
+                <path
+                  d="M 240 274 C 250 278, 258 284, 262 290"
+                  fill="none"
+                  stroke="#FF9A2E"
+                  strokeWidth="2.0"
+                  strokeLinecap="round"
+                  opacity="0.85"
+                />
+
+                {/* Belt-End Soft Rounded Hem Edge */}
+                <path
+                  d="M 264 290 C 266 296, 256 302, 246 300"
+                  fill="none"
+                  stroke="#E65300"
+                  strokeWidth="1.2"
+                  strokeLinecap="round"
+                />
+              </g>
+
+              {/* ── 3D GOLD BEADED KAMARBANDH STRING (Beads following waist curvature) ── */}
               <g id="waistBeltDomeRivets">
                 {[
-                  { cx: 144, cy: 285, r: 4.8 },
-                  { cx: 162, cy: 290, r: 5.2 },
-                  { cx: 181, cy: 294, r: 5.4 },
-                  { cx: 199, cy: 294, r: 5.4 },
-                  { cx: 218, cy: 290, r: 5.2 },
-                  { cx: 236, cy: 285, r: 4.8 },
+                  { cx: 142, cy: 281, r: 4.2 },
+                  { cx: 158, cy: 285, r: 4.6 },
+                  { cx: 174, cy: 288, r: 4.8 },
+                  { cx: 190, cy: 289, r: 4.8 },
+                  { cx: 206, cy: 288, r: 4.8 },
+                  { cx: 222, cy: 285, r: 4.6 },
+                  { cx: 238, cy: 281, r: 4.2 },
                 ].map((stud, idx) => (
                   <g key={`stud-${idx}`}>
-                    {/* Dark gold shadow beneath stud */}
-                    <circle cx={stud.cx} cy={stud.cy + 1.2} r={stud.r + 0.5} fill="#2E0C00" opacity="0.65" />
-                    {/* 3D Gold Dome Body */}
+                    {/* Dark gold contact shadow */}
+                    <circle cx={stud.cx} cy={stud.cy + 1.2} r={stud.r + 0.5} fill="#2E0C00" opacity="0.6" />
+                    {/* 3D Gold Bead Body */}
                     <circle
                       cx={stud.cx}
                       cy={stud.cy}
                       r={stud.r}
                       fill="url(#kGoldDomeStud)"
                       stroke="#662200"
-                      strokeWidth="0.7"
+                      strokeWidth="0.6"
                     />
                     {/* Inner 3D Sphere Glow Ridge */}
-                    <circle cx={stud.cx} cy={stud.cy} r={stud.r * 0.72} fill="none" stroke="#FFF3B0" strokeWidth="0.7" opacity="0.85" />
-                    {/* Tiny Bright Specular Highlight */}
+                    <circle cx={stud.cx} cy={stud.cy} r={stud.r * 0.72} fill="none" stroke="#FFF3B0" strokeWidth="0.6" opacity="0.85" />
+                    {/* Tiny Specular Highlight */}
                     <circle cx={stud.cx - stud.r * 0.32} cy={stud.cy - stud.r * 0.32} r={stud.r * 0.3} fill="#FFFFFF" opacity="0.95" />
                   </g>
                 ))}
+              </g>
+
+              {/* ── SIDE ORNAMENTS (Left & Right Waist Decorative Accent Clusters) ── */}
+              <g id="kamarbandhSideOrnaments">
+                {/* Left Side Ornament Cluster */}
+                <g id="sideOrnamentLeft" transform="translate(154, 287)">
+                  <circle cx="0" cy="5" r="5" fill="#2E0C00" opacity="0.4" />
+                  <circle cx="0" cy="4" r="4.5" fill="url(#kGoldGrad)" stroke="#B86A00" strokeWidth="0.6" />
+                  <circle cx="0" cy="4" r="2.4" fill="url(#kRubyBead)" stroke="#662200" strokeWidth="0.4" />
+                  <circle cx="-0.8" cy="3.2" r="0.7" fill="#FFFFFF" opacity="0.9" />
+                  <path d="M -1.8 7.5 L 0 12 L 1.8 7.5 Z" fill="url(#kGoldGrad)" stroke="#B86A00" strokeWidth="0.5" />
+                  <circle cx="0" cy="12.2" r="1.1" fill="url(#kGoldDomeStud)" />
+                </g>
+
+                {/* Right Side Ornament Cluster */}
+                <g id="sideOrnamentRight" transform="translate(226, 287)">
+                  <circle cx="0" cy="5" r="5" fill="#2E0C00" opacity="0.4" />
+                  <circle cx="0" cy="4" r="4.5" fill="url(#kGoldGrad)" stroke="#B86A00" strokeWidth="0.6" />
+                  <circle cx="0" cy="4" r="2.4" fill="url(#kRubyBead)" stroke="#662200" strokeWidth="0.4" />
+                  <circle cx="-0.8" cy="3.2" r="0.7" fill="#FFFFFF" opacity="0.9" />
+                  <path d="M -1.8 7.5 L 0 12 L 1.8 7.5 Z" fill="url(#kGoldGrad)" stroke="#B86A00" strokeWidth="0.5" />
+                  <circle cx="0" cy="12.2" r="1.1" fill="url(#kGoldDomeStud)" />
+                </g>
+              </g>
+
+              {/* ── ELEGANT CENTRAL WAIST ORNAMENT / PENDANT (Hanging naturally from belt center) ── */}
+              <g id="kamarbandhCentralPendant" transform="translate(190, 292)">
+                {/* Contact Shadow cast on Dhoti Fabric */}
+                <circle cx="0" cy="8" r="9.5" fill="#2E0C00" opacity="0.45" />
+
+                {/* Outer Gold Scalloped / Filigree Base Ring */}
+                <circle cx="0" cy="7" r="9.0" fill="url(#kGoldGrad)" stroke="#B86A00" strokeWidth="0.8" />
+                <circle cx="0" cy="7" r="7.2" fill="none" stroke="#FFF0A3" strokeWidth="0.6" strokeDasharray="1.5 1.0" />
+
+                {/* Central Warm Ruby Gemstone */}
+                <circle cx="0" cy="7" r="5.2" fill="url(#kRubyBead)" stroke="#581C87" strokeWidth="0.5" />
+                {/* Ruby Specular Reflection */}
+                <circle cx="-1.6" cy="5.2" r="1.4" fill="#FFFFFF" opacity="0.92" />
+
+                {/* Outer Micro Gold Surrounding Beads */}
+                {[0, 45, 90, 135, 180, 225, 270, 315].map((ang) => {
+                  const rad = (ang * Math.PI) / 180;
+                  const bx = Math.sin(rad) * 8.8;
+                  const by = 7 - Math.cos(rad) * 8.8;
+                  return <circle key={`pendant-bead-${ang}`} cx={bx} cy={by} r="1.2" fill="url(#kGoldDomeStud)" stroke="#662200" strokeWidth="0.3" />;
+                })}
+
+                {/* Hanging Central Gold Teardrop Pendant Drop */}
+                <g className="pendant-drop" transform="translate(0, 15)">
+                  <path d="M -3 0 L 0 9 L 3 0 Z" fill="#2E0C00" opacity="0.4" />
+                  <path d="M -3.2 0 L 0 9.5 L 3.2 0 Z" fill="url(#kGoldGrad)" stroke="#B86A00" strokeWidth="0.6" />
+                  <path d="M -1.2 1 L 0 7" fill="none" stroke="#FFF0A3" strokeWidth="0.8" strokeLinecap="round" />
+                  <circle cx="0" cy="10.2" r="1.5" fill="#F8F9FF" stroke="#FFD45A" strokeWidth="0.4" />
+                </g>
               </g>
             </g>
           </g>

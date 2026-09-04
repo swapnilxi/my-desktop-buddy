@@ -31,27 +31,31 @@ export const ARM_SPEC = {
 };
 
 export const ParametricUpperArm = ({ isFlipped = false }: { isFlipped?: boolean }) => {
-  const { len, topW, maxW, botW, ov } = ARM_SPEC.upper;
-  const { blendW } = ARM_SPEC.elbow;
-  const t = topW / 2, m = maxW / 2, b = botW / 2, e = blendW / 2;
+  const { len, maxW, botW, ov } = ARM_SPEC.upper;
+  const topW = maxW;
+  const t = topW / 2;
+  const m = maxW / 2;
+  const b = botW / 2;
   
   // Shoulder cap extends u(26) above the pivot for a 52-unit total height.
   // Axilla sweeps inward by u(10) (8-12 units overlap spec) into the chest.
   const capH = u(26);
   const axillaOverlap = u(10);
   
+  // Upper arm path ending with continuous anatomical elbow taper extending u(7) internal overlap past len
   const path = `
     M ${-t} 0 
-    C ${-m} ${len*0.4}, ${-b} ${len*0.8}, ${-b} ${len} 
-    C ${-e} ${len + ov}, ${e} ${len + ov}, ${b} ${len} 
-    C ${b} ${len*0.8}, ${m} ${len*0.4}, ${t} 0 
-    C ${t} ${-capH*0.8}, ${t*0.5} ${-capH}, 0 ${-capH}
-    C ${-t*0.8} ${-capH}, ${-t - axillaOverlap} ${-capH*0.5}, ${-t} 0 
+    C ${-m} ${len * 0.35}, ${-b} ${len * 0.75}, ${-b} ${len} 
+    C ${-b} ${len + ov * 0.6}, ${-b * 0.5} ${len + ov}, 0 ${len + ov}
+    C ${b * 0.5} ${len + ov}, ${b} ${len + ov * 0.6}, ${b} ${len} 
+    C ${b} ${len * 0.75}, ${m} ${len * 0.35}, ${t} 0 
+    C ${t} ${-capH * 0.8}, ${t * 0.5} ${-capH}, 0 ${-capH}
+    C ${-t * 0.8} ${-capH}, ${-t - axillaOverlap} ${-capH * 0.5}, ${-t} 0 
     Z`;
     
   // Directional 3D volumetric lighting: soft highlight on light side, gentle shadow on underside
-  const hl = `M ${-m*0.2} 5 C ${-m*0.1} ${len*0.3}, ${-b*0.1} ${len*0.7}, 0 ${len - 5}`;
-  const softShadow = `M ${m*0.7} 15 C ${m*0.7} ${len*0.4}, ${b*0.7} ${len*0.8}, ${b*0.6} ${len - 5}`;
+  const hl = `M ${-m * 0.2} 5 C ${-m * 0.15} ${len * 0.35}, ${-b * 0.15} ${len * 0.75}, ${-b * 0.1} ${len + ov * 0.5}`;
+  const softShadow = `M ${m * 0.7} 15 C ${m * 0.7} ${len * 0.4}, ${b * 0.7} ${len * 0.8}, ${b * 0.6} ${len + ov * 0.5}`;
   
   const transform = isFlipped ? 'scale(-1, 1)' : '';
 
@@ -66,9 +70,9 @@ export const ParametricUpperArm = ({ isFlipped = false }: { isFlipped?: boolean 
       <circle cx={0} cy={0} r={t} fill="url(#kArmSkinGrad)" transform={transform} />
 
       {/* Volumetric Longitudinal Highlight */}
-      <path d={hl} fill="none" stroke="#A9CCFF" strokeWidth={u(5)} strokeLinecap="round" opacity="0.25" transform={transform} />
+      <path d={hl} fill="none" stroke="#A9CCFF" strokeWidth={u(4.8)} strokeLinecap="round" opacity="0.28" transform={transform} />
       {/* Soft Medial Underside Shading (no dual harsh outlines) */}
-      <path d={softShadow} fill="none" stroke="#4E82D1" strokeWidth={u(3.2)} strokeLinecap="round" opacity="0.18" transform={transform} />
+      <path d={softShadow} fill="none" stroke="#4E82D1" strokeWidth={u(3.0)} strokeLinecap="round" opacity="0.18" transform={transform} />
 
       {/* ── Refined Child-Proportioned Gold Upper Armlet (Keyur) ── */}
       <g className="upper-armlet" transform={transform}>
@@ -128,12 +132,23 @@ export const ParametricUpperArm = ({ isFlipped = false }: { isFlipped?: boolean 
 
 export const ParametricForearm = () => {
   const { len, topW, maxW, botW, ov } = ARM_SPEC.forearm;
-  const { blendW } = ARM_SPEC.elbow;
-  const t = topW / 2, m = maxW / 2, b = botW / 2, e = blendW / 2;
+  const t = topW / 2;
+  const m = maxW / 2;
+  const b = botW / 2;
   
-  const path = `M ${-t} 0 C ${-e} ${-ov}, ${e} ${-ov}, ${t} 0 C ${m} ${len*0.3}, ${b} ${len*0.7}, ${b} ${len} L ${-b} ${len} C ${-b} ${len*0.7}, ${-m} ${len*0.3}, ${-t} 0 Z`;
-  const hl = `M ${-m*0.15} 5 C 0 ${len*0.3}, 0 ${len*0.7}, 0 ${len - 3}`;
-  const softShadow = `M ${m*0.7} 10 C ${m*0.7} ${len*0.4}, ${b*0.7} ${len*0.8}, ${b*0.6} ${len - 5}`;
+  // Forearm path starting at -ov (-u(7)) with continuous anatomical taper through elbow pivot
+  const path = `
+    M 0 ${-ov}
+    C ${-t * 0.5} ${-ov}, ${-t} ${-ov * 0.6}, ${-t} 0 
+    C ${-m} ${len * 0.35}, ${-b} ${len * 0.75}, ${-b} ${len} 
+    L ${b} ${len} 
+    C ${b} ${len * 0.75}, ${m} ${len * 0.35}, ${t} 0 
+    C ${t} ${-ov * 0.6}, ${t * 0.5} ${-ov}, 0 ${-ov} 
+    Z`;
+    
+  // Highlight flowing from top overlap through forearm
+  const hl = `M ${-t * 0.15} ${-ov * 0.5} C 0 ${len * 0.3}, 0 ${len * 0.7}, 0 ${len - 3}`;
+  const softShadow = `M ${m * 0.7} ${-ov * 0.5} C ${m * 0.7} ${len * 0.4}, ${b * 0.7} ${len * 0.8}, ${b * 0.6} ${len - 5}`;
 
   return (
     <g className="parametric-forearm">
@@ -141,8 +156,8 @@ export const ParametricForearm = () => {
       <path d={path} fill="url(#kSkinBody)" />
       <path d={path} fill="url(#kArmSkinGrad)" />
 
-      {/* Forearm Top Overlap into Elbow Joint */}
-      <circle cx={0} cy={0} r={t} fill="url(#kSkinBody)" />
+      {/* Forearm Top Circular Overlap into Elbow Joint with smooth radial skin gradient blending */}
+      <circle cx={0} cy={0} r={t} fill="url(#kElbowJointSkinGrad)" />
       <circle cx={0} cy={0} r={t} fill="url(#kArmSkinGrad)" />
 
       {/* Seamless Highlight flowing along arm vector */}
@@ -575,6 +590,27 @@ export const KrishnaArms = ({
           <stop offset="100%" stopColor="#315EA8" stopOpacity="0.3" />
         </linearGradient>
 
+        {/* ── Specialized Curved 3D Elbow Gradient Shaders ── */}
+        <radialGradient id="kElbowJointSkinGrad" cx="40%" cy="38%" r="62%">
+          <stop offset="0%" stopColor="#84B5FA" />
+          <stop offset="55%" stopColor="#6BA7FF" />
+          <stop offset="85%" stopColor="#5593F0" />
+          <stop offset="100%" stopColor="#4E82D1" stopOpacity="0.85" />
+        </radialGradient>
+
+        <radialGradient id="kElbowOuterHighlight" cx="35%" cy="35%" r="65%">
+          <stop offset="0%" stopColor="#A9CCFF" stopOpacity="0.55" />
+          <stop offset="40%" stopColor="#84B5FA" stopOpacity="0.28" />
+          <stop offset="78%" stopColor="#6BA7FF" stopOpacity="0.08" />
+          <stop offset="100%" stopColor="#6BA7FF" stopOpacity="0" />
+        </radialGradient>
+
+        <linearGradient id="kElbowInnerShadow" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#4E82D1" stopOpacity="0.38" />
+          <stop offset="55%" stopColor="#315EA8" stopOpacity="0.22" />
+          <stop offset="100%" stopColor="#6BA7FF" stopOpacity="0" />
+        </linearGradient>
+
         <linearGradient id="kFingerLongitudinal" x1="30%" y1="0%" x2="70%" y2="100%">
           <stop offset="0%" stopColor="#A9CCFF" stopOpacity="0.38" />
           <stop offset="35%" stopColor="#84B5FA" stopOpacity="0.18" />
@@ -676,12 +712,19 @@ export const KrishnaArms = ({
 
             {/* Elbow Pivot Joint */}
             <g id={`leftElbowPivot-${renderLayer}-${renderHandPart}`} transform={`translate(0, ${ARM_SPEC.upper.len}) rotate(${config.right.elbow})`}>
-              {/* Seamless Anatomical Elbow Capsule Blend */}
+              {/* Visible 3D Gradient-Blended Circular Elbow Joint Capsule */}
               {showUpperArm && showForearm && (
                 <g className="elbow-joint-blend">
-                  <circle cx={0} cy={0} r={ARM_SPEC.elbow.blendW / 2} fill="url(#kSkinBody)" />
+                  {/* Radial Skin Gradient Joint Base */}
+                  <circle cx={0} cy={0} r={ARM_SPEC.elbow.blendW / 2} fill="url(#kElbowJointSkinGrad)" />
+                  {/* Directional Specular Arm Gradient Overlay */}
                   <circle cx={0} cy={0} r={ARM_SPEC.elbow.blendW / 2} fill="url(#kArmSkinGrad)" />
-                  <ellipse cx={0} cy={0} rx={(ARM_SPEC.elbow.blendW / 2) * 0.75} ry={u(3)} fill="#A9CCFF" opacity="0.18" />
+                  {/* Elongated Convex Outer Bend Highlight following joint curve */}
+                  <ellipse cx={-u(4)} cy={0} rx={(ARM_SPEC.elbow.blendW / 2) * 0.75} ry={u(4.5)} fill="url(#kElbowOuterHighlight)" />
+                  {/* Soft Inner Concave Shadow following bend curve */}
+                  <ellipse cx={u(5)} cy={0} rx={(ARM_SPEC.elbow.blendW / 2) * 0.6} ry={u(3.8)} fill="url(#kElbowInnerShadow)" />
+                  {/* Continuous Skin Sheen Overlay along elbow vector */}
+                  <path d={`M ${-u(12)} ${-u(6)} C ${-u(15)} 0, ${-u(12)} ${u(6)}, ${-u(6)} ${u(6)}`} fill="none" stroke="#A9CCFF" strokeWidth={u(3.2)} strokeLinecap="round" opacity="0.32" />
                 </g>
               )}
 
@@ -727,12 +770,19 @@ export const KrishnaArms = ({
 
             {/* Elbow Pivot Joint */}
             <g id={`rightElbowPivot-${renderLayer}-${renderHandPart}`} transform={`translate(0, ${ARM_SPEC.upper.len}) rotate(${config.left.elbow})`}>
-              {/* Seamless Anatomical Elbow Capsule Blend */}
+              {/* Visible 3D Gradient-Blended Circular Elbow Joint Capsule */}
               {showUpperArm && showForearm && (
                 <g className="elbow-joint-blend">
-                  <circle cx={0} cy={0} r={ARM_SPEC.elbow.blendW / 2} fill="url(#kSkinBody)" />
+                  {/* Radial Skin Gradient Joint Base */}
+                  <circle cx={0} cy={0} r={ARM_SPEC.elbow.blendW / 2} fill="url(#kElbowJointSkinGrad)" />
+                  {/* Directional Specular Arm Gradient Overlay */}
                   <circle cx={0} cy={0} r={ARM_SPEC.elbow.blendW / 2} fill="url(#kArmSkinGrad)" />
-                  <ellipse cx={0} cy={0} rx={(ARM_SPEC.elbow.blendW / 2) * 0.75} ry={u(3)} fill="#A9CCFF" opacity="0.18" />
+                  {/* Elongated Convex Outer Bend Highlight following joint curve */}
+                  <ellipse cx={u(4)} cy={0} rx={(ARM_SPEC.elbow.blendW / 2) * 0.75} ry={u(4.5)} fill="url(#kElbowOuterHighlight)" />
+                  {/* Soft Inner Concave Shadow following bend curve */}
+                  <ellipse cx={-u(5)} cy={0} rx={(ARM_SPEC.elbow.blendW / 2) * 0.6} ry={u(3.8)} fill="url(#kElbowInnerShadow)" />
+                  {/* Continuous Skin Sheen Overlay along elbow vector */}
+                  <path d={`M ${u(12)} ${-u(6)} C ${u(15)} 0, ${u(12)} ${u(6)}, ${u(6)} ${u(6)}`} fill="none" stroke="#A9CCFF" strokeWidth={u(3.2)} strokeLinecap="round" opacity="0.32" />
                 </g>
               )}
 
