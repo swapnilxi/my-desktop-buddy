@@ -773,9 +773,28 @@ export function LittleKrishna({
               <feDropShadow dx="0" dy="0" stdDeviation="6" floodColor="#F59E0B" floodOpacity="0.7" />
             </filter>
 
+            {/* ── Ground Shadow Radial Shader & Soft Gaussian Blur Filter ── */}
+            <radialGradient id="kGroundShadowRadial" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#0B132B" stopOpacity="0.45" />
+              <stop offset="35%" stopColor="#1C2D5A" stopOpacity="0.28" />
+              <stop offset="70%" stopColor="#314B88" stopOpacity="0.10" />
+              <stop offset="100%" stopColor="#314B88" stopOpacity="0" />
+            </radialGradient>
+
+            <filter id="kGroundBlurFilter" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="9" />
+            </filter>
+
             {/* ── Targeted Behind-Ear & Neck-Side Hair Supplement ── */}
             {/* Colors sampled DIRECTLY from the existing PNG hair asset: */}
             {/* Base Hair: #0D1B49  |  Dark Shadow: #040A25  |  Midtone: #22377C  |  Cool Highlight: #0B94B4 */}
+
+            <linearGradient id="kBackgroundNeckHairGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#0D1B49" stopOpacity="0.98" />
+              <stop offset="45%" stopColor="#040A25" stopOpacity="0.98" />
+              <stop offset="80%" stopColor="#0D1B49" stopOpacity="0.95" />
+              <stop offset="100%" stopColor="#040A25" stopOpacity="0.90" />
+            </linearGradient>
 
             {/* Left Behind-Ear Volumetric 4-Color Gradient */}
             <linearGradient id="kBehindEarL" x1="100%" y1="20%" x2="0%" y2="80%">
@@ -838,14 +857,19 @@ export function LittleKrishna({
 
 
           {/* ════════════════ LAYER 2: FEET (CHARAN KAMAL) ════════════════ */}
-          {/* Global Ground Contact Shadow beneath both feet to ground character */}
-          <ellipse cx="187" cy="452" rx="58" ry="7" fill="#091024" opacity="0.32" filter="url(#kSoftShadow)" />
+          {/* Multi-Layered Soft Blended Ground Contact & Ambient Occlusion Shadow */}
+          <g id="globalGroundShadow">
+            {/* Outer Soft Ambient Spread (Feathered 18-unit blur radius) */}
+            <ellipse cx="187" cy="454" rx="76" ry="12" fill="url(#kGroundShadowRadial)" filter="url(#kGroundBlurFilter)" opacity="0.85" />
+            {/* Core Contact Occlusion Shadow */}
+            <ellipse cx="187" cy="452" rx="48" ry="6" fill="url(#kGroundShadowRadial)" filter="url(#kSoftShadow)" opacity="0.60" />
+          </g>
 
           <g id="feet" filter="url(#kSoftShadow)" transform="translate(190,290) scale(1,1.06) translate(-190,-290)">
             {/* Left Foot (Adorably Cute Chubby Toddler Foot with Lotus-Pink Blush) */}
             <g id="leftFoot" transform="translate(148, 426)">
               {/* Soft Ground Contact Ambient Shadow */}
-              <ellipse cx="0" cy="24.5" rx="16" ry="4" fill="#315EA8" opacity="0.30" />
+              <ellipse cx="0" cy="24.5" rx="14" ry="3.5" fill="url(#kGroundShadowRadial)" opacity="0.4" filter="url(#kSoftShadow)" />
 
               {/* Plump, Chubby Baby Foot Silhouette */}
               <path
@@ -928,7 +952,7 @@ export function LittleKrishna({
             {/* Right Foot (Adorably Cute Chubby Toddler Foot with Lotus-Pink Blush) */}
             <g id="rightFoot" transform="translate(226, 426)">
               {/* Soft Ground Contact Ambient Shadow */}
-              <ellipse cx="0" cy="24.5" rx="16" ry="4" fill="#0A1128" opacity="0.38" />
+              <ellipse cx="0" cy="24.5" rx="14" ry="3.5" fill="url(#kGroundShadowRadial)" opacity="0.4" filter="url(#kSoftShadow)" />
 
               {/* Plump, Chubby Baby Foot Silhouette */}
               <path
@@ -2093,7 +2117,50 @@ export function LittleKrishna({
           <g transform="translate(190,217) scale(0.85) translate(-190,-217)">
             <g id="headGroup" transform="translate(0, -32)">
 
+              {/* ════════════════ ALTERNATIVE BACKGROUND HAIR (BEHIND NECK & HEAD) ════════════════ */}
+              {/* Sits behind headBase and neck skin so front neck stays blue, while background area behind neck is covered */}
+              <g id="backgroundNeckHair" style={{ pointerEvents: 'none' }}>
+                {/* Full Volumetric Background Hair Backing Mass */}
+                <path
+                  d="M 120 70
+                     C 80 85, 58 115, 62 145
+                     C 66 175, 82 205, 96 228
+                     C 106 242, 125 240, 142 225
+                     C 160 210, 175 205, 190 205
+                     C 205 205, 220 210, 238 225
+                     C 255 240, 274 242, 284 228
+                     C 298 205, 314 175, 318 145
+                     C 322 115, 300 85, 260 70
+                     Z"
+                  fill="url(#kBackgroundNeckHairGrad)"
+                />
 
+                {/* Soft Wavy Strand Overlays for Natural Hair Texture */}
+                <g fill="none" stroke="#22377C" strokeWidth="2.4" strokeLinecap="round" opacity="0.6">
+                  <path d="M 105 110 C 82 135, 75 165, 85 195 C 92 215, 105 228, 120 232" />
+                  <path d="M 125 130 C 102 155, 98 185, 108 210 C 115 224, 130 230, 145 222" />
+                  <path d="M 275 110 C 298 135, 305 165, 295 195 C 288 215, 275 228, 260 232" />
+                  <path d="M 255 130 C 278 155, 282 185, 272 210 C 265 224, 250 230, 235 222" />
+                </g>
+
+                {/* Subtle Sheen Specular Line following outer hair contour */}
+                <path
+                  d="M 72 138 C 76 168, 90 198, 102 220"
+                  fill="none"
+                  stroke="#0B94B4"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  opacity="0.45"
+                />
+                <path
+                  d="M 308 138 C 304 168, 290 198, 278 220"
+                  fill="none"
+                  stroke="#0B94B4"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  opacity="0.45"
+                />
+              </g>
 
               <g id="headBase">
 
