@@ -72,13 +72,13 @@ export const ParametricUpperArm = ({ isFlipped = false }: { isFlipped?: boolean 
 
       {/* ── Refined Child-Proportioned Gold Upper Armlet (Keyur) ── */}
       <g className="upper-armlet" transform={transform}>
-        {/* Ambient contact shadow under armlet */}
+        {/* Ambient skin contact shadow under armlet */}
         <path
           d={`M ${-m * 0.9} ${len * 0.44} C ${-m * 0.45} ${len * 0.5}, ${m * 0.45} ${len * 0.5}, ${m * 0.9} ${len * 0.44}`}
           fill="none"
-          stroke="#1E3A8A"
+          stroke="#315EA8"
           strokeWidth={u(3.2)}
-          opacity="0.25"
+          opacity="0.22"
         />
         {/* Main 3D Gold Armlet Band wrapping arm contour */}
         <path
@@ -227,9 +227,13 @@ export const ParametricDigit = ({
       {/* Fingertip Underside Shadow */}
       <ellipse cx={0} cy={len + t * 0.8} rx={t * 0.5} ry={t * 0.4} fill="#4E82D1" opacity="0.2" />
 
-      {/* Subtle Local Contact Shadow for Chakra or Grip Interaction */}
+      {/* Subtle Local Reflected Warm Gold Light from Luminous Sudarshan Chakra */}
       {isChakraInteraction && (
-        <circle cx={0} cy={len} r={t * 0.65} fill="#315EA8" opacity="0.2" />
+        <g className="chakra-contact-reflection">
+          <ellipse cx={0} cy={len - u(0.5)} rx={t * 0.9} ry={t * 1.15} fill="#FFD45A" opacity="0.32" />
+          <circle cx={0} cy={len} r={t * 0.75} fill="#F5A900" opacity="0.25" />
+          <circle cx={0} cy={len} r={t * 0.45} fill="#315EA8" opacity="0.12" />
+        </g>
       )}
     </g>
   );
@@ -376,11 +380,6 @@ export const ParametricHand = ({
             {/* ── Natural Palm Warm Pink Undertone (Localized Soft Radial Gradients) ── */}
             <path d={palmPath} fill="url(#kPalmCentralPinkGlow)" />
             <path d={thenarPath} fill="url(#kThenarPinkWarmth)" />
-            <path d={hypothenarPath} fill="url(#kHypothenarPinkWarmth)" />
-
-            {/* Knuckle Continuous Ridge Highlight Arc */}
-            <path d={knucklePath} fill="none" stroke="#A9CCFF" strokeWidth={u(2.2)} opacity="0.28" />
-
             {/* Subtle Contact Shadow in Interdigital Clefts */}
             <circle cx={(litX + rngX) / 2} cy={h - u(4)} r={u(1.5)} fill="#315EA8" opacity="0.15" />
             <circle cx={(rngX + midX) / 2} cy={h - u(2)} r={u(1.5)} fill="#315EA8" opacity="0.15" />
@@ -390,7 +389,7 @@ export const ParametricHand = ({
           {/* ── WHITE VAISHNAV-INSPIRED CHAKRA DECORATION ON BACK OF HAND (DOMINANT & CRISP) ── */}
           <g className="back-hand-vaishnav-chakra" transform={`translate(${midX / 2}, ${h * 0.48})`}>
             {/* Soft Skin Contact Shadow for 3D Relief */}
-            <circle cx={0} cy={u(0.6)} r={u(13.5)} fill="#1E3A8A" opacity="0.25" />
+            <circle cx={0} cy={u(0.6)} r={u(13.5)} fill="#315EA8" opacity="0.22" />
             
             {/* Soft Base Glow Disc */}
             <circle cx={0} cy={0} r={u(13.5)} fill="#F8F9FF" opacity="0.12" />
@@ -407,7 +406,7 @@ export const ParametricHand = ({
               <line x1={u(6.0)} y1={0} x2={u(13.0)} y2={0} />
               <line x1={-u(9.2)} y1={-u(9.2)} x2={-u(4.2)} y2={-u(4.2)} />
               <line x1={u(4.2)} y1={u(4.2)} x2={u(9.2)} y2={u(9.2)} />
-              <line x1={-u(9.2)} y1={u(9.2)} x2={-u(4.2)} y2={u(4.2)} />
+              <line x1={-u(9.2)} y1={u(9.2)} x2={-u(4.2)} y2={-u(4.2)} />
               <line x1={u(4.2)} y1={-u(4.2)} x2={u(9.2)} y2={-u(9.2)} />
             </g>
 
@@ -433,9 +432,9 @@ export const ParametricHand = ({
               <path
                 d={`M ${-w * 0.95} ${-u(5)} C ${-w * 0.45} ${-u(2)}, ${w * 0.45} ${-u(2)}, ${w * 0.95} ${-u(5)}`}
                 fill="none"
-                stroke="#1E3A8A"
+                stroke="#315EA8"
                 strokeWidth={u(3.0)}
-                opacity="0.25"
+                opacity="0.22"
               />
               {/* Primary Prominent 3D Gold Bangle Band */}
               <path

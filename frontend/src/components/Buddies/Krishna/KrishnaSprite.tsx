@@ -266,124 +266,124 @@ export function LittleKrishna({
           style={{ width: '100%', height: '100%', overflow: 'visible' }}
         >
           <defs>
-            {/* ── 3D Soft Skin Shaders (Periwinkle Blue #6BA7FF) ── */}
-            <radialGradient id="kSkinFace" cx="42%" cy="32%" r="68%">
-              <stop offset="0%" stopColor="#EBF5FF" />
-              <stop offset="22%" stopColor="#BAD9FF" />
-              <stop offset="55%" stopColor="#72ABFF" />
-              <stop offset="82%" stopColor="#4382DF" />
-              <stop offset="94%" stopColor="#2963C5" />
-              <stop offset="100%" stopColor="#1E4E9E" />
+            {/* ── 3D Soft Skin Shaders (Periwinkle Blue #6BA7FF + Upper-Left Key Light) ── */}
+            <radialGradient id="kSkinFace" cx="38%" cy="28%" r="68%">
+              <stop offset="0%" stopColor="#A9CCFF" />
+              <stop offset="22%" stopColor="#84B5FA" />
+              <stop offset="55%" stopColor="#6BA7FF" />
+              <stop offset="82%" stopColor="#4E82D1" />
+              <stop offset="100%" stopColor="#315EA8" />
             </radialGradient>
 
             {/* Jaw / Lower Face Shadow Depth for Sculpted Chin */}
             <linearGradient id="kJawlineShadow" x1="50%" y1="0%" x2="50%" y2="100%">
-              <stop offset="0%" stopColor="#1E3A8A" stopOpacity="0" />
-              <stop offset="70%" stopColor="#1E3A8A" stopOpacity="0.12" />
-              <stop offset="100%" stopColor="#13265C" stopOpacity="0.22" />
+              <stop offset="0%" stopColor="#315EA8" stopOpacity="0" />
+              <stop offset="70%" stopColor="#315EA8" stopOpacity="0.12" />
+              <stop offset="100%" stopColor="#315EA8" stopOpacity="0.22" />
             </linearGradient>
 
             {/* Asymmetric Left Cheek Highlight (Key Light from Upper-Left) */}
-            <radialGradient id="kCheekVolumeLeft" cx="36%" cy="34%" r="65%">
-              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.6" />
-              <stop offset="35%" stopColor="#C8E2FF" stopOpacity="0.38" />
-              <stop offset="75%" stopColor="#72ABFF" stopOpacity="0.1" />
-              <stop offset="100%" stopColor="#3573D6" stopOpacity="0" />
+            <radialGradient id="kCheekVolumeLeft" cx="34%" cy="32%" r="65%">
+              <stop offset="0%" stopColor="#A9CCFF" stopOpacity="0.65" />
+              <stop offset="35%" stopColor="#84B5FA" stopOpacity="0.32" />
+              <stop offset="75%" stopColor="#6BA7FF" stopOpacity="0.10" />
+              <stop offset="100%" stopColor="#4E82D1" stopOpacity="0" />
             </radialGradient>
 
             {/* Soft Right Cheek Fill/Ambient Volume */}
-            <radialGradient id="kCheekVolumeRight" cx="64%" cy="36%" r="65%">
-              <stop offset="0%" stopColor="#E0F0FF" stopOpacity="0.42" />
-              <stop offset="40%" stopColor="#B4D7FF" stopOpacity="0.22" />
-              <stop offset="80%" stopColor="#5391F0" stopOpacity="0.08" />
-              <stop offset="100%" stopColor="#3573D6" stopOpacity="0" />
+            <radialGradient id="kCheekVolumeRight" cx="66%" cy="38%" r="65%">
+              <stop offset="0%" stopColor="#84B5FA" stopOpacity="0.38" />
+              <stop offset="40%" stopColor="#6BA7FF" stopOpacity="0.20" />
+              <stop offset="80%" stopColor="#4E82D1" stopOpacity="0.08" />
+              <stop offset="100%" stopColor="#315EA8" stopOpacity="0" />
             </radialGradient>
 
-            <radialGradient id="kForeheadGlow" cx="50%" cy="35%" r="55%">
-              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.5" />
-              <stop offset="60%" stopColor="#D9ECFF" stopOpacity="0.18" />
+            <radialGradient id="kForeheadGlow" cx="42%" cy="30%" r="55%">
+              <stop offset="0%" stopColor="#A9CCFF" stopOpacity="0.5" />
+              <stop offset="60%" stopColor="#84B5FA" stopOpacity="0.18" />
               <stop offset="100%" stopColor="#6BA7FF" stopOpacity="0" />
             </radialGradient>
 
-            <radialGradient id="kChinVolume" cx="50%" cy="38%" r="55%">
-              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.38" />
-              <stop offset="55%" stopColor="#C4E0FF" stopOpacity="0.18" />
-              <stop offset="100%" stopColor="#5B9AFA" stopOpacity="0" />
+            <radialGradient id="kChinVolume" cx="46%" cy="36%" r="55%">
+              <stop offset="0%" stopColor="#A9CCFF" stopOpacity="0.38" />
+              <stop offset="55%" stopColor="#84B5FA" stopOpacity="0.18" />
+              <stop offset="100%" stopColor="#6BA7FF" stopOpacity="0" />
             </radialGradient>
 
             {/* ── 3D Sculpted Child Ear Gradients ── */}
             <radialGradient id="kEarBaseLeft" cx="38%" cy="32%" r="68%">
-              <stop offset="0%" stopColor="#EBF5FF" />
-              <stop offset="28%" stopColor="#A5CEFF" />
+              <stop offset="0%" stopColor="#A9CCFF" />
+              <stop offset="28%" stopColor="#84B5FA" />
               <stop offset="65%" stopColor="#6BA7FF" />
-              <stop offset="88%" stopColor="#3876D6" />
-              <stop offset="100%" stopColor="#1E4E9E" />
+              <stop offset="88%" stopColor="#4E82D1" />
+              <stop offset="100%" stopColor="#315EA8" />
             </radialGradient>
 
             <radialGradient id="kEarBaseRight" cx="62%" cy="32%" r="68%">
-              <stop offset="0%" stopColor="#EBF5FF" />
-              <stop offset="28%" stopColor="#A5CEFF" />
+              <stop offset="0%" stopColor="#A9CCFF" />
+              <stop offset="28%" stopColor="#84B5FA" />
               <stop offset="65%" stopColor="#6BA7FF" />
-              <stop offset="88%" stopColor="#3876D6" />
-              <stop offset="100%" stopColor="#1E4E9E" />
+              <stop offset="88%" stopColor="#4E82D1" />
+              <stop offset="100%" stopColor="#315EA8" />
             </radialGradient>
 
             <radialGradient id="kEarInnerShadow" cx="45%" cy="40%" r="60%">
-              <stop offset="0%" stopColor="#122554" />
-              <stop offset="60%" stopColor="#1B3A82" />
-              <stop offset="88%" stopColor="#2A5CB0" />
-              <stop offset="100%" stopColor="#4180E0" stopOpacity="0" />
+              <stop offset="0%" stopColor="#315EA8" />
+              <stop offset="60%" stopColor="#4E82D1" />
+              <stop offset="88%" stopColor="#6BA7FF" />
+              <stop offset="100%" stopColor="#84B5FA" stopOpacity="0" />
             </radialGradient>
 
             {/* ── 3D Cylindrical Neck & Occlusion Shaders ── */}
-            <linearGradient id="kSkinNeck" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#2A64C2" />
-              <stop offset="22%" stopColor="#5391F0" />
-              <stop offset="55%" stopColor="#87BDFF" />
-              <stop offset="85%" stopColor="#5391F0" />
-              <stop offset="100%" stopColor="#1E52B0" />
+            <linearGradient id="kSkinNeck" x1="10%" y1="0%" x2="90%" y2="100%">
+              <stop offset="0%" stopColor="#A9CCFF" />
+              <stop offset="22%" stopColor="#84B5FA" />
+              <stop offset="55%" stopColor="#6BA7FF" />
+              <stop offset="85%" stopColor="#4E82D1" />
+              <stop offset="100%" stopColor="#315EA8" />
             </linearGradient>
 
             <linearGradient id="kNeckOcclusionShadow" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#0B1938" stopOpacity="0.48" />
-              <stop offset="60%" stopColor="#1E3A8A" stopOpacity="0.22" />
-              <stop offset="100%" stopColor="#1E3A8A" stopOpacity="0" />
+              <stop offset="0%" stopColor="#315EA8" stopOpacity="0.35" />
+              <stop offset="60%" stopColor="#4E82D1" stopOpacity="0.16" />
+              <stop offset="100%" stopColor="#6BA7FF" stopOpacity="0" />
             </linearGradient>
 
             {/* ── Unified 3D Seamless Skin Shaders ── */}
-            <radialGradient id="kSkinBody" cx="40%" cy="30%" r="70%">
-              <stop offset="0%" stopColor="#CCE3FF" />
-              <stop offset="32%" stopColor="#87BDFF" />
-              <stop offset="68%" stopColor="#5B9AFA" />
-              <stop offset="90%" stopColor="#3573D6" />
-              <stop offset="100%" stopColor="#1E52B0" />
+            <radialGradient id="kSkinBody" cx="36%" cy="26%" r="70%">
+              <stop offset="0%" stopColor="#A9CCFF" />
+              <stop offset="28%" stopColor="#84B5FA" />
+              <stop offset="62%" stopColor="#6BA7FF" />
+              <stop offset="88%" stopColor="#4E82D1" />
+              <stop offset="100%" stopColor="#315EA8" />
             </radialGradient>
 
-            <radialGradient id="kSkinLimb" cx="38%" cy="28%" r="68%">
-              <stop offset="0%" stopColor="#CCE3FF" />
-              <stop offset="35%" stopColor="#87BDFF" />
-              <stop offset="72%" stopColor="#5B9AFA" />
-              <stop offset="100%" stopColor="#2A64C2" />
+            <radialGradient id="kSkinLimb" cx="36%" cy="26%" r="68%">
+              <stop offset="0%" stopColor="#A9CCFF" />
+              <stop offset="30%" stopColor="#84B5FA" />
+              <stop offset="68%" stopColor="#6BA7FF" />
+              <stop offset="90%" stopColor="#4E82D1" />
+              <stop offset="100%" stopColor="#315EA8" />
             </radialGradient>
 
-            <radialGradient id="kSkinHand" cx="40%" cy="32%" r="65%">
-              <stop offset="0%" stopColor="#CCE3FF" />
-              <stop offset="38%" stopColor="#87BDFF" />
-              <stop offset="76%" stopColor="#5B9AFA" />
-              <stop offset="100%" stopColor="#2A66C6" />
+            <radialGradient id="kSkinHand" cx="38%" cy="28%" r="65%">
+              <stop offset="0%" stopColor="#A9CCFF" />
+              <stop offset="35%" stopColor="#84B5FA" />
+              <stop offset="72%" stopColor="#6BA7FF" />
+              <stop offset="100%" stopColor="#4E82D1" />
             </radialGradient>
 
             {/* 3D Toddler Hand & Joint Sculpting Shaders */}
-            <radialGradient id="kHandVolume" cx="42%" cy="32%" r="65%">
-              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.45" />
-              <stop offset="38%" stopColor="#D2E7FF" stopOpacity="0.18" />
-              <stop offset="100%" stopColor="#2563EB" stopOpacity="0" />
+            <radialGradient id="kHandVolume" cx="38%" cy="28%" r="65%">
+              <stop offset="0%" stopColor="#A9CCFF" stopOpacity="0.45" />
+              <stop offset="38%" stopColor="#84B5FA" stopOpacity="0.18" />
+              <stop offset="100%" stopColor="#6BA7FF" stopOpacity="0" />
             </radialGradient>
 
             <radialGradient id="kJointSoftBlend" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stopColor="#87BDFF" stopOpacity="0.38" />
-              <stop offset="60%" stopColor="#5B9AFA" stopOpacity="0.12" />
-              <stop offset="100%" stopColor="#2A64C2" stopOpacity="0" />
+              <stop offset="0%" stopColor="#84B5FA" stopOpacity="0.38" />
+              <stop offset="60%" stopColor="#6BA7FF" stopOpacity="0.12" />
+              <stop offset="100%" stopColor="#4E82D1" stopOpacity="0" />
             </radialGradient>
 
             {/* Cute Rosy Lotus Blush for Little Krishna's Baby Toes */}
@@ -394,9 +394,9 @@ export function LittleKrishna({
             </radialGradient>
 
             <linearGradient id="kJewelryContactShadow" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#0B132B" stopOpacity="0.38" />
-              <stop offset="60%" stopColor="#1E3A8A" stopOpacity="0.15" />
-              <stop offset="100%" stopColor="#1E3A8A" stopOpacity="0" />
+              <stop offset="0%" stopColor="#315EA8" stopOpacity="0.30" />
+              <stop offset="60%" stopColor="#4E82D1" stopOpacity="0.14" />
+              <stop offset="100%" stopColor="#6BA7FF" stopOpacity="0" />
             </linearGradient>
 
             <linearGradient id="kFingerCylinder" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -491,20 +491,20 @@ export function LittleKrishna({
               <stop offset="100%" stopColor="rgba(255, 180, 205, 0)" />
             </radialGradient>
 
-            {/* ── Metallic Gold Shaders (#F2C14E) ── */}
-            <linearGradient id="kGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#FFF9D6" />
-              <stop offset="28%" stopColor="#FCD34D" />
-              <stop offset="68%" stopColor="#F59E0B" />
-              <stop offset="92%" stopColor="#D97706" />
-              <stop offset="100%" stopColor="#92400E" />
+            {/* ── Metallic Gold Shaders (Unified Gold Palette #F5A900 / #FFD45A / #FFF0A3 / #B86A00) ── */}
+            <linearGradient id="kGoldGrad" x1="10%" y1="0%" x2="90%" y2="100%">
+              <stop offset="0%" stopColor="#FFF0A3" />
+              <stop offset="28%" stopColor="#FFD45A" />
+              <stop offset="68%" stopColor="#F5A900" />
+              <stop offset="92%" stopColor="#B86A00" />
+              <stop offset="100%" stopColor="#8A4A00" />
             </linearGradient>
 
             <radialGradient id="kGoldBead" cx="32%" cy="28%" r="65%">
-              <stop offset="0%" stopColor="#FFFFEA" />
-              <stop offset="32%" stopColor="#FCD34D" />
-              <stop offset="70%" stopColor="#E08805" />
-              <stop offset="100%" stopColor="#8A4A00" />
+              <stop offset="0%" stopColor="#FFF0A3" />
+              <stop offset="32%" stopColor="#FFD45A" />
+              <stop offset="70%" stopColor="#F5A900" />
+              <stop offset="100%" stopColor="#B86A00" />
             </radialGradient>
 
             <radialGradient id="kRubyBead" cx="32%" cy="28%" r="65%">
@@ -515,12 +515,12 @@ export function LittleKrishna({
             </radialGradient>
 
             {/* ── 3D Golden Dome Rivet Shader for Waist Belt ── */}
-            <radialGradient id="kGoldDomeRivet" cx="35%" cy="30%" r="68%">
-              <stop offset="0%" stopColor="#FFFFFA" />
-              <stop offset="25%" stopColor="#FDE68A" />
-              <stop offset="60%" stopColor="#F59E0B" />
-              <stop offset="85%" stopColor="#B45309" />
-              <stop offset="100%" stopColor="#78350F" />
+            <radialGradient id="kGoldDomeRivet" cx="32%" cy="28%" r="68%">
+              <stop offset="0%" stopColor="#FFF0A3" />
+              <stop offset="25%" stopColor="#FFD45A" />
+              <stop offset="60%" stopColor="#F5A900" />
+              <stop offset="85%" stopColor="#B86A00" />
+              <stop offset="100%" stopColor="#8A4A00" />
             </radialGradient>
 
             {/* ── 3D Multi-Layer Volumetric Dhoti Fabric & Waistband Gradients ── */}
@@ -838,11 +838,14 @@ export function LittleKrishna({
 
 
           {/* ════════════════ LAYER 2: FEET (CHARAN KAMAL) ════════════════ */}
+          {/* Global Ground Contact Shadow beneath both feet to ground character */}
+          <ellipse cx="187" cy="452" rx="58" ry="7" fill="#091024" opacity="0.32" filter="url(#kSoftShadow)" />
+
           <g id="feet" filter="url(#kSoftShadow)" transform="translate(190,290) scale(1,1.06) translate(-190,-290)">
             {/* Left Foot (Adorably Cute Chubby Toddler Foot with Lotus-Pink Blush) */}
             <g id="leftFoot" transform="translate(148, 426)">
               {/* Soft Ground Contact Ambient Shadow */}
-              <ellipse cx="0" cy="24.5" rx="16" ry="4" fill="#0A1128" opacity="0.38" />
+              <ellipse cx="0" cy="24.5" rx="16" ry="4" fill="#315EA8" opacity="0.30" />
 
               {/* Plump, Chubby Baby Foot Silhouette */}
               <path
@@ -2654,7 +2657,7 @@ export function LittleKrishna({
             <path
               d="M 158 186 C 166 200, 214 200, 222 186"
               fill="none"
-              stroke="#1E3A8A"
+              stroke="#315EA8"
               strokeWidth="2.4"
               strokeLinecap="round"
               opacity="0.22"
@@ -2705,7 +2708,7 @@ export function LittleKrishna({
             <path
               d="M 152 192 C 166 216, 214 216, 228 192"
               fill="none"
-              stroke="#1E3A8A"
+              stroke="#315EA8"
               strokeWidth="2.2"
               strokeLinecap="round"
               opacity="0.18"
@@ -2755,7 +2758,7 @@ export function LittleKrishna({
             <path
               d="M 148 194 C 162 240, 218 240, 232 194"
               fill="none"
-              stroke="#1E3A8A"
+              stroke="#315EA8"
               strokeWidth="2.2"
               strokeLinecap="round"
               opacity="0.14"
