@@ -224,7 +224,7 @@ export default function Home() {
     }, 3000);
   };
 
-  const BUDDY_CYCLE: BuddyType[] = ['hamster', 'panda', 'krishna'];
+  const BUDDY_CYCLE: BuddyType[] = ['hamster', 'panda', 'krishna', 'krishna2'];
   const nextBuddyType = BUDDY_CYCLE[(BUDDY_CYCLE.indexOf(buddyType) + 1) % BUDDY_CYCLE.length];
   const nextBuddyDef = BUDDY_REGISTRY[nextBuddyType];
 

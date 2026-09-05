@@ -5,6 +5,7 @@ import type { BuddyMood, BuddyType, BuddySpriteProps } from './types';
 import HamsterSprite from './Hamster/HamsterSprite';
 import PandaSprite from './Panda/PandaSprite';
 import KrishnaSprite from './Krishna/KrishnaSprite';
+import Krishna2Sprite from './krishna2/Krishna2Sprite';
 import { getBuddyDefinition } from './registry';
 
 export interface BuddyRendererProps extends BuddySpriteProps {
@@ -27,6 +28,23 @@ export default function BuddyRenderer({
   const buddyDef = getBuddyDefinition(type);
   const effectiveColor = color || buddyDef.defaultColor;
   const effectiveName = name || buddyDef.defaultName;
+
+  if (type === 'krishna2') {
+    return (
+      <Krishna2Sprite
+        mood={mood}
+        pose={pose as any}
+        color={effectiveColor}
+        name={effectiveName}
+        greeting={greeting}
+        isDragging={isDragging}
+        petStreak={petStreak}
+        onClick={onClick}
+        onRefreshGreeting={onRefreshGreeting}
+        onFeed={onFeed}
+      />
+    );
+  }
 
   if (type === 'krishna') {
     return (

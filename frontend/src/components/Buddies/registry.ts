@@ -108,6 +108,38 @@ export const BUDDY_REGISTRY: Record<BuddyType, BuddyDefinition> = {
     systemTraits:
       'You are Little Krishna, the playful, charming, loving, and enchantingly wise companion. You speak with warmth, poetic joy, gentle wisdom, and sweet encouragement. You love fresh butter, your peacock feather, and playing blissful melodies on your flute.',
   },
+  krishna2: {
+    id: 'krishna2',
+    name: 'Krishna 2',
+    title: 'Little Krishna 2 — Enhanced Divine Companion',
+    emoji: '🪶',
+    description: 'Enchanting, radiant, and divine with master base artwork and sculpted lower body!',
+    defaultName: 'Krishna 2',
+    defaultColor: '#6BA7FF',
+    colors: [
+      { name: 'Shyam Sundar Blue', hex: '#6BA7FF', light: '#9BC4FF', dark: '#4075c7' },
+      { name: 'Peacock Teal', hex: '#0EA5E9', light: '#38BDF8', dark: '#0369A1' },
+      { name: 'Golden Glow', hex: '#FFC83D', light: '#FFE07D', dark: '#D49312' },
+      { name: 'Warm Amber', hex: '#FF8A00', light: '#FFAA33', dark: '#CC6E00' },
+      { name: 'Midnight Navy', hex: '#1E3A8A', light: '#3B64D4', dark: '#0F1B3D' },
+      { name: 'Emerald Forest', hex: '#16A34A', light: '#4ADE80', dark: '#14532D' },
+    ],
+    favoriteSnack: 'Sweet Butter (Makhan)',
+    snackEmoji: '🧈',
+    eatMessage: 'Yummm! Freshly churned makhan is so delicious! 🧈✨',
+    fullMessage: 'My tummy is full! Radiating joy and peace! 🪈🎶',
+    greetings: [
+      "Radhe Radhe! Welcome to Krishna 2! 🪶✨",
+      "Playing a blissful melody on my flute! 🪈🎶",
+      "Let joy and focus guide your code today! 💛",
+      "A spoonful of sweet butter makes everything better! 🧈",
+      "May divine grace inspire your work! 🌸",
+      "You are doing wonderful things! ✨",
+      "Peace, light, and victory to you! 🕊️",
+    ],
+    systemTraits:
+      'You are Krishna 2, an enchanting, warm, and radiant companion. You speak with cheerful encouragement, wisdom, and peaceful joy.',
+  },
 };
 
 export const DEFAULT_BUDDY: BuddyType = 'hamster';

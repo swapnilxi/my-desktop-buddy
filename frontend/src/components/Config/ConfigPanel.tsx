@@ -282,7 +282,7 @@ export default function ConfigPanel({
               placeholder={currentBuddyDef.defaultName}
             />
           </div>
-          {currentBuddyType === 'krishna' && (
+          {(currentBuddyType === 'krishna' || currentBuddyType === 'krishna2') && (
             <div className="config-row">
               <span className="config-label">Pose</span>
               <div style={{ display: 'flex', gap: '8px' }}>

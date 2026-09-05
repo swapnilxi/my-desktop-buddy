@@ -1,4 +1,4 @@
-export type BuddyType = 'hamster' | 'panda' | 'krishna';
+export type BuddyType = 'hamster' | 'panda' | 'krishna' | 'krishna2';
 
 export type BuddyMood =
   | 'idle'

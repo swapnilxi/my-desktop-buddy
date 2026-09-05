@@ -6,7 +6,11 @@ export const MASTER_SCALE = 140 / 285; // ~0.4912
 export const u = (val: number) => val * MASTER_SCALE;
 
 export const ARM_SPEC = {
-  shoulderPivotOffset: u(142.5),
+  // Shared arm anchor positions relative to character center
+  shoulderPivotOffset: u(152.68), // ~75 SVG units offset for broader shoulders
+  shoulderPivotY: u(205),
+  
+  // Upper Arm (Humerus)
   upper: {
     len: u(112), topW: u(46), maxW: u(40), botW: u(32), ov: u(7), depth: u(34)
   },
