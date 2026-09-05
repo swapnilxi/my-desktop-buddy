@@ -6,12 +6,12 @@ export const MASTER_SCALE = 140 / 285; // ~0.4912
 export const u = (val: number) => val * MASTER_SCALE;
 
 export const ARM_SPEC = {
-  shoulderPivotOffset: u(142.5),
+  shoulderPivotOffset: u(146),
   upper: {
-    len: u(112), topW: u(46), maxW: u(40), botW: u(32), ov: u(7), depth: u(34)
+    len: u(88), topW: u(52), maxW: u(48), botW: u(38), ov: u(7), depth: u(34)
   },
   elbow: {
-    blendW: u(36)
+    blendW: u(38)
   },
   forearm: {
     len: u(100), topW: u(32), maxW: u(34), botW: u(25), ov: u(7), depth: u(29)
@@ -31,16 +31,15 @@ export const ARM_SPEC = {
 };
 
 export const ParametricUpperArm = ({ isFlipped = false }: { isFlipped?: boolean }) => {
-  const { len, maxW, botW, ov } = ARM_SPEC.upper;
-  const topW = maxW;
+  const { len, topW, maxW, botW, ov } = ARM_SPEC.upper;
   const t = topW / 2;
   const m = maxW / 2;
   const b = botW / 2;
   
-  // Shoulder cap extends u(26) above the pivot for a 52-unit total height.
-  // Axilla sweeps inward by u(10) (8-12 units overlap spec) into the chest.
-  const capH = u(26);
-  const axillaOverlap = u(10);
+  // Shoulder cap extends u(24) above the pivot for a continuous rounded dome
+  // Axilla sweeps smoothly inward into the chest
+  const capH = u(24);
+  const axillaOverlap = u(12);
   
   // Upper arm path ending with continuous anatomical elbow taper extending u(7) internal overlap past len
   const path = `
@@ -54,8 +53,8 @@ export const ParametricUpperArm = ({ isFlipped = false }: { isFlipped?: boolean 
     Z`;
     
   // Directional 3D volumetric lighting: soft highlight on light side, gentle shadow on underside
-  const hl = `M ${-m * 0.2} 5 C ${-m * 0.15} ${len * 0.35}, ${-b * 0.15} ${len * 0.75}, ${-b * 0.1} ${len + ov * 0.5}`;
-  const softShadow = `M ${m * 0.7} 15 C ${m * 0.7} ${len * 0.4}, ${b * 0.7} ${len * 0.8}, ${b * 0.6} ${len + ov * 0.5}`;
+  const hl = `M ${-m * 0.2} 4 C ${-m * 0.15} ${len * 0.35}, ${-b * 0.15} ${len * 0.75}, ${-b * 0.1} ${len + ov * 0.5}`;
+  const softShadow = `M ${m * 0.65} 10 C ${m * 0.65} ${len * 0.4}, ${b * 0.65} ${len * 0.8}, ${b * 0.55} ${len + ov * 0.5}`;
   
   const transform = isFlipped ? 'scale(-1, 1)' : '';
 
@@ -65,9 +64,8 @@ export const ParametricUpperArm = ({ isFlipped = false }: { isFlipped?: boolean 
       <path d={path} fill="url(#kSkinBody)" transform={transform} />
       <path d={path} fill="url(#kArmSkinGrad)" transform={transform} />
 
-      {/* Shoulder Cap Smooth Overlap Blend into Torso Socket */}
-      <circle cx={0} cy={0} r={t} fill="url(#kSkinBody)" transform={transform} />
-      <circle cx={0} cy={0} r={t} fill="url(#kArmSkinGrad)" transform={transform} />
+      {/* Seamless Soft Shoulder Socket Transition (diffuses any boundary into torso skin) */}
+      <circle cx={0} cy={0} r={t * 1.1} fill="url(#kJointSoftBlend)" transform={transform} />
 
       {/* Volumetric Longitudinal Highlight */}
       <path d={hl} fill="none" stroke="#A9CCFF" strokeWidth={u(4.8)} strokeLinecap="round" opacity="0.28" transform={transform} />
@@ -439,44 +437,61 @@ export const ParametricHand = ({
             <circle cx={0} cy={u(0.2)} r={u(1.0)} fill="#FFD45A" stroke="#B86A00" strokeWidth={u(0.3)} />
           </g>
 
-          {/* ── REFINED WRIST BANGLES, HAND CHAIN & FINGER JEWELLERY ── */}
+          {/* ── REFINED WRIST BRACELET (THICK & WIDE 3D ROYAL KADA) ── */}
           <g className="hand-jewellery">
-            {/* 1. Prominent Form-Fitting Dual Wrist Bangles wrapping 24-unit wrist contour */}
             <g className="wrist-bangles">
-              {/* Ambient skin contact shadow under bangle */}
-              <path
-                d={`M ${-w * 0.95} ${-u(5)} C ${-w * 0.45} ${-u(2)}, ${w * 0.45} ${-u(2)}, ${w * 0.95} ${-u(5)}`}
-                fill="none"
-                stroke="#315EA8"
-                strokeWidth={u(3.0)}
-                opacity="0.22"
-              />
-              {/* Primary Prominent 3D Gold Bangle Band */}
-              <path
-                d={`M ${-w * 0.92} ${-u(5.5)} C ${-w * 0.45} ${-u(2.5)}, ${w * 0.45} ${-u(2.5)}, ${w * 0.92} ${-u(5.5)}`}
-                fill="none"
-                stroke="url(#kJewelGoldGrad)"
-                strokeWidth={u(4.0)}
-                strokeLinecap="round"
-              />
-              {/* Primary Bangle Light Specular Sheen */}
-              <path
-                d={`M ${-w * 0.7} ${-u(5.8)} C ${-w * 0.3} ${-u(2.8)}, ${w * 0.3} ${-u(2.8)}, ${w * 0.7} ${-u(5.8)}`}
-                fill="none"
-                stroke="#FFF0A3"
-                strokeWidth={u(1.2)}
-                opacity="0.95"
-              />
-              {/* Secondary Beaded Gold Bangle */}
-              <path
-                d={`M ${-w * 0.88} ${-u(1.5)} C ${-w * 0.4} ${u(1.2)}, ${w * 0.4} ${u(1.2)}, ${w * 0.88} ${-u(1.5)}`}
-                fill="none"
-                stroke="url(#kJewelGoldGrad)"
-                strokeWidth={u(2.4)}
-                strokeDasharray={`${u(1.5)}, ${u(1.5)}`}
-                strokeLinecap="round"
-              />
-            </g>
+            {/* Ambient skin contact shadow under wide kada */}
+            <path
+              d={`M ${-w * 1.20} ${-u(6.5)} C ${-w * 0.6} ${-u(2.5)}, ${w * 0.6} ${-u(2.5)}, ${w * 1.20} ${-u(6.5)}`}
+              fill="none"
+              stroke="#315EA8"
+              strokeWidth={u(4.8)}
+              opacity="0.28"
+            />
+            
+            {/* 1. Main Thick 3D Gold Kada Body */}
+            <path
+              d={`M ${-w * 1.18} ${-u(6.2)} C ${-w * 0.58} ${-u(2.2)}, ${w * 0.58} ${-u(2.2)}, ${w * 1.18} ${-u(6.2)}`}
+              fill="none"
+              stroke="url(#kJewelGoldGrad)"
+              strokeWidth={u(7.2)}
+              strokeLinecap="round"
+            />
+
+            {/* 2. Top Edge Rolled Gold Piping Rim */}
+            <path
+              d={`M ${-w * 1.15} ${-u(8.8)} C ${-w * 0.55} ${-u(4.8)}, ${w * 0.55} ${-u(4.8)}, ${w * 1.15} ${-u(8.8)}`}
+              fill="none"
+              stroke="url(#kJewelGoldGrad)"
+              strokeWidth={u(2.2)}
+              strokeLinecap="round"
+            />
+            
+            {/* 3. Primary Specular Highlight Ridge */}
+            <path
+              d={`M ${-w * 0.95} ${-u(7.0)} C ${-w * 0.45} ${-u(3.0)}, ${w * 0.45} ${-u(3.0)}, ${w * 0.95} ${-u(7.0)}`}
+              fill="none"
+              stroke="#FFF0A3"
+              strokeWidth={u(2.2)}
+              strokeLinecap="round"
+              opacity="0.95"
+            />
+
+            {/* 4. Lower Beaded Gold & Filigree Rim */}
+            <path
+              d={`M ${-w * 1.15} ${-u(1.8)} C ${-w * 0.55} ${u(2.2)}, ${w * 0.55} ${u(2.2)}, ${w * 1.15} ${-u(1.8)}`}
+              fill="none"
+              stroke="url(#kJewelGoldGrad)"
+              strokeWidth={u(3.2)}
+              strokeDasharray={`${u(2.0)}, ${u(1.8)}`}
+              strokeLinecap="round"
+            />
+
+            {/* 5. Central Gem Medallion on Wrist Bracelet */}
+            <circle cx={0} cy={-u(4.5)} r={u(3.2)} fill="url(#kJewelGoldGrad)" stroke="#B86A00" strokeWidth={u(0.5)} />
+            <circle cx={0} cy={-u(4.5)} r={u(2.2)} fill="url(#kJewelRuby)" stroke="url(#kJewelGoldGrad)" strokeWidth={u(0.5)} />
+            <circle cx={-u(0.7)} cy={-u(5.2)} r={u(0.7)} fill="#FFFFFF" opacity="0.95" />
+          </g>
 
             {/* 2. Traditional Hand Chain (Hathphool) anchored to Wrist & Middle Finger */}
             <g className="hand-chain">

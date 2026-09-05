@@ -267,48 +267,222 @@ export function LittleKrishna({
         >
           <defs>
             {/* ── 3D Soft Skin Shaders (Periwinkle Blue #6BA7FF + Upper-Left Key Light) ── */}
-            <radialGradient id="kSkinFace" cx="38%" cy="28%" r="68%">
-              <stop offset="0%" stopColor="#A9CCFF" />
-              <stop offset="22%" stopColor="#84B5FA" />
-              <stop offset="55%" stopColor="#6BA7FF" />
-              <stop offset="82%" stopColor="#4E82D1" />
-              <stop offset="100%" stopColor="#315EA8" />
-            </radialGradient>
+            {/* ── Soft Gaussian Volumetric Diffusing Filter for Continuous Facial Geometry ── */}
+            <filter id="kFacialSoftBlend" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="7.5" />
+            </filter>
 
-            {/* Jaw / Lower Face Shadow Depth for Sculpted Chin */}
-            <linearGradient id="kJawlineShadow" x1="50%" y1="0%" x2="50%" y2="100%">
-              <stop offset="0%" stopColor="#315EA8" stopOpacity="0" />
-              <stop offset="70%" stopColor="#315EA8" stopOpacity="0.12" />
-              <stop offset="100%" stopColor="#315EA8" stopOpacity="0.22" />
+            {/* ── Soft Gaussian Diffusing Filter for Continuous Toddler Belly Geometry ── */}
+            <filter id="kBellySoftBlend" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="3.0" />
+            </filter>
+
+            {/* ── Coherent 125° Directional Linear Shaders (CSS equivalent: linear-gradient(125deg, ...)) ── */}
+            {/* Global Face Skin Directional Tone (3D Cranial Depth, 125° key light) */}
+            <linearGradient id="kSkinFace" x1="18%" y1="10%" x2="82%" y2="90%">
+              <stop offset="0%" stopColor="#CBE4FF" />
+              <stop offset="25%" stopColor="#A3CCFF" />
+              <stop offset="55%" stopColor="#6BA7FF" />
+              <stop offset="82%" stopColor="#4578C4" />
+              <stop offset="100%" stopColor="#254B8C" />
             </linearGradient>
 
-            {/* Asymmetric Left Cheek Highlight (Key Light from Upper-Left) */}
-            <radialGradient id="kCheekVolumeLeft" cx="34%" cy="32%" r="65%">
-              <stop offset="0%" stopColor="#A9CCFF" stopOpacity="0.65" />
-              <stop offset="35%" stopColor="#84B5FA" stopOpacity="0.32" />
-              <stop offset="75%" stopColor="#6BA7FF" stopOpacity="0.10" />
-              <stop offset="100%" stopColor="#4E82D1" stopOpacity="0" />
-            </radialGradient>
+            {/* Soft Ambient Lower Face & Jawline Depth Shading (Directional 125° Falloff) */}
+            <linearGradient id="kJawlineShadow" x1="18%" y1="10%" x2="82%" y2="90%">
+              <stop offset="0%" stopColor="#254B8C" stopOpacity="0" />
+              <stop offset="55%" stopColor="#254B8C" stopOpacity="0" />
+              <stop offset="82%" stopColor="#1E3A8A" stopOpacity="0.22" />
+              <stop offset="100%" stopColor="#162C66" stopOpacity="0.40" />
+            </linearGradient>
 
-            {/* Soft Right Cheek Fill/Ambient Volume */}
-            <radialGradient id="kCheekVolumeRight" cx="66%" cy="38%" r="65%">
-              <stop offset="0%" stopColor="#84B5FA" stopOpacity="0.38" />
-              <stop offset="40%" stopColor="#6BA7FF" stopOpacity="0.20" />
-              <stop offset="80%" stopColor="#4E82D1" stopOpacity="0.08" />
+            {/* Forehead / Frontal Brow Dome Directional Highlight */}
+            <linearGradient id="kVolForehead" x1="18%" y1="10%" x2="82%" y2="90%">
+              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.38" />
+              <stop offset="35%" stopColor="#D9ECFF" stopOpacity="0.22" />
+              <stop offset="70%" stopColor="#84B5FA" stopOpacity="0.08" />
+              <stop offset="100%" stopColor="#6BA7FF" stopOpacity="0" />
+            </linearGradient>
+
+            {/* 1. Central Mid-Face Directional Volume (Anchor connecting Forehead, Nose, Cheeks, Mouth) */}
+            <linearGradient id="kVolMidface" x1="18%" y1="10%" x2="82%" y2="90%">
+              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.36" />
+              <stop offset="35%" stopColor="#D9ECFF" stopOpacity="0.22" />
+              <stop offset="70%" stopColor="#84B5FA" stopOpacity="0.08" />
               <stop offset="100%" stopColor="#315EA8" stopOpacity="0" />
-            </radialGradient>
+            </linearGradient>
 
-            <radialGradient id="kForeheadGlow" cx="42%" cy="30%" r="55%">
-              <stop offset="0%" stopColor="#A9CCFF" stopOpacity="0.5" />
-              <stop offset="60%" stopColor="#84B5FA" stopOpacity="0.18" />
-              <stop offset="100%" stopColor="#6BA7FF" stopOpacity="0" />
-            </radialGradient>
+            {/* 2. Left Cheek Directional Volume (Viewer Left, Key-Lit Side — Base Volume) */}
+            <linearGradient id="kVolCheekLeft" x1="18%" y1="10%" x2="82%" y2="90%">
+              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.44" />
+              <stop offset="32%" stopColor="#E2F0FF" stopOpacity="0.28" />
+              <stop offset="68%" stopColor="#A9CCFF" stopOpacity="0.12" />
+              <stop offset="100%" stopColor="#4E82D1" stopOpacity="0" />
+            </linearGradient>
 
-            <radialGradient id="kChinVolume" cx="46%" cy="36%" r="55%">
-              <stop offset="0%" stopColor="#A9CCFF" stopOpacity="0.38" />
-              <stop offset="55%" stopColor="#84B5FA" stopOpacity="0.18" />
+            {/* Left Cheek Anterior Forward Projection Dome (Subtle forward projection toward camera) */}
+            <linearGradient id="kVolCheekLeftAnterior" x1="18%" y1="10%" x2="82%" y2="90%">
+              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.38" />
+              <stop offset="35%" stopColor="#E2F0FF" stopOpacity="0.20" />
+              <stop offset="75%" stopColor="#D9ECFF" stopOpacity="0.06" />
+              <stop offset="100%" stopColor="#A9CCFF" stopOpacity="0" />
+            </linearGradient>
+
+            {/* 3. Right Cheek Directional Volume (Viewer Right, Ambient Fill Side — Base Volume) */}
+            <linearGradient id="kVolCheekRight" x1="18%" y1="10%" x2="82%" y2="90%">
+              <stop offset="0%" stopColor="#D9ECFF" stopOpacity="0.25" />
+              <stop offset="38%" stopColor="#A9CCFF" stopOpacity="0.15" />
+              <stop offset="75%" stopColor="#6BA7FF" stopOpacity="0.06" />
+              <stop offset="100%" stopColor="#254B8C" stopOpacity="0.16" />
+            </linearGradient>
+
+            {/* Right Cheek Anterior Forward Projection Dome (Ambient fill side) */}
+            <linearGradient id="kVolCheekRightAnterior" x1="18%" y1="10%" x2="82%" y2="90%">
+              <stop offset="0%" stopColor="#E2F0FF" stopOpacity="0.22" />
+              <stop offset="40%" stopColor="#A9CCFF" stopOpacity="0.12" />
+              <stop offset="80%" stopColor="#6BA7FF" stopOpacity="0.04" />
+              <stop offset="100%" stopColor="#254B8C" stopOpacity="0" />
+            </linearGradient>
+
+            {/* Directional Rosy Toddler Blush (Warm peachy-coral flush from reference) */}
+            <linearGradient id="kCheekBlushLeft" x1="18%" y1="10%" x2="82%" y2="90%">
+              <stop offset="0%" stopColor="#FFA6BA" stopOpacity="0.45" />
+              <stop offset="35%" stopColor="#FB7185" stopOpacity="0.32" />
+              <stop offset="70%" stopColor="#F43F5E" stopOpacity="0.12" />
+              <stop offset="100%" stopColor="#BE123C" stopOpacity="0" />
+            </linearGradient>
+            <linearGradient id="kCheekBlushRight" x1="18%" y1="10%" x2="82%" y2="90%">
+              <stop offset="0%" stopColor="#FB7185" stopOpacity="0.35" />
+              <stop offset="40%" stopColor="#F43F5E" stopOpacity="0.22" />
+              <stop offset="75%" stopColor="#E11D48" stopOpacity="0.08" />
+              <stop offset="100%" stopColor="#9F1239" stopOpacity="0" />
+            </linearGradient>
+
+            {/* 4. Perioral Mouth Mound Volume (Soft forward projection surrounding lips) */}
+            <linearGradient id="kVolMouthMound" x1="18%" y1="10%" x2="82%" y2="90%">
+              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.32" />
+              <stop offset="35%" stopColor="#D9ECFF" stopOpacity="0.20" />
+              <stop offset="70%" stopColor="#84B5FA" stopOpacity="0.06" />
+              <stop offset="100%" stopColor="#315EA8" stopOpacity="0" />
+            </linearGradient>
+
+            {/* 5. 3D Toddler Chin Volume (Shortened Soft Mental Pad) */}
+            <linearGradient id="kVolChin" x1="18%" y1="10%" x2="82%" y2="90%">
+              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.36" />
+              <stop offset="35%" stopColor="#D9ECFF" stopOpacity="0.22" />
+              <stop offset="70%" stopColor="#84B5FA" stopOpacity="0.08" />
+              <stop offset="100%" stopColor="#254B8C" stopOpacity="0.20" />
+            </linearGradient>
+
+            {/* Chin Anterior Forward Projection Crest */}
+            <linearGradient id="kVolChinAnterior" x1="18%" y1="10%" x2="82%" y2="90%">
+              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.30" />
+              <stop offset="40%" stopColor="#E2F0FF" stopOpacity="0.14" />
+              <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
+            </linearGradient>
+
+            {/* Soft Submental Shadow Under Shortened Chin */}
+            <linearGradient id="kSubmentalShadow" x1="50%" y1="0%" x2="50%" y2="100%">
+              <stop offset="0%" stopColor="#1E3A8A" stopOpacity="0.30" />
+              <stop offset="100%" stopColor="#1E3A8A" stopOpacity="0" />
+            </linearGradient>
+
+            {/* ── 3D Button Nose Gradients ── */}
+            {/* 3D Button Nose Bulb Volume (Solid form catching 125° light) */}
+            <linearGradient id="kVolNoseBulb" x1="18%" y1="10%" x2="82%" y2="90%">
+              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.88" />
+              <stop offset="28%" stopColor="#E6F2FF" stopOpacity="0.75" />
+              <stop offset="65%" stopColor="#9BC7FA" stopOpacity="0.55" />
+              <stop offset="100%" stopColor="#315EA8" stopOpacity="0.50" />
+            </linearGradient>
+
+            {/* 3D Nostril Alae Wings */}
+            <linearGradient id="kVolNoseAlaLeft" x1="18%" y1="10%" x2="82%" y2="90%">
+              <stop offset="0%" stopColor="#E6F2FF" stopOpacity="0.68" />
+              <stop offset="60%" stopColor="#84B5FA" stopOpacity="0.42" />
+              <stop offset="100%" stopColor="#315EA8" stopOpacity="0.45" />
+            </linearGradient>
+            <linearGradient id="kVolNoseAlaRight" x1="18%" y1="10%" x2="82%" y2="90%">
+              <stop offset="0%" stopColor="#B2D4FF" stopOpacity="0.55" />
+              <stop offset="60%" stopColor="#6BA7FF" stopOpacity="0.42" />
+              <stop offset="100%" stopColor="#254B8C" stopOpacity="0.50" />
+            </linearGradient>
+
+            {/* ── 3D Sculpted Toddler Lips Gradients ── */}
+            {/* Upper Lip Cupid's Bow Gradient */}
+            <linearGradient id="kVolLipUpper" x1="18%" y1="0%" x2="82%" y2="100%">
+              <stop offset="0%" stopColor="#FDA4AF" stopOpacity="0.95" />
+              <stop offset="35%" stopColor="#FB7185" stopOpacity="0.92" />
+              <stop offset="70%" stopColor="#E11D48" stopOpacity="0.90" />
+              <stop offset="100%" stopColor="#9F1239" stopOpacity="0.95" />
+            </linearGradient>
+
+            {/* Lower Lip Rounded Pillow Cushion Gradient */}
+            <linearGradient id="kVolLipLower" x1="18%" y1="0%" x2="82%" y2="100%">
+              <stop offset="0%" stopColor="#FFE4E6" stopOpacity="0.98" />
+              <stop offset="28%" stopColor="#FDA4AF" stopOpacity="0.95" />
+              <stop offset="65%" stopColor="#F43F5E" stopOpacity="0.90" />
+              <stop offset="100%" stopColor="#9F1239" stopOpacity="0.95" />
+            </linearGradient>
+
+            {/* Lower Lip Specular Catchlight Sheen */}
+            <linearGradient id="kVolLipSheen" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0" />
+              <stop offset="30%" stopColor="#FFFFFF" stopOpacity="0.85" />
+              <stop offset="70%" stopColor="#FFFFFF" stopOpacity="0.85" />
+              <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
+            </linearGradient>
+
+            {/* ── Toddler Abdominal Volume Shaders (125° Angled Linear Gradient Shading) ── */}
+            {/* Primary Horizontal Baby-Belly Ellipsoid Volume (125° directional light: light → midtone → shadow) */}
+            <linearGradient id="kBellyVolMain" x1="15%" y1="5%" x2="85%" y2="95%">
+              <stop offset="0%" stopColor="#E2F0FF" stopOpacity="0.54" />
+              <stop offset="30%" stopColor="#A9CCFF" stopOpacity="0.32" />
+              <stop offset="65%" stopColor="#84B5FA" stopOpacity="0.14" />
+              <stop offset="85%" stopColor="#4E82D1" stopOpacity="0.22" />
+              <stop offset="100%" stopColor="#254B8C" stopOpacity="0.32" />
+            </linearGradient>
+
+            {/* Anterior Forward Projection Dome (+20-25% Forward 3D Depth) */}
+            <linearGradient id="kBellyAnteriorGlow" x1="15%" y1="5%" x2="85%" y2="95%">
+              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.55" />
+              <stop offset="28%" stopColor="#D9ECFF" stopOpacity="0.36" />
+              <stop offset="65%" stopColor="#84B5FA" stopOpacity="0.10" />
               <stop offset="100%" stopColor="#6BA7FF" stopOpacity="0" />
-            </radialGradient>
+            </linearGradient>
+
+            {/* Anterior Apex Specular Glint (Noticeable +20-25% Forward Depth 3D Pop) */}
+            <linearGradient id="kBellyForwardApex" x1="15%" y1="5%" x2="85%" y2="95%">
+              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.48" />
+              <stop offset="42%" stopColor="#FFFFFF" stopOpacity="0.18" />
+              <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
+            </linearGradient>
+
+            {/* Soft Ambient Occlusion where Belly meets Lower Chest (Soft Overlap) */}
+            <linearGradient id="kBellyInfraChestAO" x1="15%" y1="0%" x2="85%" y2="100%">
+              <stop offset="0%" stopColor="#254B8C" stopOpacity="0.20" />
+              <stop offset="55%" stopColor="#4E82D1" stopOpacity="0.12" />
+              <stop offset="100%" stopColor="#6BA7FF" stopOpacity="0" />
+            </linearGradient>
+
+            {/* Soft Lower-Belly Curve Tapering into Dhoti Waistband */}
+            <linearGradient id="kBellyLowerCurve" x1="15%" y1="5%" x2="85%" y2="95%">
+              <stop offset="0%" stopColor="#84B5FA" stopOpacity="0.04" />
+              <stop offset="45%" stopColor="#4E82D1" stopOpacity="0.22" />
+              <stop offset="100%" stopColor="#254B8C" stopOpacity="0.36" />
+            </linearGradient>
+
+            {/* Soft Lateral Flank Ambient Occlusion */}
+            <linearGradient id="kBellyFlankAO" x1="15%" y1="5%" x2="85%" y2="95%">
+              <stop offset="0%" stopColor="#315EA8" stopOpacity="0.12" />
+              <stop offset="100%" stopColor="#254B8C" stopOpacity="0.24" />
+            </linearGradient>
+
+            {/* Soft Ambient Occlusion where Rounded Belly rolls into Dhoti Waistband */}
+            <linearGradient id="kBellyWaistbandAO" x1="15%" y1="0%" x2="85%" y2="100%">
+              <stop offset="0%" stopColor="#254B8C" stopOpacity="0.20" />
+              <stop offset="60%" stopColor="#1E3A8A" stopOpacity="0.30" />
+              <stop offset="100%" stopColor="#1E3A8A" stopOpacity="0.40" />
+            </linearGradient>
 
             {/* ── 3D Sculpted Child Ear Gradients ── */}
             <radialGradient id="kEarBaseLeft" cx="38%" cy="32%" r="68%">
@@ -462,13 +636,13 @@ export function LittleKrishna({
               <stop offset="100%" stopColor="#350E04" stopOpacity="0" />
             </radialGradient>
 
-            {/* ── 3D Soft Blended Nose Shading ── */}
-            <radialGradient id="kNoseVolume" cx="45%" cy="35%" r="65%">
+            {/* ── 3D Soft Blended Nose Shading (Coherent Directional 125°) ── */}
+            <linearGradient id="kNoseVolume" x1="15%" y1="5%" x2="85%" y2="95%">
               <stop offset="0%" stopColor="#EFF6FF" />
               <stop offset="35%" stopColor="#A4CDFF" />
               <stop offset="70%" stopColor="#6BA7FF" stopOpacity="0.85" />
               <stop offset="100%" stopColor="#417FD8" stopOpacity="0" />
-            </radialGradient>
+            </linearGradient>
 
             {/* ── Pixar Stylized Natural Lip Warmth Gradients (Child Boy Tone, Not Lipstick) ── */}
             <linearGradient id="kPixarLipWarmth" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -795,6 +969,28 @@ export function LittleKrishna({
               <stop offset="80%" stopColor="#0D1B49" stopOpacity="0.95" />
               <stop offset="100%" stopColor="#040A25" stopOpacity="0.90" />
             </linearGradient>
+
+            {/* Alternative Top Crown Hair Dome Gradient */}
+            <linearGradient id="kTopHairDomeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#0D1B49" stopOpacity="0.98" />
+              <stop offset="45%" stopColor="#040A25" stopOpacity="0.98" />
+              <stop offset="80%" stopColor="#0D1B49" stopOpacity="0.95" />
+              <stop offset="100%" stopColor="#040A25" stopOpacity="0.90" />
+            </linearGradient>
+
+            {/* Volumetric Top Hair Locks Gradient (Left & Right Temple Clusters) */}
+            <radialGradient id="kTopHairLockL" cx="42%" cy="35%" r="65%">
+              <stop offset="0%" stopColor="#22377C" />
+              <stop offset="45%" stopColor="#0D1B49" />
+              <stop offset="85%" stopColor="#040A25" />
+              <stop offset="100%" stopColor="#04081C" />
+            </radialGradient>
+            <radialGradient id="kTopHairLockR" cx="58%" cy="35%" r="65%">
+              <stop offset="0%" stopColor="#22377C" />
+              <stop offset="45%" stopColor="#0D1B49" />
+              <stop offset="85%" stopColor="#040A25" />
+              <stop offset="100%" stopColor="#04081C" />
+            </radialGradient>
 
             {/* Left Behind-Ear Volumetric 4-Color Gradient */}
             <linearGradient id="kBehindEarL" x1="100%" y1="20%" x2="0%" y2="80%">
@@ -1974,61 +2170,63 @@ export function LittleKrishna({
 
 
           {/* ════════════════ LAYER 5: SCULPTED TODDLER TORSO & NECK ════════════════ */}
+          {/* ════════════════ LAYER 5: SCULPTED TODDLER TORSO & NECK ════════════════ */}
           <g id="torso">
-            {/* Unified Continuous Toddler Skin Form: Neck Pillar (Width 50 near jaw, 60 at base) → Trapezius → Upper Chest → Torso */}
+            {/* Reference-Matched Continuous Toddler Skin Form: Broad Shoulders → Sculpted Toddler Chest → Compact Trim Waist */}
             <path
               id="torsoBaseWithRoots"
               d="M 165 158
                  C 163 172, 160 184, 160 192
-                 C 152 196, 142 200, 138 202
-                 C 126 210, 120 220, 128 222
-                 C 132 230, 132 245, 134 256
-                 C 136 268, 140 274, 146 280
-                 C 168 286, 212 286, 234 280
-                 C 240 274, 244 268, 246 256
-                 C 248 245, 248 230, 252 222
-                 C 260 220, 254 210, 242 202
-                 C 238 200, 228 196, 220 192
+                 C 148 194, 128 197, 114 202
+                 C 106 206, 106 216, 114 222
+                 C 120 228, 128 238, 133 252
+                 C 136 262, 138 270, 139 278
+                 C 142 284, 160 286, 190 286
+                 C 220 286, 238 284, 241 278
+                 C 242 270, 244 262, 247 252
+                 C 252 238, 260 228, 266 222
+                 C 274 216, 274 206, 266 202
+                 C 252 197, 232 194, 220 192
                  C 220 184, 217 172, 215 158
                  C 198 154, 182 154, 165 158
                  Z"
               fill="url(#kSkinBody)"
             />
-            
-            {/* Left Axilla Soft Shadow Crease */}
+
+            {/* 3D Cylindrical Lateral Flank Depth Shading (Creates compact, rounded toddler torso depth) */}
             <path
-              d="M 128 222 C 132 226, 134 232, 133 240"
-              fill="none"
-              stroke="#1E3A8A"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              opacity="0.15"
+              d="M 116 222
+                 C 120 228, 128 238, 133 252
+                 C 136 262, 138 270, 139 278
+                 C 145 276, 149 262, 146 248
+                 C 142 236, 134 228, 126 222 Z"
+              fill="#254B8C"
+              opacity="0.18"
             />
-            {/* Right Axilla Soft Shadow Crease */}
             <path
-              d="M 252 222 C 248 226, 246 232, 247 240"
-              fill="none"
-              stroke="#1E3A8A"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              opacity="0.15"
+              d="M 264 222
+                 C 260 228, 252 238, 247 252
+                 C 244 262, 242 270, 241 278
+                 C 235 276, 231 262, 234 248
+                 C 238 236, 246 228, 254 222 Z"
+              fill="#254B8C"
+              opacity="0.22"
             />
             
-            {/* Left Shoulder Cap Highlight */}
+            {/* Broad Rounded Toddler Shoulder Cap Highlights */}
             <path
-              d="M 140 180 C 130 185, 122 195, 120 205"
+              d="M 138 194 C 124 197, 114 203, 112 212"
               fill="none"
               stroke="#FFFFFF"
-              strokeWidth="2.5"
+              strokeWidth="2.2"
               strokeLinecap="round"
               opacity="0.25"
             />
-            {/* Right Shoulder Cap Highlight */}
             <path
-              d="M 240 180 C 250 185, 258 195, 260 205"
+              d="M 242 194 C 256 197, 266 203, 268 212"
               fill="none"
               stroke="#FFFFFF"
-              strokeWidth="2.5"
+              strokeWidth="2.2"
               strokeLinecap="round"
               opacity="0.25"
             />
@@ -2042,11 +2240,11 @@ export function LittleKrishna({
                  C 216 190, 215 178, 212 162
                  Z"
               fill="url(#kSkinNeck)"
-              opacity="0.3"
+              opacity="0.26"
             />
 
             {/* Soft Cylindrical Center Light flowing from Neck down into Upper Chest */}
-            <ellipse cx="190" cy="194" rx="16" ry="18" fill="#D9ECFF" opacity="0.28" />
+            <ellipse cx="190" cy="194" rx="16" ry="16" fill="#D9ECFF" opacity="0.25" />
 
             {/* Deep Soft Crescent Ambient Occlusion Shadow Under Chin */}
             <path
@@ -2055,42 +2253,120 @@ export function LittleKrishna({
             />
 
             {/* Subtle Suprasternal Notch / Jugular Fossa (Neck Base) */}
-            <ellipse cx="190" cy="202" rx="3.6" ry="1.8" fill="#1E3A8A" opacity="0.16" />
+            <ellipse cx="190" cy="201" rx="3.2" ry="1.6" fill="#1E3A8A" opacity="0.14" />
 
-            {/* Subtle Soft Clavicle Transitions (No Hard Lines) */}
+            {/* Gentle, Soft Toddler Clavicle Transitions (Soft baby cushioning) */}
             <path
-              d="M 185 202 C 174 200, 160 198, 146 202"
+              d="M 184 201 C 172 200, 156 199, 142 203"
               fill="none"
               stroke="#D9ECFF"
+              strokeWidth="1.2"
+              strokeLinecap="round"
+              opacity="0.16"
+            />
+            <path
+              d="M 196 201 C 208 200, 224 199, 238 203"
+              fill="none"
+              stroke="#D9ECFF"
+              strokeWidth="1.2"
+              strokeLinecap="round"
+              opacity="0.16"
+            />
+
+            {/* ══════ DETAILED 3D SCULPTED TODDLER CHEST STRUCTURE ══════ */}
+            {/* Bilateral Pectoral Mounds (Sculpted rounded cushions from reference) */}
+            {/* Character Right Pec (Viewer Left, Key-Lit from Upper-Left) */}
+            <ellipse cx="166" cy="221" rx="20" ry="14" fill="#D9ECFF" opacity="0.26" />
+            <ellipse cx="164" cy="218" rx="13" ry="8" fill="#FFFFFF" opacity="0.20" />
+            
+            {/* Character Left Pec (Viewer Right, Ambient Fill Light) */}
+            <ellipse cx="214" cy="221" rx="20" ry="14" fill="#D9ECFF" opacity="0.18" />
+            <ellipse cx="212" cy="219" rx="12" ry="7" fill="#FFFFFF" opacity="0.14" />
+
+            {/* Midline Sternal Cleft (Soft natural depth separation between pectorals) */}
+            <path
+              d="M 190 209 L 190 233"
+              fill="none"
+              stroke="#254B8C"
               strokeWidth="1.6"
+              strokeLinecap="round"
+              opacity="0.20"
+            />
+            <path
+              d="M 188.6 211 L 188.6 231"
+              fill="none"
+              stroke="#D9ECFF"
+              strokeWidth="1.0"
+              strokeLinecap="round"
+              opacity="0.26"
+            />
+
+            {/* Lower Pectoral Margins (Delicate under-pec shadow arcs transitioning into abdomen) */}
+            <path
+              d="M 152 229 C 160 234, 174 234, 185 231"
+              fill="none"
+              stroke="#254B8C"
+              strokeWidth="1.2"
               strokeLinecap="round"
               opacity="0.22"
             />
             <path
-              d="M 195 202 C 206 200, 220 198, 234 202"
+              d="M 195 231 C 206 234, 220 234, 228 229"
               fill="none"
-              stroke="#D9ECFF"
-              strokeWidth="1.6"
+              stroke="#254B8C"
+              strokeWidth="1.2"
               strokeLinecap="round"
-              opacity="0.22"
+              opacity="0.20"
             />
 
-            {/* Upper Chest / Central Gentle Fullness Highlight */}
-            <ellipse cx="190" cy="216" rx="26" ry="14" fill="#D9ECFF" opacity="0.2" />
-            <ellipse cx="212" cy="222" rx="18" ry="14" fill="#D9ECFF" opacity="0.18" />
+            {/* Subtle Epigastric Soft Indentation under sternal cleft */}
+            <ellipse cx="190" cy="236" rx="7" ry="3" fill="#254B8C" opacity="0.14" />
 
-            {/* Cute Toddler Chest Nipples (Soft Warm Accent) */}
-            <circle cx="165" cy="228" r="1.8" fill="#1E40AF" opacity="0.3" />
-            <circle cx="165" cy="228" r="0.9" fill="#93C5FD" opacity="0.6" />
-            <circle cx="215" cy="228" r="1.8" fill="#1E40AF" opacity="0.26" />
-            <circle cx="215" cy="228" r="0.9" fill="#93C5FD" opacity="0.6" />
+            {/* Reference-Matched Cute Toddler Chest Nipples (Outer pectoral position) */}
+            <circle cx="157" cy="227" r="1.8" fill="#254B8C" opacity="0.28" />
+            <circle cx="157" cy="227" r="0.9" fill="#93C5FD" opacity="0.65" />
+            <circle cx="156.6" cy="226.6" r="0.4" fill="#FFFFFF" opacity="0.8" />
+            
+            <circle cx="223" cy="227" r="1.8" fill="#254B8C" opacity="0.24" />
+            <circle cx="223" cy="227" r="0.9" fill="#93C5FD" opacity="0.65" />
+            <circle cx="222.6" cy="226.6" r="0.4" fill="#FFFFFF" opacity="0.8" />
 
-            {/* Adorable Chubby Toddler Potbelly Glow */}
-            <ellipse cx="190" cy="254" rx="34" ry="22" fill="#D9ECFF" opacity="0.28" />
+            {/* ══════ SHORT, WIDE, FORWARD-PROJECTING TODDLER BELLY ELLIPSOID ══════ */}
+            {/* Soft Gaussian diffusion filter ensures zero visible circles, rings, seams, or patches */}
+            <g id="toddlerBellyEllipsoid" filter="url(#kBellySoftBlend)">
+              {/* 1. Upper Chest Soft Overlap (begins close beneath chest) */}
+              <ellipse cx="190" cy="241" rx="26" ry="4.5" fill="url(#kBellyInfraChestAO)" />
 
-            {/* Cute Toddler Navel / Belly Button */}
-            <ellipse cx="190" cy="268" rx="3.2" ry="1.9" fill="#1E40AF" opacity="0.35" />
-            <ellipse cx="190" cy="267.2" rx="2.2" ry="1.0" fill="#93C5FD" opacity="0.55" />
+              {/* 2. Lateral Flank Transitions (Connecting belly smoothly to sides of torso) */}
+              <ellipse cx="152" cy="254" rx="7" ry="7" fill="url(#kBellyFlankAO)" />
+              <ellipse cx="228" cy="254" rx="7" ry="7" fill="url(#kBellyFlankAO)" />
+
+              {/* 3. ONE Primary Horizontal Elliptical Abdominal Volume: WIDE (~58% torso width) → SHORT (~26.6% torso height) */}
+              <ellipse cx="190" cy="254" rx="31" ry="10" fill="url(#kBellyVolMain)" />
+
+              {/* 4. Anterior Forward Projection Dome (+20-25% Forward Depth, Key-Lit from Upper-Left) */}
+              <ellipse cx="188" cy="253" rx="22" ry="6.5" fill="url(#kBellyAnteriorGlow)" />
+
+              {/* 5. Anterior Forward Apex Specular Glint (Noticeable +20-25% Forward Depth 3D Pop) */}
+              <ellipse cx="187" cy="252" rx="14" ry="4" fill="url(#kBellyForwardApex)" />
+
+              {/* 6. Soft Lower-Belly Curve Tapering smoothly into Dhoti Waistband */}
+              <ellipse cx="190" cy="267" rx="27" ry="5" fill="url(#kBellyLowerCurve)" />
+            </g>
+
+            {/* Soft Ambient Occlusion where Rounded Lower Belly Rolls into Dhoti Waistband */}
+            <path
+              d="M 150 274 C 170 278, 210 278, 230 274"
+              fill="none"
+              stroke="url(#kBellyWaistbandAO)"
+              strokeWidth="3.4"
+              strokeLinecap="round"
+              opacity="0.85"
+            />
+
+            {/* Cute Toddler Navel / Belly Button (Nestled in lower curve of forward belly) */}
+            <ellipse cx="190" cy="258" rx="2.3" ry="1.2" fill="#1E40AF" opacity="0.34" />
+            <ellipse cx="190" cy="257.4" rx="1.4" ry="0.5" fill="#93C5FD" opacity="0.55" />
           </g>
 
           {/* ════════════════ LAYER 7: ARMS ════════════════ */}
@@ -2163,74 +2439,67 @@ export function LittleKrishna({
               </g>
 
               <g id="headBase">
-
-                {/* 3D Sculpted Head Base: Reference-Matched Pixar Little Krishna Silhouette */}
-                {/* Subtle face shape refinement: jaw narrowed ~3% via scaleX transform around chin center */}
-                <g transform="translate(190, 155) scale(0.97, 1) translate(-190, -155)">
+                {/* 3D Sculpted Head Base: Soft Toddler Silhouette with Fuller Cheeks & Shortened Rounded Jaw */}
                 <path
-                  d="M 190 48
-                   C 230 48, 258 70, 264 105
-                   C 268 126, 268 152, 262 170
-                   C 254 188, 235 204, 210 212
-                   C 200 215, 195 216, 190 216
-                   C 185 216, 180 215, 170 212
-                   C 145 204, 126 188, 118 170
-                   C 112 152, 112 126, 116 105
-                   C 122 70, 150 48, 190 48 Z"
+                  d="M 190 54
+                   C 226 54, 252 72, 258 102
+                   C 268 122, 270 138, 268 152
+                   C 266 168, 252 186, 228 197
+                   C 212 203, 202 205, 190 205
+                   C 178 205, 168 203, 152 197
+                   C 128 186, 114 168, 112 152
+                   C 110 138, 112 122, 122 102
+                   C 128 72, 154 54, 190 54 Z"
                   fill="url(#kSkinFace)"
                 />
 
-                {/* Soft Lower Face & Jawline Depth Shading */}
+                {/* Directional 125° Ambient Lower Face & Jawline Depth Shading */}
                 <path
-                  d="M 190 48
-                   C 230 48, 258 70, 264 105
-                   C 268 126, 268 152, 262 170
-                   C 254 188, 235 204, 210 212
-                   C 200 215, 195 216, 190 216
-                   C 185 216, 180 215, 170 212
-                   C 145 204, 126 188, 118 170
-                   C 112 152, 112 126, 116 105
-                   C 122 70, 150 48, 190 48 Z"
+                  d="M 190 54
+                   C 226 54, 252 72, 258 102
+                   C 268 122, 270 138, 268 152
+                   C 266 168, 252 186, 228 197
+                   C 212 203, 202 205, 190 205
+                   C 178 205, 168 203, 152 197
+                   C 128 186, 114 168, 112 152
+                   C 110 138, 112 122, 122 102
+                   C 128 72, 154 54, 190 54 Z"
                   fill="url(#kJawlineShadow)"
                 />
 
-                {/* Volumetric Chubby Cheeks (Pixar-Proportioned Soft Fullness) */}
-                <ellipse
-                  cx="149"
-                  cy="162"
-                  rx="17"
-                  ry="15"
-                  fill="url(#kCheekVolumeLeft)"
-                  opacity="0.62"
-                />
-                <ellipse
-                  cx="231"
-                  cy="162"
-                  rx="17"
-                  ry="15"
-                  fill="url(#kCheekVolumeRight)"
-                  opacity="0.52"
-                />
+                {/* ══════ MULTIPLE OVERLAPPING, CONTINUOUSLY BLENDED 3D VOLUMES ══════ */}
+                {/* Unified Gaussian diffusing filter ensures NO visible circular boundaries, rings, or seams */}
+                <g id="overlappingFacialVolumes" filter="url(#kFacialSoftBlend)">
+                  {/* 1. Forehead / Frontal Brow Dome Volume (Compact & Softly Rounded) */}
+                  <ellipse cx="190" cy="102" rx="38" ry="16" fill="url(#kVolForehead)" />
 
-                {/* 3D Forehead Dome Volume Highlight */}
-                <ellipse cx="190" cy="110" rx="30" ry="15" fill="url(#kForeheadGlow)" />
+                  {/* 2. Central Mid-Face Anchor Volume (Connecting forehead → nose → upper cheeks → mouth) */}
+                  <ellipse cx="190" cy="150" rx="42" ry="34" fill="url(#kVolMidface)" />
 
-                {/* Soft Rounded Toddler Chin Volume */}
-                <ellipse cx="190" cy="201" rx="11" ry="5.0" fill="url(#kChinVolume)" />
-                {/* Soft Labiomental Indentation */}
-                <path
-                  d="M 185 192 Q 190 193.5 195 192"
-                  fill="none"
-                  stroke="#255BB5"
-                  strokeWidth="0.8"
-                  opacity="0.22"
-                  strokeLinecap="round"
-                />
+                  {/* 3. Left Cheek 3D Volume — Base Volume (Horizontally expanded outward +8-10%, +10-15% Volume) */}
+                  <ellipse cx="138" cy="154" rx="30" ry="24" fill="url(#kVolCheekLeft)" />
+                  {/* Left Cheek Anterior Forward Projection (Subtle forward projection toward camera) */}
+                  <ellipse cx="140" cy="150" rx="18" ry="14" fill="url(#kVolCheekLeftAnterior)" />
 
-                {/* Subtle Rosy Toddler Blush on Cheek Apples */}
-                <ellipse cx="149" cy="163" rx="15" ry="10" fill="url(#kCheekBlush)" transform="rotate(-4 149 163)" />
-                <ellipse cx="231" cy="163" rx="15" ry="10" fill="url(#kCheekBlush)" transform="rotate(4 231 163)" />
-                </g>{/* end face shape refinement scaleX group */}
+                  {/* 4. Right Cheek 3D Volume — Base Volume (Horizontally expanded outward +8-10%, Ambient Fill) */}
+                  <ellipse cx="242" cy="154" rx="30" ry="24" fill="url(#kVolCheekRight)" />
+                  {/* Right Cheek Anterior Forward Projection (Subtle forward projection toward camera) */}
+                  <ellipse cx="240" cy="150" rx="18" ry="14" fill="url(#kVolCheekRightAnterior)" />
+
+                  {/* 5. Perioral Mouth Mound Volume (Soft forward projection surrounding lips) */}
+                  <ellipse cx="190" cy="178" rx="24" ry="14" fill="url(#kVolMouthMound)" />
+
+                  {/* 6. Short Rounded 3D Chin Volume (Reduced length ~10%, Soft Rounded Mental Pad) */}
+                  <ellipse cx="190" cy="195" rx="22" ry="7.5" fill="url(#kVolChin)" />
+                  <ellipse cx="189" cy="194" rx="13" ry="4.5" fill="url(#kVolChinAnterior)" />
+
+                  {/* 7. Soft Submental Shadow beneath Shortened Chin */}
+                  <ellipse cx="190" cy="204" rx="20" ry="3.5" fill="url(#kSubmentalShadow)" />
+
+                  {/* 8. Directional Rosy Toddler Blush (Diffused into expanded cheek volume) */}
+                  <ellipse cx="140" cy="154" rx="22" ry="16" fill="url(#kCheekBlushLeft)" />
+                  <ellipse cx="240" cy="154" rx="22" ry="16" fill="url(#kCheekBlushRight)" />
+                </g>
               </g>
 
               {/* Master Face Details — Stylized, Expressive & High Fidelity */}
@@ -2520,91 +2789,298 @@ export function LittleKrishna({
                   />
                 </g>
 
-                {/* ── Cute Soft Stylized 3D Toddler Nose ── */}
-                <g transform="translate(190, 164)">
-                  {/* Soft Vertically Defined Nose Bridge */}
-                  <path
-                    d="M -0.5 -10 C -1.4 -5, -1.4 -1, 0 1"
-                    fill="none"
-                    stroke="#E2F0FF"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                    opacity="0.45"
-                  />
-
-                  {/* Soft Underside Shadow */}
+                {/* ── Tiny Cute Rounded 3D Toddler Button Nose ── */}
+                <g id="sculptedNose3D" transform="translate(190, 162)">
+                  {/* Soft Sub-Nasal Crescent Shadow beneath button tip */}
                   <ellipse
                     cx="0"
-                    cy="3.8"
-                    rx="4.4"
-                    ry="1.3"
-                    fill="#1E3A8A"
-                    opacity="0.15"
-                  />
-
-                  {/* Soft 3D Blended Nose Bulb */}
-                  <ellipse
-                    cx="0"
-                    cy="1.0"
-                    rx="5.4"
-                    ry="4.2"
-                    fill="url(#kNoseVolume)"
-                  />
-
-                  {/* Soft Rounded Nose Tip Highlight */}
-                  <ellipse
-                    cx="0"
-                    cy="0.6"
-                    rx="3.2"
-                    ry="2.4"
-                    fill="url(#kForeheadGlow)"
-                    opacity="0.6"
-                  />
-
-                  {/* Extremely Subtle Nostril Shading */}
-                  <circle cx="-2.6" cy="2.8" r="1.0" fill="#152B68" opacity="0.2" />
-                  <circle cx="2.6" cy="2.8" r="1.0" fill="#152B68" opacity="0.2" />
-
-                  {/* Specular Tip Highlight */}
-                  <ellipse
-                    cx="-0.8"
-                    cy="0.2"
-                    rx="1.7"
+                    cy="3.0"
+                    rx="3.8"
                     ry="1.2"
+                    fill="#1B326B"
+                    opacity="0.22"
+                  />
+
+                  {/* Left & Right Alar Wings (Blended smoothly into midface) */}
+                  <ellipse
+                    cx="-3.6"
+                    cy="0.8"
+                    rx="2.6"
+                    ry="1.9"
+                    fill="url(#kVolNoseAlaLeft)"
+                  />
+                  <ellipse
+                    cx="3.6"
+                    cy="0.8"
+                    rx="2.6"
+                    ry="1.9"
+                    fill="url(#kVolNoseAlaRight)"
+                  />
+
+                  {/* Soft Curved Anatomical Nostril Shadow Grooves (Zero dark dots) */}
+                  <path
+                    d="M -3.2 1.8 C -2.4 2.5, -1.4 2.5, -0.6 2.0"
+                    fill="none"
+                    stroke="#1E3A8A"
+                    strokeWidth="0.6"
+                    strokeLinecap="round"
+                    opacity="0.30"
+                  />
+                  <path
+                    d="M 0.6 2.0 C 1.4 2.5, 2.4 2.5, 3.2 1.8"
+                    fill="none"
+                    stroke="#1E3A8A"
+                    strokeWidth="0.6"
+                    strokeLinecap="round"
+                    opacity="0.24"
+                  />
+
+                  {/* Small Rounded Button Nose Bulb (Tiny 3D Tip, r=3.7) */}
+                  <circle
+                    cx="0"
+                    cy="0.4"
+                    r="3.7"
+                    fill="url(#kVolNoseBulb)"
+                  />
+
+                  {/* Soft Specular Tip Catchlight (125° directional key light) */}
+                  <ellipse
+                    cx="-0.9"
+                    cy="-0.6"
+                    rx="1.2"
+                    ry="0.8"
                     fill="#FFFFFF"
-                    opacity="0.8"
+                    opacity="0.75"
+                  />
+
+                  {/* Gentle Infranasal Philtrum Depression (Connecting to Cupid's Bow) */}
+                  <path
+                    d="M -1.0 3.2 C -0.8 6.0, -1.2 8.5, -1.6 11"
+                    fill="none"
+                    stroke="#FFFFFF"
+                    strokeWidth="0.6"
+                    strokeLinecap="round"
+                    opacity="0.16"
+                  />
+                  <path
+                    d="M 1.0 3.2 C 0.8 6.0, 1.2 8.5, 1.6 11"
+                    fill="none"
+                    stroke="#254B8C"
+                    strokeWidth="0.5"
+                    strokeLinecap="round"
+                    opacity="0.14"
                   />
                 </g>
 
-                {/* ── Pixar Stylized Little Krishna Smile & Expressive Mouth Group ── */}
-                <g transform="translate(190, 183)">
+                {/* ── Sweet Centered Toddler Smile with Plump 3D Lip Cushion ── */}
+                <g id="sculptedLips3D" transform="translate(190, 178)">
+                  {/* Upper Lip with Gentle Cupid's Bow (Width ≈ 27 units) */}
+                  <path
+                    d="M -13.5 0.5 C -8.5 -1.2, -3.0 0.2, 0 0.8 C 3.0 0.2, 8.5 -1.2, 13.5 0.5 C 9.5 2.0, -9.5 2.0, -13.5 0.5 Z"
+                    fill="url(#kVolLipUpper)"
+                    opacity="0.92"
+                  />
+                  {/* Subtle Vermilion Border Glint */}
+                  <path
+                    d="M -10.5 0.2 C -6.5 -0.8, -2.0 0.2, 0 0.8 C 2.0 0.2, 6.5 -0.8, 10.5 0.2"
+                    fill="none"
+                    stroke="#FFE4E6"
+                    strokeWidth="0.7"
+                    strokeLinecap="round"
+                    opacity="0.50"
+                  />
+
+                  {/* Rounded Lower Lip Pillow Cushion */}
+                  <path
+                    d="M -12.0 1.6 C -8.0 6.0, 8.0 6.0, 12.0 1.6 C 7.5 6.8, -7.5 6.8, -12.0 1.6 Z"
+                    fill="url(#kVolLipLower)"
+                    opacity="0.94"
+                  />
+                  {/* Lower Lip Glossy Specular Catchlight Sheen */}
+                  <ellipse
+                    cx="-0.5"
+                    cy="4.2"
+                    rx="6.0"
+                    ry="1.2"
+                    fill="url(#kVolLipSheen)"
+                    opacity="0.75"
+                  />
+
+                  {/* Gentle Smiling Lip Parting Line (Upward curve at edges) */}
+                  <path
+                    d="M -13.5 0.8 C -7.5 2.6, -2.0 2.2, 0 2.3 C 2.0 2.2, 7.5 2.6, 13.5 0.8"
+                    fill="none"
+                    stroke="#6B1327"
+                    strokeWidth="1.0"
+                    strokeLinecap="round"
+                    opacity="0.82"
+                  />
+
+                  {/* Sweet Smiling Corner Dimple Creases */}
+                  <path
+                    d="M -14.0 -0.2 C -14.6 0.8, -14.4 2.0, -13.8 2.8"
+                    fill="none"
+                    stroke="#6B1327"
+                    strokeWidth="1.0"
+                    strokeLinecap="round"
+                    opacity="0.65"
+                  />
+                  <path
+                    d="M 14.0 -0.2 C 14.6 0.8, 14.4 2.0, 13.8 2.8"
+                    fill="none"
+                    stroke="#6B1327"
+                    strokeWidth="1.0"
+                    strokeLinecap="round"
+                    opacity="0.65"
+                  />
+
+                  {/* Soft Labiomental Crease (Separating Lip from Chin) */}
+                  <path
+                    d="M -7.0 7.8 C -3.0 9.0, 3.0 9.0, 7.0 7.8"
+                    fill="none"
+                    stroke="#1E3A8A"
+                    strokeWidth="0.8"
+                    strokeLinecap="round"
+                    opacity="0.18"
+                  />
+
+                  {/* Speaking Cavity Overlay for Active Voice Synthesis */}
                   <g
                     id="lipsGroup"
                     className={`${styles.pixarMouth} ${isSpeakingActive ? styles.mouthSpeaking : ''}`}
                   >
-                    {/* ── Pure HTML/CSS 3D Little Krishna Mouth (Requested by user) ── */}
-                    <foreignObject x="-22" y="-12" width="44" height="24">
+                    <foreignObject x="-20" y="-10" width="40" height="20">
                       <div className={`${styles.mouthContainer} ${isSpeakingActive ? styles.mouthSpeaking : ''}`}>
-                        {/* Subtle skin glow above upper lip */}
-                        <div className={styles.mouthSkinHighlight} />
-
-                        {/* Main mouth structure group — clean smiling outline only */}
                         <div className={styles.mouthGroup}>
-                          {/* Elegant Clean Smiling Line Outline */}
-                          <div className={styles.mouthSeam} />
-
                           {/* Speaking Oral Cavity (smoothly flexes & articulates during speech) */}
                           <div className={styles.speakingCavity}>
                             <div className={styles.teethBar} />
                             <div className={styles.tongue} />
                           </div>
                         </div>
-
-                        {/* Soft blue-purple skin shadow under lower lip */}
-                        <div className={styles.mouthShadow} />
                       </div>
                     </foreignObject>
                   </g>
+                </g>
+              </g>
+
+              {/* ════════════════ ALTERNATIVE TOP HAIR (HIDDEN BEHIND PNG MASK) ════════════════ */}
+              {/* Fully contained 3D vector hair layer sitting strictly within the opaque silhouette
+                  of the PNG hair mask. Layered immediately behind krishnaHairOverlay so the PNG mask
+                  covers it completely without any elements crossing or poking outside the mask outline. */}
+              <g id="alternativeTopHair" style={{ pointerEvents: 'none' }}>
+                {/* ── 1. Top Crown Base Hair Mass ── */}
+                <path
+                  d="M 148 36
+                     C 165 28, 215 28, 232 36
+                     C 255 46, 262 60, 252 74
+                     C 236 80, 212 68, 190 68
+                     C 168 68, 144 80, 128 74
+                     C 118 60, 125 46, 148 36
+                     Z"
+                  fill="url(#kTopHairDomeGrad)"
+                />
+
+                {/* ── 2. Volumetric Crown & Temple Curl Clusters (Contained strictly within mask) ── */}
+                <g id="crownTempleCurls">
+                  {/* Left Temple & Upper Forehead Volumetric Locks */}
+                  <path
+                    d="M 130 56
+                       C 124 44, 134 34, 150 32
+                       C 164 30, 172 38, 168 50
+                       C 164 60, 150 68, 138 68
+                       C 132 68, 128 62, 130 56
+                       Z"
+                    fill="url(#kTopHairLockL)"
+                  />
+                  {/* Left Forehead Hairline Wave Lock */}
+                  <path
+                    d="M 144 48
+                       C 148 38, 162 36, 170 44
+                       C 176 50, 172 58, 164 62
+                       C 154 64, 144 60, 144 48
+                       Z"
+                    fill="url(#kTopHairLockL)"
+                  />
+
+                  {/* Right Temple & Upper Forehead Volumetric Locks */}
+                  <path
+                    d="M 250 56
+                       C 256 44, 246 34, 230 32
+                       C 216 30, 208 38, 212 50
+                       C 216 60, 230 68, 242 68
+                       C 248 68, 252 62, 250 56
+                       Z"
+                    fill="url(#kTopHairLockR)"
+                  />
+                  {/* Right Forehead Hairline Wave Lock */}
+                  <path
+                    d="M 236 48
+                       C 232 38, 218 36, 210 44
+                       C 204 50, 208 58, 216 62
+                       C 226 64, 236 60, 236 48
+                       Z"
+                    fill="url(#kTopHairLockR)"
+                  />
+
+                  {/* Center Baby-Hair Soft Wave above Forehead */}
+                  <path
+                    d="M 178 46
+                       C 184 38, 196 38, 202 46
+                       C 206 54, 196 60, 190 58
+                       C 184 60, 174 54, 178 46
+                       Z"
+                    fill="url(#kTopHairLockL)"
+                  />
+                </g>
+
+                {/* ── 3. Glossy Sheen Highlights (Contained within locks) ── */}
+                <g id="crownSheenHighlights">
+                  {/* Left Temple Sheen */}
+                  <path
+                    d="M 136 48 C 138 38, 148 34, 158 36"
+                    fill="none"
+                    stroke="#0B94B4"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    opacity="0.8"
+                  />
+                  <path
+                    d="M 148 54 C 152 46, 162 44, 168 48"
+                    fill="none"
+                    stroke="#22377C"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    opacity="0.75"
+                  />
+
+                  {/* Right Temple Sheen */}
+                  <path
+                    d="M 244 48 C 242 38, 232 34, 222 36"
+                    fill="none"
+                    stroke="#0B94B4"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    opacity="0.8"
+                  />
+                  <path
+                    d="M 232 54 C 228 46, 218 44, 212 48"
+                    fill="none"
+                    stroke="#22377C"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    opacity="0.75"
+                  />
+
+                  {/* Center Forehead Sheen */}
+                  <path
+                    d="M 184 50 C 188 44, 192 44, 196 50"
+                    fill="none"
+                    stroke="#0B94B4"
+                    strokeWidth="1.2"
+                    strokeLinecap="round"
+                    opacity="0.75"
+                  />
                 </g>
               </g>
 
