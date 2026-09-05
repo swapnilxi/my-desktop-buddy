@@ -1079,3 +1079,387 @@ export async function converseWithVoice(
 
   return response.json();
 }
+
+// ══════════════════════════════════════════════════════════════════
+// Productivity — tasks, goals, habits, focus, time, planning
+// ══════════════════════════════════════════════════════════════════
+
+export type TaskStatus = 'TODO' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
+export type TaskPriority = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+export type GoalStatus = 'ACTIVE' | 'COMPLETED' | 'PAUSED' | 'ARCHIVED';
+export type FocusMode =
+  | 'DEEP_WORK' | 'STUDY' | 'WRITING' | 'CODING' | 'ADMIN' | 'CREATIVE' | 'OTHER';
+
+export interface Task {
+  id: string;
+  user_id: string;
+  /** Per-user integer id — the same one the legacy /todos API shows. */
+  seq: number;
+  title: string;
+  description?: string | null;
+  status: TaskStatus;
+  priority: TaskPriority;
+  due_date?: string | null;
+  estimated_minutes?: number | null;
+  actual_minutes: number;
+  tags: string[];
+  parent_task_id?: string | null;
+  goal_id?: string | null;
+  created_at: string;
+  updated_at: string;
+  completed_at?: string | null;
+  subtasks?: Task[];
+}
+
+export interface Milestone {
+  id: string;
+  title: string;
+  target?: string | null;
+  completed: boolean;
+  due_date?: string | null;
+  completed_at?: string | null;
+  position: number;
+}
+
+export interface Goal {
+  id: string;
+  title: string;
+  description?: string | null;
+  category?: string | null;
+  target_date?: string | null;
+  progress: number;
+  status: GoalStatus;
+  milestones: Milestone[];
+  task_counts: { total: number; completed: number; open: number };
+  tasks?: Task[];
+}
+
+export interface Habit {
+  id: string;
+  name: string;
+  emoji?: string | null;
+  frequency: 'daily' | 'weekly';
+  target_per_week: number;
+  done_today: boolean;
+  streak: number;
+  best_streak: number;
+  completion_percentage: number;
+  missed_days: number;
+  recent: { day: string; done: boolean }[];
+  /** Neutral restart line for a broken streak — never shaming. */
+  restart_note?: string | null;
+}
+
+export interface FocusSession {
+  id: string;
+  activity?: string | null;
+  category: FocusMode;
+  planned_minutes: number;
+  actual_minutes?: number | null;
+  session_type: 'focus' | 'break';
+  task_id?: string | null;
+  goal_id?: string | null;
+  intended?: string | null;
+  reflection?: string | null;
+  finished_intent?: boolean | null;
+  started_at: string;
+  ended_at?: string | null;
+  completed: boolean;
+}
+
+export interface ReflectionPrompt {
+  question: string;
+  options: string[];
+  minutes: number;
+  note?: string;
+}
+
+export interface PlanBlock {
+  type: 'focus' | 'break' | 'quick' | 'habit';
+  title: string;
+  minutes: number | null;
+  task_id?: string;
+  seq?: number;
+  priority?: TaskPriority;
+  goal_id?: string | null;
+  goal_title?: string | null;
+  due_date?: string | null;
+  estimate_assumed?: boolean;
+  items?: { id: string; seq: number; title: string; minutes: number }[];
+  habit_id?: string;
+  streak?: number;
+}
+
+export interface DailyPlan {
+  day: string;
+  available_minutes: number;
+  available_minutes_assumed: boolean;
+  schedulable_minutes: number;
+  planned_minutes: number;
+  buffer_minutes: number;
+  blocks: PlanBlock[];
+  habits: PlanBlock[];
+  unscheduled: { id: string; seq: number; title: string; priority: TaskPriority }[];
+  suggestion?: { task_id: string; title: string; minutes: number; ask: string } | null;
+  notes: string[];
+  empty: boolean;
+}
+
+export interface TodayResponse {
+  day: string;
+  time_context: { id: string; label: string; greeting_hint: string };
+  tasks: {
+    priority: Task[];
+    counts: { total: number; open: number; completed: number; cancelled: number; in_progress: number };
+    completed_today: { id: string; seq: number; title: string; completed_at: string }[];
+    completion_rate_today: number | null;
+  };
+  focus: {
+    active_session: FocusSession | null;
+    sessions_today: number;
+    minutes_today: number;
+  };
+  time: {
+    today_minutes: number;
+    by_category: { key: string; minutes: number }[];
+    unallocated_minutes: number;
+  };
+  habits: { items: Habit[]; done_today: number; total: number };
+  goals: {
+    id: string; title: string; progress: number; category?: string | null;
+    target_date?: string | null;
+    task_counts: { total: number; completed: number; open: number };
+    milestones_total: number; milestones_done: number;
+  }[];
+  reminders: { id: string; text: string; remind_at?: string | null; done: number }[];
+  plan: { day: string; blocks: PlanBlock[]; notes?: string | null } | null;
+  daily: DailyBundle | null;
+}
+
+export interface WeeklyReview {
+  week_start: string;
+  week_end: string;
+  tasks_planned: number;
+  tasks_created: number;
+  tasks_completed: number;
+  completion_percentage: number | null;
+  focus_hours: number;
+  focus_minutes: number;
+  focus_sessions: number;
+  habit_consistency: {
+    habits: { id: string; name: string; emoji?: string | null; expected: number; completed: number; percentage: number }[];
+    overall_percentage: number | null;
+    tracked_habits: number;
+  };
+  goal_progress: { id: string; title: string; progress: number; status: string; completed_this_week: number }[];
+  most_productive_period: { period: string; focus_minutes: number; completed: number } | null;
+  strongest_day: { day: string; weekday: string; completed: number; focus_minutes: number } | null;
+  unfinished_important: { id: string; seq: number; title: string; priority: TaskPriority }[];
+  by_day: { day: string; weekday: string; completed: number; focus_minutes: number }[];
+  has_data: boolean;
+  /** Every observation carries the evidence it was computed from. */
+  observations: { kind: string; text: string; evidence: Record<string, unknown> }[];
+}
+
+export interface Insight {
+  type: string;
+  available: boolean;
+  message: string;
+  data: Record<string, unknown> | null;
+  needs?: Record<string, number> | null;
+  have?: Record<string, number> | null;
+}
+
+export interface InsightsResponse {
+  window_days: number;
+  insights: Insight[];
+  /** Insights that lack data, with what they are still waiting for. */
+  insufficient: Insight[];
+  insight_types: string[];
+  message: string | null;
+}
+
+// ── Today / stats / plan / review / insights ─────────────────────
+
+export async function fetchToday(day?: string): Promise<TodayResponse> {
+  return krishnaRequest(`/productivity/today${day ? `?day=${day}` : ''}`);
+}
+
+export async function fetchPlan(availableMinutes?: number): Promise<{
+  saved: { day: string; blocks: PlanBlock[] } | null;
+  proposed: DailyPlan | null;
+  summary?: string;
+}> {
+  const q = availableMinutes ? `?available_minutes=${availableMinutes}` : '';
+  return krishnaRequest(`/productivity/plan${q}`);
+}
+
+export async function savePlan(body: {
+  blocks?: PlanBlock[]; availableMinutes?: number; notes?: string;
+} = {}): Promise<{ saved: { day: string; blocks: PlanBlock[] } }> {
+  return krishnaRequest('/productivity/plan', {
+    method: 'POST',
+    body: JSON.stringify({
+      blocks: body.blocks,
+      available_minutes: body.availableMinutes,
+      notes: body.notes,
+    }),
+  });
+}
+
+export async function fetchWeeklyReview(day?: string): Promise<WeeklyReview> {
+  return krishnaRequest(`/productivity/weekly-review${day ? `?day=${day}` : ''}`);
+}
+
+export async function fetchInsights(days = 30): Promise<InsightsResponse> {
+  return krishnaRequest(`/productivity/insights?days=${days}`);
+}
+
+// ── Tasks ────────────────────────────────────────────────────────
+
+export async function fetchTasks(params: {
+  status?: string; goalId?: string;
+} = {}): Promise<{ tasks: Task[]; counts: TodayResponse['tasks']['counts'] }> {
+  const q = new URLSearchParams();
+  if (params.status) q.set('status', params.status);
+  if (params.goalId) q.set('goal_id', params.goalId);
+  const suffix = q.toString() ? `?${q}` : '';
+  return krishnaRequest(`/productivity/tasks${suffix}`);
+}
+
+export async function createTask(body: {
+  title: string;
+  description?: string;
+  priority?: TaskPriority;
+  due_date?: string;
+  estimated_minutes?: number;
+  goal_id?: string;
+  parent_task_id?: string;
+  tags?: string[];
+}): Promise<Task> {
+  return krishnaRequest('/productivity/tasks', {
+    method: 'POST',
+    body: JSON.stringify(body),
+  });
+}
+
+export async function updateTask(id: string, patch: Partial<{
+  title: string; status: TaskStatus; priority: TaskPriority;
+  due_date: string | null; estimated_minutes: number | null; goal_id: string | null;
+}>): Promise<Task> {
+  return krishnaRequest(`/productivity/tasks/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(patch),
+  });
+}
+
+export async function deleteTask(id: string): Promise<void> {
+  return krishnaRequest<void>(`/productivity/tasks/${id}`, { method: 'DELETE' });
+}
+
+// ── Goals ────────────────────────────────────────────────────────
+
+export async function fetchGoals(status?: GoalStatus): Promise<{ goals: Goal[] }> {
+  return krishnaRequest(`/productivity/goals${status ? `?status=${status}` : ''}`);
+}
+
+export async function createGoal(body: {
+  title: string; description?: string; category?: string;
+  target_date?: string; milestones?: string[];
+}): Promise<Goal> {
+  return krishnaRequest('/productivity/goals', {
+    method: 'POST',
+    body: JSON.stringify(body),
+  });
+}
+
+export async function updateGoal(id: string, patch: Partial<{
+  title: string; progress: number; status: GoalStatus; target_date: string | null;
+}>): Promise<Goal> {
+  return krishnaRequest(`/productivity/goals/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(patch),
+  });
+}
+
+export async function setMilestoneCompleted(
+  goalId: string, milestoneId: string, completed: boolean,
+): Promise<Goal> {
+  return krishnaRequest(`/productivity/goals/${goalId}/milestones/${milestoneId}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ completed }),
+  });
+}
+
+export async function linkTaskToGoal(goalId: string, taskId: string): Promise<Task> {
+  return krishnaRequest(`/productivity/goals/${goalId}/tasks`, {
+    method: 'POST',
+    body: JSON.stringify({ task_id: taskId }),
+  });
+}
+
+// ── Habits ───────────────────────────────────────────────────────
+
+export async function fetchHabits(): Promise<{ habits: Habit[] }> {
+  return krishnaRequest('/productivity/habits');
+}
+
+export async function createHabit(body: {
+  name: string; emoji?: string; frequency?: 'daily' | 'weekly';
+}): Promise<Habit> {
+  return krishnaRequest('/productivity/habits', {
+    method: 'POST',
+    body: JSON.stringify(body),
+  });
+}
+
+export async function logHabit(
+  habitId: string, done = true, day?: string,
+): Promise<Habit> {
+  return krishnaRequest(`/productivity/habits/${habitId}/log`, {
+    method: 'POST',
+    body: JSON.stringify({ done, day }),
+  });
+}
+
+export async function deleteHabit(habitId: string): Promise<void> {
+  return krishnaRequest<void>(`/productivity/habits/${habitId}`, { method: 'DELETE' });
+}
+
+// ── Focus ────────────────────────────────────────────────────────
+
+export async function fetchFocusState(): Promise<{
+  active: FocusSession | null; recent: FocusSession[];
+  modes: FocusMode[]; presets: number[];
+}> {
+  return krishnaRequest('/productivity/focus');
+}
+
+export async function startFocusSession(body: {
+  minutes: number; activity?: string; mode?: FocusMode;
+  task_id?: string; goal_id?: string; intended?: string;
+  session_type?: 'focus' | 'break';
+}): Promise<FocusSession> {
+  return krishnaRequest('/productivity/focus/start', {
+    method: 'POST',
+    body: JSON.stringify(body),
+  });
+}
+
+export async function endFocusSession(body: {
+  session_id?: string; completed?: boolean; actual_seconds?: number;
+} = {}): Promise<{ session: FocusSession; reflection_prompt: ReflectionPrompt }> {
+  return krishnaRequest('/productivity/focus/end', {
+    method: 'POST',
+    body: JSON.stringify(body),
+  });
+}
+
+export async function reflectOnFocus(
+  sessionId: string, body: { finished_intent?: boolean; reflection?: string },
+): Promise<FocusSession> {
+  return krishnaRequest(`/productivity/focus/${sessionId}/reflect`, {
+    method: 'POST',
+    body: JSON.stringify(body),
+  });
+}

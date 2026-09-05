@@ -3,10 +3,12 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import type { HamsterMood } from '@/lib/api';
 import { getClientSavedConfig } from '@/lib/api';
+import { useLiveVoice } from '@/lib/useLiveVoice';
 import { stopSpeaking } from '@/lib/speech';
 import { createBrowserSpeechRecognition, isSpeechRecognitionSupported } from '@/lib/speechRecognition';
 import type { BuddyDefinition, BuddyType } from '../Buddies/types';
 import { getBuddyDefinition } from '../Buddies/registry';
+import BuddyGlyph from '../Buddies/BuddyGlyph';
 import type { ConversationHandle } from '@/lib/useConversation';
 
 interface ChatPanelProps {
@@ -45,8 +47,26 @@ export default function ChatPanel({
     setUseRag,
     send,
     sendVoice,
+    appendLiveTurn,
+    rememberSession,
     newSession,
+    conversationId,
   } = conversation;
+
+  // Streaming voice. Separate from the mic button on purpose: tap-to-talk is
+  // one question and one answer, this is an open line you can interrupt.
+  const live = useLiveVoice({
+    conversationId,
+    buddyName: effectiveName,
+    onTurn: appendLiveTurn,
+    onConversationId: rememberSession,
+    onStatusChange: (s) => {
+      if (s === 'speaking') onMoodChange('speaking');
+      else if (s === 'thinking') onMoodChange('thinking');
+      else if (s === 'listening') onMoodChange('listening');
+      else onMoodChange('idle');
+    },
+  });
   const [isRecording, setIsRecording] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -244,24 +264,41 @@ export default function ChatPanel({
             ? 'New conversation'
             : `${messages.length} message${messages.length === 1 ? '' : 's'}`}
         </span>
-        <button
-          type="button"
-          className="chat-new-session-btn"
-          onClick={handleNewSession}
-          disabled={isLoading || isRecording || isTranscribing}
-          title="Start a fresh conversation (your earlier chats are kept)"
-          aria-label="Start a new conversation"
-        >
-          <span aria-hidden="true">✨</span>
-          <span>New chat</span>
-        </button>
+        <div className="chat-session-actions">
+          <button
+            type="button"
+            className={`chat-live-btn ${live.isActive ? 'active' : ''}`}
+            onClick={live.toggle}
+            disabled={isLoading || isRecording || isTranscribing}
+            title={live.isActive
+              ? 'End the live conversation'
+              : 'Live voice — open mic, and you can interrupt mid-reply'}
+            aria-pressed={live.isActive}
+          >
+            <span aria-hidden="true">{live.isActive ? '🔴' : '📡'}</span>
+            <span>{live.isActive ? 'End live' : 'Live'}</span>
+          </button>
+          <button
+            type="button"
+            className="chat-new-session-btn"
+            onClick={handleNewSession}
+            disabled={isLoading || isRecording || isTranscribing || live.isActive}
+            title="Start a fresh conversation (your earlier chats are kept)"
+            aria-label="Start a new conversation"
+          >
+            <span aria-hidden="true">✨</span>
+            <span>New chat</span>
+          </button>
+        </div>
       </div>
 
       {/* Messages */}
       <div className="chat-messages">
         {messages.length === 0 ? (
           <div className="chat-empty">
-            <span className="chat-empty-emoji">{effectiveEmoji}</span>
+            <span className="chat-empty-emoji">
+              <BuddyGlyph buddyType={buddyType} emoji={effectiveEmoji} size={48} />
+            </span>
             <h3>Hey there! I&apos;m {effectiveName}!</h3>
             <p>Your personal AI {effectiveDef.name.toLowerCase()} companion. Ask me anything, or tell me about your day!</p>
           </div>
@@ -269,7 +306,7 @@ export default function ChatPanel({
           messages.map((msg, idx) => (
             <div key={idx} className={`message message-${msg.role}`}>
               <div className="message-avatar">
-                {msg.role === 'user' ? '👤' : effectiveEmoji}
+                {msg.role === 'user' ? '👤' : <BuddyGlyph buddyType={buddyType} emoji={effectiveEmoji} size={28} />}
               </div>
               <div className="message-bubble">
                 {msg.content}
@@ -280,7 +317,7 @@ export default function ChatPanel({
 
         {isLoading && (
           <div className="message message-assistant">
-            <div className="message-avatar">{effectiveEmoji}</div>
+            <div className="message-avatar"><BuddyGlyph buddyType={buddyType} emoji={effectiveEmoji} size={28} /></div>
             <div className="message-bubble">
               <div className="typing-indicator">
                 <div className="typing-dots">
@@ -295,7 +332,7 @@ export default function ChatPanel({
 
         {error && (
           <div className="message message-assistant">
-            <div className="message-avatar">{effectiveEmoji}</div>
+            <div className="message-avatar"><BuddyGlyph buddyType={buddyType} emoji={effectiveEmoji} size={28} /></div>
             <div className="message-bubble" style={{ borderColor: 'var(--danger)', color: 'var(--danger)' }}>
               Oops! {error}
             </div>
@@ -319,6 +356,55 @@ export default function ChatPanel({
               <span>Listening back and thinking…</span>
             </>
           )}
+        </div>
+      )}
+
+      {/* Live session state. Shows the partial transcripts as they stream, so
+          the user can see they are being heard before the reply starts. */}
+      {live.isActive && (
+        <div className="live-banner">
+          <span className={`live-dot ${live.status}`} aria-hidden="true" />
+          <div className="live-banner-body">
+            <span className="live-banner-status">
+              {live.status === 'connecting' && 'Connecting…'}
+              {live.status === 'listening' && (live.muted ? 'Muted' : 'Listening — just talk')}
+              {live.status === 'thinking' && 'Thinking…'}
+              {live.status === 'speaking' && `${effectiveName} is speaking — say anything to interrupt`}
+            </span>
+            {(live.partialHeard || live.partialSaid) && (
+              <span className="live-banner-transcript">
+                {live.partialHeard && <em>“{live.partialHeard}”</em>}
+                {live.partialSaid && <span> · {live.partialSaid}</span>}
+              </span>
+            )}
+          </div>
+          <div className="live-meter" aria-hidden="true">
+            <span className="live-meter-fill" style={{ width: `${Math.min(100, live.micLevel * 160)}%` }} />
+          </div>
+          <button
+            type="button"
+            className="live-mute-btn"
+            onClick={live.toggleMute}
+            title={live.muted ? 'Unmute the microphone' : 'Mute the microphone'}
+            aria-pressed={live.muted}
+          >
+            {live.muted ? '🔇' : '🎙️'}
+          </button>
+        </div>
+      )}
+
+      {live.error && (
+        <div className="voice-status-banner notice">
+          <span aria-hidden="true">📡</span>
+          <span>{live.error}</span>
+          <button
+            type="button"
+            className="voice-notice-dismiss"
+            onClick={() => live.setError(null)}
+            aria-label="Dismiss"
+          >
+            ✕
+          </button>
         </div>
       )}
 

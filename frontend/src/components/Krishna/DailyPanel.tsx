@@ -16,7 +16,17 @@ type ViewState = 'loading' | 'ready' | 'empty' | 'error';
  * are marked as interpretation or inspired-by, so nothing modern gets read as
  * a quotation.
  */
-export default function DailyPanel() {
+interface DailyPanelProps {
+  /**
+   * Rendered inside another scrolling panel (the Today dashboard).
+   *
+   * Drops this component's own header, padding and full-height scroll so it
+   * flows with the host instead of creating a nested scroll region.
+   */
+  embedded?: boolean;
+}
+
+export default function DailyPanel({ embedded = false }: DailyPanelProps = {}) {
   const [state, setState] = useState<ViewState>('loading');
   const [bundle, setBundle] = useState<DailyBundle | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -56,7 +66,7 @@ export default function DailyPanel() {
 
   if (state === 'loading') {
     return (
-      <div className={s.panel}>
+      <div className={embedded ? s.panelEmbedded : s.panel}>
         <div className={s.state}>
           <span className={s.spinner} />
           <span>Bringing today’s verse…</span>
@@ -67,7 +77,7 @@ export default function DailyPanel() {
 
   if (state === 'error') {
     return (
-      <div className={s.panel}>
+      <div className={embedded ? s.panelEmbedded : s.panel}>
         <div className={s.stateError}>
           <span className={s.stateEmoji}>😕</span>
           <span>{error}</span>
@@ -79,7 +89,7 @@ export default function DailyPanel() {
 
   if (state === 'empty' || !bundle) {
     return (
-      <div className={s.panel}>
+      <div className={embedded ? s.panelEmbedded : s.panel}>
         <div className={s.state}>
           <span className={s.stateEmoji}>📭</span>
           <span>
@@ -95,14 +105,16 @@ export default function DailyPanel() {
   const { verse, word, teaching } = bundle;
 
   return (
-    <div className={s.panel}>
-      <header className={s.header}>
-        <div>
-          <h2 className={s.title}>🌅 Today</h2>
-          <p className={s.subtitle}>{bundle.day}</p>
-        </div>
-        <button className={s.buttonGhost} onClick={load}>↻ Refresh</button>
-      </header>
+    <div className={embedded ? s.panelEmbedded : s.panel}>
+      {!embedded && (
+        <header className={s.header}>
+          <div>
+            <h2 className={s.title}>🌅 Today</h2>
+            <p className={s.subtitle}>{bundle.day}</p>
+          </div>
+          <button className={s.buttonGhost} onClick={load}>↻ Refresh</button>
+        </header>
+      )}
 
       {/* ── Daily Gita (Part 9) ──────────────────────────────────── */}
       <article className={`${s.card} ${s.cardAccent}`}>

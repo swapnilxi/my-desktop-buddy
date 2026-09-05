@@ -7,11 +7,12 @@ error state to render (Part 61).
 """
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any, Literal, Optional
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Header, HTTPException, Query
 from pydantic import BaseModel, Field
 
+from db import DEFAULT_USER_ID
 from gita import (
     get_chapter_verses,
     get_sources,
@@ -76,6 +77,97 @@ async def read_verse(chapter: int, verse: int) -> dict[str, Any]:
             "error": "not_in_knowledge_base", "message": lookup.message,
         })
     return lookup.verse.model_dump()
+
+
+_DEPTH_DIRECTIVES: dict[str, str] = {
+    "simple": (
+        "Skip the section headings above. Answer in 2-4 plain sentences: what the "
+        "verse basically means, and the one modern takeaway. No bullet list, no headers."
+    ),
+    "detailed": (
+        "Use the five-section format above in full (Krishna's Thought / Gita "
+        "Connection / Meaning / For You / Your Next Step)."
+    ),
+    "deep_gita": (
+        "Use the format above, but expand 'Gita Connection' and 'Meaning': show the "
+        "Sanskrit, transliteration and translation exactly as retrieved, and explicitly "
+        "say if more than one translation or commentary was retrieved and they differ. "
+        "Keep 'For You' brief."
+    ),
+    "modern_example": (
+        "Keep 'Gita Connection' and 'Meaning' brief — one line each. Spend most of the "
+        "reply on 'For You': one concrete, specific modern example (career, studies, "
+        "work, or relationships). Frame it explicitly as a modern application — never "
+        "claim the verse itself names this modern context."
+    ),
+}
+_LANGUAGE_DIRECTIVES: dict[str, str] = {
+    "en": "Reply in English.",
+    "hi": (
+        "Reply in Hindi (Devanagari script). Keep Sanskrit concepts — Dharma, Karma, "
+        "Bhakti — as they are rather than mechanically translating them; explain them "
+        "in Hindi instead."
+    ),
+    "hinglish": (
+        "Reply in natural Hinglish, the way the user writes. Keep Sanskrit concepts "
+        "like Dharma and Karma as they are."
+    ),
+}
+
+
+class ExplainRequest(BaseModel):
+    chapter: int
+    verse: int
+    depth: Literal["simple", "detailed", "deep_gita", "modern_example"] = "simple"
+    language: Literal["en", "hi", "hinglish"] = "en"
+    conversation_id: Optional[str] = None
+    user_name: Optional[str] = None
+    buddy_name: Optional[str] = None
+
+
+@router.post("/explain")
+async def explain_verse(
+    req: ExplainRequest, x_user_id: Optional[str] = Header(None)
+) -> dict[str, Any]:
+    """
+    Explain Simply / Go Deeper — routes through the same orchestrator as
+    normal chat (Part 26), so the reply lands in the same conversation with
+    the same persona, presentation and honesty rules. No parallel LLM path.
+
+    The reference is validated *before* any LLM call, so an invalid or
+    not-yet-in-the-knowledge-base verse costs nothing and never reaches the
+    model — it must never invent the missing Sanskrit or translation.
+    """
+    from krishna.orchestrator import respond
+
+    check = validate_reference(req.chapter, req.verse)
+    if not check.valid:
+        raise HTTPException(status_code=404, detail={
+            "error": "invalid_reference", "message": check.reason,
+        })
+    lookup = get_verse(req.chapter, req.verse)
+    if not lookup.found:
+        raise HTTPException(status_code=404, detail={
+            "error": "not_in_knowledge_base", "message": lookup.message,
+        })
+
+    directive = "\n\n".join([
+        _DEPTH_DIRECTIVES[req.depth],
+        _LANGUAGE_DIRECTIVES[req.language],
+    ])
+    user = (x_user_id or "").strip() or DEFAULT_USER_ID
+    reply = await respond(
+        message=f"Explain Bhagavad Gita {req.chapter}.{req.verse}.",
+        mode="gita",
+        user_id=user,
+        user_name=req.user_name,
+        buddy_name=req.buddy_name,
+        conversation_id=req.conversation_id,
+        extra_context=directive,
+    )
+    payload = reply.as_dict()
+    payload.update(depth=req.depth, language=req.language, reference=f"{req.chapter}.{req.verse}")
+    return payload
 
 
 @router.get("/chapters")

@@ -80,6 +80,7 @@ class KrishnaReply:
     mood: str = "speaking"
     particles: bool = False
     gita_used: list[dict[str, Any]] = field(default_factory=list)
+    gita_context_used: list[dict[str, Any]] = field(default_factory=list)
     gita_invalid_message: Optional[str] = None
     tools_used: list[dict[str, Any]] = field(default_factory=list)
     memory_proposal: Optional[dict[str, Any]] = None
@@ -108,6 +109,7 @@ class KrishnaReply:
             # kept for backward compatibility with the existing frontend
             "hamster_mood": self.mood,
             "gita_used": self.gita_used,
+            "gita_context_used": self.gita_context_used,
             "gita_invalid_message": self.gita_invalid_message,
             "tools_used": self.tools_used,
             "memory_proposal": self.memory_proposal,
@@ -181,6 +183,47 @@ def _retrieve_gita(c: Classification, limit: int = 3) -> tuple[list[dict[str, An
     return enriched, None
 
 
+def _retrieve_context_verses(refs: list[tuple[int, int]], limit: int = 5) -> list[dict[str, Any]]:
+    """
+    Fetch verses the user explicitly attached (Add to Chat Context).
+
+    Independent of the classifier — the user pinned these, so they are fetched
+    regardless of what this turn's message is about. Every honest outcome from
+    get_verse (found / invalid / not yet in the knowledge base) is kept as-is;
+    this must never fabricate content for an entry the store didn't return.
+    """
+    from gita import get_verse
+
+    out: list[dict[str, Any]] = []
+    seen: set[tuple[int, int]] = set()
+    for ch, vs in refs[:limit]:
+        if (ch, vs) in seen:
+            continue
+        seen.add((ch, vs))
+        lookup = get_verse(ch, vs)
+        if lookup.invalid_reference:
+            out.append({"chapter": ch, "verse": vs, "error": "invalid_reference", "message": lookup.message})
+        elif not lookup.found:
+            out.append({"chapter": ch, "verse": vs, "error": "not_in_knowledge_base", "message": lookup.message})
+        else:
+            v = lookup.verse
+            tr = v.primary_translation()
+            out.append({
+                "reference": v.reference, "chapter": v.chapter, "verse": v.verse,
+                "sanskrit": v.sanskrit, "transliteration": v.transliteration,
+                "translation": tr.text if tr else None,
+                "source": v.source, "source_name": tr.source_name if tr else None,
+                "verified": v.verified,
+                "commentaries": [
+                    {"author": cm.author, "text": cm.text, "source": cm.source_name}
+                    for cm in v.commentaries
+                ],
+                "applications": [a.text for a in v.practical_application],
+                "themes": v.themes,
+            })
+    return out
+
+
 def _productivity_context(c: Classification, user_id: str) -> Optional[str]:
     """
     The productivity brief for this turn, or None.
@@ -251,6 +294,52 @@ def _persist(user_id: str, conversation_id: Optional[str], user_msg: str,
                  c.intent if role == "user" else None,
                  c.emotion if role == "user" else None,
                  c.mode, dump_json(tools) if role == "assistant" else None, now_iso()),
+            )
+        conn.execute("UPDATE conversations SET updated_at = ? WHERE id = ?",
+                     (now_iso(), conversation_id))
+    return conversation_id
+
+
+def persist_turn(user_id: str, conversation_id: Optional[str], user_msg: str,
+                 reply: str, mode: str = "friend",
+                 source: Optional[str] = None) -> str:
+    """
+    Record one exchange outside the normal pipeline.
+
+    The live-voice path has no `Classification` — there is no text to classify
+    before the model has already answered — so it cannot reuse `_persist`.
+    This keeps a spoken conversation in the same history as a typed one, which
+    is what makes "New chat" and session resume mean the same thing in both.
+    """
+    from db import dump_json, ensure_user
+
+    ensure_user(user_id)
+    with get_conn() as conn:
+        if conversation_id:
+            exists = conn.execute(
+                "SELECT id FROM conversations WHERE id = ? AND user_id = ?",
+                (conversation_id, user_id),
+            ).fetchone()
+            if exists is None:
+                conversation_id = None
+        if not conversation_id:
+            conversation_id = new_id()
+            conn.execute(
+                "INSERT INTO conversations (id, user_id, title, mode, created_at, updated_at)"
+                " VALUES (?,?,?,?,?,?)",
+                (conversation_id, user_id, (user_msg or reply)[:60], mode,
+                 now_iso(), now_iso()),
+            )
+        for role, content in (("user", user_msg), ("assistant", reply)):
+            if not content:
+                continue
+            conn.execute(
+                "INSERT INTO messages (id, conversation_id, user_id, role, content,"
+                " intent, emotion, mode, tools_used, created_at) VALUES (?,?,?,?,?,?,?,?,?,?)",
+                (new_id(), conversation_id, user_id, role, content,
+                 source if role == "user" else None, None, mode,
+                 dump_json([source]) if source and role == "assistant" else None,
+                 now_iso()),
             )
         conn.execute("UPDATE conversations SET updated_at = ? WHERE id = ?",
                      (now_iso(), conversation_id))
@@ -331,6 +420,8 @@ async def respond(
     client_keys: Optional[dict[str, str]] = None,
     client_models: Optional[dict[str, str]] = None,
     persist: bool = True,
+    gita_context: Optional[list[tuple[int, int]]] = None,
+    extra_context: Optional[str] = None,
 ) -> KrishnaReply:
     history = history or []
     rlog = RequestLog(route="/krishna/chat", user_id=user_id)
@@ -352,6 +443,10 @@ async def respond(
             ev = bus.emit(GITA_RETRIEVED,
                           references=[r.get("reference") for r in gita_results])
             emitted.append(ev.as_dict())
+
+    context_verses: list[dict[str, Any]] = []
+    if gita_context:
+        context_verses = _retrieve_context_verses(gita_context)
 
     memories: list[dict[str, Any]] = []
     try:
@@ -381,6 +476,8 @@ async def respond(
         productivity_context=productivity_context,
         plan_context=plan_context,
         gita_action_block=gita_action,
+        attached_context=context_verses,
+        extra_context=extra_context,
     )
     rlog.prompt_chars = len(system_prompt)
 
@@ -439,6 +536,13 @@ async def respond(
              "verse": r.get("verse"), "verified": r.get("verified", False),
              "source": r.get("source"), "source_name": r.get("source_name")}
             for r in gita_results
+        ],
+        gita_context_used=[
+            {"reference": r.get("reference"), "chapter": r.get("chapter"),
+             "verse": r.get("verse"), "verified": r.get("verified", False),
+             "source": r.get("source"), "source_name": r.get("source_name"),
+             "error": r.get("error")}
+            for r in context_verses
         ],
         gita_invalid_message=gita_invalid,
         tools_used=tools_used, memory_proposal=memory_proposal,

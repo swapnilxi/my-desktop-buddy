@@ -171,6 +171,46 @@ def _memory_block(memories: list[dict[str, Any]]) -> str:
     )
 
 
+def _format_verse_entry(r: dict[str, Any]) -> str:
+    """
+    One retrieved verse's fields, formatted.
+
+    Shared by `_gita_block` (classifier-driven retrieval) and
+    `_attached_context_block` (user-attached verse context) so the two never
+    drift on what counts as scripture vs. translation vs. commentary vs.
+    interpretation — that separation is the whole point of Part 6.
+    """
+    if r.get("error") == "invalid_reference":
+        return (
+            f"\n[{r.get('chapter')}.{r.get('verse')}] INVALID REFERENCE — "
+            f"{r.get('message')}. Do not use or quote this."
+        )
+    if r.get("error") == "not_in_knowledge_base":
+        return (
+            f"\n[{r.get('chapter')}.{r.get('verse')}] Valid reference, not yet in the "
+            f"knowledge base — {r.get('message')}. Do not invent it."
+        )
+    parts = [f"\n[{r.get('reference')}]"]
+    if r.get("sanskrit"):
+        parts.append(f"  Sanskrit: {r['sanskrit']}")
+    if r.get("transliteration"):
+        parts.append(f"  Transliteration: {r['transliteration']}")
+    if r.get("translation"):
+        src = r.get("source_name") or r.get("source") or "unattributed"
+        parts.append(f"  Translation ({src}): {r['translation']}")
+    for c in r.get("commentaries", []) or []:
+        parts.append(f"  Commentary — {c.get('author')}: {c.get('text')}")
+    for a in r.get("applications", []) or []:
+        parts.append(f"  Practical application (interpretation, NOT scripture): {a}")
+    if r.get("themes"):
+        parts.append(f"  Themes: {', '.join(r['themes'])}")
+    if not r.get("verified", False):
+        parts.append(
+            "  NOTE: unverified seed text — do not present as settled scripture."
+        )
+    return "\n".join(parts)
+
+
 def _gita_block(results: list[dict[str, Any]], invalid_message: Optional[str]) -> str:
     if invalid_message:
         return (
@@ -189,30 +229,32 @@ def _gita_block(results: list[dict[str, Any]], invalid_message: Optional[str]) -
     chunks: list[str] = [
         "GITA RETRIEVAL — the ONLY verses you may quote in this reply:",
     ]
-    for r in results:
-        parts = [f"\n[{r.get('reference')}]"]
-        if r.get("sanskrit"):
-            parts.append(f"  Sanskrit: {r['sanskrit']}")
-        if r.get("transliteration"):
-            parts.append(f"  Transliteration: {r['transliteration']}")
-        if r.get("translation"):
-            src = r.get("source_name") or r.get("source") or "unattributed"
-            parts.append(f"  Translation ({src}): {r['translation']}")
-        for c in r.get("commentaries", []) or []:
-            parts.append(f"  Commentary — {c.get('author')}: {c.get('text')}")
-        for a in r.get("applications", []) or []:
-            parts.append(f"  Practical application (interpretation, NOT scripture): {a}")
-        if r.get("themes"):
-            parts.append(f"  Themes: {', '.join(r['themes'])}")
-        if not r.get("verified", False):
-            parts.append(
-                "  NOTE: unverified seed text — do not present as settled scripture."
-            )
-        chunks.append("\n".join(parts))
-
+    chunks.extend(_format_verse_entry(r) for r in results)
     chunks.append(
         "\nQuote nothing beyond the above. If it does not answer the question, say so."
     )
+    return "\n".join(chunks)
+
+
+def _attached_context_block(context: list[dict[str, Any]]) -> str:
+    """
+    User-attached scripture context ("Add to Chat Context").
+
+    Framed as available, not mandatory — a Gita reference should only appear
+    when it genuinely helps, never as decoration on an unrelated question
+    (Part 51, and the core-philosophy rule that a programming bug gets
+    programming help, not a verse).
+    """
+    if not context:
+        return ""
+    chunks: list[str] = [
+        "ATTACHED SCRIPTURE CONTEXT — the user attached this from the Gita reader; "
+        "it is background, not a mandate. Use it ONLY if it genuinely helps answer "
+        "what they just asked. If their message is about something else (a technical "
+        "question, a task, small talk), answer that directly and do not force a "
+        "reference to this verse in.",
+    ]
+    chunks.extend(_format_verse_entry(r) for r in context)
     return "\n".join(chunks)
 
 
@@ -266,6 +308,7 @@ def build_system_prompt(
     gita_action_block: Optional[str] = None,
     time_hour: Optional[int] = None,
     extra_context: Optional[str] = None,
+    attached_context: Optional[list[dict[str, Any]]] = None,
 ) -> str:
     """
     Assemble the system prompt for one request.
@@ -297,7 +340,8 @@ def build_system_prompt(
         blocks.append(GUIDANCE_FLOW)
 
     # Scripture rules travel with any Gita involvement, in either direction.
-    if c.needs_gita or gita_results or gita_invalid_message:
+    scripture_engaged = bool(c.needs_gita or gita_results or gita_invalid_message)
+    if scripture_engaged:
         blocks.append(SCRIPTURE_INTEGRITY)
         blocks.append(_gita_block(gita_results or [], gita_invalid_message))
         if gita_results and mode_obj.gita_appetite in {"prefer", "primary"}:
@@ -307,6 +351,13 @@ def build_system_prompt(
             "NO SCRIPTURE THIS TURN\nNo verse was retrieved and this mode does not call "
             "for one. Do not quote or paraphrase scripture. Be practical."
         )
+
+    # User-attached verse context (Add to Chat Context) travels separately —
+    # it answers "what's available", not "what's relevant to this turn".
+    if attached_context:
+        if not scripture_engaged:
+            blocks.append(SCRIPTURE_INTEGRITY)
+        blocks.append(_attached_context_block(attached_context))
 
     # The coaching flow is what stops "I keep procrastinating" turning into a
     # sermon about duty (Phase 1, section 10).

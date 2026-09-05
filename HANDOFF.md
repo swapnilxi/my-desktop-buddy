@@ -3,17 +3,20 @@
 Self-contained state-of-the-project summary. Written to be pasted into another
 model as context for proposing the next set of features.
 
-> **Status.** Two workstreams have landed:
+> **Status.** Both workstreams are complete, backend *and* frontend:
 >
-> * **Phase 1 — Productivity Intelligence Layer (§11):** backend-complete,
->   frontend not started. Everything works over HTTP; the Today dashboard is
->   still to build. §11.6 lists exactly what remains.
+> * **Phase 1 — Productivity Intelligence Layer (§11):** done. Tasks, goals,
+>   habits, focus, time tracking, Plan My Day, weekly review and insights,
+>   with the Today dashboard mounted and the focus timer recording into the
+>   database. Every item in the Definition of Done walks end to end.
 > * **Voice + sessions (§12):** complete end to end, backend *and* frontend.
 >   Speech in → orchestrated reply → speech out, in Hindi / Hinglish / Indian
 >   English, plus a New chat button. **Seven providers** (Gemini, Sarvam,
 >   Cartesia, Deepgram, Fish Audio, Apple, browser), with STT and TTS chosen
 >   independently and each having its own fallback chain — all verified
->   against the live APIs with real keys.
+>   against the live APIs with real keys. **Streaming voice with barge-in**
+>   (§12.9) runs over the Gemini Live API: an open mic you can interrupt
+>   mid-reply.
 
 ---
 
@@ -49,7 +52,7 @@ companion *inspired by* Krishna's teachings.
 | Frontend | Next.js 16.3 (App Router, Turbopack), React 19, TypeScript, plain CSS + CSS Modules (no Tailwind) |
 | Desktop | Electron shell wrapping the Next app |
 | Voice | Pluggable: **Gemini**, **Sarvam AI**, **Cartesia**, Deepgram, Fish Audio, macOS `say`, browser. STT and TTS chosen separately, each with a fallback chain. |
-| Tests | pytest (backend, 293 tests). No frontend test runner yet. |
+| Tests | pytest (backend, 405 tests). No frontend test runner yet. |
 
 Storage lives in `~/.hamsterdesk/`: `config.json`, `todos.json` (**legacy, now
 read-once at migration time**) and `krishna.db` (SQLite).
@@ -102,6 +105,7 @@ backend/
     brief.py               The productivity block injected into the prompt
   voice/
     providers.py           Provider registry + the fallback chain runner
+    live_session.py        Gemini Live — streaming voice with barge-in
     gemini_voice.py        Gemini STT/TTS, voice presets, language detection
     sarvam_voice.py        Sarvam AI — natively Indian voices, Hinglish STT
     cartesia_voice.py      Cartesia Sonic TTS + Ink-Whisper STT
@@ -112,14 +116,15 @@ backend/
   tools/registry.py        23 declared tools + executor
   observability/logging.py Structured JSON logging + usage rows
   llm/                     Adapter base + gemini / deepseek / ollama + router
-  routes/                  chat, todos, config, voice, gita, daily, memory,
-                           krishna, productivity
-  tests/                   293 tests
+  routes/                  chat, todos, config, voice, live, gita, daily,
+                           memory, krishna, productivity
+  tests/                   405 tests
 
 frontend/src/
   app/page.tsx             Single-page shell: 3 window modes, tab system
   app/globals.css          Full design-token system (honey/espresso dark theme)
   components/Buddies/      Hamster, Panda, Krishna sprites (HTML+CSS) + registry
+  components/Today/        TodayPanel — the Today dashboard + CSS module
   components/Krishna/      DailyPanel, GitaPanel, MemoryPanel, VerseCard, CSS module
   components/Chat/         ChatPanel
   components/TodoList/     TodoPanel (includes focus timer UI)
@@ -127,7 +132,9 @@ frontend/src/
   components/Shell/        WindowChrome, ConfirmDialog
   lib/api.ts               API client (legacy + Krishna sections)
   lib/useConversation.ts   Chat state, session id and the spoken turn
-  lib/useFocusTimer.ts     Pomodoro/focus timer hook (client-only — see §11.6)
+  lib/useFocusTimer.ts     Pomodoro/focus timer, recording into focus_sessions
+  lib/useLiveVoice.ts      Streaming voice session (mic → WS → playback)
+  lib/liveAudio.ts         16kHz capture + 24kHz gapless playback with flush
   lib/speech.ts, audio.ts, speechRecognition.ts, useVoiceRecorder.ts
 ```
 
@@ -299,6 +306,8 @@ POST   /voice/transcribe?provider=  STT through the configured chain
 POST   /voice/speak                 TTS chain + X-Voice-Provider header
 POST   /voice/test                  audition ONE provider (never falls back)
 POST   /voice/converse              audio in → transcript + reply + audio out
+GET    /voice/live/status           whether streaming voice is usable
+WS     /voice/live                  streaming voice with barge-in
 
 POST   /krishna/chat                ORCHESTRATED chat (the main entry point)
 POST   /krishna/classify            expose the classifier
@@ -447,7 +456,7 @@ values, and assigns `tasks.seq` to any row missing one.
 ## 8. Verification commands
 
 ```bash
-# Backend — 293 tests, ~12s (some hit no network; none call a paid API)
+# Backend — 405 tests, ~13s (none call a paid API)
 cd backend && python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt pytest httpx
 .venv/bin/python -m pytest tests/ -q
@@ -459,7 +468,8 @@ npm run build
 ```
 
 Test coverage: `test_gita_engine.py` 52 · `test_personality.py` 58 ·
-`test_api.py` 42 · `test_voice.py` 65 · `test_memory.py` 31 ·
+`test_productivity.py` 94 · `test_voice.py` 83 · `test_personality.py` 58 ·
+`test_gita_engine.py` 52 · `test_api.py` 42 · `test_memory.py` 31 ·
 `test_tools.py` 29 · `test_daily.py` 16.
 
 Frontend lint has a **pre-existing** baseline of 22 errors / 14 warnings across
@@ -677,41 +687,56 @@ see it by category and by goal · ask for a realistic day plan with buffer ·
 read a Today payload that includes the daily Gita · get a weekly review with
 data-derived observations · get insights that admit when they don't know.
 
-### 11.6 What Phase 1 still needs (the remaining work)
+### 11.6 The frontend, and what it does
 
-Backend is done and green; the following are outstanding.
+All six items that were outstanding here are done.
 
-1. ~~**`X-User-Id` on legacy calls.**~~ **Done** — shipped with the voice work;
-   `getClientAuthHeaders()` now attaches it to every request.
-2. **Productivity API client** — types and functions in `lib/api.ts` for the 37
-   endpoints in §5.1, following the existing `krishnaRequest` pattern.
-3. **Wire `useFocusTimer` to the backend.** Call `/productivity/focus/start` on
-   start and `/productivity/focus/end` on finish, and surface the returned
-   `reflection_prompt`. Until this lands, `BEST_TIME_OF_DAY`, `FOCUS_PATTERN`
-   and `DISTRACTION_PATTERN` have no data to read.
-4. **The Today dashboard.** Hierarchy specified as: Madhav greeting → today's
-   priority → Start Focus → tasks → habits/goals → daily Gita → progress. It
-   should feel peaceful and personal, not like enterprise project management —
-   not a wall of cards. Reuse the existing design tokens and
-   `krishna.panels.module.css`. Suggested approach: make the Krishna `🌅 Today`
-   tab render the new panel and embed the existing `DailyPanel` as its
-   Gita section behind an `embedded` prop (it already fetches `/daily`), rather
-   than duplicating that content. Must work in both `compact` and `fullscreen`
-   window modes.
-5. **Backend test file for the new layer.** `tests/test_productivity.py` does
-   not exist yet. It should cover: the todos.json migration (including the
-   run-once guard and a corrupt file), task CRUD and subtasks, goals and
-   milestone-derived progress, habits/logs/streaks, focus sessions and
-   reflection, time tracking aggregates, daily planning (buffer is respected,
-   overflow is reported), the weekly review, user isolation across every
-   subsystem, invalid tool execution, and insufficient-data analytics.
-   The existing 228 tests already pass unchanged.
-6. **Frontend verification** — `tsc --noEmit`, `eslint`, `npm run build` have
-   not been run against any Phase 1 change, because no frontend change has been
-   made yet.
+1. **`X-User-Id` on every call.** `getClientAuthHeaders()` attaches it, so
+   `/todos` and the Krishna tools address the same user. Without it the To-Do
+   tab and Madhav were looking at two different people's tasks.
+2. **Productivity API client** — types and functions in `lib/api.ts` for the
+   productivity router, following the existing `krishnaRequest` pattern.
+3. **The focus timer records.** `useFocusTimer` opens a session on start and
+   closes it on completion or reset, sending `actual_seconds` — the time the
+   timer *ran*, not wall clock, so a session left paused for an hour is not
+   recorded as an hour of focus. Reset closes with `completed: false`, which
+   is what `DISTRACTION_PATTERN` reads. Until this landed,
+   `BEST_TIME_OF_DAY`, `FOCUS_PATTERN` and `DISTRACTION_PATTERN` had no data
+   at all. Every call is swallowed on failure: losing a timer because the
+   backend is down would be the wrong trade.
+4. **The Today dashboard** — `components/Today/TodayPanel.tsx`, mounted on the
+   Krishna `🌅 Today` tab. Section order is the spec's, and the reason it is
+   that order is that it is what a person needs first:
 
-Do not add a second state-management architecture for this. Do not redesign
-unrelated parts of the app. Keep hamster and panda working.
+   ```
+   Madhav greeting → today's priority → Start Focus → tasks
+   → habits / goals → daily Gita → progress
+   ```
+
+   Deliberately one column, not a wall of cards; only the priority card
+   carries visual weight. It reads one `/productivity/today` request, so the
+   screen cannot render half-loaded with tasks in and habits missing. The
+   daily Gita section reuses `DailyPanel` behind a new `embedded` prop rather
+   than duplicating the verse rendering — which also keeps its provenance
+   badges, which must not be dropped because the content moved screens.
+5. **`tests/test_productivity.py`** — 94 tests: the todos.json migration
+   (run-once guard, corrupt file, file left on disk), task CRUD and subtasks,
+   goals and milestone-derived progress, habits/logs/streaks, focus sessions
+   and reflection, time aggregates, planning (buffer respected, overflow
+   reported, assumptions declared), the weekly review, insufficient-data
+   analytics, invalid input, and user isolation asserted separately for every
+   subsystem.
+6. **Frontend verification** — `tsc --noEmit` clean, `eslint src` at its
+   pre-existing baseline of 22 errors / 14 warnings, `npm run build` green.
+
+Two details in the dashboard worth keeping if it is rewritten:
+
+* **The plan's notes are rendered, not hidden.** They carry how much time was
+  assumed, which estimates were invented, and what did not fit. Dropping them
+  would make the plan look more certain than it is.
+* **Ending a session asks rather than congratulates.** The reflection prompt
+  from the backend is shown verbatim; the timer finishing records time spent
+  and nothing more.
 
 ---
 
@@ -897,17 +922,83 @@ API keys for Cartesia and Sarvam are in Config → API Keys and travel as
 `X-Cartesia-Key` / `X-Sarvam-Key`, so like the others they live in browser
 LocalStorage and never touch server disk.
 
-### 12.8 What voice does NOT do yet
+### 12.8 Streaming voice with barge-in (Gemini Live)
 
-* **No streaming / barge-in.** Turn-based only: tap to talk, tap to send, wait.
-  Real-time interruption needs the Gemini **Live API**
-  (`gemini-live-2.5-flash-preview`), which is a WebSocket session rather than
-  request/response — a different transport for the whole voice path, not a
-  parameter change.
-* **No partial transcripts** while speaking.
-* **The `presentation` payload is still unconsumed** — `/voice/converse`
-  returns `animation` / `chakra` / `voiceMode` per turn, and the sprite still
-  animates off the legacy mood string. Wiring it is now a small job and the
-  shortest path to making Madhav feel alive while speaking.
-* **Audio is base64 in JSON**, which inflates it ~33%. Fine on localhost; if
-  this ever goes over a network, stream the audio separately.
+The turn-based `/voice/converse` path stays — it is cheaper, works with all
+seven providers, and is right when someone taps to talk. This is the other
+mode: an open mic where Madhav can be cut off mid-sentence.
+
+```
+mic → AudioWorklet (16 kHz PCM16) → WS /voice/live
+   → Gemini Live (server VAD, native audio)
+   → binary frames back (24 kHz PCM16) + JSON transcripts/events
+   → scheduled playback, flushed instantly on `interrupted`
+```
+
+**Five things established against the live API.** Each is a thing the relay
+would otherwise get wrong, and each is covered by a test.
+
+1. **Only one model answers on a standard key.**
+   `gemini-2.5-flash-native-audio-preview-09-2025` connects.
+   `gemini-live-2.5-flash-preview`, `gemini-2.0-flash-live-001` and
+   `gemini-2.5-flash-preview-native-audio-dialog` all close with 1008
+   *"not found … for bidiGenerateContent"*. The others stay in
+   `MODEL_CANDIDATES` so a wider-access key picks a better model up without a
+   code change.
+2. **`session.receive()` is per-turn.** It stops iterating at `turn_complete`.
+   A relay that awaits it once handles exactly one reply and then goes deaf —
+   which is what the first working probe did. It needs an outer `while`.
+3. **In is 16 kHz, out is 24 kHz.** Different rates; confusing them produces
+   chipmunks. The capture worklet downsamples to 16 kHz and the player asks
+   for a 24 kHz context so nothing is resampled on the way out.
+4. **`audio_stream_end` truncates the reply.** A real microphone keeps
+   streaming silence and lets the server VAD decide the turn ended, so that is
+   what the browser client does.
+5. **The SDK never passes an SSL context on its WebSocket path.** Its HTTP
+   path uses certifi explicitly (`_api_client.py:487`), but `live.py:938`
+   calls `websockets.connect()` bare — so on a machine without the system root
+   bundle *every* Live connection fails `CERTIFICATE_VERIFY_FAILED` while REST
+   calls work fine. `live_session.py` sets `SSL_CERT_FILE` to the same bundle,
+   with `setdefault` so an operator value still wins.
+
+**Barge-in** is the whole point, and the ordering matters. Audio is scheduled
+ahead of the clock for gapless playback, so when the user interrupts there is
+already buffered speech queued. `interrupted` is therefore emitted *before*
+anything else in the same message, and the client's handler flushes the player
+first, before touching any state — every millisecond there is Madhav talking
+over the user. That ordering has its own test.
+
+**Framing:** audio down is binary, not base64 JSON. A reply is hundreds of
+kilobytes in ~20 ms slices; base64 would add a third in bandwidth plus a JSON
+parse per slice for nothing.
+
+**Persona:** the system prompt comes from `krishna/persona.py` like every
+other surface, plus a spoken-medium addendum (no markdown, short turns, stop
+when interrupted). The character cannot drift because the transport changed.
+
+**Persistence:** live turns go through `orchestrator.persist_turn()` into the
+same `conversations`/`messages` tables as typed chat, so history, session
+resume and New chat mean the same thing in both modes. Verified: a spoken
+exchange appears in `GET /krishna/sessions/{id}`.
+
+**UI:** a Live button in the chat session bar. While connected it shows state
+(connecting / listening / thinking / speaking), the streaming partial
+transcripts, a mic level meter and a mute toggle. `GET /voice/live/status` is
+asked first so the button is never offered when it cannot work.
+
+### 12.9 What voice still does NOT do
+
+* **No text streaming in the turn-based path.** `/voice/converse` returns a
+  complete reply; only the live path streams.
+* **Live voice is Gemini-only.** The other six providers are turn-based by
+  nature; there is no chain to fall back through mid-call. A failure to open
+  the session reports `fallback: "converse"` so the client can offer
+  tap-to-talk instead.
+* **No wake word**, and no session resumption across a dropped socket
+  (`session_resumption` exists in the SDK config and is not wired).
+* **The `presentation` payload is still unconsumed.** Both voice paths return
+  animation/chakra/voiceMode per turn and the sprite still animates off the
+  legacy mood string. Now a small job, and the shortest path to making Madhav
+  feel alive while speaking.
+* **Audio in `/voice/converse` is base64 in JSON**, which inflates it ~33%.
+  Fine on localhost; stream it separately if this ever crosses a network.

@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import type { HamsterMood } from '@/lib/api';
+import type { FocusMode, HamsterMood, ReflectionPrompt } from '@/lib/api';
+import { endFocusSession, startFocusSession } from '@/lib/api';
 import { playTimerCompletionChime } from '@/lib/audio';
 
 export interface TimerPreset {
@@ -49,6 +50,23 @@ export const DEFAULT_10M_BREAK_ACTIVITIES = [
 export const STORAGE_CUSTOM_FOCUS_KEY = 'desktop_buddy_custom_focus_activities';
 export const STORAGE_CUSTOM_BREAK_KEY = 'desktop_buddy_custom_break_activities';
 
+/**
+ * Best guess at the focus category from the activity label.
+ *
+ * A guess, not a claim: it only groups time in the by-category breakdown, and
+ * anything unrecognised stays OTHER rather than being forced into a bucket.
+ */
+function guessMode(activity: string): FocusMode {
+  const text = (activity || '').toLowerCase();
+  if (/(cod|dev|program|debug|build|refactor)/.test(text)) return 'CODING';
+  if (/(read|study|learn|revis|course|dsa|leetcode)/.test(text)) return 'STUDY';
+  if (/(writ|doc|blog|essay|note)/.test(text)) return 'WRITING';
+  if (/(design|creat|art|sketch|asset)/.test(text)) return 'CREATIVE';
+  if (/(email|inbox|admin|invoice|chore|review)/.test(text)) return 'ADMIN';
+  if (/(deep|focus|problem|architect)/.test(text)) return 'DEEP_WORK';
+  return 'OTHER';
+}
+
 export function useFocusTimer({ onMoodChange }: { onMoodChange: (mood: HamsterMood) => void }) {
   const [activePreset, setActivePreset] = useState<string>('focus-25');
   const [sessionType, setSessionType] = useState<'focus' | 'break'>('focus');
@@ -65,6 +83,19 @@ export function useFocusTimer({ onMoodChange }: { onMoodChange: (mood: HamsterMo
   const [customBreakList, setCustomBreakList] = useState<string[]>([]);
   const [currentActivity, setCurrentActivity] = useState<string>(DEFAULT_FOCUS_ACTIVITIES[0]);
 
+  /**
+   * The backend focus session this timer is recording into.
+   *
+   * Until this existed the timer was purely client-side, so nothing reached
+   * `focus_sessions` and BEST_TIME_OF_DAY / FOCUS_PATTERN / DISTRACTION_PATTERN
+   * had no data to read. Every failure here is swallowed: losing a timer
+   * because the backend is down would be a bad trade.
+   */
+  const sessionIdRef = useRef<string | null>(null);
+  const elapsedRef = useRef(0);
+  const [reflectionPrompt, setReflectionPrompt] = useState<ReflectionPrompt | null>(null);
+  const [lastSessionId, setLastSessionId] = useState<string | null>(null);
+
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Load custom saved activities from LocalStorage
@@ -78,10 +109,60 @@ export function useFocusTimer({ onMoodChange }: { onMoodChange: (mood: HamsterMo
     } catch {}
   }, []);
 
+  /** Open a backend session if one is not already recording. */
+  const openSession = useCallback(async (
+    minutes: number, type: 'focus' | 'break', activity: string, taskId: number | null,
+  ) => {
+    if (sessionIdRef.current) return;
+    elapsedRef.current = 0;
+    try {
+      const session = await startFocusSession({
+        minutes,
+        activity,
+        session_type: type,
+        mode: guessMode(activity),
+        // The legacy todo id is an integer; the backend resolves it to the
+        // task's uuid via `seq`, so the time lands on the right task.
+        task_id: taskId != null ? String(taskId) : undefined,
+        intended: activity,
+      });
+      sessionIdRef.current = session.id;
+    } catch {
+      sessionIdRef.current = null;
+    }
+  }, []);
+
+  /**
+   * Close the backend session.
+   *
+   * `actual_seconds` is the time the timer actually ran, not wall clock —
+   * otherwise a session left paused for an hour would be recorded as an hour
+   * of focus and poison every average.
+   */
+  const closeSession = useCallback(async (completed: boolean) => {
+    const id = sessionIdRef.current;
+    if (!id) return;
+    sessionIdRef.current = null;
+    const seconds = elapsedRef.current;
+    elapsedRef.current = 0;
+    try {
+      const result = await endFocusSession({
+        session_id: id, completed, actual_seconds: seconds,
+      });
+      setLastSessionId(id);
+      if (completed && result.session.session_type === 'focus') {
+        setReflectionPrompt(result.reflection_prompt);
+      }
+    } catch {
+      /* the local timer still worked; the recording did not */
+    }
+  }, []);
+
   // Timer countdown loop
   useEffect(() => {
     if (isRunning && timeLeft > 0) {
       timerRef.current = setInterval(() => {
+        elapsedRef.current += 1;
         setTimeLeft((prev) => {
           if (prev <= 1) {
             clearInterval(timerRef.current!);
@@ -92,6 +173,7 @@ export function useFocusTimer({ onMoodChange }: { onMoodChange: (mood: HamsterMo
             playTimerCompletionChime();
             onMoodChange('happy');
             setTimeout(() => onMoodChange('idle'), 4000);
+            void closeSession(true);
             return 0;
           }
           return prev - 1;
@@ -104,7 +186,7 @@ export function useFocusTimer({ onMoodChange }: { onMoodChange: (mood: HamsterMo
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [isRunning, timeLeft, sessionType, totalSeconds, onMoodChange]);
+  }, [isRunning, timeLeft, sessionType, totalSeconds, onMoodChange, closeSession]);
 
   const handleSelectPreset = useCallback((preset: TimerPreset) => {
     setActivePreset(preset.id);
@@ -139,18 +221,32 @@ export function useFocusTimer({ onMoodChange }: { onMoodChange: (mood: HamsterMo
     if (timeLeft === 0) {
       setTimeLeft(totalSeconds);
       setSessionCompleted(false);
+      setReflectionPrompt(null);
       setIsRunning(true);
+      void openSession(Math.round(totalSeconds / 60), sessionType, currentActivity, activeTaskId);
       return;
     }
     setSessionCompleted(false);
-    setIsRunning((prev) => !prev);
-  }, [timeLeft, totalSeconds]);
+    setIsRunning((prev) => {
+      const next = !prev;
+      // Pausing deliberately leaves the session open — they may resume, and a
+      // pause is not the end of the work.
+      if (next) {
+        void openSession(Math.round(totalSeconds / 60), sessionType, currentActivity, activeTaskId);
+      }
+      return next;
+    });
+  }, [timeLeft, totalSeconds, sessionType, currentActivity, activeTaskId, openSession]);
 
   const handleResetTimer = useCallback(() => {
     setIsRunning(false);
     setTimeLeft(totalSeconds);
     setSessionCompleted(false);
-  }, [totalSeconds]);
+    setReflectionPrompt(null);
+    // Reset abandons the session: record it as not completed, which is what
+    // DISTRACTION_PATTERN reads.
+    void closeSession(false);
+  }, [totalSeconds, closeSession]);
 
   const handleFocusTask = useCallback((taskId: number, taskText: string) => {
     if (activeTaskId === taskId && isRunning) {
@@ -169,6 +265,8 @@ export function useFocusTimer({ onMoodChange }: { onMoodChange: (mood: HamsterMo
       setIsRunning(true);
     }
   }, [activeTaskId, isRunning, sessionType, handleSelectPreset]);
+
+  const dismissReflection = useCallback(() => setReflectionPrompt(null), []);
 
   const handleUnlinkTask = useCallback(() => {
     setActiveTaskId(null);
@@ -225,6 +323,11 @@ export function useFocusTimer({ onMoodChange }: { onMoodChange: (mood: HamsterMo
     handleFocusTask,
     handleUnlinkTask,
     saveCustomActivity,
+    /** Set when a focus session ran to the end. Asks whether the work
+     *  actually landed — the timer finishing is not the same claim. */
+    reflectionPrompt,
+    dismissReflection,
+    lastSessionId,
   };
 }
 

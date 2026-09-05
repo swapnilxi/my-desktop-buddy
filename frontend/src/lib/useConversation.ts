@@ -213,6 +213,29 @@ export function useConversation({ onMoodChange, buddyType, buddyName }: UseConve
     }
   }, [rememberSession]);
 
+  /**
+   * Append a completed live-voice exchange.
+   *
+   * The backend has already persisted it, so this only mirrors it into the
+   * on-screen transcript — which is what keeps live and typed conversation
+   * looking like one conversation instead of two.
+   */
+  const appendLiveTurn = useCallback((turn: {
+    heard: string; said: string; interrupted: boolean;
+  }) => {
+    setMessages((prev) => {
+      const next = [...prev];
+      if (turn.heard) next.push({ role: 'user', content: turn.heard });
+      if (turn.said) {
+        next.push({
+          role: 'assistant',
+          content: turn.interrupted ? `${turn.said}…` : turn.said,
+        });
+      }
+      return next;
+    });
+  }, []);
+
   /** Clear the screen without touching the stored session. */
   const clear = useCallback(() => {
     setMessages([]);
@@ -265,6 +288,8 @@ export function useConversation({ onMoodChange, buddyType, buddyName }: UseConve
     conversationId,
     send,
     sendVoice,
+    appendLiveTurn,
+    rememberSession,
     clear,
     newSession,
     messageCount: messages.length,

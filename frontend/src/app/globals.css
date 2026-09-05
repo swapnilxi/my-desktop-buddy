@@ -2435,7 +2435,7 @@ body {
   align-items: start;
 }
 
-.dashboard-workspace-body.tab-todo .todo-panel,
+.dashboard-workspace-body.tab-todo .todo-subpanel,
 .dashboard-workspace-body.tab-speech .speech-panel {
   max-width: 860px;
   width: 100%;
@@ -3132,6 +3132,59 @@ body {
   display: none !important;
 }
 
+/* ── To-Do tab's own Today / Tasks sub-navigation ──────────────────
+   TodayPanel and TodoPanel both assume they can fill their parent's height
+   (they set height: 100% and manage their own scrolling). Without this,
+   wrapping either one in an extra div would collapse it to auto height. */
+.todo-subpanel {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.todo-subtabs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+  width: fit-content;
+  margin: var(--space-md) var(--space-md) 0;
+  padding: 2px;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-full);
+}
+
+.todo-subtab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 28px;
+  padding: 0 12px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-full);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.todo-subtab-btn:hover {
+  background: var(--bg-glass-hover);
+  color: var(--text-primary);
+}
+
+.todo-subtab-btn.active {
+  background: var(--gradient-primary);
+  color: #201206;
+  box-shadow: 0 1px 6px var(--accent-glow);
+}
+
 /* ── Compact / Sidebar container ───────────────────────────────────
    This class was applied in the JSX but defined nowhere, so in a browser tab
    the mode called "Sidebar" inflated to the full window: 348px-wide tab
@@ -3409,4 +3462,153 @@ body {
 .voice-chain-step + .voice-chain-step::before {
   content: '→ ';
   color: var(--text-dim);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   Live voice (streaming, interruptible)
+   ══════════════════════════════════════════════════════════════ */
+
+.chat-session-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.chat-live-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 28px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-color);
+  background: var(--bg-glass);
+  color: var(--text-secondary);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.chat-live-btn:hover:not(:disabled) {
+  background: var(--bg-glass-hover);
+  border-color: var(--accent-primary);
+  color: var(--text-primary);
+}
+
+.chat-live-btn.active {
+  border-color: var(--danger);
+  background: var(--danger-glow);
+  color: var(--danger);
+}
+
+.chat-live-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.live-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin: 0 12px 6px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(116, 185, 255, 0.1);
+  border: 1px solid rgba(116, 185, 255, 0.35);
+  font-size: 12.5px;
+}
+
+.live-banner-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.live-banner-status {
+  font-weight: 600;
+  color: var(--info);
+}
+
+/* The streaming transcript can outrun the panel width; clipping it keeps the
+   banner one line tall instead of reflowing the whole chat on every fragment. */
+.live-banner-transcript {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.live-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--info);
+}
+
+.live-dot.listening {
+  background: var(--success);
+  animation: live-pulse 1.6s ease-in-out infinite;
+}
+
+.live-dot.speaking {
+  background: var(--accent-primary);
+  animation: live-pulse 0.8s ease-in-out infinite;
+}
+
+.live-dot.thinking {
+  background: var(--warning);
+  animation: live-pulse 1s ease-in-out infinite;
+}
+
+.live-dot.connecting {
+  background: var(--text-muted);
+  animation: live-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.82); }
+}
+
+.live-meter {
+  width: 42px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--bg-glass);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.live-meter-fill {
+  display: block;
+  height: 100%;
+  background: var(--success);
+  border-radius: 999px;
+  transition: width 90ms linear;
+}
+
+.live-mute-btn {
+  min-width: 26px;
+  min-height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.live-mute-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
 }

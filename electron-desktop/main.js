@@ -7,6 +7,7 @@
 
 const { app, BrowserWindow, Tray, Menu, screen, nativeImage, ipcMain, session, systemPreferences } = require('electron');
 const path = require('path');
+const fs = require('fs');
 const { spawn } = require('child_process');
 
 let mainWindow = null;
@@ -317,6 +318,10 @@ function setupIPC() {
     savedBounds[mode] = target;
     // Refresh the tray/dock radio ticks so they reflect the new mode.
     updateTrayMenu();
+    // Pet mode is a frameless, transparent, always-on-top overlay — re-asserting
+    // the dock/window/tray icon on every mode switch guarantees it still shows
+    // the active buddy there too, not just in compact/fullscreen.
+    applyBuddyIcon(currentBuddyType);
     // Leaving click-through on outside pet mode would make the panel unusable.
     if (mode !== 'pet') mainWindow.setIgnoreMouseEvents(false);
 
@@ -332,8 +337,12 @@ function setupIPC() {
 
   ipcMain.on('buddy:update', (_event, buddyInfo) => {
     if (!buddyInfo) return;
-    const { name, emoji } = buddyInfo;
+    const { name, emoji, type } = buddyInfo;
     updateTrayMenu(name, emoji);
+    if (type && type !== currentBuddyType) {
+      currentBuddyType = type;
+      applyBuddyIcon(type);
+    }
     if (mainWindow && !mainWindow.isDestroyed()) {
       mainWindow.setTitle(`${emoji || '🐾'} ${name || 'Desktop Buddy'}`);
     }
@@ -354,8 +363,89 @@ function revealWindow() {
 
 let trayAnimTimer = null;
 let dockAnimTimer = null;
+let trayFrames = [];
+let trayBaseIcon = null;
 let currentBuddyName = 'Hammy';
 let currentBuddyEmoji = '🐹';
+let currentBuddyType = 'hamster';
+
+// Each buddy's face, used for the dock/taskbar icon, the window icon, and the
+// idle tray icon. Only hamster has hand-animated tray frames (frame_0..3);
+// panda and krishna show their still face in the tray instead.
+const BUDDY_ICON_FILES = {
+  hamster: 'icon.png',
+  panda: 'icon-panda.png',
+  krishna: 'icon-krishna.png',
+};
+
+/** Falls back to the hamster icon if a buddy's dedicated file is missing. */
+function resolveIconPath(buddyType) {
+  const assetsDir = path.join(__dirname, 'assets');
+  const file = BUDDY_ICON_FILES[buddyType] || BUDDY_ICON_FILES.hamster;
+  const candidate = path.join(assetsDir, file);
+  return fs.existsSync(candidate) ? candidate : path.join(assetsDir, BUDDY_ICON_FILES.hamster);
+}
+
+/** Swaps the dock icon (macOS), the window icon (Windows/Linux taskbar), and the tray icon. */
+function applyBuddyIcon(buddyType) {
+  const img = nativeImage.createFromPath(resolveIconPath(buddyType));
+  if (img.isEmpty()) return;
+
+  if (process.platform === 'darwin' && app.dock) {
+    app.dock.setIcon(img);
+  }
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.setIcon(img);
+  }
+  setTrayIconForBuddy(buddyType);
+}
+
+function startTrayAnimation() {
+  let step = 0;
+  if (trayAnimTimer) clearInterval(trayAnimTimer);
+  trayAnimTimer = setInterval(() => {
+    step++;
+    if (!tray || tray.isDestroyed() || trayFrames.length === 0) return;
+
+    if (step % 12 === 0) {
+      // Blink frame
+      tray.setImage(trayFrames[2] || trayBaseIcon);
+      setTimeout(() => {
+        if (tray && !tray.isDestroyed()) tray.setImage(trayBaseIcon);
+      }, 160);
+    } else if (step % 7 === 0) {
+      // Ear flick / sniff frame
+      tray.setImage(trayFrames[3] || trayBaseIcon);
+      setTimeout(() => {
+        if (tray && !tray.isDestroyed()) tray.setImage(trayBaseIcon);
+      }, 200);
+    } else if (step % 4 === 0) {
+      // Subtle breath frame
+      tray.setImage(trayFrames[1] || trayBaseIcon);
+      setTimeout(() => {
+        if (tray && !tray.isDestroyed()) tray.setImage(trayBaseIcon);
+      }, 300);
+    }
+  }, 800);
+}
+
+/** Hamster keeps its breathing/blink animation loop; other buddies show a static face. */
+function setTrayIconForBuddy(buddyType) {
+  if (!tray || tray.isDestroyed()) return;
+
+  if (buddyType === 'hamster') {
+    tray.setImage(trayBaseIcon);
+    if (!trayAnimTimer) startTrayAnimation();
+    return;
+  }
+
+  if (trayAnimTimer) {
+    clearInterval(trayAnimTimer);
+    trayAnimTimer = null;
+  }
+  const img = nativeImage.createFromPath(resolveIconPath(buddyType));
+  tray.setImage(img.isEmpty() ? trayBaseIcon : img.resize({ width: 20, height: 20 }));
+}
 
 function updateTrayMenu(name, emoji) {
   if (name) currentBuddyName = name;
@@ -420,39 +510,15 @@ function loadIconFrames(size) {
 }
 
 function createTray() {
-  const trayFrames = loadIconFrames(20);
-  const baseIcon = trayFrames[0] || nativeImage.createFromPath(path.join(__dirname, 'assets', 'icon.png')).resize({ width: 20, height: 20 });
+  trayFrames = loadIconFrames(20);
+  trayBaseIcon = trayFrames[0] || nativeImage.createFromPath(path.join(__dirname, 'assets', 'icon.png')).resize({ width: 20, height: 20 });
 
-  tray = new Tray(baseIcon);
+  tray = new Tray(trayBaseIcon);
   updateTrayMenu(currentBuddyName, currentBuddyEmoji);
-
-  // Animated Menu Bar Tray Icon Loop (Realistic 3D breathing, blinking & ear flicks)
-  let step = 0;
-  if (trayAnimTimer) clearInterval(trayAnimTimer);
-  trayAnimTimer = setInterval(() => {
-    step++;
-    if (!tray || tray.isDestroyed() || trayFrames.length === 0) return;
-
-    if (step % 12 === 0) {
-      // Blink frame
-      tray.setImage(trayFrames[2] || baseIcon);
-      setTimeout(() => {
-        if (tray && !tray.isDestroyed()) tray.setImage(baseIcon);
-      }, 160);
-    } else if (step % 7 === 0) {
-      // Ear flick / sniff frame
-      tray.setImage(trayFrames[3] || baseIcon);
-      setTimeout(() => {
-        if (tray && !tray.isDestroyed()) tray.setImage(baseIcon);
-      }, 200);
-    } else if (step % 4 === 0) {
-      // Subtle breath frame
-      tray.setImage(trayFrames[1] || baseIcon);
-      setTimeout(() => {
-        if (tray && !tray.isDestroyed()) tray.setImage(baseIcon);
-      }, 300);
-    }
-  }, 800);
+  // Animated Menu Bar Tray Icon Loop (Realistic 3D breathing, blinking & ear flicks).
+  // Hamster is the default startup buddy, so the animation starts immediately;
+  // applyBuddyIcon() swaps it for a static face when another buddy is active.
+  startTrayAnimation();
 
   tray.on('click', () => {
     if (!mainWindow || mainWindow.isDestroyed()) return;

@@ -2,6 +2,7 @@
 
 import type { BuddyDefinition, BuddyType } from '../Buddies/types';
 import { getBuddyDefinition } from '../Buddies/registry';
+import BuddyGlyph from '../Buddies/BuddyGlyph';
 
 interface SpeechTrainingPanelProps {
   buddyType?: BuddyType | string;
@@ -35,8 +36,8 @@ export default function SpeechTrainingPanel({
         />
       </div>
 
-      <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
-        {effectiveEmoji} {effectiveName} is excited to learn your voice!
+      <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+        <BuddyGlyph buddyType={buddyType} emoji={effectiveEmoji} size={16} /> {effectiveName} is excited to learn your voice!
       </p>
     </div>
   );

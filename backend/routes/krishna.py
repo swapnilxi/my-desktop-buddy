@@ -38,6 +38,13 @@ class Msg(BaseModel):
     content: str
 
 
+class GitaContextRef(BaseModel):
+    """One verse the user explicitly attached to the conversation (Add to Chat Context)."""
+
+    chapter: int
+    verse: int
+
+
 class ChatRequest(BaseModel):
     message: str
     history: list[Msg] = Field(default_factory=list)
@@ -45,6 +52,7 @@ class ChatRequest(BaseModel):
     conversation_id: Optional[str] = None
     user_name: Optional[str] = None
     buddy_name: Optional[str] = None
+    gita_context: list[GitaContextRef] = Field(default_factory=list)
 
 
 @router.post("/chat")
@@ -78,6 +86,10 @@ async def krishna_chat(
     if not history and req.conversation_id:
         history = load_history(_user(x_user_id), req.conversation_id)
 
+    # Server-side cap regardless of what the client sends — the UI limits to 5
+    # (Part 32), but the backend must not trust the client's cap alone.
+    context_refs = [(r.chapter, r.verse) for r in req.gita_context][:5]
+
     try:
         reply = await respond(
             message=req.message,
@@ -90,6 +102,7 @@ async def krishna_chat(
             client_provider=x_llm_provider,
             client_keys=client_keys or None,
             client_models=client_models or None,
+            gita_context=context_refs or None,
         )
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc))

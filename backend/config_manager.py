@@ -108,6 +108,21 @@ class VoiceConfig(BaseModel):
         description="Fish Audio model name"
     )
 
+    # ── Live (streaming) voice ───────────────────────────────────────────
+    live_enabled: bool = Field(
+        default=True,
+        description="Offer the streaming voice mode when a Gemini key exists"
+    )
+    live_model: str = Field(
+        default_factory=lambda: os.getenv(
+            "GEMINI_LIVE_MODEL", "gemini-2.5-flash-native-audio-preview-09-2025"),
+        description="Gemini Live model. Only the native-audio preview answers on a standard key."
+    )
+    live_voice: str = Field(
+        default_factory=lambda: os.getenv("GEMINI_LIVE_VOICE", "Leda"),
+        description="Prebuilt Gemini voice for live sessions"
+    )
+
     # ── Shared ───────────────────────────────────────────────────────────
     voice_language: str = Field(
         default_factory=lambda: os.getenv("VOICE_LANGUAGE", "auto"),

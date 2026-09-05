@@ -5,6 +5,7 @@ import type { TodoItem, HamsterMood } from '@/lib/api';
 import { fetchTodos, createTodo, toggleTodo, deleteTodo } from '@/lib/api';
 import type { BuddyDefinition, BuddyType } from '../Buddies/types';
 import { getBuddyDefinition } from '../Buddies/registry';
+import BuddyGlyph from '../Buddies/BuddyGlyph';
 import {
   useFocusTimer,
   FocusTimerHandle,
@@ -472,8 +473,8 @@ export default function TodoPanel({
           <div className="todo-empty">
             <span className="todo-empty-emoji">📋</span>
             <p>No tasks yet! Add one above.</p>
-            <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>
-              {effectiveName} will help you stay on track {effectiveEmoji}
+            <p style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+              {effectiveName} will help you stay on track <BuddyGlyph buddyType={buddyType} emoji={effectiveEmoji} size={16} />
             </p>
           </div>
         ) : (

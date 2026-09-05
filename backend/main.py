@@ -26,6 +26,7 @@ from routes.daily import router as daily_router
 from routes.memory import router as memory_router
 from routes.krishna import router as krishna_router
 from routes.productivity import router as productivity_router
+from routes.live import router as live_router
 
 
 @asynccontextmanager
@@ -92,6 +93,7 @@ app.include_router(daily_router)
 app.include_router(memory_router)
 app.include_router(krishna_router)
 app.include_router(productivity_router)
+app.include_router(live_router)
 
 
 # ── Health Check ──────────────────────────────────────────────────

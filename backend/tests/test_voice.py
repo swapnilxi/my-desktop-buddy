@@ -10,6 +10,7 @@ that a voice failure never costs the user their reply.
 from __future__ import annotations
 
 import io
+import os
 import wave
 
 import pytest
@@ -530,3 +531,208 @@ def test_test_route_does_not_fall_back(client, monkeypatch):
     assert body["provider"] == "gemini"
     assert body["audio"] is None
     assert [a["provider"] for a in body["attempts"]] == ["gemini"]
+
+
+# ══════════════════════════════════════════════════════════════════════════
+# Live (streaming) voice
+#
+# No socket is opened to Google here. What is tested is the relay logic around
+# it — the parts that were wrong before the API was probed: per-turn receive,
+# barge-in ordering, and the prompt that keeps the character from drifting.
+# ══════════════════════════════════════════════════════════════════════════
+from voice import live_session as LV
+
+
+class _FakeInline:
+    def __init__(self, data: bytes):
+        self.data = data
+
+
+class _FakePart:
+    def __init__(self, data: bytes):
+        self.inline_data = _FakeInline(data)
+
+
+class _FakeTranscription:
+    def __init__(self, text: str):
+        self.text = text
+
+
+class _FakeContent:
+    def __init__(self, **kwargs):
+        self.interrupted = kwargs.get("interrupted", False)
+        self.input_transcription = kwargs.get("input_transcription")
+        self.output_transcription = kwargs.get("output_transcription")
+        self.model_turn = kwargs.get("model_turn")
+        self.generation_complete = kwargs.get("generation_complete", False)
+        self.turn_complete = kwargs.get("turn_complete", False)
+
+
+class _FakeMessage:
+    def __init__(self, content):
+        self.server_content = content
+
+
+class _FakeModelTurn:
+    def __init__(self, parts):
+        self.parts = parts
+
+
+def _session(**overrides) -> LV.LiveVoiceSession:
+    cfg = LV.LiveConfig(api_key="k", user_id="u1", **overrides)
+    return LV.LiveVoiceSession(cfg)
+
+
+def test_live_sample_rates_differ_and_are_explicit():
+    """In is 16k, out is 24k. Confusing them produces chipmunks."""
+    assert LV.INPUT_SAMPLE_RATE == 16000
+    assert LV.OUTPUT_SAMPLE_RATE == 24000
+    assert "16000" in LV.INPUT_MIME
+
+
+def test_ssl_cert_file_is_set_for_the_websocket_path():
+    """
+    The SDK passes no SSL context on its websocket path, so without this every
+    Live connection fails CERTIFICATE_VERIFY_FAILED on a machine lacking the
+    system root bundle.
+    """
+    assert os.environ.get("SSL_CERT_FILE")
+
+
+def test_the_known_working_model_is_first():
+    assert LV.MODEL_CANDIDATES[0] == LV.LIVE_MODEL
+    assert "native-audio" in LV.LIVE_MODEL
+
+
+def test_live_prompt_keeps_the_character_and_adds_spoken_rules():
+    prompt = LV.build_live_prompt(LV.LiveConfig(api_key="k", user_id="u", buddy_name="Madhav"))
+    # Same identity as every other surface — it goes through persona.py.
+    assert "Krishna-inspired AI companion" in prompt
+    assert "You are not Lord Krishna himself" in prompt
+    # Plus the spoken-medium rules.
+    assert "SPEAKING ALOUD" in prompt
+    assert "No markdown" in prompt
+    assert "interrupt" in prompt
+
+
+def test_live_prompt_can_be_overridden_wholesale():
+    cfg = LV.LiveConfig(api_key="k", user_id="u", system_prompt="Just this.")
+    assert LV.build_live_prompt(cfg) == "Just this."
+
+
+def test_interrupted_is_emitted_before_anything_else():
+    """
+    The client flushes buffered speech on this event. If a transcript or an
+    audio chunk from the same message came first, Madhav would talk over the
+    user for that long.
+    """
+    session = _session()
+    events = session._translate(_FakeMessage(_FakeContent(
+        interrupted=True,
+        output_transcription=_FakeTranscription("still talking"),
+        model_turn=_FakeModelTurn([_FakePart(b"\x01\x02")]),
+    )))
+    assert events[0]["type"] == "interrupted"
+
+
+def test_transcripts_accumulate_across_fragments():
+    session = _session()
+    session._translate(_FakeMessage(_FakeContent(
+        input_transcription=_FakeTranscription("Arre "))))
+    events = session._translate(_FakeMessage(_FakeContent(
+        input_transcription=_FakeTranscription("dost")))) 
+    assert events[0]["accumulated"] == "Arre dost"
+    assert session.turn.heard == "Arre dost"
+
+
+def test_audio_parts_become_audio_events_with_a_rate():
+    session = _session()
+    events = session._translate(_FakeMessage(_FakeContent(
+        model_turn=_FakeModelTurn([_FakePart(b"\x00" * 320)]))))
+    assert events[0]["type"] == "audio"
+    assert events[0]["sample_rate"] == LV.OUTPUT_SAMPLE_RATE
+    assert session.turn.audio_bytes == 320
+
+
+def test_empty_server_content_yields_nothing():
+    assert _session()._translate(_FakeMessage(None)) == []
+
+
+def test_turn_state_resets_between_turns():
+    session = _session()
+    session.turn.heard = "x"
+    session.turn.said = "y"
+    session.turn.audio_bytes = 10
+    session.turn.interrupted = True
+    session.turn.reset()
+    assert session.turn.heard == "" and session.turn.said == ""
+    assert session.turn.audio_bytes == 0 and session.turn.interrupted is False
+
+
+def test_send_audio_is_a_no_op_without_a_session():
+    run(_session().send_audio(b"\x00" * 100))     # must not raise
+
+
+def test_close_is_idempotent():
+    session = _session()
+    run(session.close())
+    run(session.close())
+
+
+# ── persist_turn ─────────────────────────────────────────────────────────
+def test_live_turns_persist_into_normal_history(seeded):
+    from krishna.orchestrator import create_session, load_history, persist_turn
+
+    session = create_session("u1")
+    persist_turn("u1", session["id"], "kya haal hai", "sab badhiya", source="live")
+    messages = load_history("u1", session["id"])
+    assert [m["content"] for m in messages] == ["kya haal hai", "sab badhiya"]
+
+
+def test_persist_turn_creates_a_conversation_when_there_is_none(seeded):
+    from krishna.orchestrator import load_history, persist_turn
+
+    cid = persist_turn("u1", None, "hello", "hi there")
+    assert cid
+    assert len(load_history("u1", cid)) == 2
+
+
+def test_persist_turn_ignores_a_conversation_from_another_user(seeded):
+    from krishna.orchestrator import create_session, load_history, persist_turn
+
+    theirs = create_session("u2")
+    cid = persist_turn("u1", theirs["id"], "mine", "reply")
+    assert cid != theirs["id"]           # a fresh one, not theirs
+    assert load_history("u2", theirs["id"]) == []
+
+
+def test_persist_turn_skips_empty_halves(seeded):
+    from krishna.orchestrator import load_history, persist_turn
+
+    cid = persist_turn("u1", None, "only the user spoke", "")
+    assert [m["role"] for m in load_history("u1", cid)] == ["user"]
+
+
+# ── Routes ───────────────────────────────────────────────────────────────
+def test_live_status_reports_capability(client):
+    body = client.get("/voice/live/status").json()
+    assert body["input_sample_rate"] == 16000
+    assert body["output_sample_rate"] == 24000
+    assert body["supports_barge_in"] is True
+    assert "turn-based" in body["note"]
+
+
+def test_live_socket_refuses_without_a_key(client, monkeypatch):
+    """Without a key it must say so and close, not hang with an open mic."""
+    import config_manager
+
+    config = config_manager.get_config()
+    monkeypatch.setattr(config.api_keys, "gemini_key", "", raising=False)
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    monkeypatch.delenv("GEMINI_KEY", raising=False)
+
+    with client.websocket_connect("/voice/live?user_id=u1") as ws:
+        message = ws.receive_json()
+        assert message["type"] == "error"
+        assert message["fatal"] is True
+        assert "Gemini API key" in message["message"]

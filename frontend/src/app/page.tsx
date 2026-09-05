@@ -7,7 +7,7 @@ import TodoPanel from '@/components/TodoList/TodoPanel';
 import ConfigPanel from '@/components/Config/ConfigPanel';
 import SpeechTrainingPanel from '@/components/SpeechTraining/SpeechTrainingPanel';
 import GitaPanel from '@/components/Krishna/GitaPanel';
-import DailyPanel from '@/components/Krishna/DailyPanel';
+import TodayPanel from '@/components/Today/TodayPanel';
 import { checkHealth, fetchGreeting, getClientSavedConfig, saveClientSavedConfig } from '@/lib/api';
 import type { HamsterMood } from '@/lib/api';
 import { useVoiceRecorder } from '@/lib/useVoiceRecorder';
@@ -18,9 +18,12 @@ import { useConversation } from '@/lib/useConversation';
 import { ModeSwitcher, WindowControls, MODES } from '@/components/Shell/WindowChrome';
 import type { WindowMode } from '@/components/Shell/WindowChrome';
 import ConfirmDialog from '@/components/Shell/ConfirmDialog';
+import BuddyGlyph from '@/components/Buddies/BuddyGlyph';
 
 export type { WindowMode };
-type TabId = 'chat' | 'todo' | 'daily' | 'gita' | 'config' | 'speech';
+type TabId = 'chat' | 'todo' | 'gita' | 'config' | 'speech';
+/** The To-Do tab's own sub-navigation — the daily dashboard vs. the task list. */
+type TodoSubTab = 'today' | 'tasks';
 
 /** Remembering the mode means a relaunch no longer dumps the user into the widget. */
 const MODE_STORAGE_KEY = 'desktop_buddy_window_mode';
@@ -40,10 +43,12 @@ const BASE_TABS: Tab[] = [
 
 /**
  * Companion tabs specific to Krishna. A hamster has no use for a Gita
- * search, so these are appended only for the Krishna buddy.
+ * search, so these are appended only for the Krishna buddy. The daily
+ * dashboard lives inside the To-Do tab as a sub-tab instead of its own
+ * top-level tab (see TodoSubTab) — it's the same "stay on top of your day"
+ * job as the task list, just a different view onto it.
  */
 const KRISHNA_TABS: Tab[] = [
-  { id: 'daily', emoji: '🌅', label: 'Today' },
   { id: 'gita', emoji: '📖', label: 'Gita' },
 ];
 
@@ -80,6 +85,7 @@ function updateFavicon(emoji: string) {
 export default function Home() {
   const [windowMode, setWindowModeState] = useState<WindowMode>('pet');
   const [activeTab, setActiveTab] = useState<TabId>('chat');
+  const [todoSubTab, setTodoSubTab] = useState<TodoSubTab>('today');
   const [buddyType, setBuddyType] = useState<BuddyType>('hamster');
   const [hamsterMood, setHamsterMood] = useState<HamsterMood>('idle');
   const [hamsterColor, setHamsterColor] = useState('#F4A460');
@@ -747,7 +753,7 @@ export default function Home() {
             aria-label={`Switch buddy — next is ${nextBuddyDef.name}`}
             title={`Switch Buddy (Next: ${nextBuddyDef.emoji} ${nextBuddyDef.name})`}
           >
-            <span aria-hidden="true">{nextBuddyDef.emoji}</span>
+            <BuddyGlyph buddyType={nextBuddyType} emoji={nextBuddyDef.emoji} size={22} />
           </button>
 
           {/* Tap to Talk */}
@@ -826,35 +832,69 @@ export default function Home() {
         aria-labelledby="tab-todo"
         hidden={effectiveTab !== 'todo'}
       >
-        <TodoPanel
-          onMoodChange={handleMoodChange}
-          buddyType={buddyType}
-          buddyName={hamsterName}
-          buddyDef={currentBuddyDef}
-          timer={timer}
-        />
+        {/* Krishna gets a Today/Tasks split — everyone else only ever had the
+            task list, so there is nothing to switch between for them. */}
+        {buddyType === 'krishna' && (
+          <div className="todo-subtabs" role="tablist" aria-label="To-Do view">
+            <button
+              type="button"
+              role="tab"
+              id="subtab-today"
+              aria-selected={todoSubTab === 'today'}
+              aria-controls="subpanel-today"
+              className={`todo-subtab-btn ${todoSubTab === 'today' ? 'active' : ''}`}
+              onClick={() => setTodoSubTab('today')}
+            >
+              <span aria-hidden="true">🌅</span> Today
+            </button>
+            <button
+              type="button"
+              role="tab"
+              id="subtab-tasks"
+              aria-selected={todoSubTab === 'tasks'}
+              aria-controls="subpanel-tasks"
+              className={`todo-subtab-btn ${todoSubTab === 'tasks' ? 'active' : ''}`}
+              onClick={() => setTodoSubTab('tasks')}
+            >
+              <span aria-hidden="true">✅</span> Tasks
+            </button>
+          </div>
+        )}
+
+        {buddyType === 'krishna' && todoSubTab === 'today' ? (
+          <div id="subpanel-today" className="todo-subpanel" role="tabpanel" aria-labelledby="subtab-today">
+            {/* The Today dashboard embeds the daily Gita, so this view is the
+                whole day rather than only the verse. */}
+            <TodayPanel
+              buddyName={hamsterName}
+              onAsk={(message) => {
+                setActiveTab('chat');
+                void conversation.send(message);
+              }}
+            />
+          </div>
+        ) : (
+          <div id="subpanel-tasks" className="todo-subpanel" role="tabpanel" aria-labelledby="subtab-tasks">
+            <TodoPanel
+              onMoodChange={handleMoodChange}
+              buddyType={buddyType}
+              buddyName={hamsterName}
+              buddyDef={currentBuddyDef}
+              timer={timer}
+            />
+          </div>
+        )}
       </div>
       {buddyType === 'krishna' && (
-        <>
-          <div
-            id="panel-daily"
-            className="tab-pane"
-            role="tabpanel"
-            aria-labelledby="tab-daily"
-            hidden={effectiveTab !== 'daily'}
-          >
-            <DailyPanel />
-          </div>
-          <div
-            id="panel-gita"
-            className="tab-pane"
-            role="tabpanel"
-            aria-labelledby="tab-gita"
-            hidden={effectiveTab !== 'gita'}
-          >
-            <GitaPanel />
-          </div>
-        </>
+        <div
+          id="panel-gita"
+          className="tab-pane"
+          role="tabpanel"
+          aria-labelledby="tab-gita"
+          hidden={effectiveTab !== 'gita'}
+        >
+          <GitaPanel />
+        </div>
       )}
       <div
         id="panel-config"
@@ -1008,7 +1048,7 @@ export default function Home() {
               aria-label={`Switch buddy — next is ${nextBuddyDef.name}`}
               title={`Switch Buddy (Next: ${nextBuddyDef.emoji} ${nextBuddyDef.name})`}
             >
-              <span aria-hidden="true">{nextBuddyDef.emoji}</span>
+              <BuddyGlyph buddyType={nextBuddyType} emoji={nextBuddyDef.emoji} size={18} />
               Switch
             </button>
 
@@ -1082,7 +1122,9 @@ export default function Home() {
       {/* Co-Pilot Left Sidebar */}
       <aside className="dashboard-copilot-sidebar">
         <div className="copilot-header">
-          <span className="copilot-logo" aria-hidden="true">{currentBuddyDef.emoji}</span>
+          <span className="copilot-logo">
+            <BuddyGlyph buddyType={buddyType} emoji={currentBuddyDef.emoji} size={20} />
+          </span>
           <span className="copilot-title">{hamsterName}</span>
         </div>
 
@@ -1124,7 +1166,7 @@ export default function Home() {
             onClick={() => switchBuddy()}
             aria-label={`Switch buddy — next is ${nextBuddyDef.name}`}
           >
-            <span aria-hidden="true">{nextBuddyDef.emoji}</span>
+            <BuddyGlyph buddyType={nextBuddyType} emoji={nextBuddyDef.emoji} size={18} />
             Switch to {nextBuddyDef.name}
           </button>
 

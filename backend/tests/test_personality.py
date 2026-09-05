@@ -153,6 +153,52 @@ def test_invalid_reference_instructs_refusal():
     assert "Do NOT produce a verse for it" in prompt
 
 
+# ── Gita Verse Context: attached context is separate from retrieval ─────
+def test_attached_context_block_is_separate_from_classifier_gita_block():
+    """
+    An ordinary greeting does not trigger the classifier's own Gita
+    retrieval, but a user-attached verse (Add to Chat Context) must still
+    reach the prompt — as background, not as the classifier's "only verses
+    you may quote" mandate.
+    """
+    c = classify("hello")
+    assert not c.needs_gita
+    prompt = build_system_prompt(c, attached_context=[{
+        "reference": "Bhagavad Gita 2.47", "chapter": 2, "verse": 47,
+        "translation": "You have a right to your actions, never to the fruits.",
+        "source_name": "Test", "verified": False, "themes": ["duty"],
+    }])
+    assert "ATTACHED SCRIPTURE CONTEXT" in prompt
+    assert "background, not a mandate" in prompt
+    assert "Bhagavad Gita 2.47" in prompt
+    assert "the ONLY verses you may quote" not in prompt
+
+
+def test_attached_context_marks_invalid_and_missing_entries_honestly():
+    prompt = build_system_prompt(classify("hello"), attached_context=[
+        {"chapter": 20, "verse": 10, "error": "invalid_reference", "message": "no such chapter"},
+        {"chapter": 18, "verse": 78, "error": "not_in_knowledge_base", "message": "not seeded yet"},
+    ])
+    assert "INVALID REFERENCE" in prompt
+    assert "Do not use or quote this" in prompt
+    assert "not yet in the knowledge base" in prompt
+    assert "Do not invent it" in prompt
+
+
+def test_attached_context_never_forces_scripture_into_a_technical_question():
+    c = classify("How do I fix this Python bug in my FastAPI endpoint?")
+    assert c.is_technical
+    assert not c.needs_gita
+    prompt = build_system_prompt(c, attached_context=[{
+        "reference": "Bhagavad Gita 2.47", "chapter": 2, "verse": 47,
+        "translation": "You have a right to your actions, never to the fruits.",
+        "source_name": "Test", "verified": True,
+    }])
+    assert "Answer it technically" in prompt
+    assert "ATTACHED SCRIPTURE CONTEXT" in prompt
+    assert "the ONLY verses you may quote" not in prompt
+
+
 # ── Part 54: safety ─────────────────────────────────────────────────────
 def test_distress_is_prioritised_over_everything():
     c = classify("I want to kill myself")

@@ -23,6 +23,8 @@ import type {
 import { playAudioBase64 } from '@/lib/speech';
 import { BUDDY_REGISTRY, getBuddyDefinition } from '@/components/Buddies/registry';
 import type { BuddyType } from '@/components/Buddies/types';
+import krishnaLogoImg from '@/components/Buddies/Krishna/krishna-logo.png';
+import BuddyGlyph from '@/components/Buddies/BuddyGlyph';
 
 const DEFAULT_CONFIG: AppConfig = {
   llm: {
@@ -85,20 +87,18 @@ interface ConfigPanelProps {
 }
 
 /**
- * Krishna's config-picker thumbnail — the actual peacock feather worn in his
- * hair, cropped straight out of `krishna_hair.png` (the same asset the live
- * sprite renders), not a redrawn icon. Scoped to this one thumbnail only —
+ * Krishna's config-picker cover image. Scoped to this one thumbnail only —
  * the shared `emoji` field elsewhere (favicon, tab title, chat header) still
  * needs a plain string, so it is left untouched.
  */
-function PeacockFeatherThumbnail() {
+function KrishnaLogoThumbnail() {
   return (
-    // eslint-disable-next-line @next/next/no-img-element -- fixed decorative crop, not a content image worth next/image's overhead
+    // eslint-disable-next-line @next/next/no-img-element -- fixed decorative cover image, not a content image worth next/image's overhead
     <img
-      src="/characters/krishna_peacock_feather_icon.png"
+      src={krishnaLogoImg.src}
       alt=""
       aria-hidden="true"
-      style={{ width: '36px', height: 'auto', display: 'block' }}
+      style={{ width: '36px', height: '36px', borderRadius: '10px', objectFit: 'cover', display: 'block' }}
     />
   );
 }
@@ -407,7 +407,7 @@ export default function ConfigPanel({
                 }}
               >
                 <div style={{ fontSize: '36px', marginBottom: '4px' }}>
-                  {buddy.id === 'krishna' ? <PeacockFeatherThumbnail /> : buddy.emoji}
+                  {buddy.id === 'krishna' ? <KrishnaLogoThumbnail /> : buddy.emoji}
                 </div>
                 <div style={{ fontWeight: 700, fontSize: '13px', color: isSelected ? 'var(--accent-primary, #F4A460)' : 'var(--text-primary)' }}>
                   {buddy.name}
@@ -423,7 +423,9 @@ export default function ConfigPanel({
 
       {/* Buddy Appearance & Customization */}
       <div className="config-section">
-        <div className="config-section-title">{currentBuddyDef.emoji} {currentBuddyDef.name} Customization</div>
+        <div className="config-section-title" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <BuddyGlyph buddyType={currentBuddyType} emoji={currentBuddyDef.emoji} size={18} /> {currentBuddyDef.name} Customization
+        </div>
         <div className="config-group">
           <div className="config-row">
             <span className="config-label">Name</span>
