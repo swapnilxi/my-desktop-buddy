@@ -14,6 +14,15 @@ export const USER_CONFIG_STORAGE_KEY = 'hamsterdesk_user_config';
 export interface ChatMessage {
   role: 'user' | 'assistant';
   content: string;
+  /** Present when this message was produced by the Gita Explain flow, so the
+   *  UI can offer "Go Deeper" follow-ups on it. */
+  meta?: {
+    kind: 'gita_explain';
+    chapter: number;
+    verse: number;
+    depth: ExplainDepth;
+    language: ExplainLanguage;
+  };
 }
 
 export interface ChatResponse {
@@ -618,6 +627,21 @@ export interface MemoryProposal {
   actions: string[];
 }
 
+/**
+ * The backend's turn classification. Feeds `deriveCharacterState`
+ * (lib/krishnaCharacterState.ts) as a `ClassificationHint` — kept as a
+ * separate, structurally-identical interface here rather than importing
+ * that module, so this foundational API-client file doesn't depend on a
+ * UI-adjacent one. All fields optional: a turn that didn't run
+ * classification (or an older backend) should refine nothing.
+ */
+export interface KrishnaClassification {
+  intent?: string;
+  emotion?: string;
+  mode?: string;
+  urgency?: string;
+}
+
 export interface KrishnaChatResponse {
   response: string;
   model: string;
@@ -639,13 +663,17 @@ export interface KrishnaChatResponse {
     source?: string;
     source_name?: string;
   }[];
+  /** Verses the user explicitly attached via Add to Chat Context, echoed back
+   *  so the UI can confirm what actually reached the prompt (may include
+   *  `error: 'invalid_reference' | 'not_in_knowledge_base'` entries). */
+  gita_context_used?: (KrishnaChatResponse['gita_used'][number] & { error?: string | null })[];
   gita_invalid_message?: string | null;
   tools_used: { name: string; arguments: Record<string, unknown>; result: Record<string, unknown> }[];
   memory_proposal?: MemoryProposal | null;
   memories_used: number;
   productivity_used?: boolean;
   gita_action?: GitaActionSituation | null;
-  classification: Record<string, unknown>;
+  classification: KrishnaClassification;
   events: { event: string; at: string; presentation: Record<string, unknown> }[];
   safety_flags: string[];
   request_id: string;
@@ -693,6 +721,7 @@ export async function sendKrishnaMessage(
   mode?: KrishnaModeId,
   conversationId?: string,
   buddyName?: string,
+  gitaContext?: { chapter: number; verse: number }[],
 ): Promise<KrishnaChatResponse> {
   return krishnaRequest<KrishnaChatResponse>('/krishna/chat', {
     method: 'POST',
@@ -700,6 +729,45 @@ export async function sendKrishnaMessage(
       message,
       history,
       mode,
+      conversation_id: conversationId,
+      buddy_name: buddyName,
+      gita_context: gitaContext,
+    }),
+  });
+}
+
+// ── Gita Verse Context + Explain ────────────────────────────────
+
+export type ExplainDepth = 'simple' | 'detailed' | 'deep_gita' | 'modern_example';
+export type ExplainLanguage = 'en' | 'hi' | 'hinglish';
+
+export interface ExplainVerseResponse extends KrishnaChatResponse {
+  depth: ExplainDepth;
+  language: ExplainLanguage;
+  reference: string;
+}
+
+/**
+ * Explain Simply / Go Deeper. Routes through the same orchestrated chat
+ * pipeline as `sendKrishnaMessage` — the reply is a normal KrishnaChatResponse
+ * plus `depth`/`language`/`reference`, meant to be appended to the same
+ * message list rather than shown in a separate view.
+ */
+export async function explainGitaVerse(
+  chapter: number,
+  verse: number,
+  depth: ExplainDepth = 'simple',
+  language: ExplainLanguage = 'en',
+  conversationId?: string,
+  buddyName?: string,
+): Promise<ExplainVerseResponse> {
+  return krishnaRequest<ExplainVerseResponse>('/gita/explain', {
+    method: 'POST',
+    body: JSON.stringify({
+      chapter,
+      verse,
+      depth,
+      language,
       conversation_id: conversationId,
       buddy_name: buddyName,
     }),

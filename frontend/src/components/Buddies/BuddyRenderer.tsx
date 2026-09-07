@@ -5,10 +5,20 @@ import type { BuddyMood, BuddyType, BuddySpriteProps } from './types';
 import HamsterSprite from './Hamster/HamsterSprite';
 import PandaSprite from './Panda/PandaSprite';
 import KrishnaSprite from './Krishna/KrishnaSprite';
+import type { KrishnaState } from './Krishna/KrishnaSprite';
 import { getBuddyDefinition } from './registry';
 
 export interface BuddyRendererProps extends BuddySpriteProps {
   type?: BuddyType | string;
+  /**
+   * Krishna-only visual overrides from the character-state system
+   * (useKrishnaCharacterState). Ignored by Hamster/Panda — `mood`/`pose`
+   * remain the only channel those sprites read.
+   */
+  state?: string;
+  chakra?: string;
+  particles?: boolean;
+  extraClass?: string;
 }
 
 export default function BuddyRenderer({
@@ -24,6 +34,10 @@ export default function BuddyRenderer({
   onClick,
   onRefreshGreeting,
   onFeed,
+  state,
+  chakra,
+  particles,
+  extraClass,
 }: BuddyRendererProps) {
   const buddyDef = getBuddyDefinition(type);
   const effectiveColor = color || buddyDef.defaultColor;
@@ -34,6 +48,7 @@ export default function BuddyRenderer({
       <KrishnaSprite
         mood={mood}
         pose={pose as any}
+        state={state as KrishnaState | undefined}
         size={size}
         color={effectiveColor}
         name={effectiveName}
@@ -43,6 +58,9 @@ export default function BuddyRenderer({
         onClick={onClick}
         onRefreshGreeting={onRefreshGreeting}
         onFeed={onFeed}
+        chakra={chakra}
+        particles={particles}
+        extraClass={extraClass}
       />
     );
   }

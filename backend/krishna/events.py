@@ -42,21 +42,21 @@ EVENT_NAMES = (
 # Default presentation for each event (Part 63). Subscribers may override;
 # this is what the frontend gets when the backend has no better idea.
 PRESENTATION: dict[str, dict[str, Any]] = {
-    KRISHNA_MESSAGE_START: {"animation": "THINKING", "chakra": "FAST", "voiceMode": "NEUTRAL"},
-    KRISHNA_MESSAGE_END: {"animation": "IDLE", "chakra": "CALM", "voiceMode": "NEUTRAL"},
-    USER_STARTED_SPEAKING: {"animation": "LISTENING", "chakra": "CALM", "voiceMode": "SILENT"},
-    USER_STOPPED_SPEAKING: {"animation": "THINKING", "chakra": "FAST", "voiceMode": "SILENT"},
-    TASK_COMPLETED: {"animation": "HAPPY", "chakra": "CELEBRATE", "voiceMode": "HAPPY"},
-    TASK_FAILED: {"animation": "IDLE", "chakra": "CALM", "voiceMode": "GENTLE"},
-    FOCUS_STARTED: {"animation": "FOCUSED", "chakra": "SLOW", "voiceMode": "SILENT"},
-    FOCUS_COMPLETED: {"animation": "HAPPY", "chakra": "CELEBRATE", "voiceMode": "HAPPY"},
-    GITA_RETRIEVED: {"animation": "IDLE", "chakra": "GLOW", "voiceMode": "CALM"},
-    MEMORY_SAVED: {"animation": "IDLE", "chakra": "GLOW", "voiceMode": "NEUTRAL"},
-    MEMORY_DELETED: {"animation": "IDLE", "chakra": "CALM", "voiceMode": "NEUTRAL"},
-    DAILY_GREETING: {"animation": "WAVING", "chakra": "GLOW", "voiceMode": "WARM"},
-    DAILY_VERSE: {"animation": "IDLE", "chakra": "GLOW", "voiceMode": "CALM"},
-    MEDITATION_STARTED: {"animation": "MEDITATING", "chakra": "BREATHE", "voiceMode": "SOFT"},
-    MEDITATION_COMPLETED: {"animation": "IDLE", "chakra": "CALM", "voiceMode": "SOFT"},
+    KRISHNA_MESSAGE_START: {"animation": "THINKING", "chakra": "FAST", "voiceMode": "NEUTRAL", "particles": False},
+    KRISHNA_MESSAGE_END: {"animation": "IDLE", "chakra": "CALM", "voiceMode": "NEUTRAL", "particles": False},
+    USER_STARTED_SPEAKING: {"animation": "LISTENING", "chakra": "CALM", "voiceMode": "SILENT", "particles": False},
+    USER_STOPPED_SPEAKING: {"animation": "THINKING", "chakra": "FAST", "voiceMode": "SILENT", "particles": False},
+    TASK_COMPLETED: {"animation": "HAPPY", "chakra": "CELEBRATE", "voiceMode": "HAPPY", "particles": True},
+    TASK_FAILED: {"animation": "IDLE", "chakra": "CALM", "voiceMode": "GENTLE", "particles": False},
+    FOCUS_STARTED: {"animation": "FOCUSED", "chakra": "SLOW", "voiceMode": "SILENT", "particles": False},
+    FOCUS_COMPLETED: {"animation": "HAPPY", "chakra": "CELEBRATE", "voiceMode": "HAPPY", "particles": True},
+    GITA_RETRIEVED: {"animation": "IDLE", "chakra": "GLOW", "voiceMode": "CALM", "particles": False},
+    MEMORY_SAVED: {"animation": "IDLE", "chakra": "GLOW", "voiceMode": "NEUTRAL", "particles": False},
+    MEMORY_DELETED: {"animation": "IDLE", "chakra": "CALM", "voiceMode": "NEUTRAL", "particles": False},
+    DAILY_GREETING: {"animation": "WAVING", "chakra": "GLOW", "voiceMode": "WARM", "particles": True},
+    DAILY_VERSE: {"animation": "IDLE", "chakra": "GLOW", "voiceMode": "CALM", "particles": False},
+    MEDITATION_STARTED: {"animation": "MEDITATING", "chakra": "BREATHE", "voiceMode": "SOFT", "particles": False},
+    MEDITATION_COMPLETED: {"animation": "IDLE", "chakra": "CALM", "voiceMode": "SOFT", "particles": False},
 }
 
 

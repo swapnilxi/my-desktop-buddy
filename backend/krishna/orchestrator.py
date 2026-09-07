@@ -26,10 +26,12 @@ from krishna.events import (
     KRISHNA_MESSAGE_START,
     bus,
 )
+from krishna.gita_action import Situation
 from krishna.intent import Classification, classify
 from krishna.modes import resolve_mode
 from krishna.motivation import celebration_signal, cue_for
 from krishna.persona import build_system_prompt
+from krishna.presentation import Presentation
 from observability import RequestLog
 
 NATIVE_TOOLS_ENABLED = os.getenv("KRISHNA_NATIVE_TOOLS", "").strip().lower() in {"1", "true", "yes"}
@@ -125,32 +127,52 @@ class KrishnaReply:
 
 
 # ── Presentation mapping (Part 63) ───────────────────────────────────────
-def _presentation_for(c: Classification) -> dict[str, Any]:
+def _presentation_for(c: Classification, situation: Optional[Situation] = None) -> Presentation:
+    # A matched Gita→Action situation is the most specific signal available —
+    # it wins over the generic mode/emotion mapping below, but only for the
+    # three situations with a distinct visual behaviour worth showing.
+    if situation is not None:
+        if situation.id == "BURNOUT":
+            return Presentation(animation="CONCERNED", chakra="CALM",
+                                voice_mode="GENTLE", mood="listening")
+        if situation.id == "MOTIVATION":
+            return Presentation(animation="EXCITED", chakra="ACCELERATE",
+                                voice_mode="HAPPY", mood="excited")
+        if situation.id == "DISCIPLINE":
+            return Presentation(animation="FOCUSED", chakra="SLOW",
+                                voice_mode="CALM", mood="focused")
+
     if c.intent == "celebration" or c.emotion == "celebrating":
         sig = celebration_signal("normal")
-        return {"animation": sig["animation"], "chakra": sig["chakra"],
-                "voice_mode": sig["voiceMode"], "mood": "happy",
-                "particles": sig["particles"]}
+        return Presentation(animation=sig.animation, chakra=sig.chakra,
+                            voice_mode=sig.voice_mode, mood="happy",
+                            particles=sig.particles)
     if c.urgency == "crisis":
-        return {"animation": "IDLE", "chakra": "CALM", "voice_mode": "GENTLE",
-                "mood": "listening", "particles": False}
+        return Presentation(animation="CONCERNED", chakra="CALM", voice_mode="GENTLE",
+                            mood="listening", particles=False)
     if c.mode == "focus":
-        return {"animation": "FOCUSED", "chakra": "SLOW", "voice_mode": "SILENT",
-                "mood": "focused", "particles": False}
+        return Presentation(animation="FOCUSED", chakra="SLOW", voice_mode="SILENT",
+                            mood="focused", particles=False)
     if c.mode == "meditation":
-        return {"animation": "MEDITATING", "chakra": "BREATHE", "voice_mode": "SOFT",
-                "mood": "idle", "particles": False}
+        return Presentation(animation="MEDITATING", chakra="BREATHE", voice_mode="SOFT",
+                            mood="idle", particles=False)
     if c.emotion in {"sad", "anxious", "stressed", "tired"}:
-        return {"animation": "IDLE", "chakra": "CALM", "voice_mode": "GENTLE",
-                "mood": "speaking", "particles": False}
+        return Presentation(animation="CONCERNED", chakra="CALM", voice_mode="GENTLE",
+                            mood="speaking", particles=False)
     if c.mode == "playful":
-        return {"animation": "EXCITED", "chakra": "ACCELERATE", "voice_mode": "HAPPY",
-                "mood": "excited", "particles": False}
+        return Presentation(animation="EXCITED", chakra="ACCELERATE", voice_mode="HAPPY",
+                            mood="excited", particles=False)
+    if c.mode == "listening":
+        return Presentation(animation="LISTENING", chakra="CALM", voice_mode="SILENT",
+                            mood="listening", particles=False)
+    if c.mode in ("wise", "gita"):
+        return Presentation(animation="TALKING", chakra="GLOW", voice_mode="CALM",
+                            mood="speaking", particles=False)
     if c.needs_gita:
-        return {"animation": "IDLE", "chakra": "GLOW", "voice_mode": "CALM",
-                "mood": "speaking", "particles": False}
-    return {"animation": "TALKING", "chakra": "CALM", "voice_mode": "NEUTRAL",
-            "mood": "speaking", "particles": False}
+        return Presentation(animation="IDLE", chakra="GLOW", voice_mode="CALM",
+                            mood="speaking", particles=False)
+    return Presentation(animation="TALKING", chakra="CALM", voice_mode="NEUTRAL",
+                        mood="speaking", particles=False)
 
 
 # ── Retrieval ────────────────────────────────────────────────────────────
@@ -525,12 +547,12 @@ async def respond(
         if t["name"] == "saveMemory" and result.get("error") == "consent_required":
             memory_proposal = result.get("data")
 
-    pres = _presentation_for(c)
+    pres = _presentation_for(c, situation)
     reply = KrishnaReply(
         response=text, model=adapter.get_model_name() if adapter else "unknown",
         mode=c.mode, intent=c.intent, emotion=c.emotion,
-        animation=pres["animation"], chakra=pres["chakra"],
-        voice_mode=pres["voice_mode"], mood=pres["mood"], particles=pres["particles"],
+        animation=pres.animation, chakra=pres.chakra,
+        voice_mode=pres.voice_mode, mood=pres.mood, particles=pres.particles,
         gita_used=[
             {"reference": r.get("reference"), "chapter": r.get("chapter"),
              "verse": r.get("verse"), "verified": r.get("verified", False),

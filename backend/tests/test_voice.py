@@ -658,6 +658,37 @@ def test_empty_server_content_yields_nothing():
     assert _session()._translate(_FakeMessage(None)) == []
 
 
+# ── Presentation classification on turn completion ──────────────────────
+def test_presentation_event_is_none_when_nothing_was_heard():
+    assert _session()._presentation_event() is None
+
+
+def test_presentation_event_classifies_the_heard_text():
+    session = _session(mode="friend")
+    session.turn.heard = "I am so stressed about this deadline"
+    event = session._presentation_event()
+    assert event["type"] == "presentation"
+    assert event["animation"] == "CONCERNED"
+    assert event["chakra"] == "CALM"
+    assert event["voiceMode"] == "GENTLE"
+    assert event["particles"] is False
+    assert event["emotion"] == "stressed"
+    assert event["intent"]
+
+
+def test_presentation_event_survives_a_classification_failure(monkeypatch):
+    """A hiccup in classification must not take down the live turn."""
+    import krishna.orchestrator as O
+
+    def boom(*_a, **_k):
+        raise RuntimeError("boom")
+
+    monkeypatch.setattr(O, "_presentation_for", boom)
+    session = _session()
+    session.turn.heard = "hello"
+    assert session._presentation_event() is None
+
+
 def test_turn_state_resets_between_turns():
     session = _session()
     session.turn.heard = "x"

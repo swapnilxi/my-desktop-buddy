@@ -19,6 +19,7 @@ from dataclasses import dataclass
 from typing import Any, Optional
 
 from db import get_conn, new_id, now_iso
+from krishna.events import MEMORY_DELETED, MEMORY_SAVED, bus
 
 CATEGORIES = (
     "PROFILE",
@@ -222,6 +223,7 @@ def save_memory(
             )
             action = "created"
 
+    bus.emit(MEMORY_SAVED, category=category, key=key)
     return {
         "saved": True,
         "action": action,
@@ -298,7 +300,10 @@ def delete_memory(user_id: str, memory_id: str) -> bool:
         cur = conn.execute(
             "DELETE FROM memories WHERE id = ? AND user_id = ?", (memory_id, user_id)
         )
-        return cur.rowcount > 0
+        deleted = cur.rowcount > 0
+    if deleted:
+        bus.emit(MEMORY_DELETED, memory_id=memory_id)
+    return deleted
 
 
 def forget_everything(user_id: str) -> dict[str, Any]:

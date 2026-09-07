@@ -1,12 +1,21 @@
 .selector {
   display: flex;
   gap: 12px;
+  flex-wrap: wrap;
   justify-content: center;
   background: #ffffff;
   padding: 6px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(15, 27, 61, 0.06);
   border: 1px solid rgba(0,0,0,0.04);
+}
+
+/* Dev-only debug panel: stacks a couple of .selector button bars. */
+.debugPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
 }
 
 .poseBtn {

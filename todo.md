@@ -342,6 +342,148 @@ component exists anywhere in `frontend/src/components` (checked directly).
   Mark 🟡 PARTIAL pending a closer look, not 🔴, since sprite work clearly
   exists — just not confirmed complete or backend-wired.
 
+### ✅ SHIPPED (landed 2026-09-05, `krishna-poses` branch) — character
+state-machine core pass. Implemented and independently verified (not just
+agent-reported): backend 474/474 tests passing, frontend `tsc` 0 errors,
+Vitest 88/88, production build green, eslint diff-checked line-by-line against
+`git blame` to confirm pre-existing-vs-new. Uncommitted — review before
+committing.
+
+**Backend — presentation payload**
+- [x] ✅ Unified the 3 inconsistent presentation-dict producers into one
+  `Presentation` Pydantic model (`backend/krishna/presentation.py`).
+  `_presentation_for`, `celebration_signal`, and `events.PRESENTATION` all
+  build/read the same shape now.
+- [x] ✅ `/voice/live` now emits a `{"type": "presentation", ...}` WS message
+  at `turn_complete`, computed by running the real `classify()` against the
+  turn's heard transcript and passing it through `_presentation_for` —
+  previously this path returned zero presentation data.
+- [x] ✅ Mode→animation coverage expanded — `listening` and `wise`/`gita` now
+  get dedicated branches (`friend`/`productivity` intentionally still fall
+  through to the generic default, no distinct signal to give them yet).
+- [x] ✅ 3 of the 9 Gita-action situations now drive presentation directly:
+  `BURNOUT`→`CONCERNED`, `MOTIVATION`→`EXCITED`, `DISCIPLINE`→`FOCUSED`
+  (checked before the generic mode/emotion branches). The other 6 situations
+  deliberately left unmapped — no distinct visual signal to invent honestly.
+- [x] ✅ Event emissions relocated from dead tool-wrapper call sites (only
+  reachable via disabled-by-default native tool-calling) into the real
+  business-logic functions the UI actually calls: `FOCUS_STARTED`/
+  `FOCUS_COMPLETED` (`productivity/focus.py`), `TASK_COMPLETED`/`TASK_FAILED`
+  (`productivity/tasks.py`, gated on status transition so a repeat PATCH
+  doesn't refire), `MEMORY_SAVED`/`MEMORY_DELETED` (`memory/store.py`).
+  `DAILY_GREETING`/`DAILY_VERSE`/`MEDITATION_STARTED`/`COMPLETED`/
+  `USER_STARTED`/`STOPPED_SPEAKING` remain deliberately unemitted — no
+  server-side trigger exists for the first two, no meditation flow exists at
+  all, and voice start/stop is already instant client-side via `useLiveVoice`
+  (a backend round-trip would only add latency for zero benefit).
+- [x] ✅ `backend/tests/test_presentation.py` — 40 new tests covering every
+  `_presentation_for` branch, the 3 situation overrides, and the 5 relocated
+  event emissions (fire-once + no-refire-on-no-op). Full suite: **474 passed,
+  0 failed** (up from 405 documented previously).
+
+**Frontend — character state machine**
+- [x] ✅ Centralized `frontend/src/lib/krishnaCharacterState.ts` +
+  `krishnaStateMachine.ts` + `useKrishnaCharacterState.ts`: presentation
+  payload → 17-value `CharacterState` → pose/chakra/particles/voiceMode,
+  single source of truth, with a priority/cooldown/min-hold arbitration layer
+  (`CharacterStateMachine`). Pure logic, fully unit-tested (88 Vitest tests).
+- [x] ✅ `useConversation.ts`, `useLiveVoice.ts`, and `useFocusTimer.ts` all
+  now feed `response.presentation`/`response.classification` (previously
+  100% discarded) into the new state machine via an additive `onPresentation`
+  callback — the pre-existing `onMoodChange`/`hamsterMood` channel is
+  untouched for Hamster/Panda.
+- [x] ✅ 17 `CharacterState` values now resolvable, mapped many-to-few onto
+  the **unchanged** 9-value `KrishnaState` union (no new keyframes this
+  pass — see the follow-up below for dedicated per-state animations).
+- [x] ✅ `data-pose` on the sprite container now reflects the real `pose`
+  prop (was hardcoded to the literal `"chakra"` string).
+- [x] ✅ `listening` now resolves to its own state in the pipeline (backend
+  `mode==='listening'` branch + frontend mapping), distinct from idle.
+- [x] ✅ Chakra speed is now CSS-variable-driven
+  (`--chakra-speed`, `CHAKRA_SPEED_MAP`), keyed off the backend's `chakra`
+  value, with `effectiveChakraSpeed()` clamping fast tiers under
+  reduced/minimal intensity.
+- [x] ✅ Particle layer added (gated on `particles === true` and intensity
+  `!== 'minimal'`) — previously zero particle markup/CSS existed.
+- [x] ✅ `classification` on `KrishnaChatResponse` is now a typed shape
+  instead of `Record<string, unknown>`.
+- [x] ✅ `/voice/live`'s new `"presentation"` WS message is consumed by
+  `useLiveVoice.ts` (defensively — guarded so an older backend shape never
+  throws).
+- [x] ✅ `FOCUSING` now fires on focus-session **start** via
+  `announceFocusStart()`, not just on natural completion.
+- [x] ✅ Priority/cooldown/min-hold state queue implemented
+  (`CharacterStateMachine` — critical always preempts, celebration has a 15s
+  cooldown, other tiers respect a per-state minimum hold time).
+- [x] ✅ Intensity setting shipped: `localStorage`-backed
+  `FULL`/`REDUCED`/`MINIMAL` (`krishnaIntensity.ts`), defaulting from
+  `prefers-reduced-motion`.
+- [x] ✅ Dev-only debug panel (`CharacterStateDebugPanel.tsx`, gated on
+  `NODE_ENV==='development'`, confirmed absent from the production build
+  output) — routes through the new state module directly rather than
+  resurrecting the previously-dead `showDebugControls` prop path.
+- [x] ✅ Vitest added from scratch (no test runner existed before) —
+  `krishnaCharacterState.test.ts` + `krishnaStateMachine.test.ts`, 88/88
+  passing.
+- [ ] 🟡 Reconcile the pose-naming mismatch — `KrishnaPose` uses
+  `'crossHands'`, `BuddySpriteProps.pose` uses `'crossed'`, the (unused)
+  `KrishnaCard` has a third `'base'|'chakra'|'crossed'` — still unreconciled,
+  deliberately deferred (orthogonal cleanup, the new pipeline routes around
+  it).
+
+### ✅ SHIPPED (landed 2026-09-06) — dedicated pose/animation per state
+Every one of the 11 extra states (`wisdom, celebrating, concerned, blessing,
+encouraging, curious, surprised, playful, focusing, meditating, sleeping`) now
+has its own dedicated `.krishnaX` class + `@keyframes` in `krishna.module.css`
+(no more sharing via `extraClass` modifiers) — `KrishnaState` extended 9→20,
+`resolveVisual()` in `krishnaCharacterState.ts` is now 1:1 for all 11.
+`surprised` is correctly non-looping (`animation-iteration-count: 1`, per the
+"don't hold it long" product rule). No new SVG geometry added — every
+treatment reuses existing markup (`#headGroup`, `.divineAura`, `.chakraDisc`,
+eyebrow/iris/eyelid groups); `meditating`/`sleeping` reuse the existing
+`.eyelidUpper` blink hook for a soft-closed-eye read, `surprised` uses iris
+scale (not the positioned eye-groups, which carry SVG transforms a CSS
+animation would clobber), `celebrating`'s "brighten" reuses the eyebrow-raise
+technique since the cheek-blush elements are dead/unclassed in the SVG.
+
+Independently verified (own re-run, not just agent-reported): `tsc` 0 errors,
+Vitest 105/105 (79 + 26), production build green, every `styles.krishnaX`
+reference cross-checked against a real `.krishnaX` CSS definition by direct
+file read, **plus a live Playwright pass against the real dev server**
+(installed the matching Chromium build, seeded `buddyType='krishna'` +
+fullscreen window mode via `localStorage`, opened the Config tab, clicked all
+17 debug-panel buttons): every click updates `data-state` to the exact value
+`resolveVisual` predicts, zero console errors, and `surprised` was confirmed
+to fire once and settle (3 screenshots spanning 2.5s are visually identical —
+not stuck mid-pop, not looping).
+
+**Bug found and fixed during this live check**: the debug panel's `sleeping`
+button could never actually work — `requestState` always derives the
+`CharacterState` from `(animation, hint)`, and no combination maps to
+`sleeping` (it's a pure idle-timeout concept with no backend equivalent), so
+clicking it silently produced `idle` instead. Fixed by adding an optional
+`forceState` param to `RequestStateFn`/`requestState` (bypasses derivation
+when set) and wiring the debug panel's `sleeping` button to use it — the
+other 16 buttons still exercise real derivation, unchanged. Confirmed fixed
+live: `data-state=sleeping` now shows correctly. `tsc` reconfirmed clean
+after the fix.
+
+**Audit notes worth keeping in mind while building this:**
+- `KrishnaSprite.tsx` already has a local, component-internal micro-behavior
+  system (blink timer, randomized idle micro-action timer,
+  `triggerTemporaryState`) — a reasonable seed for the real state machine,
+  just not shared or event-bus-driven yet.
+- `PoseSelector.tsx` is dead code today — not mounted anywhere in the app
+  (only imported by the also-unused `KrishnaCard.tsx`). The real, live
+  pose-switching UI is `ConfigPanel`'s `crossed`/`chakra` toggle in
+  `app/page.tsx`.
+- The backend event bus (`krishna/events.py`) already defines 15 event names
+  + a default presentation dict per event — good prior art for the
+  vocabulary — but only 3 of the 15 are ever actually emitted.
+- Hamster/Panda sprites are fully isolated from Krishna (separate files,
+  separate CSS, no shared code beyond `BuddyMood`/`BuddySpriteProps` types) —
+  safe to extend Krishna here with no regression risk to them.
+
 ---
 
 ## PHASE 13 — LEARNING

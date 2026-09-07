@@ -12,6 +12,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
+from krishna.presentation import Presentation
+
 
 @dataclass
 class MotivationCue:
@@ -188,7 +190,7 @@ def cue_for(intent: str, emotion: str = "neutral", message: str = "") -> Motivat
     return CUES["general"]
 
 
-def celebration_signal(magnitude: str = "normal") -> dict[str, Any]:
+def celebration_signal(magnitude: str = "normal") -> Presentation:
     """
     Frontend coordination payload for a completion (Parts 36, 63).
 
@@ -196,13 +198,13 @@ def celebration_signal(magnitude: str = "normal") -> dict[str, Any]:
     acknowledgement, not fireworks.
     """
     if magnitude == "small":
-        return {"emotion": "pleased", "animation": "HAPPY", "chakra": "GLOW",
-                "voiceMode": "WARM", "particles": False}
+        return Presentation(animation="HAPPY", chakra="GLOW",
+                            voice_mode="WARM", mood="happy", particles=False)
     if magnitude == "milestone":
-        return {"emotion": "celebration", "animation": "HAPPY", "chakra": "CELEBRATE",
-                "voiceMode": "HAPPY", "particles": True}
-    return {"emotion": "happy", "animation": "HAPPY", "chakra": "ACCELERATE",
-            "voiceMode": "HAPPY", "particles": True}
+        return Presentation(animation="CELEBRATING", chakra="CELEBRATE",
+                            voice_mode="HAPPY", mood="happy", particles=True)
+    return Presentation(animation="HAPPY", chakra="ACCELERATE",
+                        voice_mode="HAPPY", mood="happy", particles=True)
 
 
 def failure_recovery_flow() -> dict[str, Any]:

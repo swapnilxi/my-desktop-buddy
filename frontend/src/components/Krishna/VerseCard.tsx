@@ -1,7 +1,18 @@
 'use client';
 
 import type { GitaSearchResult, GitaVerse } from '@/lib/api';
+import { speak } from '@/lib/speech';
 import s from './krishna.panels.module.css';
+
+/** Plain-text citation used by both Listen and Copy — never richer than what's on screen. */
+function citationText(verse: GitaVerse): string {
+  const translation = verse.translations[0]?.text;
+  return [
+    `Bhagavad Gita ${verse.chapter}.${verse.verse}`,
+    verse.sanskrit,
+    translation,
+  ].filter(Boolean).join('\n');
+}
 
 /**
  * One verse, rendered with scripture, translation, commentary and practical
@@ -63,13 +74,73 @@ export function SearchResultCard({
   );
 }
 
-export function FullVerseCard({ verse }: { verse: GitaVerse }) {
+export function FullVerseCard({
+  verse,
+  onAsk,
+  onExplain,
+  onAddContext,
+  inContext,
+}: {
+  verse: GitaVerse;
+  /** Attach the verse to chat, focus the composer, and let the user ask anything. */
+  onAsk?: (chapter: number, verse: number) => void;
+  /** One-tap "Explain Simply" — the reply lands in the normal chat. */
+  onExplain?: (chapter: number, verse: number) => void;
+  /** Add to Chat Context — explicit, never automatic. */
+  onAddContext?: (chapter: number, verse: number) => void;
+  inContext?: boolean;
+}) {
   return (
     <article className={`${s.card} ${s.cardAccent}`}>
       <span className={s.reference}>
         📖 Bhagavad Gita {verse.chapter}.{verse.verse}
         {verse.chapter_name ? ` · ${verse.chapter_name}` : ''}
       </span>
+
+      <div className={s.chipRow}>
+        {onAsk && (
+          <button
+            type="button"
+            className={s.buttonGhost}
+            onClick={() => onAsk(verse.chapter, verse.verse)}
+          >
+            💬 Ask Madhav
+          </button>
+        )}
+        {onExplain && (
+          <button
+            type="button"
+            className={s.buttonGhost}
+            onClick={() => onExplain(verse.chapter, verse.verse)}
+          >
+            ✨ Explain Simply
+          </button>
+        )}
+        {onAddContext && (
+          <button
+            type="button"
+            className={s.buttonGhost}
+            disabled={inContext}
+            onClick={() => onAddContext(verse.chapter, verse.verse)}
+          >
+            {inContext ? '✓ Added to Chat' : '+ Add to Chat'}
+          </button>
+        )}
+        <button
+          type="button"
+          className={s.buttonGhost}
+          onClick={() => speak(citationText(verse))}
+        >
+          🔊 Listen
+        </button>
+        <button
+          type="button"
+          className={s.buttonGhost}
+          onClick={() => navigator.clipboard?.writeText(citationText(verse))}
+        >
+          📋 Copy
+        </button>
+      </div>
 
       {verse.sanskrit && (
         <>

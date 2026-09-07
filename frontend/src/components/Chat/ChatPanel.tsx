@@ -10,6 +10,7 @@ import type { BuddyDefinition, BuddyType } from '../Buddies/types';
 import { getBuddyDefinition } from '../Buddies/registry';
 import BuddyGlyph from '../Buddies/BuddyGlyph';
 import type { ConversationHandle } from '@/lib/useConversation';
+import type { RequestStateFn } from '@/lib/useKrishnaCharacterState';
 
 interface ChatPanelProps {
   onMoodChange: (mood: HamsterMood) => void;
@@ -21,6 +22,13 @@ interface ChatPanelProps {
    * unmounts this panel and throws the history away.
    */
   conversation: ConversationHandle;
+  /**
+   * Krishna's richer character-state channel (useKrishnaCharacterState's
+   * `requestState`), owned by app/page.tsx and threaded down here so the
+   * live-voice hook — instantiated inside this panel — can feed it too.
+   * Optional: Hamster/Panda panels simply never call it.
+   */
+  requestState?: RequestStateFn;
 }
 
 export default function ChatPanel({
@@ -29,6 +37,7 @@ export default function ChatPanel({
   buddyName,
   buddyDef,
   conversation,
+  requestState,
 }: ChatPanelProps) {
   const effectiveDef = buddyDef || getBuddyDefinition(buddyType);
   const effectiveName = buddyName || effectiveDef.defaultName;
@@ -51,6 +60,10 @@ export default function ChatPanel({
     rememberSession,
     newSession,
     conversationId,
+    gitaContext,
+    removeVerseFromContext,
+    clearVerseContext,
+    explainVerse,
   } = conversation;
 
   // Streaming voice. Separate from the mic button on purpose: tap-to-talk is
@@ -66,6 +79,7 @@ export default function ChatPanel({
       else if (s === 'listening') onMoodChange('listening');
       else onMoodChange('idle');
     },
+    onPresentation: requestState,
   });
   const [isRecording, setIsRecording] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
@@ -310,6 +324,26 @@ export default function ChatPanel({
               </div>
               <div className="message-bubble">
                 {msg.content}
+                {msg.role === 'assistant' && msg.meta?.kind === 'gita_explain' && idx === messages.length - 1 && (
+                  <div className="chat-followups">
+                    {(['simple', 'detailed', 'deep_gita', 'modern_example'] as const)
+                      .filter((d) => d !== msg.meta!.depth)
+                      .map((d) => (
+                        <button
+                          key={d}
+                          type="button"
+                          className="chat-followup-btn"
+                          onClick={() => explainVerse(msg.meta!.chapter, msg.meta!.verse, d, msg.meta!.language)}
+                          disabled={isLoading}
+                        >
+                          {d === 'simple' ? 'Simple'
+                            : d === 'detailed' ? 'Detailed'
+                            : d === 'deep_gita' ? 'Deep Gita'
+                            : 'Modern Example'}
+                        </button>
+                      ))}
+                  </div>
+                )}
               </div>
             </div>
           ))
@@ -421,6 +455,29 @@ export default function ChatPanel({
             aria-label="Dismiss"
           >
             ✕
+          </button>
+        </div>
+      )}
+
+      {/* Gita Verse Context — visible, removable, never silent */}
+      {gitaContext.length > 0 && (
+        <div className="gita-context-bar">
+          <span aria-hidden="true">📖</span>
+          <span>Gita context active:</span>
+          {gitaContext.map((r) => (
+            <span key={r.reference} className="gita-context-chip">
+              {r.reference}
+              <button
+                type="button"
+                onClick={() => removeVerseFromContext(r.chapter, r.verse)}
+                aria-label={`Remove Bhagavad Gita ${r.reference} from context`}
+              >
+                ×
+              </button>
+            </span>
+          ))}
+          <button type="button" className="gita-context-clear" onClick={clearVerseContext}>
+            Clear
           </button>
         </div>
       )}

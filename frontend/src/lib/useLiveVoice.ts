@@ -5,6 +5,8 @@ import { getClientApiKeys, getClientSavedConfig, getUserId } from '@/lib/api';
 import { stopSpeaking } from '@/lib/speech';
 import { createAudioPlayer, startMicCapture } from '@/lib/liveAudio';
 import type { AudioPlayer, MicStream } from '@/lib/liveAudio';
+import type { ClassificationHint, PresentationPayload } from '@/lib/krishnaCharacterState';
+import type { RequestStateFn } from '@/lib/useKrishnaCharacterState';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
@@ -24,7 +26,24 @@ export interface UseLiveVoiceOptions {
   onTurn?: (turn: { heard: string; said: string; interrupted: boolean }) => void;
   onConversationId?: (id: string) => void;
   onStatusChange?: (status: LiveStatus) => void;
+  /**
+   * The richer character-state channel (useKrishnaCharacterState's
+   * `requestState`), wired in by ChatPanel from a prop passed down by
+   * app/page.tsx. Optional and additive — `onStatusChange` above still
+   * drives the legacy `hamsterMood` channel untouched.
+   */
+  onPresentation?: RequestStateFn;
 }
+
+/** Local placeholder presentations for the two live-voice statuses that
+ *  carry no backend-computed presentation of their own — just the
+ *  connection state, not a classified reply. A real `'presentation'` WS
+ *  message (sent alongside `turn_complete`) always wins for the state that
+ *  follows it; this only covers listening/thinking in between. */
+const LIVE_PRESENTATION: Partial<Record<LiveStatus, PresentationPayload>> = {
+  listening: { animation: 'LISTENING', chakra: 'CALM', voiceMode: 'SILENT', particles: false },
+  thinking: { animation: 'THINKING', chakra: 'FAST', voiceMode: 'NEUTRAL', particles: false },
+};
 
 function websocketUrl(path: string): string {
   const base = API_BASE.replace(/^http/, 'ws');
@@ -66,6 +85,10 @@ export function useLiveVoice(options: UseLiveVoiceOptions = {}) {
   const applyStatus = useCallback((next: LiveStatus) => {
     setStatus(next);
     optionsRef.current.onStatusChange?.(next);
+    const presentation = LIVE_PRESENTATION[next];
+    if (presentation) {
+      optionsRef.current.onPresentation?.(presentation, undefined, 'liveVoice');
+    }
   }, []);
 
   const teardown = useCallback(() => {
@@ -199,6 +222,27 @@ export function useLiveVoice(options: UseLiveVoiceOptions = {}) {
               optionsRef.current.onConversationId?.(payload.conversation_id);
             }
             break;
+
+          // Sent alongside 'turn_complete' once the backend computes a real,
+          // classified presentation for the turn that just finished — this
+          // supersedes the local THINKING/LISTENING placeholders above for
+          // the state that follows.
+          case 'presentation': {
+            const pres = payload.presentation as Record<string, unknown> | undefined;
+            if (pres && typeof pres.animation === 'string') {
+              optionsRef.current.onPresentation?.(
+                {
+                  animation: pres.animation,
+                  chakra: typeof pres.chakra === 'string' ? pres.chakra : 'CALM',
+                  voiceMode: typeof pres.voiceMode === 'string' ? pres.voiceMode : 'NEUTRAL',
+                  particles: Boolean(pres.particles),
+                },
+                payload.classification as ClassificationHint | undefined,
+                'liveVoice',
+              );
+            }
+            break;
+          }
 
           case 'error': {
             const message = String(payload.message ?? 'Live voice failed.');

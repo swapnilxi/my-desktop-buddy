@@ -21,6 +21,7 @@ from datetime import datetime
 from typing import Any, Optional, Union
 
 from db import dump_json, ensure_user, get_conn, load_json, new_id, now_iso
+from krishna.events import TASK_COMPLETED, TASK_FAILED, bus
 
 STATUSES = ("TODO", "IN_PROGRESS", "COMPLETED", "CANCELLED")
 PRIORITIES = ("LOW", "MEDIUM", "HIGH", "CRITICAL")
@@ -292,6 +293,9 @@ def update_task(user_id: str, ref: Union[str, int], **fields: Any) -> Optional[d
         if row is None:
             return None
 
+        prev_status = row["status"]
+        new_status: Optional[str] = None
+
         sets: list[str] = []
         args: list[Any] = []
 
@@ -343,6 +347,7 @@ def update_task(user_id: str, ref: Union[str, int], **fields: Any) -> Optional[d
             args.append(resolved)
         if "status" in fields:
             status_v = normalize_status(fields["status"])
+            new_status = status_v
             sets.append("status = ?")
             args.append(status_v)
             if status_v == "COMPLETED":
@@ -359,7 +364,18 @@ def update_task(user_id: str, ref: Union[str, int], **fields: Any) -> Optional[d
         args.append(row["id"])
         conn.execute(f"UPDATE tasks SET {', '.join(sets)} WHERE id = ?", args)
         updated = conn.execute("SELECT * FROM tasks WHERE id = ?", (row["id"],)).fetchone()
-    return row_to_task(updated)
+
+    task = row_to_task(updated)
+    # Only fire on an actual transition into the status, not on a PATCH that
+    # merely restates the status the task was already in.
+    if new_status == "COMPLETED" and prev_status != "COMPLETED":
+        bus.emit(TASK_COMPLETED, task_id=task["id"], title=task["title"])
+    elif new_status == "CANCELLED" and prev_status != "CANCELLED":
+        # There is no real "failed" status in this schema (STATUSES has no
+        # FAILED); CANCELLED is the closest honest negative outcome, so
+        # TASK_FAILED is emitted as a semantic approximation of it.
+        bus.emit(TASK_FAILED, task_id=task["id"], title=task["title"])
+    return task
 
 
 def complete_task(user_id: str, ref: Union[str, int]) -> Optional[dict[str, Any]]:

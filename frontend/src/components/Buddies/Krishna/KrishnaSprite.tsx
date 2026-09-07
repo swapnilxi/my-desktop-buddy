@@ -5,6 +5,16 @@ import type { BuddySpriteProps, BuddyMood } from '../types';
 import styles from './krishna.module.css';
 import krishnaHairImg from './krishna_hair.png';
 import { KrishnaArms } from './krishna_arms';
+import { getIntensity, effectiveChakraSpeed, shouldShowParticles, type Intensity } from '@/lib/krishnaIntensity';
+
+/** A few small emoji used for the celebratory particle layer — not new
+ *  character artwork, just CSS-animated glyphs (see .particle in
+ *  krishna.module.css). */
+const PARTICLE_GLYPHS = ['✨', '🌟', '💫', '✨', '🌟'];
+
+/** CSS custom properties aren't part of React's CSSProperties type, so this
+ *  narrow extension keeps the inline `--chakra-speed` style fully typed. */
+type ChakraStyle = React.CSSProperties & { '--chakra-speed'?: string };
 
 export type KrishnaPose = 'crossHands' | 'chakra' | 'standing';
 
@@ -17,7 +27,21 @@ export type KrishnaState =
   | 'relax'
   | 'greeting'
   | 'clicked'
-  | 'speaking';
+  | 'speaking'
+  // ── Dedicated 1:1 CharacterState states (see krishnaCharacterState.ts's
+  //    resolveVisual) — each gets its own krishna.module.css class/keyframes
+  //    rather than sharing one of the 9 states above via an extraClass. ──
+  | 'wisdom'
+  | 'celebrating'
+  | 'concerned'
+  | 'blessing'
+  | 'encouraging'
+  | 'curious'
+  | 'surprised'
+  | 'playful'
+  | 'focusing'
+  | 'meditating'
+  | 'sleeping';
 
 export interface KrishnaProps {
   size?: 'sm' | 'md' | 'lg';
@@ -36,6 +60,14 @@ export interface KrishnaProps {
   onClick?: () => void;
   onRefreshGreeting?: () => void;
   onFeed?: () => void;
+  /** Backend `presentation.chakra` value (e.g. 'CALM' | 'FAST' | 'SLOW' | ...)
+   *  driving the Sudarshan Chakra disc's spin speed via a CSS variable. */
+  chakra?: string;
+  /** Renders the small celebratory particle layer above the sprite. */
+  particles?: boolean;
+  /** Extra CSS modifier class layered on top of the base state class (see
+   *  krishna.module.css) — e.g. 'sleeping' | 'wisdom' | 'celebrating'. */
+  extraClass?: string;
 }
 
 export function LittleKrishna({
@@ -55,6 +87,9 @@ export function LittleKrishna({
   onClick,
   onRefreshGreeting,
   onFeed,
+  chakra = 'CALM',
+  particles = false,
+  extraClass = '',
 }: KrishnaProps) {
   const deriveDefaultState = (): KrishnaState => {
     if (stateProp) return stateProp;
@@ -70,6 +105,20 @@ export function LittleKrishna({
   const isSpeakingActive = activeState === 'speaking' || mood === 'speaking' || isSpeaking || (!!greeting && activeState === 'greeting');
   const [isBlinking, setIsBlinking] = useState(false);
   const autoReturnTimer = useRef<NodeJS.Timeout | null>(null);
+
+  // Reduced-motion / particle-intensity preference. Read post-mount only —
+  // localStorage and matchMedia don't exist during the prerendered static
+  // export, so reading them during render would be a hydration mismatch
+  // rather than a one-frame correction (same pattern as app/page.tsx's
+  // saved-preferences restore).
+  const [intensity, setIntensity] = useState<Intensity>('full');
+  useEffect(() => {
+    setIntensity(getIntensity());
+  }, []);
+
+  const chakraSpeed = effectiveChakraSpeed(chakra, intensity);
+  const showParticles = shouldShowParticles(particles, intensity);
+  const extraClassName = extraClass ? (styles as Record<string, string>)[extraClass] || '' : '';
 
   useEffect(() => {
     if (stateProp) {
@@ -168,6 +217,28 @@ export function LittleKrishna({
         return styles.krishnaGreeting;
       case 'clicked':
         return styles.krishnaClicked;
+      case 'wisdom':
+        return styles.krishnaWisdom;
+      case 'celebrating':
+        return styles.krishnaCelebrating;
+      case 'concerned':
+        return styles.krishnaConcerned;
+      case 'blessing':
+        return styles.krishnaBlessing;
+      case 'encouraging':
+        return styles.krishnaEncouraging;
+      case 'curious':
+        return styles.krishnaCurious;
+      case 'surprised':
+        return styles.krishnaSurprised;
+      case 'playful':
+        return styles.krishnaPlayful;
+      case 'focusing':
+        return styles.krishnaFocusing;
+      case 'meditating':
+        return styles.krishnaMeditating;
+      case 'sleeping':
+        return styles.krishnaSleeping;
       case 'idle':
       default:
         return styles.krishnaIdle;
@@ -207,10 +278,12 @@ export function LittleKrishna({
 
   return (
     <div
-      className={`${styles.krishnaContainer} ${getSizeClass()} ${className}`}
-      data-pose="chakra"
+      className={`${styles.krishnaContainer} ${getSizeClass()} ${className} ${extraClassName}`}
+      data-pose={pose}
       data-state={activeState}
       data-mood={mood}
+      data-chakra={chakra}
+      style={{ '--chakra-speed': chakraSpeed } as ChakraStyle}
       onClick={handleSingleClick}
       onDoubleClick={handleDoubleClick}
       onContextMenu={handleRightClick}
@@ -3032,6 +3105,24 @@ export function LittleKrishna({
             <KrishnaArms pose={pose} renderSide="characterRight" renderLayer="forearmAndHand" renderHandPart="chakraIndexTip" />
           )}
         </svg>
+
+        {/* Celebratory particle layer — plain CSS/emoji, not new character
+            artwork, and a sibling of the SVG rather than nested inside the
+            chakra-disc's own <g>. Gated on both the `particles` prop and the
+            intensity setting (off entirely outside 'full'). */}
+        {showParticles && (
+          <div className={styles.particleLayer} aria-hidden="true">
+            {PARTICLE_GLYPHS.map((glyph, i) => (
+              <span
+                key={i}
+                className={styles.particle}
+                style={{ left: `${12 + i * 16}%`, animationDelay: `${i * 0.4}s` }}
+              >
+                {glyph}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -3039,7 +3130,13 @@ export function LittleKrishna({
 
 // Default export compatible with Desktop Buddy Sprite Renderer
 export default function KrishnaSprite(
-  props: BuddySpriteProps & { state?: KrishnaState; size?: 'sm' | 'md' | 'lg' }
+  props: BuddySpriteProps & {
+    state?: KrishnaState;
+    size?: 'sm' | 'md' | 'lg';
+    chakra?: string;
+    particles?: boolean;
+    extraClass?: string;
+  }
 ) {
   return (
     <LittleKrishna
@@ -3054,6 +3151,9 @@ export default function KrishnaSprite(
       onRefreshGreeting={props.onRefreshGreeting}
       onFeed={props.onFeed}
       size={props.size || 'md'}
+      chakra={props.chakra}
+      particles={props.particles}
+      extraClass={props.extraClass}
     />
   );
 }

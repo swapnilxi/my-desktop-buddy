@@ -15,6 +15,7 @@ from datetime import datetime, timezone
 from typing import Any, Optional
 
 from db import ensure_user, get_conn, new_id, now_iso
+from krishna.events import FOCUS_COMPLETED, FOCUS_STARTED, bus
 
 MODES = ("DEEP_WORK", "STUDY", "WRITING", "CODING", "ADMIN", "CREATIVE", "OTHER")
 PRESET_MINUTES = (25, 45, 60)
@@ -132,7 +133,10 @@ def start_session(
              resolved_goal, intended or activity, now_iso()),
         )
         row = conn.execute("SELECT * FROM focus_sessions WHERE id = ?", (sid,)).fetchone()
-    return _shape(row)
+    shaped = _shape(row)
+    bus.emit(FOCUS_STARTED, session_id=shaped["id"],
+             minutes=shaped["planned_minutes"], activity=activity)
+    return shaped
 
 
 def end_session(
@@ -205,7 +209,12 @@ def end_session(
 
         add_actual_minutes(user_id, row["task_id"], elapsed / 60)
 
-    return _shape(updated)
+    shaped = _shape(updated)
+    # Only reached for a session freshly closed by this call — the early
+    # returns above (no such session / already ended) never get here.
+    bus.emit(FOCUS_COMPLETED, session_id=shaped["id"],
+             seconds=shaped.get("actual_secs"), completed=completed)
+    return shaped
 
 
 def reflection_prompt(session: dict[str, Any]) -> dict[str, Any]:

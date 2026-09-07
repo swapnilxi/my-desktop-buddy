@@ -1,21 +1,33 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { ChatMessage, HamsterMood } from '@/lib/api';
+import type { ChatMessage, ExplainDepth, ExplainLanguage, HamsterMood, KrishnaChatResponse } from '@/lib/api';
 import {
   converseWithVoice,
   createChatSession,
+  explainGitaVerse,
   getClientSavedConfig,
   sendChatMessage,
   sendKrishnaMessage,
 } from '@/lib/api';
+import { addGitaContext, removeGitaContext, type GitaContextRef } from '@/lib/gitaContext';
 import { playAudioBase64, speak, stopSpeaking } from '@/lib/speech';
+import type { RequestStateFn } from '@/lib/useKrishnaCharacterState';
 
 export interface UseConversationOptions {
   onMoodChange: (mood: HamsterMood) => void;
   /** Which buddy is currently on screen — Krishna gets the emotion-aware orchestrated pipeline, others keep the flat prompt. */
   buddyType?: string;
   buddyName?: string;
+  /**
+   * The richer character-state channel (useKrishnaCharacterState's
+   * `requestState`), wired in by app/page.tsx. Optional and additive: the
+   * existing `onMoodChange('speaking'|'idle')` calls below are untouched —
+   * they still drive the legacy `hamsterMood` channel for non-Krishna
+   * buddies. This only ever receives Krishna responses, since only those
+   * carry a `presentation` payload.
+   */
+  onPresentation?: RequestStateFn;
 }
 
 const SESSION_STORAGE_KEY = 'krishna_conversation_id';
@@ -39,7 +51,7 @@ const SESSION_STORAGE_KEY = 'krishna_conversation_id';
  *     `/voice/converse`, which transcribes, runs the full orchestrator and
  *     synthesizes the reply in one round trip.
  */
-export function useConversation({ onMoodChange, buddyType, buddyName }: UseConversationOptions) {
+export function useConversation({ onMoodChange, buddyType, buddyName, onPresentation }: UseConversationOptions) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [isSending, setIsSending] = useState(false);
@@ -49,23 +61,33 @@ export function useConversation({ onMoodChange, buddyType, buddyName }: UseConve
   const [isVoiceThinking, setIsVoiceThinking] = useState(false);
   /** Set when the reply text arrived but could not be spoken, so the UI can say why. */
   const [voiceNotice, setVoiceNotice] = useState<string | null>(null);
+  /**
+   * Verses explicitly attached via "Add to Chat Context" (Gita Verse
+   * Context). Scoped to this conversation only — never persisted, and reset
+   * whenever the screen is cleared or a new session starts.
+   */
+  const [gitaContext, setGitaContext] = useState<GitaContextRef[]>([]);
 
   // Latest-value refs so send() stays stable across renders. send() only reads
   // them when it is actually called, which is always after the commit below.
   const moodRef = useRef(onMoodChange);
+  const presentationRef = useRef(onPresentation);
   const messagesRef = useRef<ChatMessage[]>(messages);
   const ragRef = useRef(useRag);
   const buddyTypeRef = useRef(buddyType);
   const buddyNameRef = useRef(buddyName);
   const conversationIdRef = useRef<string | null>(conversationId);
+  const gitaContextRef = useRef<GitaContextRef[]>(gitaContext);
 
   useEffect(() => {
     moodRef.current = onMoodChange;
+    presentationRef.current = onPresentation;
     messagesRef.current = messages;
     ragRef.current = useRag;
     buddyTypeRef.current = buddyType;
     buddyNameRef.current = buddyName;
     conversationIdRef.current = conversationId;
+    gitaContextRef.current = gitaContext;
   });
 
   // Restore the session id after mount. This is a deliberate post-mount
@@ -123,10 +145,20 @@ export function useConversation({ onMoodChange, buddyType, buddyName }: UseConve
           undefined,
           conversationIdRef.current ?? undefined,
           buddyNameRef.current,
+          gitaContextRef.current.map(({ chapter, verse }) => ({ chapter, verse })),
         )
         : await sendChatMessage(trimmed, history, ragRef.current);
       setMessages([...withUser, { role: 'assistant', content: response.response }]);
       moodRef.current('speaking');
+
+      // Only Krishna responses carry a `presentation` payload — a plain
+      // `ChatResponse` (Hamster/Panda's flat prompt path) doesn't. The ternary
+      // above already guarantees the real shape at runtime; TS can't narrow
+      // a plain (non-discriminated) union across the `await`, hence the cast.
+      if (currentBuddyType === 'krishna') {
+        const krishnaResponse = response as KrishnaChatResponse;
+        presentationRef.current?.(krishnaResponse.presentation, krishnaResponse.classification, 'chat');
+      }
 
       const newId = 'conversation_id' in response ? response.conversation_id : null;
       if (typeof newId === 'string' && newId) rememberSession(newId);
@@ -185,6 +217,7 @@ export function useConversation({ onMoodChange, buddyType, buddyName }: UseConve
 
       if (result.conversation_id) rememberSession(result.conversation_id);
       if (result.voice_error) setVoiceNotice(result.voice_error);
+      presentationRef.current?.(result.presentation, result.classification, 'chat');
 
       if (result.audio) {
         playAudioBase64(result.audio, result.audio_mime ?? 'audio/wav', {
@@ -236,11 +269,82 @@ export function useConversation({ onMoodChange, buddyType, buddyName }: UseConve
     });
   }, []);
 
+  /**
+   * Gita Verse Context — add/remove/clear an attached verse.
+   *
+   * Deliberately explicit: nothing else in this hook ever mutates
+   * `gitaContext`, so a verse only ever enters the conversation because the
+   * user clicked "Add to Chat Context".
+   */
+  const addVerseToContext = useCallback((chapter: number, verse: number) => {
+    setGitaContext((prev) => addGitaContext(prev, chapter, verse));
+  }, []);
+  const removeVerseFromContext = useCallback((chapter: number, verse: number) => {
+    setGitaContext((prev) => removeGitaContext(prev, chapter, verse));
+  }, []);
+  const clearVerseContext = useCallback(() => setGitaContext([]), []);
+
+  /**
+   * Explain Simply / Go Deeper on one verse.
+   *
+   * Appends a synthetic user line plus the tagged assistant reply to the same
+   * history `send()` uses, so the explanation reads as a normal part of the
+   * conversation rather than a separate view.
+   */
+  const explainVerse = useCallback(async (
+    chapter: number,
+    verse: number,
+    depth: ExplainDepth = 'simple',
+    language: ExplainLanguage = 'en',
+    speakReply: boolean = true,
+  ): Promise<string | null> => {
+    setError(null);
+    setIsSending(true);
+    moodRef.current('thinking');
+
+    try {
+      const res = await explainGitaVerse(
+        chapter, verse, depth, language,
+        conversationIdRef.current ?? undefined, buddyNameRef.current,
+      );
+      setMessages((prev) => [
+        ...prev,
+        { role: 'user', content: `Explain Bhagavad Gita ${chapter}.${verse} (${depth}).` },
+        { role: 'assistant', content: res.response, meta: { kind: 'gita_explain', chapter, verse, depth, language } },
+      ]);
+      moodRef.current('speaking');
+      presentationRef.current?.(res.presentation, res.classification, 'chat');
+
+      if (res.conversation_id) rememberSession(res.conversation_id);
+
+      if (speakReply) {
+        speak(res.response, {
+          buddyType: buddyTypeRef.current,
+          preset: getClientSavedConfig()?.voice?.gemini_voice,
+          onStart: () => moodRef.current('speaking'),
+          onEnd: () => moodRef.current('idle'),
+        });
+        setTimeout(() => moodRef.current('idle'), 15000);
+      } else {
+        moodRef.current('idle');
+      }
+      return res.response;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Could not explain that verse.';
+      setError(message);
+      moodRef.current('idle');
+      return null;
+    } finally {
+      setIsSending(false);
+    }
+  }, [rememberSession]);
+
   /** Clear the screen without touching the stored session. */
   const clear = useCallback(() => {
     setMessages([]);
     setError(null);
     setVoiceNotice(null);
+    setGitaContext([]);
   }, []);
 
   /**
@@ -256,6 +360,7 @@ export function useConversation({ onMoodChange, buddyType, buddyName }: UseConve
     setMessages([]);
     setError(null);
     setVoiceNotice(null);
+    setGitaContext([]);
     setInput('');
     moodRef.current('idle');
 
@@ -286,6 +391,11 @@ export function useConversation({ onMoodChange, buddyType, buddyName }: UseConve
     useRag,
     setUseRag,
     conversationId,
+    gitaContext,
+    addVerseToContext,
+    removeVerseFromContext,
+    clearVerseContext,
+    explainVerse,
     send,
     sendVoice,
     appendLiveTurn,

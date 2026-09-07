@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import type { FocusMode, HamsterMood, ReflectionPrompt } from '@/lib/api';
 import { endFocusSession, startFocusSession } from '@/lib/api';
 import { playTimerCompletionChime } from '@/lib/audio';
+import type { RequestStateFn } from '@/lib/useKrishnaCharacterState';
 
 export interface TimerPreset {
   id: string;
@@ -67,7 +68,16 @@ function guessMode(activity: string): FocusMode {
   return 'OTHER';
 }
 
-export function useFocusTimer({ onMoodChange }: { onMoodChange: (mood: HamsterMood) => void }) {
+export function useFocusTimer({
+  onMoodChange,
+  onPresentation,
+}: {
+  onMoodChange: (mood: HamsterMood) => void;
+  /** The richer character-state channel (useKrishnaCharacterState's
+   *  `requestState`), wired in by app/page.tsx. Optional and additive — the
+   *  existing `onMoodChange` calls below are untouched. */
+  onPresentation?: RequestStateFn;
+}) {
   const [activePreset, setActivePreset] = useState<string>('focus-25');
   const [sessionType, setSessionType] = useState<'focus' | 'break'>('focus');
   const [totalSeconds, setTotalSeconds] = useState<number>(25 * 60);
@@ -172,6 +182,12 @@ export function useFocusTimer({ onMoodChange }: { onMoodChange: (mood: HamsterMo
             setCompletedDurationMin(Math.round(totalSeconds / 60));
             playTimerCompletionChime();
             onMoodChange('happy');
+            onPresentation?.(
+              { animation: 'CELEBRATING', chakra: 'CELEBRATE', voiceMode: 'HAPPY', particles: true },
+              undefined,
+              'focusTimer',
+              'celebration',
+            );
             setTimeout(() => onMoodChange('idle'), 4000);
             void closeSession(true);
             return 0;
@@ -186,7 +202,7 @@ export function useFocusTimer({ onMoodChange }: { onMoodChange: (mood: HamsterMo
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [isRunning, timeLeft, sessionType, totalSeconds, onMoodChange, closeSession]);
+  }, [isRunning, timeLeft, sessionType, totalSeconds, onMoodChange, onPresentation, closeSession]);
 
   const handleSelectPreset = useCallback((preset: TimerPreset) => {
     setActivePreset(preset.id);
@@ -211,11 +227,24 @@ export function useFocusTimer({ onMoodChange }: { onMoodChange: (mood: HamsterMo
     setIsRunning(true);
   }, [handleSelectPreset]);
 
+  /** FOCUSED presentation for the character-state channel — a slow chakra,
+   *  silent voice mode, no particles. Shared by every "a focus run just
+   *  started" entry point below. */
+  const announceFocusStart = useCallback(() => {
+    onPresentation?.(
+      { animation: 'FOCUSED', chakra: 'SLOW', voiceMode: 'SILENT', particles: false },
+      undefined,
+      'focusTimer',
+      'focus',
+    );
+  }, [onPresentation]);
+
   const handleStartNextFocus = useCallback((minutes: number = 25) => {
     const focusPreset = PRESETS.find((p) => p.type === 'focus' && p.minutes === minutes) || PRESETS[0];
     handleSelectPreset(focusPreset);
     setIsRunning(true);
-  }, [handleSelectPreset]);
+    announceFocusStart();
+  }, [handleSelectPreset, announceFocusStart]);
 
   const handleToggleTimer = useCallback(() => {
     if (timeLeft === 0) {
@@ -223,6 +252,7 @@ export function useFocusTimer({ onMoodChange }: { onMoodChange: (mood: HamsterMo
       setSessionCompleted(false);
       setReflectionPrompt(null);
       setIsRunning(true);
+      announceFocusStart();
       void openSession(Math.round(totalSeconds / 60), sessionType, currentActivity, activeTaskId);
       return;
     }
@@ -232,11 +262,12 @@ export function useFocusTimer({ onMoodChange }: { onMoodChange: (mood: HamsterMo
       // Pausing deliberately leaves the session open — they may resume, and a
       // pause is not the end of the work.
       if (next) {
+        announceFocusStart();
         void openSession(Math.round(totalSeconds / 60), sessionType, currentActivity, activeTaskId);
       }
       return next;
     });
-  }, [timeLeft, totalSeconds, sessionType, currentActivity, activeTaskId, openSession]);
+  }, [timeLeft, totalSeconds, sessionType, currentActivity, activeTaskId, openSession, announceFocusStart]);
 
   const handleResetTimer = useCallback(() => {
     setIsRunning(false);
@@ -263,8 +294,9 @@ export function useFocusTimer({ onMoodChange }: { onMoodChange: (mood: HamsterMo
     }
     if (!isRunning) {
       setIsRunning(true);
+      announceFocusStart();
     }
-  }, [activeTaskId, isRunning, sessionType, handleSelectPreset]);
+  }, [activeTaskId, isRunning, sessionType, handleSelectPreset, announceFocusStart]);
 
   const dismissReflection = useCallback(() => setReflectionPrompt(null), []);
 

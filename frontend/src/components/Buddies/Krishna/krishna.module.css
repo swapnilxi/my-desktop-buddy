@@ -829,6 +829,14 @@
 .chakraDisc {
   transform-origin: 91px 56px;
   transform-box: view-box;
+  /* Default fallback so the disc always spins even outside the idle/protector
+     state rules below (e.g. transient happy/motivation/greeting/clicked
+     states, or pose !== 'chakra') — matches the pre-existing behavior where
+     data-pose was hardcoded to 'chakra' and this rule always applied. Speed
+     is driven by --chakra-speed (set inline from the backend's `chakra`
+     value via effectiveChakraSpeed), and the state/pose-scoped rules further
+     down remain the more-specific overrides that win when they apply. */
+  animation: spinChakra var(--chakra-speed, 12s) linear infinite;
 }
 
 #feet {
@@ -849,7 +857,7 @@
 }
 
 .krishnaIdle .chakraDisc {
-  animation: spinChakra 12s linear infinite;
+  animation: spinChakra var(--chakra-speed, 12s) linear infinite;
 }
 
 /* ── 2. PROTECTOR STATE (CANONICAL CHAKRA POSE) ────────────────── */
@@ -875,9 +883,13 @@
 }
 
 .krishnaContainer[data-pose='chakra'] .chakraDisc {
-  animation: spinChakra 12s linear infinite;
+  animation: spinChakra var(--chakra-speed, 12s) linear infinite;
 }
 
+/* Protector's canonical fast spin stays a fixed rhythm — deliberately left
+   as a hardcoded override rather than switched to --chakra-speed, so it
+   always wins (higher-specificity selector) regardless of backend chakra
+   data. */
 .krishnaContainer[data-pose='chakra'][data-state='protector'] .chakraDisc {
   animation-duration: 6.5s;
 }
@@ -944,6 +956,166 @@
 /* ── 8. CLICKED STATE (QUICK FEEDBACK GLOW - NO MOVEMENT) ───────────── */
 .krishnaClicked {
   filter: drop-shadow(0 0 16px rgba(255, 215, 0, 0.65));
+}
+
+/* ── 8B. DEDICATED CHARACTER-STATE CLASSES ─────────────────────────
+   One full class + its own @keyframes per extra CharacterState (see
+   resolveVisual in krishnaCharacterState.ts) — applied directly as the
+   base state class via getStateClass() in KrishnaSprite.tsx, exactly like
+   the 9 original states above. No `extraClass` modifier layering anymore;
+   each of these IS the whole class. Keyframes for all of these live down
+   in the KEYFRAME DEFINITIONS section below, alongside the originals. ── */
+
+/* ── 8C. WISDOM STATE (COMPOSED, ALMOST-STILL SWAY) ────────────────
+   Slower and calmer than krishnaIdle's 4.5s breathing — a barely-there
+   sway befitting a still, composed moment of insight. */
+.krishnaWisdom {
+  animation: wisdomSway 9.5s ease-in-out infinite alternate;
+}
+
+.krishnaWisdom #headGroup {
+  animation: wisdomHeadTilt 9.5s ease-in-out infinite alternate;
+}
+
+/* ── 8D. CELEBRATING STATE (BIG JOYFUL BOUNCE) ─────────────────────
+   Bigger amplitude + bouncier easing than krishnaHappy, plus a brighter/
+   wider-eyed read via the existing eyebrow-raise (reusing krishnaClicked's
+   eyebrow technique) and iris-brighten (reusing the .iris hook). */
+.krishnaCelebrating {
+  animation: celebratingBounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite alternate;
+}
+
+.krishnaCelebrating #headGroup {
+  animation: celebratingHeadNod 0.6s ease-in-out infinite alternate;
+}
+
+.krishnaCelebrating .eyebrowLeft,
+.krishnaCelebrating .eyebrowRight {
+  transform: translateY(-3px) scale(1.05);
+}
+
+.krishnaCelebrating .iris {
+  filter: brightness(1.25) saturate(1.15);
+}
+
+/* ── 8E. CONCERNED STATE (FORWARD LEAN, KNIT-BROW STILLNESS) ───────
+   Low-amplitude lean-and-settle, with a symmetric lowered/knit brow —
+   reuses krishnaThinking's .eyebrowLeft/.eyebrowRight technique, but
+   mirrored inward and lower for a "furrowed" rather than "quizzical" read. */
+.krishnaConcerned {
+  animation: concernedLean 4s ease-in-out infinite alternate;
+}
+
+.krishnaConcerned .eyebrowLeft {
+  transform: translateY(2px) rotate(-3deg);
+}
+
+.krishnaConcerned .eyebrowRight {
+  transform: translateY(2px) rotate(3deg);
+}
+
+/* ── 8F. BLESSING STATE (SOFT RAISED-HAND HOLD, AURA PULSE) ────────
+   Minimal body motion; the primary cue is a slow glow pulse on the
+   divine aura. .divineAura is a sibling of .krishna (not a descendant),
+   so it's scoped via the data-state attribute on .krishnaContainer —
+   the same pattern already used for the protector/motivation states. */
+.krishnaBlessing {
+  animation: blessingBreath 3.5s ease-in-out infinite alternate;
+}
+
+.krishnaContainer[data-state='blessing'] .divineAura {
+  opacity: 0.95;
+  animation: blessingAuraGlow 3.5s ease-in-out infinite alternate;
+}
+
+/* ── 8G. ENCOURAGING STATE (WARM, SLIGHTLY FORWARD-LEANING NOD) ────
+   A softer, slower cousin of celebrating — same shape of motion
+   (body sway + head nod), gentler amplitude and pace. */
+.krishnaEncouraging {
+  animation: encouragingSway 2.5s ease-in-out infinite alternate;
+}
+
+.krishnaEncouraging #headGroup {
+  animation: encouragingNod 2.5s ease-in-out infinite alternate;
+}
+
+/* ── 8H. CURIOUS STATE (HEAD TILT + HELD BEAT, LIGHT IRIS SHIFT) ───
+   Deliberately not a looping @keyframes — mirrors krishnaThinking's own
+   technique exactly (a static transform + transition, so it eases into
+   the tilt once and holds), just a lighter iris shift and no body motion. */
+.krishnaCurious #headGroup {
+  transform: rotate(9deg) translateY(-1px);
+  transition: transform 0.6s ease;
+}
+
+.krishnaCurious .iris {
+  transform: translate(1.2px, -1px);
+  transition: transform 0.4s ease;
+}
+
+/* ── 8I. SURPRISED STATE (BRIEF POP — NOT AN AMBIENT LOOP) ─────────
+   A transient reaction, not a held state: both animations run once
+   (trailing `1` = animation-iteration-count: 1) and ease back to rest
+   rather than looping. Widens the iris rather than the whole eye group,
+   since #leftEyeGroup/#rightEyeGroup carry positional SVG `transform`
+   attributes a CSS transform would clobber (no existing state animates
+   those groups directly) — .iris has no such attribute, so scaling it is
+   the safe existing hook, and a dilated iris reads as a widened eye. */
+.krishnaSurprised {
+  animation: surprisedPop 0.45s ease-out 1;
+}
+
+.krishnaSurprised .iris {
+  animation: surprisedIrisWiden 0.45s ease-out 1;
+}
+
+/* ── 8J. PLAYFUL STATE (MISCHIEVOUS SIDE-LEAN) ─────────────────────
+   Quick side-to-side lean + head tilt, visually distinct from
+   krishnaMotivation's vertical float/nod. */
+.krishnaPlayful {
+  animation: playfulLean 1.2s ease-in-out infinite alternate;
+}
+
+.krishnaPlayful #headGroup {
+  animation: playfulHeadTilt 1.2s ease-in-out infinite alternate;
+}
+
+/* ── 8K. FOCUSING STATE (QUIET, MINIMAL-AMPLITUDE BREATHING) ───────
+   Body only — calmer/lower-amplitude than krishnaIdle. Chakra slowdown
+   is driven separately by --chakra-speed (backend chakra='SLOW' for
+   FOCUSED), not by this class. */
+.krishnaFocusing {
+  animation: focusingBreathing 6.5s ease-in-out infinite alternate;
+}
+
+/* ── 8L. MEDITATING STATE (VERY SLOW DEEP BREATHING, SOFT EYES) ────
+   Slower than krishnaRelax's 8s. Eyelids softened to a half-closed rest
+   position via the existing .eyelidUpper scaleY hook (the same element
+   the blink cycle already animates) — .eyelidUpper.blinkActive is
+   defined later in this file, so an actual blink (equal specificity,
+   later source order) still wins and fully closes the eye over this. */
+.krishnaMeditating {
+  animation: meditatingBreathing 11s ease-in-out infinite alternate;
+}
+
+.krishnaMeditating .eyelidUpper {
+  transform: scaleY(0.5);
+}
+
+/* ── 8M. SLEEPING STATE (DIMMED, MINIMAL MOTION, SOFT-CLOSED EYES) ─
+   Same half-closed-eyelid technique as meditating, pushed further
+   toward fully shut, plus a dimmed body and aura. */
+.krishnaSleeping {
+  opacity: 0.55;
+  animation: sleepingBreathing 15s ease-in-out infinite alternate;
+}
+
+.krishnaSleeping .eyelidUpper {
+  transform: scaleY(0.85);
+}
+
+.krishnaContainer[data-state='sleeping'] .divineAura {
+  opacity: 0.4;
 }
 
 /* ── EXPRESSIVE EYEBROWS & FACIAL DYNAMICS ───────────────────────── */
@@ -1055,6 +1227,28 @@
 .debugBtnActive {
   background: #FFC83D;
   color: #0F1B3D;
+}
+
+/* ── CELEBRATION PARTICLE LAYER ──────────────────────────────────
+   Plain CSS/emoji, not new character artwork. A sibling of the SVG
+   (see KrishnaSprite.tsx), gated on `particles` + the intensity setting. */
+.particleLayer {
+  position: absolute;
+  top: -10px;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  pointer-events: none;
+  z-index: 40;
+  overflow: visible;
+}
+
+.particle {
+  position: absolute;
+  top: 40px;
+  font-size: 16px;
+  opacity: 0;
+  animation: particleFloat 3s ease-in-out infinite;
 }
 
 /* ── KEYFRAME DEFINITIONS ───────────────────────────────────────── */
@@ -1196,6 +1390,26 @@
   }
 }
 
+@keyframes particleFloat {
+  0% {
+    transform: translateY(0) scale(0.8);
+    opacity: 0;
+  }
+
+  15% {
+    opacity: 1;
+  }
+
+  70% {
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: translateY(-60px) scale(1.1);
+    opacity: 0;
+  }
+}
+
 @keyframes waveArm {
   0% {
     transform: rotate(-15deg);
@@ -1258,6 +1472,185 @@
   }
 }
 
+/* ── DEDICATED CHARACTER-STATE KEYFRAMES (see 8B–8M above) ──────── */
+@keyframes wisdomSway {
+  0% {
+    transform: translateY(0px) scale(var(--k-scale, 1.45));
+  }
+
+  100% {
+    transform: translateY(-2px) scale(var(--k-scale, 1.45));
+  }
+}
+
+@keyframes wisdomHeadTilt {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(1deg);
+  }
+}
+
+@keyframes celebratingBounce {
+  0% {
+    transform: translateY(0px) scale(var(--k-scale, 1.45));
+  }
+
+  100% {
+    transform: translateY(-15px) scale(var(--k-scale, 1.45));
+  }
+}
+
+@keyframes celebratingHeadNod {
+  0% {
+    transform: rotate(0deg) translateY(0px);
+  }
+
+  100% {
+    transform: rotate(4deg) translateY(-3px);
+  }
+}
+
+@keyframes concernedLean {
+  0% {
+    transform: translateY(0px) rotate(0deg) scale(var(--k-scale, 1.45));
+  }
+
+  100% {
+    transform: translateY(2px) rotate(1.2deg) scale(var(--k-scale, 1.45));
+  }
+}
+
+@keyframes blessingBreath {
+  0% {
+    transform: translateY(0px) scale(var(--k-scale, 1.45));
+  }
+
+  100% {
+    transform: translateY(-2px) scale(var(--k-scale, 1.45));
+  }
+}
+
+@keyframes blessingAuraGlow {
+  0% {
+    opacity: 0.7;
+    transform: translateX(-50%) scale(1);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.12);
+  }
+}
+
+@keyframes encouragingSway {
+  0% {
+    transform: translateY(0px) scale(var(--k-scale, 1.45));
+  }
+
+  100% {
+    transform: translateY(-4px) scale(var(--k-scale, 1.45));
+  }
+}
+
+@keyframes encouragingNod {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(3deg) translateY(-1px);
+  }
+}
+
+@keyframes surprisedPop {
+  0% {
+    transform: translateY(0px) scale(var(--k-scale, 1.45));
+  }
+
+  30% {
+    transform: translateY(-7px) scale(var(--k-scale, 1.45));
+  }
+
+  60% {
+    transform: translateY(-2px) scale(var(--k-scale, 1.45));
+  }
+
+  100% {
+    transform: translateY(0px) scale(var(--k-scale, 1.45));
+  }
+}
+
+@keyframes surprisedIrisWiden {
+  0% {
+    transform: scale(1);
+  }
+
+  30% {
+    transform: scale(1.2);
+  }
+
+  60% {
+    transform: scale(1.08);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes playfulLean {
+  0% {
+    transform: translateY(0px) rotate(-2deg) scale(var(--k-scale, 1.45));
+  }
+
+  100% {
+    transform: translateY(-3px) rotate(3deg) scale(var(--k-scale, 1.45));
+  }
+}
+
+@keyframes playfulHeadTilt {
+  0% {
+    transform: rotate(-3deg);
+  }
+
+  100% {
+    transform: rotate(5deg) translateY(-1px);
+  }
+}
+
+@keyframes focusingBreathing {
+  0% {
+    transform: translateY(0px) scale(var(--k-scale, 1.45));
+  }
+
+  100% {
+    transform: translateY(-2px) scale(var(--k-scale, 1.45));
+  }
+}
+
+@keyframes meditatingBreathing {
+  0% {
+    transform: translateY(0px) scale(var(--k-scale, 1.45));
+  }
+
+  100% {
+    transform: translateY(-5px) scale(var(--k-scale, 1.45));
+  }
+}
+
+@keyframes sleepingBreathing {
+  0% {
+    transform: translateY(0px) scale(var(--k-scale, 1.45));
+  }
+
+  100% {
+    transform: translateY(-2px) scale(var(--k-scale, 1.45));
+  }
+}
+
 /* ── 9. ACCESSIBILITY & REDUCED MOTION SUPPORT ────────────────── */
 @media (prefers-reduced-motion: reduce) {
 
@@ -1269,15 +1662,31 @@
   .krishnaRelax,
   .krishnaGreeting,
   .krishnaClicked,
+  .krishnaWisdom,
+  .krishnaCelebrating,
+  .krishnaConcerned,
+  .krishnaBlessing,
+  .krishnaEncouraging,
+  .krishnaCurious,
+  .krishnaSurprised,
+  .krishnaPlayful,
+  .krishnaFocusing,
+  .krishnaMeditating,
+  .krishnaSleeping,
   .featherSvgAnim,
   .chakraDisc,
   .groundShadow,
   .divineAura,
   .greetingBubble,
   .thoughtBubble,
-  .fluteIcon {
+  .fluteIcon,
+  .particle {
     animation: none !important;
     transition: none !important;
+  }
+
+  .particleLayer {
+    display: none !important;
   }
 }
 

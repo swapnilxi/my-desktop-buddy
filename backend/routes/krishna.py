@@ -24,6 +24,7 @@ from krishna.orchestrator import (
     load_history,
     respond,
 )
+from krishna.presentation import Presentation
 from tools import execute_tool, tool_catalog
 
 router = APIRouter(prefix="/krishna", tags=["krishna"])
@@ -203,7 +204,13 @@ async def motivation(req: MotivationRequest) -> dict[str, Any]:
 
 
 @router.get("/celebrate")
-async def celebrate(magnitude: str = "normal") -> dict[str, Any]:
+async def celebrate(magnitude: str = "normal") -> Presentation:
+    """
+    `celebration_signal` now returns the shared `Presentation` model (Part 63/70)
+    rather than a hand-built dict, so this is declared as the real return type
+    instead of `dict[str, Any]` — otherwise FastAPI validates the response
+    against a plain-dict schema and rejects the model instance outright.
+    """
     if magnitude not in {"small", "normal", "milestone"}:
         raise HTTPException(status_code=400,
                             detail="magnitude must be small, normal or milestone")

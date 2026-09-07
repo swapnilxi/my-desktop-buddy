@@ -126,9 +126,8 @@ def _save_memory(category: str, key: str, value: str, user_confirmed: bool = Fal
     if not res.get("saved"):
         return ToolResult(ok=False, error=res.get("reason"), message=res.get("message"), data=res)
 
-    from krishna.events import MEMORY_SAVED, bus
-
-    bus.emit(MEMORY_SAVED, category=category, key=key)
+    # MEMORY_SAVED is emitted by memory.store.save_memory itself, so it fires
+    # for every real caller (tools, REST routes), not just this one.
     return ToolResult(ok=True, data=res["memory"], message="Memory saved.")
 
 
@@ -152,9 +151,8 @@ def _delete_memory(memory_id: str, user_id: str = DEFAULT_USER_ID, **_: Any) -> 
     import memory as M
 
     if M.delete_memory(user_id, memory_id):
-        from krishna.events import MEMORY_DELETED, bus
-
-        bus.emit(MEMORY_DELETED, memory_id=memory_id)
+        # MEMORY_DELETED is emitted by memory.store.delete_memory itself, so
+        # it fires for every real caller (tools, REST routes), not just this one.
         return ToolResult(ok=True, message="Memory deleted.")
     return ToolResult(ok=False, error="not_found",
                       message="No such memory for this user — nothing was deleted.")
@@ -227,9 +225,8 @@ def _complete_task(task_id: Any = None, user_id: str = DEFAULT_USER_ID,
                           message="That task was already done.")
 
     task = T.complete_task(user_id, task_id)
-    from krishna.events import TASK_COMPLETED, bus
-
-    bus.emit(TASK_COMPLETED, task_id=task["id"], title=task["title"])
+    # TASK_COMPLETED is emitted by productivity.tasks.update_task itself, so
+    # it fires for every real caller (tools, REST routes), not just this one.
     return ToolResult(ok=True, data=_tool_task(task), message="Task completed.")
 
 
@@ -410,10 +407,8 @@ def _start_focus(minutes: int = 25, activity: Optional[str] = None,
     except FocusError as exc:
         return ToolResult(ok=False, error="invalid_input", message=str(exc))
 
-    from krishna.events import FOCUS_STARTED, bus
-
-    bus.emit(FOCUS_STARTED, session_id=session["id"],
-             minutes=session["planned_minutes"], activity=activity)
+    # FOCUS_STARTED is emitted by productivity.focus.start_session itself, so
+    # it fires for every real caller (tools, REST routes), not just this one.
     return ToolResult(
         ok=True,
         data={"session_id": session["id"], "minutes": session["planned_minutes"],
@@ -437,11 +432,9 @@ def _end_focus(session_id: Optional[str] = None, completed: bool = True,
     if session is None:
         return ToolResult(ok=False, error="not_found", message="No open focus session found.")
 
-    from krishna.events import FOCUS_COMPLETED, bus
-
+    # FOCUS_COMPLETED is emitted by productivity.focus.end_session itself, so
+    # it fires for every real caller (tools, REST routes), not just this one.
     minutes = session.get("actual_minutes") or 0
-    bus.emit(FOCUS_COMPLETED, session_id=session["id"],
-             seconds=session.get("actual_secs"), completed=completed)
     return ToolResult(
         ok=True,
         data={"session_id": session["id"], "seconds": session.get("actual_secs"),

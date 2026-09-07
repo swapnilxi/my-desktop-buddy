@@ -15,6 +15,8 @@ import { BUDDY_REGISTRY, getBuddyDefinition } from '@/components/Buddies/registr
 import type { BuddyType } from '@/components/Buddies/types';
 import { useFocusTimer } from '@/lib/useFocusTimer';
 import { useConversation } from '@/lib/useConversation';
+import { useKrishnaCharacterState } from '@/lib/useKrishnaCharacterState';
+import CharacterStateDebugPanel from '@/components/Buddies/Krishna/CharacterStateDebugPanel';
 import { ModeSwitcher, WindowControls, MODES } from '@/components/Shell/WindowChrome';
 import type { WindowMode } from '@/components/Shell/WindowChrome';
 import ConfirmDialog from '@/components/Shell/ConfirmDialog';
@@ -154,11 +156,18 @@ export default function Home() {
     setHamsterMood(mood);
   }, []);
 
+  // Krishna's richer character state — priority/cooldown-arbitrated, fed by
+  // every source below (chat, live voice, the focus timer, the dev debug
+  // panel). Owned here, above the mode branches, exactly like `conversation`,
+  // so it survives every mode switch and buddy-type toggle.
+  const krishnaCharacter = useKrishnaCharacterState();
+
   // Owned here, above the mode branches, so it survives every mode switch.
   const conversation = useConversation({
     onMoodChange: handleMoodChange,
     buddyType,
     buddyName: hamsterName,
+    onPresentation: krishnaCharacter.requestState,
   });
 
   // Synchronize document title, favicon, and electron tray/dock when buddy changes
@@ -537,7 +546,7 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showImportantMessage]);
 
-  const timer = useFocusTimer({ onMoodChange: handleMoodChange });
+  const timer = useFocusTimer({ onMoodChange: handleMoodChange, onPresentation: krishnaCharacter.requestState });
 
   const handleBuddyTypeChange = useCallback((type: string) => {
     setBuddyType(type as BuddyType);
@@ -690,8 +699,12 @@ export default function Home() {
         >
           <BuddyRenderer
             type={buddyType}
-            mood={hamsterMood}
+            mood={buddyType === 'krishna' ? krishnaCharacter.krishnaVisual.mood : hamsterMood}
             pose={buddyType === 'krishna' ? krishnaPose : undefined}
+            state={buddyType === 'krishna' && krishnaCharacter.krishnaVisual.krishnaState !== 'idle' ? krishnaCharacter.krishnaVisual.krishnaState : undefined}
+            chakra={buddyType === 'krishna' ? krishnaCharacter.krishnaVisual.chakra : undefined}
+            particles={buddyType === 'krishna' ? krishnaCharacter.krishnaVisual.particles : undefined}
+            extraClass={buddyType === 'krishna' ? krishnaCharacter.krishnaVisual.extraClass : undefined}
             color={hamsterColor}
             name={hamsterName}
             greeting={hamsterGreeting}
@@ -823,6 +836,7 @@ export default function Home() {
           buddyName={hamsterName}
           buddyDef={currentBuddyDef}
           conversation={conversation}
+          requestState={krishnaCharacter.requestState}
         />
       </div>
       <div
@@ -893,7 +907,18 @@ export default function Home() {
           aria-labelledby="tab-gita"
           hidden={effectiveTab !== 'gita'}
         >
-          <GitaPanel />
+          <GitaPanel
+            onAsk={(message) => {
+              setActiveTab('chat');
+              void conversation.send(message);
+            }}
+            onExplain={(chapter, verse) => {
+              setActiveTab('chat');
+              void conversation.explainVerse(chapter, verse);
+            }}
+            onAddContext={conversation.addVerseToContext}
+            gitaContext={conversation.gitaContext}
+          />
         </div>
       )}
       <div
@@ -913,6 +938,14 @@ export default function Home() {
           onBuddyTypeChange={handleBuddyTypeChange}
           onPoseChange={handlePoseChange}
         />
+        {/* Dev-only: exercises every CharacterState through the exact same
+            requestState path real backend data uses. Never renders in a
+            production build — gated on NODE_ENV, which Next.js inlines at
+            build time, so the whole branch (component included) is dead
+            code there. */}
+        {process.env.NODE_ENV === 'development' && buddyType === 'krishna' && (
+          <CharacterStateDebugPanel requestState={krishnaCharacter.requestState} />
+        )}
       </div>
       <div
         id="panel-speech"
@@ -1015,8 +1048,12 @@ export default function Home() {
           {!mascotCollapsed && (
             <BuddyRenderer
               type={buddyType}
-              mood={hamsterMood}
+              mood={buddyType === 'krishna' ? krishnaCharacter.krishnaVisual.mood : hamsterMood}
               pose={buddyType === 'krishna' ? krishnaPose : undefined}
+              state={buddyType === 'krishna' && krishnaCharacter.krishnaVisual.krishnaState !== 'idle' ? krishnaCharacter.krishnaVisual.krishnaState : undefined}
+              chakra={buddyType === 'krishna' ? krishnaCharacter.krishnaVisual.chakra : undefined}
+              particles={buddyType === 'krishna' ? krishnaCharacter.krishnaVisual.particles : undefined}
+              extraClass={buddyType === 'krishna' ? krishnaCharacter.krishnaVisual.extraClass : undefined}
               size="sm"
               color={hamsterColor}
               name={hamsterName}
@@ -1132,8 +1169,12 @@ export default function Home() {
         <div className="copilot-pet-box">
           <BuddyRenderer
             type={buddyType}
-            mood={hamsterMood}
+            mood={buddyType === 'krishna' ? krishnaCharacter.krishnaVisual.mood : hamsterMood}
             pose={buddyType === 'krishna' ? krishnaPose : undefined}
+            state={buddyType === 'krishna' && krishnaCharacter.krishnaVisual.krishnaState !== 'idle' ? krishnaCharacter.krishnaVisual.krishnaState : undefined}
+            chakra={buddyType === 'krishna' ? krishnaCharacter.krishnaVisual.chakra : undefined}
+            particles={buddyType === 'krishna' ? krishnaCharacter.krishnaVisual.particles : undefined}
+            extraClass={buddyType === 'krishna' ? krishnaCharacter.krishnaVisual.extraClass : undefined}
             size="sm"
             color={hamsterColor}
             name={hamsterName}

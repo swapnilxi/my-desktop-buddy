@@ -10,6 +10,7 @@ import {
   searchGita,
 } from '@/lib/api';
 import type { GitaSearchResponse, GitaSources, GitaVerse } from '@/lib/api';
+import type { GitaContextRef } from '@/lib/gitaContext';
 import { FullVerseCard, SearchResultCard } from './VerseCard';
 import s from './krishna.panels.module.css';
 
@@ -28,7 +29,22 @@ const QUICK_THEMES = [
  * a result, because the whole point of the engine is that it does not invent
  * scripture (Parts 6, 57).
  */
-export default function GitaPanel() {
+interface GitaPanelProps {
+  /** "Ask Madhav about this" — attaches the verse via a natural-language message. */
+  onAsk?: (message: string) => void;
+  /** "Explain Simply" — the reply lands directly in chat. */
+  onExplain?: (chapter: number, verse: number) => void;
+  /** "Add to Chat Context" — explicit attach, never automatic. */
+  onAddContext?: (chapter: number, verse: number) => void;
+  gitaContext?: GitaContextRef[];
+}
+
+export default function GitaPanel({
+  onAsk,
+  onExplain,
+  onAddContext,
+  gitaContext = [],
+}: GitaPanelProps) {
   const [query, setQuery] = useState('');
   const [state, setState] = useState<ViewState>('idle');
   const [response, setResponse] = useState<GitaSearchResponse | null>(null);
@@ -223,7 +239,13 @@ export default function GitaPanel() {
         <>
           <hr className={s.divider} />
           <p className={s.sectionLabel}>Full verse</p>
-          <FullVerseCard verse={verse} />
+          <FullVerseCard
+            verse={verse}
+            onAsk={onAsk ? (c, v) => onAsk(`What does Bhagavad Gita ${c}.${v} mean for me?`) : undefined}
+            onExplain={onExplain}
+            onAddContext={onAddContext}
+            inContext={gitaContext.some((r) => r.chapter === verse.chapter && r.verse === verse.verse)}
+          />
         </>
       )}
     </div>

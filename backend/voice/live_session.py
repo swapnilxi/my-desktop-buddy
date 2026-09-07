@@ -254,8 +254,39 @@ class LiveVoiceSession:
                     "interrupted": self.turn.interrupted,
                     "audio_bytes": self.turn.audio_bytes,
                 }
+                presentation_event = self._presentation_event()
+                if presentation_event is not None:
+                    yield presentation_event
                 await self._persist_turn()
             self.turn.reset()
+
+    def _presentation_event(self) -> Optional[dict[str, Any]]:
+        """
+        Classify the user's side of the turn and map it to a presentation
+        payload, same as the typed-chat path (`orchestrator._presentation_for`).
+
+        There is no Gita→Action `Situation` here — that framing comes from a
+        classification shape this streaming path does not build — so the
+        situation-override branches are simply skipped for a live turn.
+        Never allowed to break the call: a live conversation must not go
+        silent because animation classification hiccuped.
+        """
+        heard = self.turn.heard.strip()
+        if not heard:
+            return None
+        try:
+            from krishna.intent import classify
+            from krishna.orchestrator import _presentation_for
+
+            c = classify(heard, mode=self.cfg.mode, history_len=0)
+            pres = _presentation_for(c)
+            return {"type": "presentation", **pres.model_dump(by_alias=True),
+                    "intent": c.intent, "emotion": c.emotion}
+        except Exception:
+            from observability import get_logger
+
+            get_logger("live").warning("live.presentation_failed", exc_info=True)
+            return None
 
     def _translate(self, message: Any) -> list[dict[str, Any]]:
         """Turn one SDK message into zero or more client events."""
