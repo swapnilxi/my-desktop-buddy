@@ -22,7 +22,7 @@ export default function PreviewKrishnaPage() {
     const [state, setState] = useState<KrishnaState>('protector');
     const [pose, setPose] = useState<'chakra' | 'crossHands' | 'standing'>('chakra');
     const [showBubbles, setShowBubbles] = useState(true);
-    const [showDebug, setShowDebug] = useState(true);
+    const [showDebug, setShowDebug] = useState(false);
 
     return (
         <div
@@ -83,8 +83,11 @@ export default function PreviewKrishnaPage() {
                     background: 'rgba(255,255,255,0.04)',
                     border: '1px solid rgba(255,200,61,0.25)',
                     borderRadius: 20,
-                    padding: '60px 40px 10px',
-                    minHeight: 460,
+                    padding: '110px 40px 20px',
+                    minHeight: 560,
+                    width: '100%',
+                    maxWidth: 720,
+                    overflow: 'visible',
                 }}
             >
                 {characterVersion === 'krishna2' ? (

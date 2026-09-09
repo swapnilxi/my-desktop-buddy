@@ -9,31 +9,64 @@ export const KrishnaLowerBody: React.FC<Krishna2LowerBodyProps> = () => {
   return (
     <g id="k2_lower_body_group">
       <defs>
-        {/* 3D Cylindrical Leg Skin Shader */}
-        <linearGradient id="k2_SkinLeg" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#4A84DF" />
-          <stop offset="22%" stopColor="#84B5FA" />
-          <stop offset="48%" stopColor="#A9CCFF" />
-          <stop offset="75%" stopColor="#5E9AF8" />
-          <stop offset="100%" stopColor="#2E55A6" />
+        {/* 3D Volumetric Leg Cylinder Shader (Matching 3D Torso Skin Tone in Base PNG) */}
+        <linearGradient id="k2_SkinLegLeft" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#2F66CA" />
+          <stop offset="18%" stopColor="#5B9AFA" />
+          <stop offset="42%" stopColor="#A4CDFF" />
+          <stop offset="68%" stopColor="#63A1F9" />
+          <stop offset="90%" stopColor="#3B74DB" />
+          <stop offset="100%" stopColor="#204DA8" />
         </linearGradient>
+
+        <linearGradient id="k2_SkinLegRight" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#2555B5" />
+          <stop offset="20%" stopColor="#4F8FF5" />
+          <stop offset="48%" stopColor="#96C5FF" />
+          <stop offset="72%" stopColor="#5595F7" />
+          <stop offset="92%" stopColor="#2B60C4" />
+          <stop offset="100%" stopColor="#1B4296" />
+        </linearGradient>
+
+        {/* 3D Foot Instep Dome Shader (Matching Torso Skin Tone) */}
+        <radialGradient id="k2_SkinFoot" cx="38%" cy="26%" r="72%">
+          <stop offset="0%" stopColor="#B3D4FF" />
+          <stop offset="24%" stopColor="#82B6FA" />
+          <stop offset="55%" stopColor="#5595F7" />
+          <stop offset="82%" stopColor="#336CCE" />
+          <stop offset="100%" stopColor="#1C479E" />
+        </radialGradient>
 
         {/* Bright Glowing Saffron Waistband Shader (Matching Bright Saffron Drape) */}
         <linearGradient id="k2_BrightSaffronBelt" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#FFAA47" />
-          <stop offset="22%" stopColor="#FF8500" />
-          <stop offset="52%" stopColor="#FF6A00" />
-          <stop offset="82%" stopColor="#E65300" />
-          <stop offset="100%" stopColor="#B93D00" />
+          <stop offset="0%" stopColor="#FFAE42" />
+          <stop offset="22%" stopColor="#FF8800" />
+          <stop offset="55%" stopColor="#FF6800" />
+          <stop offset="82%" stopColor="#E64E00" />
+          <stop offset="100%" stopColor="#B33600" />
+        </linearGradient>
+
+        {/* Soft Saffron Belt Satin Sheen */}
+        <linearGradient id="k2_SaffronBeltSheen" x1="20%" y1="0%" x2="80%" y2="100%">
+          <stop offset="0%" stopColor="#FFE099" stopOpacity="0.85" />
+          <stop offset="35%" stopColor="#FFAE42" stopOpacity="0.5" />
+          <stop offset="70%" stopColor="#FF7300" stopOpacity="0" />
         </linearGradient>
 
         {/* Saffron Belt Top Rolled Edge Highlight */}
         <linearGradient id="k2_SaffronTopRim" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#FF9E3B" />
-          <stop offset="30%" stopColor="#FFC27A" />
-          <stop offset="50%" stopColor="#FFE0B2" />
-          <stop offset="70%" stopColor="#FFC27A" />
-          <stop offset="100%" stopColor="#FF9E3B" />
+          <stop offset="0%" stopColor="#FF8800" />
+          <stop offset="25%" stopColor="#FFB75E" />
+          <stop offset="50%" stopColor="#FFF0B8" />
+          <stop offset="75%" stopColor="#FFB75E" />
+          <stop offset="100%" stopColor="#FF8800" />
+        </linearGradient>
+
+        {/* Saffron Belt Bottom Edge Shadow Rim */}
+        <linearGradient id="k2_SaffronBottomRim" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#942600" />
+          <stop offset="50%" stopColor="#C43E00" />
+          <stop offset="100%" stopColor="#942600" />
         </linearGradient>
 
         {/* Volumetric Left Dhoti Thigh Mass Gradient */}
@@ -57,29 +90,33 @@ export const KrishnaLowerBody: React.FC<Krishna2LowerBodyProps> = () => {
 
       {/* ── 1. GROUND CONTACT AMBIENT OCCLUSION SHADOW ── */}
       <g id="k2_ground_shadow">
-        <ellipse cx="190" cy="584" rx="108" ry="16" fill="url(#kGroundShadowRadial)" filter="url(#kGroundBlurFilter)" opacity="0.85" />
-        <ellipse cx="190" cy="582" rx="72" ry="8.5" fill="url(#kGroundShadowRadial)" filter="url(#kSoftShadow)" opacity="0.65" />
+        <ellipse cx="190" cy="585" rx="116" ry="18" fill="url(#kGroundShadowRadial)" filter="url(#kGroundBlurFilter)" opacity="0.88" />
+        <ellipse cx="190" cy="583" rx="80" ry="10" fill="url(#kGroundShadowRadial)" filter="url(#kSoftShadow)" opacity="0.68" />
       </g>
 
-      {/* ── 2. ADORABLE CHUBBY BABY LEGS (PROPORTIONAL TO TORSO) ── */}
+      {/* ── 2. ADORABLE CHUBBY BABY LEGS (MATCHING TORSO THICKNESS & COLOR) ── */}
       <g id="k2_legs" filter="url(#kSoftShadow)">
-        {/* Left Leg Pillar (Centered at X=142) */}
-        <path d="M 142 495 C 138 524, 138 548, 142 566" fill="none" stroke="url(#k2_SkinLeg)" strokeWidth="30" strokeLinecap="round" />
-        <path d="M 142 497 C 139 524, 139 548, 142 564" fill="none" stroke="#DCEBFF" strokeWidth="5.0" strokeLinecap="round" opacity="0.5" />
+        {/* Left Leg Pillar (Plump 36px pillar centered at X=142) */}
+        <path d="M 142 492 C 137 520, 137 546, 142 566" fill="none" stroke="url(#k2_SkinLegLeft)" strokeWidth="36" strokeLinecap="round" />
+        {/* Left Leg 3D Key-Light Specular Highlight Arc */}
+        <path d="M 139 494 C 135 520, 135 546, 139 564" fill="none" stroke="#E2EFFF" strokeWidth="6.0" strokeLinecap="round" opacity="0.55" />
+        <path d="M 139 496 C 135 520, 135 546, 139 562" fill="none" stroke="#FFFFFF" strokeWidth="2.2" strokeLinecap="round" opacity="0.4" />
 
-        {/* Right Leg Pillar (Centered at X=238) */}
-        <path d="M 238 495 C 242 524, 242 548, 238 566" fill="none" stroke="url(#k2_SkinLeg)" strokeWidth="30" strokeLinecap="round" />
-        <path d="M 238 497 C 241 524, 241 548, 238 564" fill="none" stroke="#DCEBFF" strokeWidth="5.0" strokeLinecap="round" opacity="0.5" />
+        {/* Right Leg Pillar (Plump 36px pillar centered at X=238) */}
+        <path d="M 238 492 C 243 520, 243 546, 238 566" fill="none" stroke="url(#k2_SkinLegRight)" strokeWidth="36" strokeLinecap="round" />
+        {/* Right Leg 3D Specular Highlight Arc */}
+        <path d="M 236 494 C 240 520, 240 546, 236 564" fill="none" stroke="#E2EFFF" strokeWidth="6.0" strokeLinecap="round" opacity="0.55" />
+        <path d="M 236 496 C 240 520, 240 546, 236 562" fill="none" stroke="#FFFFFF" strokeWidth="2.2" strokeLinecap="round" opacity="0.4" />
 
         {/* Ambient Inseam Shadow between legs */}
-        <ellipse cx="190" cy="510" rx="18" ry="24" fill="#1E3A8A" opacity="0.22" />
+        <ellipse cx="190" cy="510" rx="22" ry="28" fill="#142B66" opacity="0.28" />
       </g>
 
-      {/* ── 3. ADORABLE CHUBBY LOTUS FEET (CHARAN KAMAL) ── */}
+      {/* ── 3. ADORABLE CHUBBY LOTUS FEET (CHARAN KAMAL — SCALED TO MATCH TORSO & LEGS) ── */}
       <g id="k2_feet" filter="url(#kSoftShadow)">
-        {/* LEFT FOOT (Centered at X=142, Y=562) */}
-        <g id="k2_leftFoot" transform="translate(142, 562)">
-          <ellipse cx="0" cy="22" rx="16" ry="4.0" fill="url(#kGroundShadowRadial)" opacity="0.4" filter="url(#kSoftShadow)" />
+        {/* LEFT FOOT (Centered at X=142, Y=562, Proportional Scale 1.26) */}
+        <g id="k2_leftFoot" transform="translate(142, 562) scale(1.26)">
+          <ellipse cx="0" cy="22" rx="18" ry="4.5" fill="url(#kGroundShadowRadial)" opacity="0.45" filter="url(#kSoftShadow)" />
           {/* Foot Base Silhouette */}
           <path
             d="M -7 0
@@ -90,46 +127,46 @@ export const KrishnaLowerBody: React.FC<Krishna2LowerBodyProps> = () => {
                C 3.8 28.4, 8.0 28.6, 10.2 26.4
                C 11.4 28.0, 16.5 27.2, 16.5 21.6
                C 16.5 15.5, 12.5 6.5, -7 0 Z"
-            fill="url(#kSkinLimb)"
+            fill="url(#k2_SkinFoot)"
           />
           {/* Instep Dome Volume Highlight */}
-          <ellipse cx="-0.5" cy="11" rx="10.5" ry="7" fill="url(#kSkinHand)" opacity="0.75" />
-          <ellipse cx="0" cy="9" rx="6" ry="3.5" fill="#FFFFFF" opacity="0.35" />
+          <ellipse cx="-0.5" cy="11" rx="11.5" ry="7.5" fill="url(#kSkinHand)" opacity="0.8" />
+          <ellipse cx="0" cy="9" rx="6.5" ry="4.0" fill="#FFFFFF" opacity="0.38" />
 
           {/* 5 Plump Rounded Baby Toes with Rosy Lotus Blush */}
-          <circle cx="13.2" cy="20.5" r="4.6" fill="url(#kLotusToeBlush)" />
-          <ellipse cx="12.8" cy="19.0" rx="2.2" ry="1.4" fill="#FFFFFF" opacity="0.65" />
-          <circle cx="6.5" cy="22.8" r="4.1" fill="url(#kLotusToeBlush)" />
-          <ellipse cx="6.2" cy="21.3" rx="1.9" ry="1.2" fill="#FFFFFF" opacity="0.55" />
-          <circle cx="-0.8" cy="23.4" r="3.7" fill="url(#kLotusToeBlush)" />
-          <ellipse cx="-1.0" cy="22.0" rx="1.7" ry="1.1" fill="#FFFFFF" opacity="0.5" />
-          <circle cx="-7.2" cy="22.2" r="3.2" fill="url(#kLotusToeBlush)" />
-          <ellipse cx="-7.4" cy="21.1" rx="1.5" ry="1.0" fill="#FFFFFF" opacity="0.45" />
-          <circle cx="-12.6" cy="20.2" r="2.8" fill="url(#kLotusToeBlush)" />
-          <ellipse cx="-12.7" cy="19.3" rx="1.1" ry="0.8" fill="#FFFFFF" opacity="0.4" />
+          <circle cx="13.2" cy="20.5" r="4.8" fill="url(#kLotusToeBlush)" />
+          <ellipse cx="12.8" cy="19.0" rx="2.4" ry="1.5" fill="#FFFFFF" opacity="0.7" />
+          <circle cx="6.5" cy="22.8" r="4.3" fill="url(#kLotusToeBlush)" />
+          <ellipse cx="6.2" cy="21.3" rx="2.0" ry="1.3" fill="#FFFFFF" opacity="0.6" />
+          <circle cx="-0.8" cy="23.4" r="3.9" fill="url(#kLotusToeBlush)" />
+          <ellipse cx="-1.0" cy="22.0" rx="1.8" ry="1.2" fill="#FFFFFF" opacity="0.55" />
+          <circle cx="-7.2" cy="22.2" r="3.4" fill="url(#kLotusToeBlush)" />
+          <ellipse cx="-7.4" cy="21.1" rx="1.6" ry="1.1" fill="#FFFFFF" opacity="0.5" />
+          <circle cx="-12.6" cy="20.2" r="3.0" fill="url(#kLotusToeBlush)" />
+          <ellipse cx="-12.7" cy="19.3" rx="1.2" ry="0.9" fill="#FFFFFF" opacity="0.45" />
 
           {/* Separation Creases */}
-          <path d="M 9.8 23 C 9.5 19.2, 9.0 16.0, 8.8 13.8" fill="none" stroke="#1E3A8A" strokeWidth="1.2" strokeLinecap="round" opacity="0.35" />
-          <path d="M 2.8 23.8 C 2.5 20.0, 2.2 16.8, 2.0 14.8" fill="none" stroke="#1E3A8A" strokeWidth="1.1" strokeLinecap="round" opacity="0.3" />
-          <path d="M -4.0 23.2 C -4.1 19.8, -4.2 17.2, -4.3 15.5" fill="none" stroke="#1E3A8A" strokeWidth="1.0" strokeLinecap="round" opacity="0.28" />
-          <path d="M -9.8 21.6 C -10.0 18.8, -10.2 16.6, -10.3 15.2" fill="none" stroke="#1E3A8A" strokeWidth="0.9" strokeLinecap="round" opacity="0.25" />
+          <path d="M 9.8 23 C 9.5 19.2, 9.0 16.0, 8.8 13.8" fill="none" stroke="#163882" strokeWidth="1.2" strokeLinecap="round" opacity="0.4" />
+          <path d="M 2.8 23.8 C 2.5 20.0, 2.2 16.8, 2.0 14.8" fill="none" stroke="#163882" strokeWidth="1.1" strokeLinecap="round" opacity="0.35" />
+          <path d="M -4.0 23.2 C -4.1 19.8, -4.2 17.2, -4.3 15.5" fill="none" stroke="#163882" strokeWidth="1.0" strokeLinecap="round" opacity="0.3" />
+          <path d="M -9.8 21.6 C -10.0 18.8, -10.2 16.6, -10.3 15.2" fill="none" stroke="#163882" strokeWidth="0.9" strokeLinecap="round" opacity="0.28" />
 
           {/* White Sandalwood Charan Chinha (Sacred Chakra) */}
-          <g id="k2_chakraLeft" opacity="0.92">
-            <circle cx="0" cy="12" r="1.4" fill="#FFFFFF" />
-            <circle cx="0" cy="12" r="0.7" fill="#FDE047" opacity="0.9" />
-            <circle cx="0" cy="12" r="3.2" fill="none" stroke="#FFFFFF" strokeWidth="0.7" opacity="0.9" />
-            <circle cx="0" cy="12" r="5.4" fill="none" stroke="#FFFFFF" strokeWidth="0.9" strokeDasharray="1.5 1.0" opacity="0.95" />
-            <line x1="0" y1="9.0" x2="0" y2="6.6" stroke="#FFFFFF" strokeWidth="0.7" strokeLinecap="round" />
-            <line x1="0" y1="15.0" x2="0" y2="17.4" stroke="#FFFFFF" strokeWidth="0.7" strokeLinecap="round" />
-            <line x1="-3.2" y1="12" x2="-5.4" y2="12" stroke="#FFFFFF" strokeWidth="0.7" strokeLinecap="round" />
-            <line x1="3.2" y1="12" x2="5.4" y2="12" stroke="#FFFFFF" strokeWidth="0.7" strokeLinecap="round" />
+          <g id="k2_chakraLeft" opacity="0.95">
+            <circle cx="0" cy="12" r="1.5" fill="#FFFFFF" />
+            <circle cx="0" cy="12" r="0.8" fill="#FDE047" opacity="0.9" />
+            <circle cx="0" cy="12" r="3.4" fill="none" stroke="#FFFFFF" strokeWidth="0.75" opacity="0.9" />
+            <circle cx="0" cy="12" r="5.8" fill="none" stroke="#FFFFFF" strokeWidth="0.95" strokeDasharray="1.6 1.1" opacity="0.95" />
+            <line x1="0" y1="8.8" x2="0" y2="6.2" stroke="#FFFFFF" strokeWidth="0.75" strokeLinecap="round" />
+            <line x1="0" y1="15.2" x2="0" y2="17.8" stroke="#FFFFFF" strokeWidth="0.75" strokeLinecap="round" />
+            <line x1="-3.4" y1="12" x2="-6.0" y2="12" stroke="#FFFFFF" strokeWidth="0.75" strokeLinecap="round" />
+            <line x1="3.4" y1="12" x2="6.0" y2="12" stroke="#FFFFFF" strokeWidth="0.75" strokeLinecap="round" />
           </g>
         </g>
 
-        {/* RIGHT FOOT (Centered at X=238, Y=562) */}
-        <g id="k2_rightFoot" transform="translate(238, 562)">
-          <ellipse cx="0" cy="22" rx="16" ry="4.0" fill="url(#kGroundShadowRadial)" opacity="0.4" filter="url(#kSoftShadow)" />
+        {/* RIGHT FOOT (Centered at X=238, Y=562, Proportional Scale 1.26) */}
+        <g id="k2_rightFoot" transform="translate(238, 562) scale(1.26)">
+          <ellipse cx="0" cy="22" rx="18" ry="4.5" fill="url(#kGroundShadowRadial)" opacity="0.45" filter="url(#kSoftShadow)" />
           {/* Foot Base Silhouette */}
           <path
             d="M 7 0
@@ -140,73 +177,73 @@ export const KrishnaLowerBody: React.FC<Krishna2LowerBodyProps> = () => {
                C -3.8 28.4, -8.0 28.6, -10.2 26.4
                C -11.4 28.0, -16.5 27.2, -16.5 21.6
                C -16.5 15.5, -12.5 6.5, 7 0 Z"
-            fill="url(#kSkinLimb)"
+            fill="url(#k2_SkinFoot)"
           />
           {/* Instep Dome Volume Highlight */}
-          <ellipse cx="0.5" cy="11" rx="10.5" ry="7" fill="url(#kSkinHand)" opacity="0.75" />
-          <ellipse cx="0" cy="9" rx="6" ry="3.5" fill="#FFFFFF" opacity="0.35" />
+          <ellipse cx="0.5" cy="11" rx="11.5" ry="7.5" fill="url(#kSkinHand)" opacity="0.8" />
+          <ellipse cx="0" cy="9" rx="6.5" ry="4.0" fill="#FFFFFF" opacity="0.38" />
 
           {/* 5 Plump Rounded Baby Toes with Rosy Lotus Blush */}
-          <circle cx="-13.2" cy="20.5" r="4.6" fill="url(#kLotusToeBlush)" />
-          <ellipse cx="-12.8" cy="19.0" rx="2.2" ry="1.4" fill="#FFFFFF" opacity="0.65" />
-          <circle cx="-6.5" cy="22.8" r="4.1" fill="url(#kLotusToeBlush)" />
-          <ellipse cx="-6.2" cy="21.3" rx="1.9" ry="1.2" fill="#FFFFFF" opacity="0.55" />
-          <circle cx="0.8" cy="23.4" r="3.7" fill="url(#kLotusToeBlush)" />
-          <ellipse cx="1.0" cy="22.0" rx="1.7" ry="1.1" fill="#FFFFFF" opacity="0.5" />
-          <circle cx="7.2" cy="22.2" r="3.2" fill="url(#kLotusToeBlush)" />
-          <ellipse cx="7.4" cy="21.1" rx="1.5" ry="1.0" fill="#FFFFFF" opacity="0.45" />
-          <circle cx="12.6" cy="20.2" r="2.8" fill="url(#kLotusToeBlush)" />
-          <ellipse cx="12.7" cy="19.3" rx="1.1" ry="0.8" fill="#FFFFFF" opacity="0.4" />
+          <circle cx="-13.2" cy="20.5" r="4.8" fill="url(#kLotusToeBlush)" />
+          <ellipse cx="-12.8" cy="19.0" rx="2.4" ry="1.5" fill="#FFFFFF" opacity="0.7" />
+          <circle cx="-6.5" cy="22.8" r="4.3" fill="url(#kLotusToeBlush)" />
+          <ellipse cx="-6.2" cy="21.3" rx="2.0" ry="1.3" fill="#FFFFFF" opacity="0.6" />
+          <circle cx="0.8" cy="23.4" r="3.9" fill="url(#kLotusToeBlush)" />
+          <ellipse cx="1.0" cy="22.0" rx="1.8" ry="1.2" fill="#FFFFFF" opacity="0.55" />
+          <circle cx="7.2" cy="22.2" r="3.4" fill="url(#kLotusToeBlush)" />
+          <ellipse cx="7.4" cy="21.1" rx="1.6" ry="1.1" fill="#FFFFFF" opacity="0.5" />
+          <circle cx="12.6" cy="20.2" r="3.0" fill="url(#kLotusToeBlush)" />
+          <ellipse cx="12.7" cy="19.3" rx="1.2" ry="0.9" fill="#FFFFFF" opacity="0.45" />
 
           {/* Separation Creases */}
-          <path d="M -9.8 23 C -9.5 19.2, -9.0 16.0, -8.8 13.8" fill="none" stroke="#1E3A8A" strokeWidth="1.2" strokeLinecap="round" opacity="0.35" />
-          <path d="M -2.8 23.8 C -2.5 20.0, -2.2 16.8, -2.0 14.8" fill="none" stroke="#1E3A8A" strokeWidth="1.1" strokeLinecap="round" opacity="0.3" />
-          <path d="M 4.0 23.2 C 4.1 19.8, 4.2 17.2, 4.3 15.5" fill="none" stroke="#1E3A8A" strokeWidth="1.0" strokeLinecap="round" opacity="0.28" />
-          <path d="M 9.8 21.6 C 10.0 18.8, 10.2 16.6, 10.3 15.2" fill="none" stroke="#1E3A8A" strokeWidth="0.9" strokeLinecap="round" opacity="0.25" />
+          <path d="M -9.8 23 C -9.5 19.2, -9.0 16.0, -8.8 13.8" fill="none" stroke="#163882" strokeWidth="1.2" strokeLinecap="round" opacity="0.4" />
+          <path d="M -2.8 23.8 C -2.5 20.0, -2.2 16.8, -2.0 14.8" fill="none" stroke="#163882" strokeWidth="1.1" strokeLinecap="round" opacity="0.35" />
+          <path d="M 4.0 23.2 C 4.1 19.8, 4.2 17.2, 4.3 15.5" fill="none" stroke="#163882" strokeWidth="1.0" strokeLinecap="round" opacity="0.3" />
+          <path d="M 9.8 21.6 C 10.0 18.8, 10.2 16.6, 10.3 15.2" fill="none" stroke="#163882" strokeWidth="0.9" strokeLinecap="round" opacity="0.28" />
 
           {/* White Sandalwood Charan Chinha (Sacred Chakra) */}
-          <g id="k2_chakraRight" opacity="0.92">
-            <circle cx="0" cy="12" r="1.4" fill="#FFFFFF" />
-            <circle cx="0" cy="12" r="0.7" fill="#FDE047" opacity="0.9" />
-            <circle cx="0" cy="12" r="3.2" fill="none" stroke="#FFFFFF" strokeWidth="0.7" opacity="0.9" />
-            <circle cx="0" cy="12" r="5.4" fill="none" stroke="#FFFFFF" strokeWidth="0.9" strokeDasharray="1.5 1.0" opacity="0.95" />
-            <line x1="0" y1="9.0" x2="0" y2="6.6" stroke="#FFFFFF" strokeWidth="0.7" strokeLinecap="round" />
-            <line x1="0" y1="15.0" x2="0" y2="17.4" stroke="#FFFFFF" strokeWidth="0.7" strokeLinecap="round" />
-            <line x1="-3.2" y1="12" x2="-5.4" y2="12" stroke="#FFFFFF" strokeWidth="0.7" strokeLinecap="round" />
-            <line x1="3.2" y1="12" x2="5.4" y2="12" stroke="#FFFFFF" strokeWidth="0.7" strokeLinecap="round" />
+          <g id="k2_chakraRight" opacity="0.95">
+            <circle cx="0" cy="12" r="1.5" fill="#FFFFFF" />
+            <circle cx="0" cy="12" r="0.8" fill="#FDE047" opacity="0.9" />
+            <circle cx="0" cy="12" r="3.4" fill="none" stroke="#FFFFFF" strokeWidth="0.75" opacity="0.9" />
+            <circle cx="0" cy="12" r="5.8" fill="none" stroke="#FFFFFF" strokeWidth="0.95" strokeDasharray="1.6 1.1" opacity="0.95" />
+            <line x1="0" y1="8.8" x2="0" y2="6.2" stroke="#FFFFFF" strokeWidth="0.75" strokeLinecap="round" />
+            <line x1="0" y1="15.2" x2="0" y2="17.8" stroke="#FFFFFF" strokeWidth="0.75" strokeLinecap="round" />
+            <line x1="-3.4" y1="12" x2="-6.0" y2="12" stroke="#FFFFFF" strokeWidth="0.75" strokeLinecap="round" />
+            <line x1="3.4" y1="12" x2="6.0" y2="12" stroke="#FFFFFF" strokeWidth="0.75" strokeLinecap="round" />
           </g>
         </g>
       </g>
 
-      {/* ── 4. ROYAL GHUNGROO PAYAL ANKLETS ── */}
+      {/* ── 4. ROYAL GHUNGROO PAYAL ANKLETS (SNUGLY FITTING 36PX CHUBBY ANKLES) ── */}
       <g id="k2_royalAnklets" className={styles.ankletLayer}>
         {/* Left Anklet */}
         <g id="k2_leftAnklet">
-          <ellipse cx="142" cy="558" rx="18" ry="6.5" fill="#0C1A38" opacity="0.45" />
+          <ellipse cx="142" cy="558" rx="22" ry="7.5" fill="#0A1630" opacity="0.5" />
           <path
-            d="M 125 554 C 130 558, 154 558, 159 554 C 159 561, 154 565, 142 565 C 130 565, 125 561, 125 554 Z"
+            d="M 121 553 C 127 558, 157 558, 163 553 C 163 562, 157 566, 142 566 C 127 566, 121 562, 121 553 Z"
             fill="url(#kPayalGold)"
             stroke="#78350F"
-            strokeWidth="0.8"
+            strokeWidth="0.9"
           />
-          <path d="M 127 556 C 132 560, 152 560, 157 556" fill="none" stroke="#FFFDF0" strokeWidth="1.2" strokeLinecap="round" opacity="0.9" />
+          <path d="M 123 555 C 129 560, 155 560, 161 555" fill="none" stroke="#FFFDF0" strokeWidth="1.3" strokeLinecap="round" opacity="0.92" />
           {/* Upper Pearls */}
-          {[126, 131, 136.5, 142, 147.5, 153, 158].map((bx, i) => (
-            <circle key={`la-ub-${i}`} cx={bx} cy={555 + (i === 3 ? 3.5 : i === 2 || i === 4 ? 3.0 : i === 1 || i === 5 ? 1.8 : 0)} r="1.4" fill="url(#kGoldBead)" stroke="#78350F" strokeWidth="0.35" />
+          {[122, 128, 134.5, 142, 149.5, 156, 162].map((bx, i) => (
+            <circle key={`la-ub-${i}`} cx={bx} cy={554 + (i === 3 ? 3.5 : i === 2 || i === 4 ? 3.0 : i === 1 || i === 5 ? 1.8 : 0)} r="1.5" fill="url(#kGoldBead)" stroke="#78350F" strokeWidth="0.35" />
           ))}
           {/* Center Ruby */}
-          <circle cx="142" cy="561" r="3.0" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
-          <circle cx="142" cy="561" r="2.2" fill="url(#kPayalRuby)" stroke="#7F1D1D" strokeWidth="0.4" />
-          <circle cx="141.3" cy="560.4" r="0.8" fill="#FFFFFF" opacity="0.95" />
+          <circle cx="142" cy="561" r="3.2" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
+          <circle cx="142" cy="561" r="2.4" fill="url(#kPayalRuby)" stroke="#7F1D1D" strokeWidth="0.4" />
+          <circle cx="141.2" cy="560.3" r="0.9" fill="#FFFFFF" opacity="0.95" />
           {/* Ghungroo Bells */}
-          {[128, 132.5, 137.2, 142, 146.8, 151.5, 156].map((bx, i) => {
+          {[124, 129.5, 135.5, 142, 148.5, 154.5, 160].map((bx, i) => {
             const isCenter = i === 3;
-            const r = isCenter ? 3.0 : 2.5;
-            const by = 564 + (isCenter ? 3.2 : i === 2 || i === 4 ? 2.4 : i === 1 || i === 5 ? 1.1 : 0);
+            const r = isCenter ? 3.2 : 2.7;
+            const by = 564 + (isCenter ? 3.5 : i === 2 || i === 4 ? 2.6 : i === 1 || i === 5 ? 1.2 : 0);
             return (
               <g key={`la-bell-${i}`}>
                 <circle cx={bx} cy={by} r={r} fill="url(#kPayalBellDome)" stroke="#78350F" strokeWidth="0.5" />
-                <circle cx={bx} cy={by + r + 0.8} r={isCenter ? 1.3 : 1.0} fill="url(#kPayalPearl)" stroke="#B45309" strokeWidth="0.3" />
+                <circle cx={bx} cy={by + r + 0.9} r={isCenter ? 1.4 : 1.1} fill="url(#kPayalPearl)" stroke="#B45309" strokeWidth="0.3" />
                 <circle cx={bx - r * 0.35} cy={by - r * 0.35} r={r * 0.35} fill="#FFFFFF" opacity="0.95" />
               </g>
             );
@@ -215,31 +252,31 @@ export const KrishnaLowerBody: React.FC<Krishna2LowerBodyProps> = () => {
 
         {/* Right Anklet */}
         <g id="k2_rightAnklet">
-          <ellipse cx="238" cy="558" rx="18" ry="6.5" fill="#0C1A38" opacity="0.45" />
+          <ellipse cx="238" cy="558" rx="22" ry="7.5" fill="#0A1630" opacity="0.5" />
           <path
-            d="M 221 554 C 226 558, 250 558, 255 554 C 255 561, 250 565, 238 565 C 226 565, 221 561, 221 554 Z"
+            d="M 217 553 C 223 558, 253 558, 259 553 C 259 562, 253 566, 238 566 C 223 566, 217 562, 217 553 Z"
             fill="url(#kPayalGold)"
             stroke="#78350F"
-            strokeWidth="0.8"
+            strokeWidth="0.9"
           />
-          <path d="M 223 556 C 228 560, 248 560, 253 556" fill="none" stroke="#FFFDF0" strokeWidth="1.2" strokeLinecap="round" opacity="0.9" />
+          <path d="M 219 555 C 225 560, 251 560, 257 555" fill="none" stroke="#FFFDF0" strokeWidth="1.3" strokeLinecap="round" opacity="0.92" />
           {/* Upper Pearls */}
-          {[222, 227, 232.5, 238, 243.5, 249, 254].map((bx, i) => (
-            <circle key={`ra-ub-${i}`} cx={bx} cy={555 + (i === 3 ? 3.5 : i === 2 || i === 4 ? 3.0 : i === 1 || i === 5 ? 1.8 : 0)} r="1.4" fill="url(#kGoldBead)" stroke="#78350F" strokeWidth="0.35" />
+          {[218, 224, 230.5, 238, 245.5, 252, 258].map((bx, i) => (
+            <circle key={`ra-ub-${i}`} cx={bx} cy={554 + (i === 3 ? 3.5 : i === 2 || i === 4 ? 3.0 : i === 1 || i === 5 ? 1.8 : 0)} r="1.5" fill="url(#kGoldBead)" stroke="#78350F" strokeWidth="0.35" />
           ))}
           {/* Center Ruby */}
-          <circle cx="238" cy="561" r="3.0" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
-          <circle cx="238" cy="561" r="2.2" fill="url(#kPayalRuby)" stroke="#7F1D1D" strokeWidth="0.4" />
-          <circle cx="237.3" cy="560.4" r="0.8" fill="#FFFFFF" opacity="0.95" />
+          <circle cx="238" cy="561" r="3.2" fill="url(#kGoldGrad)" stroke="#78350F" strokeWidth="0.5" />
+          <circle cx="238" cy="561" r="2.4" fill="url(#kPayalRuby)" stroke="#7F1D1D" strokeWidth="0.4" />
+          <circle cx="237.2" cy="560.3" r="0.9" fill="#FFFFFF" opacity="0.95" />
           {/* Ghungroo Bells */}
-          {[224, 228.5, 233.2, 238, 242.8, 247.5, 252].map((bx, i) => {
+          {[220, 225.5, 231.5, 238, 244.5, 250.5, 256].map((bx, i) => {
             const isCenter = i === 3;
-            const r = isCenter ? 3.0 : 2.5;
-            const by = 564 + (isCenter ? 3.2 : i === 2 || i === 4 ? 2.4 : i === 1 || i === 5 ? 1.1 : 0);
+            const r = isCenter ? 3.2 : 2.7;
+            const by = 564 + (isCenter ? 3.5 : i === 2 || i === 4 ? 2.6 : i === 1 || i === 5 ? 1.2 : 0);
             return (
               <g key={`ra-bell-${i}`}>
                 <circle cx={bx} cy={by} r={r} fill="url(#kPayalBellDome)" stroke="#78350F" strokeWidth="0.5" />
-                <circle cx={bx} cy={by + r + 0.8} r={isCenter ? 1.3 : 1.0} fill="url(#kPayalPearl)" stroke="#B45309" strokeWidth="0.3" />
+                <circle cx={bx} cy={by + r + 0.9} r={isCenter ? 1.4 : 1.1} fill="url(#kPayalPearl)" stroke="#B45309" strokeWidth="0.3" />
                 <circle cx={bx - r * 0.35} cy={by - r * 0.35} r={r * 0.35} fill="#FFFFFF" opacity="0.95" />
               </g>
             );
@@ -408,84 +445,116 @@ export const KrishnaLowerBody: React.FC<Krishna2LowerBodyProps> = () => {
         {/* ── Flowing Saffron Silk Side Drape (Patka/Sash on Right Hip) ── */}
         <g id="k2_orangeSash">
           <path
-            d="M 238 386
+            d="M 238 382
                C 238 440, 240 492, 242 536
                C 248 546, 276 546, 278 536
-               C 276 490, 272 440, 270 386 Z"
+               C 276 490, 272 440, 270 382 Z"
             fill="#B93D00"
             opacity="0.38"
           />
           {/* Outer Main Drape */}
           <path
-            d="M 256 384
+            d="M 256 380
                C 256 440, 259 492, 262 536
                C 266 544, 277 542, 278 534
-               C 276 486, 272 440, 270 384 Z"
+               C 276 486, 272 440, 270 380 Z"
             fill="url(#kDhotiOrangeSash1)"
             stroke="#B93D00"
             strokeWidth="0.8"
           />
-          <path d="M 264 388 C 264 442, 267 494, 269 534" fill="none" stroke="#FF9A2E" strokeWidth="2.4" strokeLinecap="round" opacity="0.85" />
+          <path d="M 264 384 C 264 442, 267 494, 269 534" fill="none" stroke="#FFA834" strokeWidth="2.4" strokeLinecap="round" opacity="0.9" />
           {/* Inner Drape */}
           <path
-            d="M 242 386
+            d="M 242 382
                C 241 442, 243 496, 245 538
                C 249 546, 260 544, 260 536
-               C 258 488, 255 444, 254 386 Z"
+               C 258 488, 255 444, 254 382 Z"
             fill="url(#kDhotiOrangeSash2)"
             stroke="#B93D00"
             strokeWidth="0.8"
           />
-          <path d="M 252 390 C 251 444, 252 498, 254 536" fill="none" stroke="#FF7A00" strokeWidth="2.2" strokeLinecap="round" opacity="0.9" />
+          <path d="M 252 386 C 251 444, 252 498, 254 536" fill="none" stroke="#FF8500" strokeWidth="2.2" strokeLinecap="round" opacity="0.95" />
         </g>
 
         {/* ── 6. BRIGHT SAFFRON WAISTBAND BELT (MATCHING BRIGHT SAFFRON DRAPE) ── */}
         <g id="k2_brightSaffronBeltGroup">
-          {/* 3D Bright Saffron Waistband Sash Band */}
+          {/* 3D Volumetric Bright Saffron Waistband Sash Band wrapping hips */}
           <path
-            d="M 114 386
-               C 152 374, 228 374, 266 386
-               C 268 400, 228 412, 190 412
-               C 152 412, 112 400, 114 386 Z"
+            d="M 104 382
+               C 142 370, 238 370, 276 382
+               C 278 406, 238 416, 190 416
+               C 142 416, 102 406, 104 382 Z"
             fill="url(#k2_BrightSaffronBelt)"
             stroke="#A33200"
             strokeWidth="0.9"
           />
 
+          {/* Soft Satin Light Volume / Sheen on Belly */}
+          <path
+            d="M 108 384
+               C 144 374, 236 374, 272 384
+               C 252 396, 222 404, 190 404
+               C 158 404, 128 396, 108 384 Z"
+            fill="url(#k2_SaffronBeltSheen)"
+          />
+
+          {/* Middle Silk Fold / Pleat Crease */}
+          <path
+            d="M 108 395 C 146 387, 234 387, 272 395"
+            fill="none"
+            stroke="#FFB04D"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            opacity="0.8"
+          />
+          <path
+            d="M 108 397 C 146 389, 234 389, 272 397"
+            fill="none"
+            stroke="#BD3800"
+            strokeWidth="1.2"
+            strokeLinecap="round"
+            opacity="0.45"
+          />
+
           {/* Saffron Belt Top Rolled Edge Highlight */}
           <path
-            d="M 114 386 C 152 374, 228 374, 266 386"
+            d="M 104 382 C 142 370, 238 370, 276 382"
             fill="none"
             stroke="url(#k2_SaffronTopRim)"
-            strokeWidth="2.6"
+            strokeWidth="3.2"
             strokeLinecap="round"
           />
           {/* Specular Glint along Top Edge */}
           <path
-            d="M 148 380 C 174 376, 206 376, 232 380"
+            d="M 145 376 C 172 372, 208 372, 235 376"
             fill="none"
-            stroke="#FFF4E0"
-            strokeWidth="1.3"
+            stroke="#FFF7E6"
+            strokeWidth="1.5"
             strokeLinecap="round"
-            opacity="0.92"
+            opacity="0.95"
           />
 
           {/* Saffron Belt Bottom Edge Deep Piping */}
           <path
-            d="M 114 400 C 152 412, 228 412, 266 400"
+            d="M 104 406 C 142 416, 238 416, 276 406"
             fill="none"
-            stroke="#8F2400"
-            strokeWidth="2.2"
+            stroke="url(#k2_SaffronBottomRim)"
+            strokeWidth="2.6"
             strokeLinecap="round"
           />
 
-          {/* Hanging Teardrop Saffron-Gold Pendant Accent */}
-          <g id="k2_beltPendant" transform="translate(190, 408)">
-            <path d="M -3.5 0 L 0 10.5 L 3.5 0 Z" fill="url(#k2_BrightSaffronBelt)" stroke="#A33200" strokeWidth="0.6" />
-            <circle cx="0" cy="11.4" r="1.6" fill="#FFF4E0" stroke="#FF7A00" strokeWidth="0.4" />
+          {/* Center Silk Knot Tuck Accent */}
+          <g id="k2_beltCenterKnot" transform="translate(190, 408)">
+            <ellipse cx="0" cy="0" rx="6.5" ry="3.8" fill="url(#k2_BrightSaffronBelt)" stroke="#A33200" strokeWidth="0.7" />
+            <ellipse cx="0" cy="-0.6" rx="4.0" ry="1.8" fill="#FFE099" opacity="0.75" />
+            {/* Small Hanging Silk Tassel Tail */}
+            <path d="M -3 2 C -2 8, -1 13, 0 16 C 1 13, 2 8, 3 2 Z" fill="url(#k2_BrightSaffronBelt)" stroke="#A33200" strokeWidth="0.6" />
+            <path d="M 0 3 L 0 14" fill="none" stroke="#FFE099" strokeWidth="0.9" opacity="0.8" />
           </g>
         </g>
       </g>
     </g>
   );
 };
+
+

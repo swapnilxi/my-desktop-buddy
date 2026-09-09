@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from '../Krishna/krishna.module.css';
+import { Krishna2Lips, Krishna2LipsDefs } from './Krishna2_face';
 
 export interface Krishna2EyesProps {
   isBlinking?: boolean;
@@ -45,12 +46,8 @@ export const Krishna2Eyes: React.FC<Krishna2EyesProps> = ({
           <stop offset="100%" stopColor="#240A03" stopOpacity="0" />
         </radialGradient>
 
-        {/* Soft Rosy Lip Warmth Gradient */}
-        <radialGradient id="k2_LipGrad" cx="50%" cy="35%" r="65%">
-          <stop offset="0%" stopColor="#E28B9C" stopOpacity="0.85" />
-          <stop offset="55%" stopColor="#C45E73" stopOpacity="0.55" />
-          <stop offset="100%" stopColor="#8C2C40" stopOpacity="0" />
-        </radialGradient>
+        {/* Soft Natural Rosy Toddler Lip Shader Defs */}
+        <Krishna2LipsDefs />
       </defs>
 
       {/* ════════════════ 1. EYEBROWS ════════════════ */}
@@ -308,27 +305,8 @@ export const Krishna2Eyes: React.FC<Krishna2EyesProps> = ({
         />
       </g>
 
-      {/* ════════════════ 4. SWEET SMILING MOUTH (Matching Reference) ════════════════ */}
-      <g id="k2_smilingMouth" transform="translate(190, 188)">
-        {/* Soft Lip Warmth Glow */}
-        <ellipse cx="0" cy="1.5" rx="10" ry="4.5" fill="url(#k2_LipGrad)" />
-
-        {/* Cute Toddler Smile Lip Line */}
-        <path
-          d="M -8.5 0 C -4 3.8, 4 3.8, 8.5 0"
-          fill="none"
-          stroke="#8C2C40"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-        />
-
-        {/* Corner Smile Dimples */}
-        <circle cx="-8.2" cy="-0.2" r="0.75" fill="#8C2C40" opacity="0.8" />
-        <circle cx="8.2" cy="-0.2" r="0.75" fill="#8C2C40" opacity="0.8" />
-
-        {/* Lower Lip Highlight */}
-        <ellipse cx="0" cy="2.8" rx="4.0" ry="1.5" fill="#FFFFFF" opacity="0.25" />
-      </g>
+      {/* ════════════════ 4. SWEET SMILING MOUTH & PLUMP LIPS (Moved to Krishna2_face.tsx) ════════════════ */}
+      <Krishna2Lips state={state} isHappy={isHappy} isThinking={isThinking} />
     </g>
   );
 };

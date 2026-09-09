@@ -8,6 +8,7 @@ import { KrishnaDefs } from './KrishnaDefs';
 import { KrishnaHead } from './KrishnaHead';
 import { KrishnaTorso } from './KrishnaTorso';
 import { KrishnaLowerBody } from './Krishna_lower_body';
+import { KrishnaChakra } from './krishna_chakra';
 import krishnaBaseImg from './krishna_base.png';
 import { VIEWBOX } from './characterAnchors';
 
@@ -489,43 +490,7 @@ export function LittleKrishna({
 
           {/* ════════════════ LAYER 9: SUDARSHAN CHAKRA ════════════════ */}
           {/* Centered directly above the lowered index finger tip at (91, 56) */}
-          <g id="sudarshanChakraMaster" filter="url(#kChakraGlowFilter)">
-            {/* Divine Golden Radial Glow Aura */}
-            <ellipse cx="91" cy="56" rx="50" ry="24" fill="url(#kChakraAura)" />
-
-            {/* 3D Horizontally Oriented Chakra Disc */}
-            <g transform="translate(91, 56) scale(1, 0.48) translate(-91, -56)">
-              <g className={styles.chakraDisc}>
-                {/* Outer Radiant Rim Glow */}
-                <circle cx="91" cy="56" r="42" fill="url(#kChakraCore)" opacity="0.25" />
-                {/* Heavy Solid Metallic Gold Outer Rim */}
-                <circle cx="91" cy="56" r="40" fill="none" stroke="url(#kGoldGrad)" strokeWidth="7.5" />
-                {/* Inner Polished Gold Beaded Track */}
-                <circle cx="91" cy="56" r="32" fill="none" stroke="#FFFBEB" strokeWidth="2.2" opacity="0.9" />
-                <circle cx="91" cy="56" r="24" fill="none" stroke="url(#kGoldGrad)" strokeWidth="3.0" opacity="0.75" />
-
-                {/* Central Sacred Golden Hub */}
-                <circle cx="91" cy="56" r="13" fill="url(#kChakraCore)" stroke="#92400E" strokeWidth="2.0" />
-                <circle cx="91" cy="56" r="4.5" fill="#FFFFF0" />
-                <circle cx="89" cy="54" r="2.0" fill="#FFFFFF" opacity="0.95" />
-
-                {/* 16 Golden Radiating Spokes with Razor Diamond Tips */}
-                {[0, 22.5, 45, 67.5, 90, 112.5, 135, 157.5, 180, 202.5, 225, 247.5, 270, 292.5, 315, 337.5].map(
-                  (angle) => (
-                    <g key={angle} transform={`rotate(${angle} 91 56)`}>
-                      <line x1="105" y1="56" x2="124" y2="56" stroke="url(#kGoldGrad)" strokeWidth="3.5" />
-                      <path
-                        d="M 123 56 L 130 51 L 137 56 L 130 61 Z"
-                        fill="url(#kGoldGrad)"
-                        stroke="#B45309"
-                        strokeWidth="1.2"
-                      />
-                    </g>
-                  )
-                )}
-              </g>
-            </g>
-          </g>
+          <KrishnaChakra />
 
           {/* ── Chakra Index Finger Spin Contact (Active Divine Control in front of hub) ── */}
           {pose === 'chakra' && (

@@ -6,6 +6,7 @@ import styles from '../Krishna/krishna.module.css';
 import { KrishnaDefs } from '../Krishna/KrishnaDefs';
 import { KrishnaLowerBody } from './Krishna2_lower_body';
 import { Krishna2Eyes } from './Krishna2Eyes';
+import { KrishnaArms } from './krishna2_arms';
 import krishna2BaseImg from './krishna2_base.png';
 
 export type Krishna2Pose = 'crossHands' | 'chakra' | 'standing';
@@ -260,6 +261,9 @@ export function LittleKrishna2({
             height="480.87"
             preserveAspectRatio="xMidYMid meet"
           />
+
+          {/* VECTOR SVG ARMS & HANDS */}
+          <KrishnaArms pose={pose} />
 
           {/* ANIMATABLE 3D EXPRESSIVE EYES, EYEBROWS & MOUTH */}
           <Krishna2Eyes isBlinking={isBlinking} state={activeState} />
