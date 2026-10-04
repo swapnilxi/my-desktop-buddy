@@ -133,8 +133,10 @@ async def get_greeting(
     x_buddy_name: Optional[str] = Header(None),
 ):
     """Generate a cute 2-6 word AI greeting or thought from the Desktop Buddy."""
-    is_panda = (x_buddy_type or "").lower() == "panda"
-    buddy_title = x_buddy_name or ("Bambu" if is_panda else "Hammy")
+    buddy_type = (x_buddy_type or "").lower()
+    is_panda = buddy_type == "panda"
+    is_krishna = buddy_type == "krishna"
+    buddy_title = x_buddy_name or ("Little Krishna" if is_krishna else "Bambu" if is_panda else "Hammy")
 
     hamster_greetings = [
         "Squeak! Let's code together! 🚀",
@@ -162,14 +164,31 @@ async def get_greeting(
         "Happy moments ahead! 🌟",
     ]
 
-    fallback_greetings = panda_greetings if is_panda else hamster_greetings
+    krishna_greetings = [
+        "Radhe Radhe! Let's create! 🪈",
+        "Sweet butter, sweeter work! 🧈",
+        "Play your flute of focus! 🎶",
+        "Peacock-feather calm today! 🪶",
+        "Joyful work is worship! 🌸",
+        "I am right beside you! 💙",
+        "Every step is divine! ✨",
+        "Smile, then begin! 🌼",
+    ]
+
+    if is_krishna:
+        fallback_greetings = krishna_greetings
+    else:
+        fallback_greetings = panda_greetings if is_panda else hamster_greetings
 
     client_keys, client_models, client_provider = _extract_client_context(
         x_gemini_key, x_deepseek_key, x_llm_provider, x_gemini_model, x_deepseek_model
     )
 
     try:
-        animal = "panda pet who loves bamboo" if is_panda else "hamster pet who loves sunflower seeds"
+        if is_krishna:
+            animal = "Little Krishna companion who loves butter and his flute"
+        else:
+            animal = "panda pet who loves bamboo" if is_panda else "hamster pet who loves sunflower seeds"
         prompt = (
             f"You are {buddy_title}, a cute desktop {animal}. "
             "Generate a single adorable, encouraging thought or greeting for the user. "
@@ -186,7 +205,7 @@ async def get_greeting(
         cleaned = text.strip().strip('"').strip("'")
         words = cleaned.split()
         if len(words) > 8:
-            emoji = " 🎋" if is_panda else " 🐹"
+            emoji = " 🪈" if is_krishna else " 🎋" if is_panda else " 🐹"
             cleaned = " ".join(words[:6]) + emoji
         return GreetingResponse(greeting=cleaned, model=adapter.get_model_name())
     except Exception:

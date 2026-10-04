@@ -40,22 +40,23 @@ class OllamaAdapter(LLMAdapter):
         if max_tokens:
             payload["options"]["num_predict"] = max_tokens
 
+        # Raise on failure (like the other adapters) so the router can fall back or
+        # report the real error instead of sending an error string as the buddy's reply.
         async with httpx.AsyncClient(timeout=120.0) as client:
             try:
                 response = await client.post(
                     f"{self.endpoint}/api/chat",
                     json=payload,
                 )
-                response.raise_for_status()
-                data = response.json()
-                return data.get("message", {}).get("content", "🐹 *squeak* No response from Ollama.")
-            except httpx.ConnectError:
-                return (
-                    "🐹 Oops! I can't reach Ollama. Make sure it's running locally "
-                    f"at {self.endpoint}. You can start it with `ollama serve`."
-                )
-            except Exception as e:
-                return f"🐹 Something went wrong with Ollama: {str(e)}"
+            except httpx.ConnectError as exc:
+                raise RuntimeError(
+                    f"Can't reach Ollama at {self.endpoint}. Start it with `ollama serve`."
+                ) from exc
+            response.raise_for_status()
+            content = response.json().get("message", {}).get("content")
+            if not content:
+                raise RuntimeError("Ollama returned an empty response.")
+            return content
 
     def get_model_name(self) -> str:
         return f"Ollama ({self.model})"

@@ -93,11 +93,13 @@ async def generate_with_fallback(
     order = [primary] + [p for p in FALLBACK_ORDER if p != primary]
 
     errors: list[str] = []
-    last_exc: Optional[Exception] = None
+    failures: list[Exception] = []
+    attempted: list[str] = []
 
     for provider in order:
         if not _provider_configured(provider, config, client_keys):
             continue
+        attempted.append(provider)
         try:
             adapter = _adapter_for(provider, client_keys, client_models)
             text = await adapter.generate(
@@ -108,16 +110,21 @@ async def generate_with_fallback(
             )
             return text, adapter
         except Exception as exc:
-            last_exc = exc
+            failures.append(exc)
             errors.append(f"{provider}: {exc}")
             continue
 
-    if last_exc is None:
-        raise ValueError(
-            "No LLM provider key is configured. You can paste your Gemini or DeepSeek API key in the Config tab (stored safely in your browser LocalStorage) or set it in the server .env file."
-        )
+    no_key_msg = (
+        "No LLM provider key is configured. You can paste your Gemini or DeepSeek API key in the Config tab "
+        "(stored safely in your browser LocalStorage) or set it in the server .env file."
+    )
+    if not failures:
+        raise ValueError(no_key_msg)
+    # Only the implicit local-Ollama fallback was tried: the real problem is the missing key.
+    if attempted == ["ollama"] and primary != "ollama":
+        raise ValueError(f"{no_key_msg} (Local Ollama isn't running either: {failures[0]})")
 
-    if _is_quota_error(last_exc):
+    if any(_is_quota_error(exc) for exc in failures):
         raise RuntimeError(
             f"All configured LLM providers hit their quota limits or failed. "
             f"Tried → {' | '.join(errors)}. "

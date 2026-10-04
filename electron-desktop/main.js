@@ -26,7 +26,19 @@ const COMPACT_HEIGHT = 680;
 const DASHBOARD_WIDTH = 1100;
 const DASHBOARD_HEIGHT = 760;
 
+// Smallest sizes a user can resize each resizable mode to (pet mode is fixed-size).
+const MIN_SIZE = {
+  compact: { width: 340, height: 520 },
+  fullscreen: { width: 760, height: 520 },
+};
+const MODE_ALIASES = { small: 'pet', sidebar: 'compact', dashboard: 'fullscreen' };
+
 let lastPetPosition = { x: null, y: null };
+let currentMode = 'pet';
+let maximized = false;
+let preMaximizeBounds = null;
+// Last size/position the user chose for each resizable mode, restored on re-entry.
+const savedBounds = { compact: null, fullscreen: null };
 
 // ── Window Creation ──────────────────────────────────────────────
 
@@ -51,7 +63,11 @@ function createWindow() {
     alwaysOnTop: true,
     resizable: true,
     minimizable: true,
-    maximizable: true,
+    // Native maximize / fullscreen break a frameless transparent window on macOS
+    // (black backdrop, no way back, setBounds ignored). "Fill screen" is handled
+    // by the window:toggle-maximize IPC instead.
+    maximizable: false,
+    fullscreenable: false,
     skipTaskbar: false,
     hasShadow: false,
     roundedCorners: true,
@@ -93,6 +109,86 @@ function createWindow() {
   });
 }
 
+// ── Window Mode & Bounds Helpers ─────────────────────────────────
+
+function workAreaFor(bounds) {
+  return screen.getDisplayMatching(bounds).workArea;
+}
+
+// Keep a rect fully inside the work area (shrinking it if it is larger).
+function fitToArea(b, area) {
+  const width = Math.min(b.width, area.width);
+  const height = Math.min(b.height, area.height);
+  const x = Math.min(Math.max(b.x, area.x), area.x + area.width - width);
+  const y = Math.min(Math.max(b.y, area.y), area.y + area.height - height);
+  return { x: Math.round(x), y: Math.round(y), width: Math.round(width), height: Math.round(height) };
+}
+
+function sendWindowState() {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send('window:state', { mode: currentMode, maximized });
+  }
+}
+
+// macOS ignores setBounds while a window is in native fullscreen / maximized,
+// so leave those states before applying a new size.
+function withNormalWindow(fn) {
+  if (mainWindow.isFullScreen()) {
+    mainWindow.once('leave-full-screen', () => fn());
+    mainWindow.setFullScreen(false);
+    return;
+  }
+  if (mainWindow.isMaximized()) mainWindow.unmaximize();
+  fn();
+}
+
+function targetBoundsFor(mode, current) {
+  const area = workAreaFor(current);
+  if (mode === 'pet') {
+    const x = lastPetPosition.x ?? current.x + current.width - PET_WIDTH;
+    const y = lastPetPosition.y ?? current.y;
+    return fitToArea({ x, y, width: PET_WIDTH, height: PET_HEIGHT }, area);
+  }
+  if (mode === 'compact') {
+    if (savedBounds.compact) return fitToArea(savedBounds.compact, area);
+    // Grow out of the pet's spot, keeping its right edge so it stays docked.
+    const x = current.x + current.width - COMPACT_WIDTH;
+    return fitToArea({ x, y: current.y, width: COMPACT_WIDTH, height: COMPACT_HEIGHT }, area);
+  }
+  if (savedBounds.fullscreen) return fitToArea(savedBounds.fullscreen, area);
+  const width = Math.min(DASHBOARD_WIDTH, area.width - 40);
+  const height = Math.min(DASHBOARD_HEIGHT, area.height - 40);
+  return {
+    x: Math.round(area.x + (area.width - width) / 2),
+    y: Math.round(area.y + (area.height - height) / 2),
+    width,
+    height,
+  };
+}
+
+function applyMode(mode) {
+  const current = mainWindow.getBounds();
+  if (mode === currentMode) {
+    sendWindowState();
+    return;
+  }
+  // Remember where the user left things before switching away.
+  if (currentMode === 'pet') {
+    lastPetPosition = { x: current.x, y: current.y };
+  } else {
+    savedBounds[currentMode] = maximized ? preMaximizeBounds : current;
+  }
+  const target = targetBoundsFor(mode, current);
+  currentMode = mode;
+  maximized = false;
+  preMaximizeBounds = null;
+  mainWindow.setAlwaysOnTop(mode !== 'fullscreen');
+  // No animation: animated resizes left the UI drawn at the old size mid-switch.
+  mainWindow.setBounds(target, false);
+  if (mode === 'fullscreen') mainWindow.focus();
+  sendWindowState();
+}
+
 // ── IPC Handlers ─────────────────────────────────────────────────
 
 function setupIPC() {
@@ -121,6 +217,12 @@ function setupIPC() {
     if (!mainWindow) return;
     const [x, y] = mainWindow.getPosition();
     mainWindow.setPosition(Math.round(x + deltaX), Math.round(y + deltaY));
+    if (maximized) {
+      // Dragging a filled window "un-fills" it.
+      maximized = false;
+      preMaximizeBounds = null;
+      sendWindowState();
+    }
   });
 
   ipcMain.on('window:start-drag', () => {
@@ -128,73 +230,63 @@ function setupIPC() {
   });
 
   // 4 Window Modes: 'minimized' | 'pet' | 'compact' | 'fullscreen'
-  ipcMain.on('window:set-mode', (event, mode) => {
+  ipcMain.on('window:set-mode', (_event, rawMode) => {
     if (!mainWindow) return;
-    const primaryDisplay = screen.getPrimaryDisplay();
-    const { width: screenWidth, height: screenHeight } = primaryDisplay.workAreaSize;
-    const currentBounds = mainWindow.getBounds();
-
+    const mode = MODE_ALIASES[rawMode] || rawMode;
     if (mode === 'minimized') {
       mainWindow.minimize();
-    } else if (mode === 'pet' || mode === 'small') {
-      // Save or restore position within screen bounds
-      let targetX = lastPetPosition.x ?? Math.min(Math.max(10, currentBounds.x), screenWidth - PET_WIDTH - 10);
-      let targetY = lastPetPosition.y ?? Math.min(Math.max(10, currentBounds.y), screenHeight - PET_HEIGHT - 10);
-      targetX = Math.min(Math.max(10, targetX), screenWidth - PET_WIDTH - 10);
-      targetY = Math.min(Math.max(10, targetY), screenHeight - PET_HEIGHT - 10);
+      return;
+    }
+    if (!['pet', 'compact', 'fullscreen'].includes(mode)) return;
+    withNormalWindow(() => applyMode(mode));
+  });
 
-      mainWindow.setAlwaysOnTop(true);
-      mainWindow.setBounds({
-        x: targetX,
-        y: targetY,
-        width: PET_WIDTH,
-        height: PET_HEIGHT,
-      }, true);
-    } else if (mode === 'compact' || mode === 'sidebar') {
-      // Save current pet position before expanding
-      if (currentBounds.width === PET_WIDTH) {
-        lastPetPosition = { x: currentBounds.x, y: currentBounds.y };
-      }
-
-      let targetX = currentBounds.x;
-      let targetY = currentBounds.y;
-
-      if (targetX + COMPACT_WIDTH > screenWidth - 10) {
-        targetX = screenWidth - COMPACT_WIDTH - 10;
-      }
-      if (targetY + COMPACT_HEIGHT > screenHeight - 10) {
-        targetY = screenHeight - COMPACT_HEIGHT - 10;
-      }
-      targetX = Math.max(10, targetX);
-      targetY = Math.max(10, targetY);
-
-      mainWindow.setAlwaysOnTop(true);
-      mainWindow.setBounds({
-        x: targetX,
-        y: targetY,
-        width: COMPACT_WIDTH,
-        height: COMPACT_HEIGHT,
-      }, true);
-    } else if (mode === 'fullscreen' || mode === 'dashboard') {
-      // Save pet position before expanding
-      if (currentBounds.width === PET_WIDTH) {
-        lastPetPosition = { x: currentBounds.x, y: currentBounds.y };
-      }
-
-      const targetW = Math.min(DASHBOARD_WIDTH, screenWidth - 40);
-      const targetH = Math.min(DASHBOARD_HEIGHT, screenHeight - 60);
-      const targetX = Math.round((screenWidth - targetW) / 2);
-      const targetY = Math.round((screenHeight - targetH) / 2);
-
-      mainWindow.setAlwaysOnTop(false);
-      mainWindow.setBounds({
-        x: targetX,
-        y: targetY,
-        width: targetW,
-        height: targetH,
-      }, true);
+  // Custom edge/corner resizing (frameless transparent windows can't be resized natively).
+  ipcMain.on('window:set-bounds', (_event, b) => {
+    if (!mainWindow || currentMode === 'pet' || !b) return;
+    if (![b.x, b.y, b.width, b.height].every(Number.isFinite)) return;
+    const min = MIN_SIZE[currentMode];
+    const area = workAreaFor(mainWindow.getBounds());
+    const width = Math.round(Math.min(Math.max(b.width, min.width), area.width));
+    const height = Math.round(Math.min(Math.max(b.height, min.height), area.height));
+    const edge = String(b.edge || '');
+    // When a size is clamped, keep the edge opposite the dragged one pinned in place.
+    const x = Math.round(edge.includes('w') ? b.x + b.width - width : b.x);
+    const y = Math.round(edge.includes('n') ? b.y + b.height - height : b.y);
+    const next = { x, y, width, height };
+    mainWindow.setBounds(next, false);
+    savedBounds[currentMode] = next;
+    if (maximized) {
+      maximized = false;
+      preMaximizeBounds = null;
+      sendWindowState();
     }
   });
+
+  // "Fill screen": dashboard fills the work area, sidebar fills the screen height.
+  ipcMain.on('window:toggle-maximize', () => {
+    if (!mainWindow || currentMode === 'pet') return;
+    withNormalWindow(() => {
+      const current = mainWindow.getBounds();
+      const area = workAreaFor(current);
+      if (maximized) {
+        mainWindow.setBounds(fitToArea(preMaximizeBounds || targetBoundsFor(currentMode, current), area), false);
+        maximized = false;
+        preMaximizeBounds = null;
+      } else {
+        preMaximizeBounds = current;
+        const target = currentMode === 'compact'
+          ? fitToArea({ x: current.x, y: area.y, width: current.width, height: area.height }, area)
+          : { x: area.x, y: area.y, width: area.width, height: area.height };
+        mainWindow.setBounds(target, false);
+        maximized = true;
+      }
+      sendWindowState();
+    });
+  });
+
+  ipcMain.handle('window:get-bounds', () => (mainWindow ? mainWindow.getBounds() : null));
+  ipcMain.handle('window:get-state', () => ({ mode: currentMode, maximized }));
 
   ipcMain.on('buddy:update', (_event, buddyInfo) => {
     if (!buddyInfo) return;

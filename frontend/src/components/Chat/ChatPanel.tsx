@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import type { ChatMessage, HamsterMood } from '@/lib/api';
 import { sendChatMessage, transcribeAudio } from '@/lib/api';
+import { getChatState, setChatState, useChatState } from '@/lib/chatStore';
 import { speak, stopSpeaking } from '@/lib/speech';
 import type { BuddyDefinition, BuddyType } from '../Buddies/types';
 import { getBuddyDefinition } from '../Buddies/registry';
@@ -24,43 +25,44 @@ export default function ChatPanel({
   const effectiveName = buddyName || effectiveDef.defaultName;
   const effectiveEmoji = effectiveDef.emoji;
 
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const { messages, loading: isLoading } = useChatState();
   const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [useRag, setUseRag] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
 
+  // Scroll only the message list: scrollIntoView also scrolled the page itself,
+  // shifting the whole window sideways whenever anything overflowed.
   const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const el = messagesRef.current;
+    if (el) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
   }, []);
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, scrollToBottom]);
+  }, [messages, isLoading, scrollToBottom]);
 
   const handleSend = async (overrideText?: string) => {
     const trimmed = (overrideText ?? input).trim();
-    if (!trimmed || isLoading) return;
+    if (!trimmed || getChatState().loading) return;
 
     setError(null);
+    const history = getChatState().messages;
     const userMessage: ChatMessage = { role: 'user', content: trimmed };
-    const updatedMessages = [...messages, userMessage];
-    setMessages(updatedMessages);
+    setChatState({ messages: [...history, userMessage], loading: true });
     setInput('');
-    setIsLoading(true);
     onMoodChange('thinking');
 
     try {
-      const response = await sendChatMessage(trimmed, messages, useRag);
+      const response = await sendChatMessage(trimmed, history, useRag);
       const assistantMessage: ChatMessage = { role: 'assistant', content: response.response };
-      setMessages([...updatedMessages, assistantMessage]);
+      setChatState({ messages: [...getChatState().messages, assistantMessage] });
       onMoodChange('speaking');
 
       // Speak the reply aloud; return to idle when speech finishes.
@@ -77,7 +79,7 @@ export default function ChatPanel({
       setError(errorMsg);
       onMoodChange('idle');
     } finally {
-      setIsLoading(false);
+      setChatState({ loading: false });
     }
   };
 
@@ -192,7 +194,7 @@ export default function ChatPanel({
   return (
     <div className="chat-panel">
       {/* Messages */}
-      <div className="chat-messages">
+      <div className="chat-messages" ref={messagesRef}>
         {messages.length === 0 ? (
           <div className="chat-empty">
             <span className="chat-empty-emoji">{effectiveEmoji}</span>
@@ -235,8 +237,6 @@ export default function ChatPanel({
             </div>
           </div>
         )}
-
-        <div ref={messagesEndRef} />
       </div>
 
       {/* Listening / Transcribing banner */}

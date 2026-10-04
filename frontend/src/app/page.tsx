@@ -2,18 +2,21 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import BuddyRenderer from '@/components/Buddies/BuddyRenderer';
-import KrishnaCard from '@/components/Buddies/Krishna/KrishnaCard';
+import KrishnaControls from '@/components/Buddies/Krishna/KrishnaControls';
+import type { KrishnaState } from '@/components/Buddies/Krishna/KrishnaSprite';
+import ResizeHandles from '@/components/Window/ResizeHandles';
 import ChatPanel from '@/components/Chat/ChatPanel';
 import TodoPanel from '@/components/TodoList/TodoPanel';
 import ConfigPanel from '@/components/Config/ConfigPanel';
 import SpeechTrainingPanel from '@/components/SpeechTraining/SpeechTrainingPanel';
 import { checkHealth, fetchGreeting, sendChatMessage, getClientSavedConfig, saveClientSavedConfig } from '@/lib/api';
-import type { HamsterMood } from '@/lib/api';
+import type { AppConfig, HamsterMood } from '@/lib/api';
 import { speak } from '@/lib/speech';
 import { useVoiceRecorder } from '@/lib/useVoiceRecorder';
 import { BUDDY_REGISTRY, getBuddyDefinition } from '@/components/Buddies/registry';
 import type { BuddyType } from '@/components/Buddies/types';
 import { useFocusTimer } from '@/lib/useFocusTimer';
+import { useHasNativeWindow, useNativeWindowSync } from '@/lib/useNativeWindow';
 
 export type WindowMode = 'pet' | 'compact' | 'fullscreen';
 type TabId = 'chat' | 'todo' | 'config' | 'speech';
@@ -33,6 +36,18 @@ const TABS: Tab[] = [
 
 // Idle variety sub-animations that cycle randomly
 const IDLE_VARIETIES: HamsterMood[] = ['idle', 'waving', 'idle', 'idle', 'idle'];
+
+const FillScreenIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+    <path d="M1 4V1h3M8 1h3v3M11 8v3H8M4 11H1V8" fill="none" stroke="currentColor" strokeWidth="1.4" />
+  </svg>
+);
+
+const RestoreSizeIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
+    <path d="M1 4h3V1M8 1v3h3M11 8H8v3M4 11V8H1" fill="none" stroke="currentColor" strokeWidth="1.4" />
+  </svg>
+);
 
 function updateFavicon(emoji: string) {
   if (typeof document === 'undefined') return;
@@ -62,6 +77,31 @@ export default function Home() {
   const [isDragging, setIsDragging] = useState(false);
   const [petStreak, setPetStreak] = useState(0);
   const [isFlutePlaying, setIsFlutePlaying] = useState(false);
+  // null = Auto: Krishna follows the app's mood; otherwise a state the user pinned.
+  const [krishnaState, setKrishnaState] = useState<KrishnaState | null>(null);
+  const [petMenuOpen, setPetMenuOpen] = useState(false);
+  const [buddyCollapsed, setBuddyCollapsed] = useState(false);
+
+  const hasNativeWindow = useHasNativeWindow();
+  const { maximized, toggleMaximize } = useNativeWindowSync(windowMode, setWindowModeState);
+
+  // Close the Buddy-mode "more" menu on any outside press (capture phase, since the
+  // sprites stop propagation) or on Escape.
+  useEffect(() => {
+    if (!petMenuOpen) return;
+    const onPointerDown = (e: PointerEvent) => {
+      if (!(e.target as HTMLElement | null)?.closest?.('.floating-more')) setPetMenuOpen(false);
+    };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setPetMenuOpen(false);
+    };
+    document.addEventListener('pointerdown', onPointerDown, true);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown, true);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [petMenuOpen]);
 
   const toggleFlute = useCallback(() => {
     const audio = document.getElementById('flute-bg-music') as HTMLAudioElement;
@@ -142,10 +182,6 @@ export default function Home() {
     checkBackend();
     refreshGreeting();
 
-    if (typeof window !== 'undefined' && window.hamsterDesk?.window) {
-      window.hamsterDesk.window.setMode('pet');
-    }
-
     const interval = setInterval(checkBackend, 30000);
     const greetingInterval = setInterval(refreshGreeting, 45000);
 
@@ -168,15 +204,19 @@ export default function Home() {
     };
   }, [checkBackend, refreshGreeting]);
 
-  // Window control helpers
+  // Window control helpers (useNativeWindowSync resizes the native window to match)
   const setWindowMode = (mode: WindowMode, targetTab?: TabId) => {
     if (targetTab) {
       setActiveTab(targetTab);
     }
+    setPetMenuOpen(false);
     setWindowModeState(mode);
-    if (typeof window !== 'undefined' && window.hamsterDesk?.window) {
-      window.hamsterDesk.window.setMode(mode);
-    }
+  };
+
+  const changeKrishnaPose = (pose: 'crossed' | 'chakra') => {
+    setKrishnaPose(pose);
+    const saved: Partial<AppConfig> = getClientSavedConfig() || {};
+    saveClientSavedConfig({ ...saved, hamster: { ...saved.hamster, pose } } as AppConfig);
   };
 
   const handleMinimize = () => {
@@ -312,7 +352,7 @@ export default function Home() {
   // ── Pointer Drag Handler for Smooth Window Movement ─────────────
   const handlePointerDown = (e: React.PointerEvent) => {
     if (e.button !== 0) return;
-    if ((e.target as HTMLElement).closest('button')) return;
+    if ((e.target as HTMLElement).closest('button, select, input, textarea')) return;
 
     isPointerDown.current = true;
     hasMoved.current = false;
@@ -368,6 +408,73 @@ export default function Home() {
     }
   };
 
+  // Header drag in Sidebar / Dashboard: moves the window, never pets the buddy.
+  const handleHeaderPointerUp = (e: React.PointerEvent) => {
+    if (!isPointerDown.current) return;
+    isPointerDown.current = false;
+    setIsDragging(false);
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch { }
+  };
+
+  // Double-clicking an empty part of a header toggles "fill screen".
+  const handleHeaderDoubleClick = (e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest('button')) return;
+    toggleMaximize();
+  };
+
+  const headerDragProps = {
+    onPointerDown: handlePointerDown,
+    onPointerMove: handlePointerMove,
+    onPointerUp: handleHeaderPointerUp,
+    onDoubleClick: handleHeaderDoubleClick,
+  };
+
+  const fillScreenButton = hasNativeWindow && (
+    <button
+      className="win-btn collapse"
+      onClick={toggleMaximize}
+      title={maximized ? 'Restore size' : windowMode === 'compact' ? 'Fill screen height' : 'Fill screen'}
+      aria-label={maximized ? 'Restore size' : 'Fill screen'}
+    >
+      {maximized ? <RestoreSizeIcon /> : <FillScreenIcon />}
+    </button>
+  );
+
+  // Small Krishna + mood/pose picker, used in Sidebar and Dashboard. The greeting is shown
+  // as a caption instead of the sprite's wide speech bubble, which would be clipped here.
+  const renderKrishnaStage = (layout: 'row' | 'column') => (
+    <div className={`krishna-stage ${layout}`}>
+      <div className="krishna-stage-sprite">
+        <BuddyRenderer
+          type="krishna"
+          size="sm"
+          krishnaState={krishnaState ?? undefined}
+          mood={hamsterMood}
+          pose={krishnaPose}
+          name={hamsterName}
+          greeting=""
+          isDragging={isDragging}
+          petStreak={petStreak}
+          onClick={petHamster}
+          onRefreshGreeting={refreshGreeting}
+          onFeed={feedHamster}
+        />
+      </div>
+      <KrishnaControls
+        state={krishnaState}
+        pose={krishnaPose}
+        caption={hamsterGreeting}
+        flutePlaying={isFlutePlaying}
+        onStateChange={setKrishnaState}
+        onPoseChange={changeKrishnaPose}
+        // The dashboard keeps its Flute tab; the narrow sidebar gets the toggle here.
+        onToggleFlute={layout === 'row' ? toggleFlute : undefined}
+      />
+    </div>
+  );
+
   // ── MODE 1: PET / SMALL MODE (Floating Desktop Buddy Widget) ──────
   if (windowMode === 'pet') {
     return (
@@ -406,6 +513,7 @@ export default function Home() {
             type={buddyType}
             mood={hamsterMood}
             pose={buddyType === 'krishna' ? krishnaPose : undefined}
+            krishnaState={buddyType === 'krishna' ? krishnaState ?? undefined : undefined}
             color={hamsterColor}
             name={hamsterName}
             greeting={hamsterGreeting}
@@ -464,30 +572,41 @@ export default function Home() {
           >
             {isListening ? '🔴' : '🎙️'}
           </button>
-          {/* Compact Sidebar Mode */}
+          {/* Sidebar Mode (chat) */}
           <button
             className="floating-btn"
             onClick={() => setWindowMode('compact', 'chat')}
-            title="Sidebar Panel Mode"
+            title="Sidebar Mode — Chat"
           >
             💬
           </button>
-          {/* Tasks Panel */}
+          {/* Full Dashboard */}
           <button
             className="floating-btn"
-            onClick={() => setWindowMode('compact', 'todo')}
-            title="Tasks & Goals"
+            onClick={() => setWindowMode('fullscreen')}
+            title="Dashboard Mode"
           >
-            ✅
+            🖥️
           </button>
-          {/* Settings */}
-          <button
-            className="floating-btn"
-            onClick={() => setWindowMode('compact', 'config')}
-            title="Appearance & Settings"
-          >
-            ⚙️
-          </button>
+          {/* Everything else lives in a small menu so the pill fits the 340px window */}
+          <div className="floating-more">
+            <button
+              className={`floating-btn ${petMenuOpen ? 'active' : ''}`}
+              onClick={() => setPetMenuOpen((open) => !open)}
+              title="More"
+              aria-haspopup="menu"
+              aria-expanded={petMenuOpen}
+            >
+              ⋯
+            </button>
+            {petMenuOpen && (
+              <div className="floating-menu" role="menu">
+                <button role="menuitem" onClick={() => setWindowMode('compact', 'todo')}>✅ Tasks &amp; focus timer</button>
+                <button role="menuitem" onClick={() => setWindowMode('compact', 'speech')}>🎤 Speech training</button>
+                <button role="menuitem" onClick={() => setWindowMode('compact', 'config')}>⚙️ Settings</button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     );
@@ -496,14 +615,10 @@ export default function Home() {
   // ── MODE 2: COMPACT / SIDEBAR MODE (Floating Sidebar Panel) ──────
   if (windowMode === 'compact') {
     return (
-      <div className="app-container compact-sidebar-container">
+      <div className={`app-container compact-sidebar-container ${maximized ? 'is-maximized' : ''}`}>
+        <ResizeHandles />
         {/* Window Header with Drag Area & Mode Switchers */}
-        <header
-          className="app-header"
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
-          onPointerUp={handlePointerUp}
-        >
+        <header className="app-header" {...headerDragProps}>
           <div className="app-title-area">
             <span className="app-drag-dots">⋮⋮</span>
             <span>{currentBuddyDef.emoji}</span>
@@ -520,14 +635,30 @@ export default function Home() {
             >
               {nextBuddyDef.emoji}
             </button>
+            <button
+              className="win-btn collapse"
+              onClick={() => setBuddyCollapsed((c) => !c)}
+              title={buddyCollapsed ? `Show ${hamsterName}` : `Hide ${hamsterName} (more room)`}
+              aria-pressed={buddyCollapsed}
+            >
+              {buddyCollapsed ? '▾' : '▴'}
+            </button>
             {/* Mode Switchers */}
             <button
               className="win-btn collapse"
+              onClick={() => setWindowMode('fullscreen')}
+              title="Dashboard Mode"
+            >
+              🖥️
+            </button>
+            <button
+              className="win-btn collapse"
               onClick={() => setWindowMode('pet')}
-              title="Switch to Pet / Small Mode"
+              title="Buddy Mode"
             >
               🐾
             </button>
+            {fillScreenButton}
             <button
               className="win-btn"
               onClick={handleMinimize}
@@ -545,47 +676,40 @@ export default function Home() {
           </div>
         </header>
 
-        {/* Buddy Character (Clickable to pet or collapse to pet mode) */}
-        <div className="hamster-section">
-          {buddyType === 'krishna' ? (
-            <KrishnaCard pose={krishnaPose} onPoseChange={(p) => setKrishnaPose(p as 'crossed' | 'chakra')} />
-          ) : (
-            <BuddyRenderer
-              type={buddyType}
-              mood={hamsterMood}
-              color={hamsterColor}
-              name={hamsterName}
-              greeting={hamsterGreeting}
-              onClick={petHamster}
-              petStreak={petStreak}
-              onRefreshGreeting={refreshGreeting}
-              onFeed={feedHamster}
-            />
-          )}
-        </div>
+        {/* Buddy Character */}
+        {!buddyCollapsed && (
+          <div className="hamster-section">
+            {buddyType === 'krishna' ? (
+              renderKrishnaStage('row')
+            ) : (
+              <BuddyRenderer
+                type={buddyType}
+                mood={hamsterMood}
+                color={hamsterColor}
+                name={hamsterName}
+                greeting={hamsterGreeting}
+                onClick={petHamster}
+                petStreak={petStreak}
+                onRefreshGreeting={refreshGreeting}
+                onFeed={feedHamster}
+              />
+            )}
+          </div>
+        )}
 
-        {/* Tab Navigation */}
+        {/* Tab Navigation (Krishna's flute toggle lives beside him, keeping 4 tabs that fit) */}
         <nav className="tab-nav">
           {TABS.map((tab) => (
             <button
               key={tab.id}
               className={`tab-btn ${activeTab === tab.id ? 'active' : ''}`}
               onClick={() => setActiveTab(tab.id)}
+              title={tab.label}
             >
               <span className="tab-emoji">{tab.emoji}</span>
-              {tab.label}
+              <span className="tab-label">{tab.label}</span>
             </button>
           ))}
-          {buddyType === 'krishna' && (
-            <button
-              className="tab-btn"
-              onClick={toggleFlute}
-              title={isFlutePlaying ? "Pause Flute Music" : "Play Flute Music"}
-            >
-              <span className="tab-emoji">{isFlutePlaying ? '🎶' : '🪈'}</span>
-              Flute
-            </button>
-          )}
         </nav>
 
         {/* Tab Content */}
@@ -616,11 +740,12 @@ export default function Home() {
               onColorChange={setHamsterColor}
               onNameChange={setHamsterName}
               onBuddyTypeChange={(type) => setBuddyType(type as BuddyType)}
-              onPoseChange={(pose) => setKrishnaPose(pose as 'crossed' | 'chakra')}
+              onPoseChange={(pose) => changeKrishnaPose(pose === 'crossed' ? 'crossed' : 'chakra')}
             />
           </div>
           <div style={{ display: activeTab === 'speech' ? 'contents' : 'none' }}>
             <SpeechTrainingPanel
+              onMoodChange={handleMoodChange}
               buddyType={buddyType}
               buddyName={hamsterName}
               buddyDef={currentBuddyDef}
@@ -634,18 +759,20 @@ export default function Home() {
             <span className={`status-dot ${backendOnline ? 'online' : 'offline'}`} />
             {backendOnline ? 'Backend connected' : 'Backend offline'}
           </span>
-          <button
-            onClick={() => setWindowMode('pet')}
-            style={{
-              background: 'none',
-              border: 'none',
-              color: 'var(--accent-primary)',
-              cursor: 'pointer',
-              fontSize: '11px',
-            }}
-          >
-            🐾 Switch to Pet Mode
-          </button>
+          <span style={{ display: 'flex', gap: '10px' }}>
+            <button
+              onClick={() => setWindowMode('fullscreen')}
+              style={{ background: 'none', border: 'none', color: 'var(--accent-primary)', cursor: 'pointer', fontSize: '11px' }}
+            >
+              🖥️ Dashboard
+            </button>
+            <button
+              onClick={() => setWindowMode('pet')}
+              style={{ background: 'none', border: 'none', color: 'var(--accent-primary)', cursor: 'pointer', fontSize: '11px' }}
+            >
+              🐾 Buddy Mode
+            </button>
+          </span>
         </div>
       </div>
     );
@@ -653,7 +780,8 @@ export default function Home() {
 
   // ── MODE 3: FULL SCREEN / DASHBOARD MODE (Full Productivity App) ─
   return (
-    <div className="dashboard-container">
+    <div className={`dashboard-container ${maximized ? 'is-maximized' : ''}`}>
+      <ResizeHandles />
       {/* Co-Pilot Left Sidebar */}
       <aside className="dashboard-copilot-sidebar">
         <div className="copilot-header">
@@ -663,18 +791,21 @@ export default function Home() {
 
         {/* Animated Co-Pilot Character */}
         <div className="copilot-pet-box">
-          <BuddyRenderer
-            type={buddyType}
-            mood={hamsterMood}
-            pose={buddyType === 'krishna' ? krishnaPose : undefined}
-            color={hamsterColor}
-            name={hamsterName}
-            greeting={hamsterGreeting}
-            onClick={petHamster}
-            petStreak={petStreak}
-            onRefreshGreeting={refreshGreeting}
-            onFeed={feedHamster}
-          />
+          {buddyType === 'krishna' ? (
+            renderKrishnaStage('column')
+          ) : (
+            <BuddyRenderer
+              type={buddyType}
+              mood={hamsterMood}
+              color={hamsterColor}
+              name={hamsterName}
+              greeting={hamsterGreeting}
+              onClick={petHamster}
+              petStreak={petStreak}
+              onRefreshGreeting={refreshGreeting}
+              onFeed={feedHamster}
+            />
+          )}
         </div>
 
         {/* Voice Talk Action */}
@@ -714,21 +845,25 @@ export default function Home() {
         {/* Mode Switcher Navigation */}
         <div className="copilot-mode-nav">
           <div className="mode-nav-label">WINDOW MODE</div>
-          <button
-            className="mode-nav-btn"
-            onClick={() => setWindowMode('pet')}
-          >
-            <span>🐾</span> Pet / Small Mode
-          </button>
-          <button
-            className="mode-nav-btn"
-            onClick={() => setWindowMode('compact')}
-          >
-            <span>💬</span> Sidebar Mode
-          </button>
-          <button className="mode-nav-btn active">
-            <span>🖥️</span> Dashboard Mode
-          </button>
+          <div className="mode-nav-row" role="group" aria-label="Window mode">
+            <button
+              className="mode-nav-btn"
+              onClick={() => setWindowMode('pet')}
+              title="Buddy Mode"
+            >
+              <span>🐾</span> Buddy
+            </button>
+            <button
+              className="mode-nav-btn"
+              onClick={() => setWindowMode('compact')}
+              title="Sidebar Mode"
+            >
+              <span>💬</span> Sidebar
+            </button>
+            <button className="mode-nav-btn active" aria-pressed="true" title="Dashboard Mode">
+              <span>🖥️</span> Dashboard
+            </button>
+          </div>
         </div>
 
         {/* Backend Health Status */}
@@ -741,12 +876,7 @@ export default function Home() {
       {/* Main Workspace Dashboard */}
       <main className="dashboard-main-content">
         {/* Top Header Controls */}
-        <header
-          className="dashboard-header"
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
-          onPointerUp={handlePointerUp}
-        >
+        <header className="dashboard-header" {...headerDragProps}>
           <div className="dashboard-header-title">
             <span className="app-drag-dots">⋮⋮</span>
             <span>Desktop Buddy Productivity Workspace</span>
@@ -763,10 +893,11 @@ export default function Home() {
             <button
               className="win-btn collapse"
               onClick={() => setWindowMode('pet')}
-              title="Collapse to Pet Mode"
+              title="Collapse to Buddy Mode"
             >
               🐾
             </button>
+            {fillScreenButton}
             <button
               className="win-btn"
               onClick={handleMinimize}
@@ -836,11 +967,12 @@ export default function Home() {
               onColorChange={setHamsterColor}
               onNameChange={setHamsterName}
               onBuddyTypeChange={(type) => setBuddyType(type as BuddyType)}
-              onPoseChange={(pose) => setKrishnaPose(pose as 'crossed' | 'chakra')}
+              onPoseChange={(pose) => changeKrishnaPose(pose === 'crossed' ? 'crossed' : 'chakra')}
             />
           </div>
           <div style={{ display: activeTab === 'speech' ? 'contents' : 'none' }}>
             <SpeechTrainingPanel
+              onMoodChange={handleMoodChange}
               buddyType={buddyType}
               buddyName={hamsterName}
               buddyDef={currentBuddyDef}

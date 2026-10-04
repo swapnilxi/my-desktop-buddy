@@ -21,6 +21,7 @@ from routes.chat import router as chat_router
 from routes.todos import router as todos_router
 from routes.config import router as config_router
 from routes.voice import router as voice_router
+from routes.speech import router as speech_router
 
 
 @asynccontextmanager
@@ -73,6 +74,7 @@ app.include_router(chat_router)
 app.include_router(todos_router)
 app.include_router(config_router)
 app.include_router(voice_router)
+app.include_router(speech_router)
 
 
 # ── Health Check ──────────────────────────────────────────────────

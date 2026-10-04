@@ -13,10 +13,19 @@ contextBridge.exposeInMainWorld('hamsterDesk', {
     close: () => ipcRenderer.send('window:close'),
     quit: () => ipcRenderer.send('window:quit'),
     toggleAlwaysOnTop: () => ipcRenderer.send('window:toggle-always-on-top'),
-    setMode: (mode) => ipcRenderer.send('window:set-mode', mode), // 'compact' | 'expanded'
+    setMode: (mode) => ipcRenderer.send('window:set-mode', mode), // 'pet' | 'compact' | 'fullscreen' | 'minimized'
     moveBy: (deltaX, deltaY) => ipcRenderer.send('window:move-by', { deltaX, deltaY }),
     startDrag: () => ipcRenderer.send('window:start-drag'),
     updateBuddy: (buddyInfo) => ipcRenderer.send('buddy:update', buddyInfo),
+    getBounds: () => ipcRenderer.invoke('window:get-bounds'),
+    setBounds: (bounds) => ipcRenderer.send('window:set-bounds', bounds),
+    toggleMaximize: () => ipcRenderer.send('window:toggle-maximize'),
+    getState: () => ipcRenderer.invoke('window:get-state'),
+    onState: (callback) => {
+      const handler = (_event, state) => callback(state);
+      ipcRenderer.on('window:state', handler);
+      return () => ipcRenderer.removeListener('window:state', handler);
+    },
   },
 
   // Platform info
