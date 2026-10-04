@@ -24,6 +24,9 @@ contextBridge.exposeInMainWorld('hamsterDesk', {
     },
     isMaximized: () => ipcRenderer.invoke('window:is-maximized'),
     getAlwaysOnTop: () => ipcRenderer.invoke('window:get-always-on-top'),
+    // Custom resize grips (frameless transparent windows can't be resized natively)
+    getBounds: () => ipcRenderer.invoke('window:get-bounds'),
+    setBounds: (bounds) => ipcRenderer.send('window:set-bounds', bounds),
     moveBy: (deltaX, deltaY) => ipcRenderer.send('window:move-by', { deltaX, deltaY }),
     startDrag: () => ipcRenderer.send('window:start-drag'),
     updateBuddy: (buddyInfo) => ipcRenderer.send('buddy:update', buddyInfo),

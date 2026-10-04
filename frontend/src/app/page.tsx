@@ -2,6 +2,9 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import BuddyRenderer from '@/components/Buddies/BuddyRenderer';
+import KrishnaControls from '@/components/Buddies/Krishna/KrishnaControls';
+import type { KrishnaState } from '@/components/Buddies/Krishna/KrishnaSprite';
+import ResizeHandles from '@/components/Window/ResizeHandles';
 import ChatPanel from '@/components/Chat/ChatPanel';
 import TodoPanel from '@/components/TodoList/TodoPanel';
 import ConfigPanel from '@/components/Config/ConfigPanel';
@@ -9,7 +12,7 @@ import SpeechTrainingPanel from '@/components/SpeechTraining/SpeechTrainingPanel
 import GitaPanel from '@/components/Krishna/GitaPanel';
 import DailyPanel from '@/components/Krishna/DailyPanel';
 import { checkHealth, fetchGreeting, getClientSavedConfig, saveClientSavedConfig } from '@/lib/api';
-import type { HamsterMood } from '@/lib/api';
+import type { AppConfig, HamsterMood } from '@/lib/api';
 import { useVoiceRecorder } from '@/lib/useVoiceRecorder';
 import { BUDDY_REGISTRY, getBuddyDefinition } from '@/components/Buddies/registry';
 import type { BuddyType } from '@/components/Buddies/types';
@@ -96,6 +99,8 @@ export default function Home() {
   // The sidebar mascot used to occupy a hard-locked 44% of the window, which
   // is what starved the To-Do, Chat and Speech tabs of usable height.
   const [mascotCollapsed, setMascotCollapsed] = useState(false);
+  // null = Auto: Krishna follows the app's mood; otherwise a state the user pinned.
+  const [krishnaState, setKrishnaState] = useState<KrishnaState | null>(null);
 
   /**
    * True while the bubble is showing something the user actually asked for (a
@@ -516,6 +521,15 @@ export default function Home() {
     if (pose === 'crossed' || pose === 'chakra') setKrishnaPose(pose);
   }, []);
 
+  /** The quick pose toggle beside Krishna saves immediately (Config saves on its own Save). */
+  const changeKrishnaPose = useCallback((pose: 'crossed' | 'chakra') => {
+    setKrishnaPose(pose);
+    const saved = getClientSavedConfig() || ({} as Partial<AppConfig>);
+    saveClientSavedConfig({ ...saved, hamster: { ...saved.hamster, pose } } as AppConfig);
+  }, []);
+
+  const krishnaStateProp = buddyType === 'krishna' ? krishnaState ?? undefined : undefined;
+
   const formatTimerDigits = (seconds: number) => {
     const m = Math.floor(seconds / 60);
     const s = seconds % 60;
@@ -657,6 +671,7 @@ export default function Home() {
             type={buddyType}
             mood={hamsterMood}
             pose={buddyType === 'krishna' ? krishnaPose : undefined}
+            krishnaState={krishnaStateProp}
             color={hamsterColor}
             name={hamsterName}
             greeting={hamsterGreeting}
@@ -841,6 +856,7 @@ export default function Home() {
         hidden={effectiveTab !== 'speech'}
       >
         <SpeechTrainingPanel
+          onMoodChange={handleMoodChange}
           buddyType={buddyType}
           buddyName={hamsterName}
           buddyDef={currentBuddyDef}
@@ -891,6 +907,7 @@ export default function Home() {
   if (windowMode === 'compact') {
     return (
       <div className="app-container compact-sidebar-container">
+        <ResizeHandles />
         {/* Window Header — drag area, mode switcher, window controls */}
         <header
           className="app-header"
@@ -936,6 +953,7 @@ export default function Home() {
               type={buddyType}
               mood={hamsterMood}
               pose={buddyType === 'krishna' ? krishnaPose : undefined}
+              krishnaState={krishnaStateProp}
               size="sm"
               color={hamsterColor}
               name={hamsterName}
@@ -996,6 +1014,15 @@ export default function Home() {
                 Flute
               </button>
             )}
+
+            {buddyType === 'krishna' && !mascotCollapsed && (
+              <KrishnaControls
+                state={krishnaState}
+                pose={krishnaPose}
+                onStateChange={setKrishnaState}
+                onPoseChange={changeKrishnaPose}
+              />
+            )}
           </div>
         </div>
 
@@ -1038,6 +1065,7 @@ export default function Home() {
   // ── MODE 3: FULL SCREEN / DASHBOARD MODE (Full Productivity App) ─
   return (
     <div className="dashboard-container">
+      <ResizeHandles />
       {/* Co-Pilot Left Sidebar */}
       <aside className="dashboard-copilot-sidebar">
         <div className="copilot-header">
@@ -1051,6 +1079,7 @@ export default function Home() {
             type={buddyType}
             mood={hamsterMood}
             pose={buddyType === 'krishna' ? krishnaPose : undefined}
+            krishnaState={krishnaStateProp}
             size="sm"
             color={hamsterColor}
             name={hamsterName}
@@ -1098,6 +1127,16 @@ export default function Home() {
               <span aria-hidden="true">{isFlutePlaying ? '🎶' : '🪈'}</span>
               {isFlutePlaying ? 'Pause flute' : 'Play flute'}
             </button>
+          )}
+
+          {buddyType === 'krishna' && (
+            <KrishnaControls
+              variant="block"
+              state={krishnaState}
+              pose={krishnaPose}
+              onStateChange={setKrishnaState}
+              onPoseChange={changeKrishnaPose}
+            />
           )}
         </div>
 

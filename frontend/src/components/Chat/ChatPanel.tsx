@@ -45,19 +45,22 @@ export default function ChatPanel({
   } = conversation;
   const [isRecording, setIsRecording] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
 
+  // Scroll only the message list: scrollIntoView also scrolled the page itself,
+  // shifting the whole window sideways whenever anything overflowed.
   const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const el = messagesRef.current;
+    if (el) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
   }, []);
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, scrollToBottom]);
+  }, [messages, isLoading, scrollToBottom]);
 
   const handleSend = async (overrideText?: string) => {
     const trimmed = (overrideText ?? input).trim();
@@ -236,7 +239,7 @@ export default function ChatPanel({
   return (
     <div className="chat-panel">
       {/* Messages */}
-      <div className="chat-messages">
+      <div className="chat-messages" ref={messagesRef}>
         {messages.length === 0 ? (
           <div className="chat-empty">
             <span className="chat-empty-emoji">{effectiveEmoji}</span>
@@ -279,8 +282,6 @@ export default function ChatPanel({
             </div>
           </div>
         )}
-
-        <div ref={messagesEndRef} />
       </div>
 
       {/* Listening / Transcribing banner */}

@@ -1,3 +1,14 @@
+# Little Krishna — Reference-Faithful Character Redesign
+
+Perfect. With those choices locked, the character direction is now clear:
+
+**Krishna Sport = a polished Pixar/DreamWorks-like 3D-looking child character, visually believable as a 4–5-year-old, but implemented entirely with HTML + CSS + TSX.** The current costume, peacock feather, chakra, blue skin, jewelry, dhoti, orange drape, and overall identity stay intact. The character should not read as chibi or babyish.
+
+One important implementation note: HTML/CSS can create a convincing **2.5D / faux-3D character**, but it cannot behave like a true 3D mesh. So Antigravity should use layered DOM shapes, gradients, highlights, shadows, pseudo-elements, transforms, and controlled perspective rather than pretending it is building a physically rotatable 3D model.
+
+Use the following as the **master character sheet / source-of-truth prompt** for Gemini or Antigravity.
+
+```text
 PROJECT: KRISHNA SPORT — MASTER CHARACTER SPECIFICATION
 
 You are redesigning an existing Krishna character built entirely with:
@@ -1276,3 +1287,45 @@ TARGET #11:
 Final overall visual polish
 
 Do not skip ahead in this queue unless explicitly instructed.
+```
+
+For Antigravity, I would **not immediately tell it to implement this entire sheet**. First give it the character sheet as context/source of truth, then give it this first execution instruction:
+
+```text
+Study the attached Krishna reference images and the KRISHNA SPORT MASTER CHARACTER SPECIFICATION.
+
+Do not redesign the complete character yet.
+
+FIRST TASK ONLY:
+
+Correct the underlying full-body proportions so the character reads as an idealized but anatomically coherent 4–5-year-old child.
+
+Temporarily ignore fine facial details, jewelry polish, gradients and animations.
+
+Focus exclusively on:
+
+- head-to-body size
+- shoulder width
+- torso length
+- arm length
+- hand size
+- pelvis position
+- leg length
+- foot size
+
+Keep the current costume, colors, pose, hair, peacock feather and chakra concept intact.
+
+The current implementation must stop looking like a huge-headed cartoon mascot.
+
+Target approximately a 1:4.5 to 1:5 head-to-body relationship.
+
+Do not polish individual features until this silhouette is correct.
+
+Modify the existing TSX/CSS rather than rebuilding the application.
+
+After implementation, stop.
+
+Do not proceed to facial redesign.
+```
+
+This is the point where I would **restart the correction process**. Don't touch nose, lips, pupils, chin, etc. yet. First make the naked structural silhouette believable; otherwise we'll keep fixing details on top of incorrect proportions.

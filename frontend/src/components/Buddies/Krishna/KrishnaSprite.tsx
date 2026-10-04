@@ -59,9 +59,12 @@ export function LittleKrishna({
   const deriveDefaultState = (): KrishnaState => {
     if (stateProp) return stateProp;
     if (mood === 'speaking' || isSpeaking) return 'speaking';
-    if (mood === 'happy' || mood === 'excited') return 'happy';
-    if (mood === 'thinking') return 'thinking';
+    if (mood === 'happy' || mood === 'excited' || mood === 'eating') return 'happy';
+    if (mood === 'thinking' || mood === 'listening') return 'thinking';
     if (mood === 'waving' || mood === 'wave') return 'greeting';
+    if (mood === 'dragged') return 'clicked';
+    if (mood === 'sleeping') return 'relax';
+    if (mood === 'chakra') return 'protector';
     if (pose === 'crossHands' || (pose as string) === 'crossed') return 'idle';
     return 'protector';
   };

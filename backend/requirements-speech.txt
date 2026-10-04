@@ -1,0 +1,7 @@
+# Speech Training (local acoustic + language analysis). Also needs `ffmpeg` on PATH.
+praat-parselmouth>=0.4.5
+librosa>=0.10
+numpy
+soundfile
+spacy>=3.7
+# after install: python -m spacy download en_core_web_sm

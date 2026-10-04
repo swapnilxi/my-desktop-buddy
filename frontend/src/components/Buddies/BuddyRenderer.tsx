@@ -5,14 +5,18 @@ import type { BuddyMood, BuddyType, BuddySpriteProps } from './types';
 import HamsterSprite from './Hamster/HamsterSprite';
 import PandaSprite from './Panda/PandaSprite';
 import KrishnaSprite from './Krishna/KrishnaSprite';
+import type { KrishnaState } from './Krishna/KrishnaSprite';
 import { getBuddyDefinition } from './registry';
 
 export interface BuddyRendererProps extends BuddySpriteProps {
   type?: BuddyType | string;
+  /** Krishna only: a pinned state (undefined = react to mood). */
+  krishnaState?: KrishnaState;
 }
 
 export default function BuddyRenderer({
   type = 'hamster',
+  krishnaState,
   mood,
   pose,
   size,
@@ -32,6 +36,7 @@ export default function BuddyRenderer({
   if (type === 'krishna') {
     return (
       <KrishnaSprite
+        state={krishnaState}
         mood={mood}
         pose={pose as any}
         size={size}

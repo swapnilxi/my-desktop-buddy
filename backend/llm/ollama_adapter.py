@@ -48,7 +48,6 @@ class OllamaAdapter(LLMAdapter):
                 )
                 response.raise_for_status()
                 data = response.json()
-                return data.get("message", {}).get("content", "🐹 *squeak* No response from Ollama.")
             except httpx.ConnectError as exc:
                 # Raise rather than returning the error as assistant text: a
                 # returned string looks like a successful reply, which stops
@@ -60,6 +59,11 @@ class OllamaAdapter(LLMAdapter):
                 ) from exc
             except Exception as exc:
                 raise RuntimeError(f"Ollama request failed: {exc}") from exc
+
+        content = data.get("message", {}).get("content")
+        if not content:
+            raise RuntimeError("Ollama returned an empty response.")
+        return content
 
     def get_model_name(self) -> str:
         return f"Ollama ({self.model})"

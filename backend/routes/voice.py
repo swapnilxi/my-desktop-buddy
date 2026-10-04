@@ -9,6 +9,7 @@ Both return raw audio bytes that the frontend plays directly.
 """
 import asyncio
 import os
+import subprocess
 import tempfile
 from typing import Optional
 

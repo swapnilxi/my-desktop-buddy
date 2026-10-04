@@ -115,6 +115,10 @@ function createWindow() {
     resizable: true,
     minimizable: true,
     maximizable: true,
+    // Native macOS fullscreen (View menu / Ctrl+Cmd+F) breaks a transparent
+    // frameless window the same way setFullScreen does; "fill screen" uses
+    // maximize instead (window:toggle-maximize).
+    fullscreenable: false,
     skipTaskbar: false,
     hasShadow: false,
     roundedCorners: true,
@@ -260,6 +264,28 @@ function setupIPC() {
     // forward:true keeps mousemove flowing so the renderer can tell when the
     // pointer re-enters an interactive element.
     mainWindow.setIgnoreMouseEvents(!!enabled, { forward: true });
+  });
+
+  // Custom edge/corner resize grips. A frameless transparent window can't be
+  // resized by dragging its edges on macOS, so the renderer draws invisible
+  // grips (components/Window/ResizeHandles.tsx) and asks for new bounds here.
+  ipcMain.handle('window:get-bounds', () =>
+    (mainWindow && !mainWindow.isDestroyed() ? mainWindow.getBounds() : null));
+
+  ipcMain.on('window:set-bounds', (_event, b) => {
+    if (!mainWindow || mainWindow.isDestroyed() || currentMode === 'pet' || !b) return;
+    if (![b.x, b.y, b.width, b.height].every(Number.isFinite)) return;
+    if (mainWindow.isMaximized()) mainWindow.unmaximize();
+    const area = currentWorkArea();
+    const width = Math.round(Math.min(Math.max(b.width, MIN_WIDTH), area.width));
+    const height = Math.round(Math.min(Math.max(b.height, MIN_HEIGHT), area.height));
+    const edge = String(b.edge || '');
+    // When a size is clamped, keep the edge opposite the dragged one pinned in place.
+    const x = Math.round(edge.includes('w') ? b.x + b.width - width : b.x);
+    const y = Math.round(edge.includes('n') ? b.y + b.height - height : b.y);
+    const next = { x, y, width, height };
+    mainWindow.setBounds(next, false);
+    savedBounds[currentMode] = next;
   });
 
   // 4 Window Modes: 'minimized' | 'pet' | 'compact' | 'fullscreen'
