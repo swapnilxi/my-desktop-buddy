@@ -27,20 +27,20 @@ export const Krishna2Eyes: React.FC<Krishna2EyesProps> = ({
           <path d="M 211 146 C 218 124, 254 124, 261 146 C 254 167, 218 167, 211 146 Z" />
         </clipPath>
 
-        {/* Luminous Warm Honey-Amber Iris Gradient (Matching Reference) */}
+        {/* Deep Dark Brown Iris Gradient */}
         <radialGradient id="k2_IrisGrad" cx="44%" cy="36%" r="62%">
-          <stop offset="0%" stopColor="#FEF3C7" />
-          <stop offset="16%" stopColor="#FDE68A" />
-          <stop offset="36%" stopColor="#F59E0B" />
-          <stop offset="62%" stopColor="#B45309" />
-          <stop offset="82%" stopColor="#5B1D04" />
-          <stop offset="94%" stopColor="#2A0B02" />
-          <stop offset="100%" stopColor="#100300" />
+          <stop offset="0%" stopColor="#8B6F47" />
+          <stop offset="16%" stopColor="#6B543A" />
+          <stop offset="36%" stopColor="#523D28" />
+          <stop offset="62%" stopColor="#3D2817" />
+          <stop offset="82%" stopColor="#2B1810" />
+          <stop offset="94%" stopColor="#1A0F0A" />
+          <stop offset="100%" stopColor="#0D0805" />
         </radialGradient>
 
         {/* Deep Obsidian Black Pupil Gradient */}
         <radialGradient id="k2_PupilGrad" cx="48%" cy="46%" r="56%">
-          <stop offset="0%" stopColor="#040101" />
+          <stop offset="0%" stopColor="#000000" />
           <stop offset="70%" stopColor="#0B0301" />
           <stop offset="90%" stopColor="#160602" stopOpacity="0.9" />
           <stop offset="100%" stopColor="#240A03" stopOpacity="0" />
@@ -132,17 +132,17 @@ export const Krishna2Eyes: React.FC<Krishna2EyesProps> = ({
                 : "translate(0, 0)"
             }
           >
-            {/* Main Honey-Amber Iris Sphere */}
+            {/* Main Dark Brown Iris Sphere */}
             <circle cx="144" cy="146" r="16.5" fill="url(#k2_IrisGrad)" />
             {/* Deep Outer Ring */}
-            <circle cx="144" cy="146" r="16.5" fill="none" stroke="#1A0802" strokeWidth="1.2" opacity="0.88" />
+            <circle cx="144" cy="146" r="16.5" fill="none" stroke="#0D0805" strokeWidth="1.2" opacity="0.88" />
 
             {/* Deep Obsidian Black Pupil */}
             <circle cx="144" cy="146" r="9.5" fill="url(#k2_PupilGrad)" />
-            <circle cx="144" cy="146" r="8.2" fill="#040101" />
+            <circle cx="144" cy="146" r="8.2" fill="#000000" />
 
-            {/* Lower Radiant Golden Reflection Arc */}
-            <ellipse cx="144" cy="153.8" rx="9.0" ry="3.2" fill="#FCD34D" opacity="0.65" />
+            {/* Lower Soft Brown Reflection Arc */}
+            <ellipse cx="144" cy="153.8" rx="9.0" ry="3.2" fill="#8B6F47" opacity="0.45" />
 
             {/* ── CATCHLIGHTS / SPECULAR HIGHLIGHTS ── */}
             {/* Primary Catchlight (Large, ~10 o'clock) */}
@@ -235,17 +235,17 @@ export const Krishna2Eyes: React.FC<Krishna2EyesProps> = ({
                 : "translate(0, 0)"
             }
           >
-            {/* Main Honey-Amber Iris Sphere */}
+            {/* Main Dark Brown Iris Sphere */}
             <circle cx="236" cy="146" r="16.5" fill="url(#k2_IrisGrad)" />
             {/* Deep Outer Ring */}
-            <circle cx="236" cy="146" r="16.5" fill="none" stroke="#1A0802" strokeWidth="1.2" opacity="0.88" />
+            <circle cx="236" cy="146" r="16.5" fill="none" stroke="#0D0805" strokeWidth="1.2" opacity="0.88" />
 
             {/* Deep Obsidian Black Pupil */}
             <circle cx="236" cy="146" r="9.5" fill="url(#k2_PupilGrad)" />
-            <circle cx="236" cy="146" r="8.2" fill="#040101" />
+            <circle cx="236" cy="146" r="8.2" fill="#000000" />
 
-            {/* Lower Radiant Golden Reflection Arc */}
-            <ellipse cx="236" cy="153.8" rx="9.0" ry="3.2" fill="#FCD34D" opacity="0.65" />
+            {/* Lower Soft Brown Reflection Arc */}
+            <ellipse cx="236" cy="153.8" rx="9.0" ry="3.2" fill="#8B6F47" opacity="0.45" />
 
             {/* ── CATCHLIGHTS / SPECULAR HIGHLIGHTS ── */}
             {/* Primary Catchlight (Large, ~10 o'clock) */}

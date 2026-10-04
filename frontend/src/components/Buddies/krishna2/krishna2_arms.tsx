@@ -7,19 +7,19 @@ export const u = (val: number) => val;
 
 export const ARM_SPEC = {
   // Shared arm anchor positions relative to character center (X=190)
-  // Aligns precisely with PNG upper arm stubs ending at Y=280, X=120 & X=260
-  shoulderPivotOffset: 70,
-  shoulderPivotY: 280,
+  // PNG shoulders visible at roughly 22-28% down PNG → SVG Y coordinates
+  shoulderPivotOffset: 75,
+  shoulderPivotY: 65,
   
   // Upper Arm (Humerus extension from PNG torso stub)
   upper: {
-    len: 36, topW: 34, maxW: 34, botW: 28, ov: 4, depth: 26
+    len: 70, topW: 38, maxW: 38, botW: 30, ov: 5, depth: 28
   },
   elbow: {
-    blendW: 28
+    blendW: 30
   },
   forearm: {
-    len: 48, topW: 28, maxW: 28, botW: 22, ov: 4, depth: 24
+    len: 75, topW: 30, maxW: 30, botW: 24, ov: 5, depth: 26
   },
   wrist: {
     width: 22
@@ -42,9 +42,9 @@ export const ParametricUpperArm = ({ isFlipped = false }: { isFlipped?: boolean 
   const m = maxW / 2;
   const b = botW / 2;
   
-  // Shoulder cap extends 26 units above the pivot to anchor deep inside PNG torso socket.
-  const capH = 26;
-  const axillaOverlap = 6;
+  // Shoulder cap extends well above pivot to anchor inside PNG torso shoulder socket
+  const capH = 35;
+  const axillaOverlap = 8;
   
   // Upper arm path ending with continuous anatomical elbow taper
   const path = `
@@ -494,22 +494,22 @@ export type ArmPoseConfig = {
 
 export const POSE_CONFIGS: Record<KrishnaPose, ArmPoseConfig> = {
   standing: {
-    // 0° = arm hangs straight down naturally at sides from shoulder pivot Y=280
-    right: { shoulder: 0, elbow: 0, wrist: 0, fingers: { thumb: 0, index: 8, middle: 10, ring: 12, little: 14 } },
-    left:  { shoulder: 0, elbow: 0, wrist: 0, fingers: { thumb: 0, index: 8, middle: 10, ring: 12, little: 14 } },
+    // Natural relaxed hang: arms splay ~12° outward from body, slight elbow bend for life
+    right: { shoulder: -12, elbow: 8,  wrist: 0, fingers: { thumb: 0, index: 8, middle: 10, ring: 12, little: 14 } },
+    left:  { shoulder:  12, elbow: -8, wrist: 0, fingers: { thumb: 0, index: 8, middle: 10, ring: 12, little: 14 } },
   },
   chakra: {
-    // Character Right Arm (Viewer's Left, pivot x=120, y=280):
-    //   shoulder=135°, elbow=45° -> total angle 180° = arm raised UP beside face/shoulder
-    right: { shoulder: 135, elbow: 45, wrist: 0, fingers: { thumb: 24, index: -4, middle: 68, ring: 76, little: 84 } },
-    // Character Left Arm (Viewer's Right, pivot x=260, y=280): hanging gracefully at side
-    left:  { shoulder: -10, elbow: 15, wrist: 5, fingers: { thumb: 0, index: 8, middle: 10, ring: 12, little: 14 } },
+    // Character's right arm: raised to hold Sudarshana Chakra at chest-to-head height
+    // shoulder=-95° → arm extends upper-left toward ear area
+    // elbow=+45° → forearm folds in to bring hand forward at comfortable height
+    right: { shoulder: -95, elbow: 45, wrist: 8, fingers: { thumb: 24, index: -4, middle: 68, ring: 76, little: 84 } },
+    // Character's left arm: gentle relaxed hang
+    left:  { shoulder:  15, elbow: -10, wrist: 0, fingers: { thumb: 0, index: 8, middle: 10, ring: 12, little: 14 } },
   },
   crossHands: {
-    // Character Right Arm: inward toward center
-    right: { shoulder: -30, elbow: 60, wrist: -10, fingers: { thumb: 10, index: 15, middle: 20, ring: 25, little: 30 } },
-    // Character Left Arm: inward toward center
-    left:  { shoulder: 30,  elbow: -60, wrist: 10, fingers: { thumb: 10, index: 15, middle: 20, ring: 25, little: 30 } },
+    // Both arms fold inward across the belly
+    right: { shoulder: -30, elbow:  75, wrist: -12, fingers: { thumb: 10, index: 15, middle: 20, ring: 25, little: 30 } },
+    left:  { shoulder:  30, elbow: -75, wrist:  12, fingers: { thumb: 10, index: 15, middle: 20, ring: 25, little: 30 } },
   },
 };
 
