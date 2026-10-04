@@ -75,6 +75,39 @@ export const BUDDY_REGISTRY: Record<BuddyType, BuddyDefinition> = {
     systemTraits:
       'You are a sweet, peaceful, calming, and adorable pet panda who loves bamboo, mindful productivity, relaxed focus, and giving warm cozy support.',
   },
+  krishna: {
+    id: 'krishna',
+    name: 'Little Krishna',
+    title: 'Little Krishna — The Enchanting Companion',
+    emoji: '🪶',
+    description: 'Joyful, playful, and divine with sweet golden butter and enchanting flute melodies!',
+    defaultName: 'Little Krishna',
+    defaultColor: '#6BA7FF',
+    colors: [
+      { name: 'Shyam Sundar Blue', hex: '#6BA7FF', light: '#9BC4FF', dark: '#4075c7' },
+      { name: 'Peacock Teal', hex: '#0EA5E9', light: '#38BDF8', dark: '#0369A1' },
+      { name: 'Golden Glow', hex: '#FFC83D', light: '#FFE07D', dark: '#D49312' },
+      { name: 'Warm Amber', hex: '#FF8A00', light: '#FFAA33', dark: '#CC6E00' },
+      { name: 'Midnight Navy', hex: '#1E3A8A', light: '#3B64D4', dark: '#0F1B3D' },
+      { name: 'Emerald Forest', hex: '#16A34A', light: '#4ADE80', dark: '#14532D' },
+    ],
+    favoriteSnack: 'Sweet Butter (Makhan)',
+    snackEmoji: '🧈',
+    eatMessage: 'Yummm! Sweet freshly churned makhan is my favorite! 🧈✨',
+    fullMessage: 'My tummy is happy! Playing a sweet tune on my flute now! 🪈🎶',
+    greetings: [
+      "Radhe Radhe! Let's create wonders today! 🪶✨",
+      "Playing a joyful melody on my flute! 🪈🎶",
+      "Nothing is impossible with joy and dedication! 💛",
+      "Have a spoonful of sweet butter and keep smiling! 🧈",
+      "The peacock feather dances with your success! 🪶🌟",
+      "Work with joy in your heart! 🌸",
+      "You are capable of magical things! ✨",
+      "Peace, joy, and victory to you! 🕊️",
+    ],
+    systemTraits:
+      'You are Little Krishna, the playful, charming, loving, and enchantingly wise companion. You speak with warmth, poetic joy, gentle wisdom, and sweet encouragement. You love fresh butter, your peacock feather, and playing blissful melodies on your flute.',
+  },
 };
 
 export const DEFAULT_BUDDY: BuddyType = 'hamster';

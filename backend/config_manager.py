@@ -50,11 +50,19 @@ class LLMConfig(BaseModel):
 class VoiceConfig(BaseModel):
     mode: str = Field(
         default_factory=lambda: os.getenv("VOICE_MODE", "apple"),
-        description="Voice mode: deepgram, apple"
+        description="Voice mode: deepgram, apple, fish_audio"
+    )
+    stt_provider: str = Field(
+        default_factory=lambda: os.getenv("STT_PROVIDER", "apple"),
+        description="STT provider: apple, gemini, deepgram"
     )
     deepgram_model: str = Field(default="nova-2", description="Deepgram STT model")
     tts_voice: str = Field(default="aura-asteria-en", description="Deepgram TTS voice")
     apple_voice: str = Field(default="Samantha", description="Apple TTS voice name")
+    fish_audio_model: str = Field(
+        default_factory=lambda: os.getenv("FISH_AUDIO_MODEL", "s2.1-pro-free"),
+        description="Fish Audio model name"
+    )
 
 
 class RAGConfig(BaseModel):
@@ -94,6 +102,10 @@ class APIKeysConfig(BaseModel):
     deepgram_key: str = Field(
         default_factory=lambda: os.getenv("DEEPGRAM_API_KEY") or os.getenv("DEEPGRAM_KEY", ""),
         description="Deepgram API key"
+    )
+    fish_audio_key: str = Field(
+        default_factory=lambda: os.getenv("FISH_AUDIO_KEY", ""),
+        description="Fish Audio API key"
     )
 
 
@@ -142,6 +154,7 @@ def load_config() -> AppConfig:
     env_gemini = os.getenv("GEMINI_API_KEY") or os.getenv("GEMINI_KEY", "")
     env_deepseek = os.getenv("DEEPSEEK_API_KEY") or os.getenv("DEEPSEEK_KEY", "")
     env_deepgram = os.getenv("DEEPGRAM_API_KEY") or os.getenv("DEEPGRAM_KEY", "")
+    env_fish_audio = os.getenv("FISH_AUDIO_KEY", "")
 
     if env_gemini and not _config.api_keys.gemini_key:
         _config.api_keys.gemini_key = env_gemini
@@ -149,6 +162,8 @@ def load_config() -> AppConfig:
         _config.api_keys.deepseek_key = env_deepseek
     if env_deepgram and not _config.api_keys.deepgram_key:
         _config.api_keys.deepgram_key = env_deepgram
+    if env_fish_audio and not _config.api_keys.fish_audio_key:
+        _config.api_keys.fish_audio_key = env_fish_audio
 
     return _config
 
@@ -166,7 +181,12 @@ def save_config(config: AppConfig, persist_secrets: bool = False) -> None:
     data = config.model_dump()
     if not persist_secrets:
         # Don't persist API keys to server disk so multiple users don't conflict
-        data["api_keys"] = {"gemini_key": "", "deepseek_key": "", "deepgram_key": ""}
+        data["api_keys"] = {
+            "gemini_key": "",
+            "deepseek_key": "",
+            "deepgram_key": "",
+            "fish_audio_key": "",
+        }
 
     with open(CONFIG_FILE, "w") as f:
         json.dump(data, f, indent=2)
@@ -186,10 +206,25 @@ def get_server_capabilities() -> dict:
     Never returns raw secret keys.
     """
     config = get_config()
+    fish_ids = {}
+    try:
+        from voice.fish_audio_manager import get_configured_fish_audio_ids
+        fish_ids = get_configured_fish_audio_ids()
+    except (ImportError, ModuleNotFoundError):
+        try:
+            from backend.voice.fish_audio_manager import get_configured_fish_audio_ids
+            fish_ids = get_configured_fish_audio_ids()
+        except Exception:
+            pass
+    except Exception:
+        pass
+
     return {
         "server_has_gemini": bool(config.api_keys.gemini_key or os.getenv("GEMINI_API_KEY") or os.getenv("GEMINI_KEY")),
         "server_has_deepseek": bool(config.api_keys.deepseek_key or os.getenv("DEEPSEEK_API_KEY") or os.getenv("DEEPSEEK_KEY")),
         "server_has_deepgram": bool(config.api_keys.deepgram_key or os.getenv("DEEPGRAM_API_KEY") or os.getenv("DEEPGRAM_KEY")),
+        "server_has_fish_audio": bool(config.api_keys.fish_audio_key or os.getenv("FISH_AUDIO_KEY")),
+        "fish_audio_ids": fish_ids,
     }
 
 
@@ -205,6 +240,7 @@ def get_masked_config() -> dict:
         "gemini_key": "••••••••" if caps["server_has_gemini"] else "",
         "deepseek_key": "••••••••" if caps["server_has_deepseek"] else "",
         "deepgram_key": "••••••••" if caps["server_has_deepgram"] else "",
+        "fish_audio_key": "••••••••" if caps["server_has_fish_audio"] else "",
     }
 
     return data

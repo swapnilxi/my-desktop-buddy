@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import type { AppConfig } from '@/lib/api';
 import {
   fetchConfig,
@@ -23,10 +23,12 @@ const DEFAULT_CONFIG: AppConfig = {
     ollama_endpoint: 'http://localhost:11434',
   },
   voice: {
-    mode: 'apple',
+    mode: 'fish_audio',
+    stt_provider: 'apple',
     deepgram_model: 'nova-2',
     tts_voice: 'aura-asteria-en',
     apple_voice: 'Samantha',
+    fish_audio_model: 's2.1-pro-free',
   },
   rag: {
     enabled: false,
@@ -47,6 +49,7 @@ const DEFAULT_CONFIG: AppConfig = {
     gemini_key: '',
     deepseek_key: '',
     deepgram_key: '',
+    fish_audio_key: '',
   },
 };
 
@@ -54,27 +57,45 @@ interface ConfigPanelProps {
   currentBuddyType?: string;
   currentBuddyName?: string;
   currentColor?: string;
+  currentPose?: string;
   onColorChange?: (color: string) => void;
   onNameChange?: (name: string) => void;
   onBuddyTypeChange?: (type: string) => void;
+  onPoseChange?: (pose: string) => void;
 }
 
 export default function ConfigPanel({
   currentBuddyType: propBuddyType,
   currentBuddyName: propBuddyName,
   currentColor: propColor,
+  currentPose: propPose,
   onColorChange,
   onNameChange,
   onBuddyTypeChange,
+  onPoseChange,
 }: ConfigPanelProps) {
   const [config, setConfig] = useState<AppConfig>(DEFAULT_CONFIG);
   const [isLoading, setIsLoading] = useState(true);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
-  const [showKeys, setShowKeys] = useState({ gemini: false, deepseek: false, deepgram: false });
+  const [showKeys, setShowKeys] = useState({
+    gemini: false,
+    deepseek: false,
+    deepgram: false,
+    fish_audio: false,
+  });
   const [clearedNotice, setClearedNotice] = useState(false);
 
   const currentBuddyType = (propBuddyType || config.hamster?.buddy_type || 'hamster') as BuddyType;
   const currentBuddyDef = getBuddyDefinition(currentBuddyType);
+
+  // Parent passes fresh inline callbacks on every one of its renders. Keeping
+  // them in a ref stops loadConfig's identity from changing, which otherwise
+  // re-ran the load effect on every parent render and wiped unsaved form edits.
+  const syncRef = useRef({ onColorChange, onNameChange, onBuddyTypeChange });
+
+  useEffect(() => {
+    syncRef.current = { onColorChange, onNameChange, onBuddyTypeChange };
+  });
 
   const loadConfig = useCallback(async () => {
     const localKeys = getClientApiKeys();
@@ -96,13 +117,14 @@ export default function ConfigPanel({
           gemini_key: localKeys.gemini_key || '',
           deepseek_key: localKeys.deepseek_key || '',
           deepgram_key: localKeys.deepgram_key || '',
+          fish_audio_key: localKeys.fish_audio_key || '',
         },
         server_capabilities: serverConfig.server_capabilities,
       };
       setConfig(merged);
-      if (merged.hamster?.color && onColorChange) onColorChange(merged.hamster.color);
-      if (merged.hamster?.name && onNameChange) onNameChange(merged.hamster.name);
-      if (merged.hamster?.buddy_type && onBuddyTypeChange) onBuddyTypeChange(merged.hamster.buddy_type);
+      if (merged.hamster?.color) syncRef.current.onColorChange?.(merged.hamster.color);
+      if (merged.hamster?.name) syncRef.current.onNameChange?.(merged.hamster.name);
+      if (merged.hamster?.buddy_type) syncRef.current.onBuddyTypeChange?.(merged.hamster.buddy_type);
     } catch {
       // Backend unavailable — use defaults + local storage
       const fallbackConfig: AppConfig = {
@@ -118,13 +140,14 @@ export default function ConfigPanel({
         api_keys: localKeys,
       };
       setConfig(fallbackConfig);
-      if (fallbackConfig.hamster?.color && onColorChange) onColorChange(fallbackConfig.hamster.color);
-      if (fallbackConfig.hamster?.name && onNameChange) onNameChange(fallbackConfig.hamster.name);
-      if (fallbackConfig.hamster?.buddy_type && onBuddyTypeChange) onBuddyTypeChange(fallbackConfig.hamster.buddy_type);
+      if (fallbackConfig.hamster?.color) syncRef.current.onColorChange?.(fallbackConfig.hamster.color);
+      if (fallbackConfig.hamster?.name) syncRef.current.onNameChange?.(fallbackConfig.hamster.name);
+      if (fallbackConfig.hamster?.buddy_type) syncRef.current.onBuddyTypeChange?.(fallbackConfig.hamster.buddy_type);
     } finally {
       setIsLoading(false);
     }
-  }, [onColorChange, onNameChange, onBuddyTypeChange, propBuddyType, propBuddyName, propColor]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     loadConfig();
@@ -185,13 +208,13 @@ export default function ConfigPanel({
     clearClientApiKeys();
     setConfig((prev) => ({
       ...prev,
-      api_keys: { gemini_key: '', deepseek_key: '', deepgram_key: '' },
+      api_keys: { gemini_key: '', deepseek_key: '', deepgram_key: '', fish_audio_key: '' },
     }));
     setClearedNotice(true);
     setTimeout(() => setClearedNotice(false), 3000);
   };
 
-  const toggleKeyVisibility = (toggle: 'gemini' | 'deepseek' | 'deepgram') => {
+  const toggleKeyVisibility = (toggle: 'gemini' | 'deepseek' | 'deepgram' | 'fish_audio') => {
     setShowKeys((prev) => ({ ...prev, [toggle]: !prev[toggle] }));
   };
 
@@ -229,7 +252,7 @@ export default function ConfigPanel({
       {/* ── Choose Desktop Buddy Character ── */}
       <div className="config-section">
         <div className="config-section-title">🐾 Choose Your Desktop Buddy</div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', marginTop: '6px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: '10px', marginTop: '6px' }}>
           {Object.values(BUDDY_REGISTRY).map((buddy) => {
             const isSelected = currentBuddyType === buddy.id;
             return (
@@ -278,6 +301,51 @@ export default function ConfigPanel({
               placeholder={currentBuddyDef.defaultName}
             />
           </div>
+          {currentBuddyType === 'krishna' && (
+            <div className="config-row">
+              <span className="config-label">Pose</span>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    updateConfig('hamster.pose', 'crossed');
+                    onPoseChange?.('crossed');
+                  }}
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: '8px',
+                    fontSize: '12px',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    background: (config.hamster?.pose || propPose || 'chakra') === 'crossed' ? 'rgba(255, 200, 61, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                    border: (config.hamster?.pose || propPose || 'chakra') === 'crossed' ? '1.5px solid #FFC83D' : '1px solid rgba(255, 255, 255, 0.1)',
+                    color: (config.hamster?.pose || propPose || 'chakra') === 'crossed' ? '#FFC83D' : 'var(--text-secondary)',
+                  }}
+                >
+                  🧘 Cross-Handed
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    updateConfig('hamster.pose', 'chakra');
+                    onPoseChange?.('chakra');
+                  }}
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: '8px',
+                    fontSize: '12px',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    background: (config.hamster?.pose || propPose || 'chakra') === 'chakra' ? 'rgba(255, 138, 0, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                    border: (config.hamster?.pose || propPose || 'chakra') === 'chakra' ? '1.5px solid #FF8A00' : '1px solid rgba(255, 255, 255, 0.1)',
+                    color: (config.hamster?.pose || propPose || 'chakra') === 'chakra' ? '#FF8A00' : 'var(--text-secondary)',
+                  }}
+                >
+                  ☸️ Sudarshana Chakra
+                </button>
+              </div>
+            </div>
+          )}
           <div className="config-row">
             <span className="config-label">Color Theme</span>
             <div className="color-picker-wrapper">
@@ -377,7 +445,17 @@ export default function ConfigPanel({
       <div className="config-section">
         <div className="config-section-title">🎙️ Voice Mode</div>
         <div className="config-group">
-          <div className="radio-group">
+          <div className="radio-group" style={{ flexWrap: 'wrap' }}>
+            <label className={`radio-option ${config.voice.mode === 'fish_audio' ? 'selected' : ''}`}>
+              <input
+                type="radio"
+                name="voice-mode"
+                value="fish_audio"
+                checked={config.voice.mode === 'fish_audio'}
+                onChange={() => updateConfig('voice.mode', 'fish_audio')}
+              />
+              🐟 Fish Audio (Character Voice)
+            </label>
             <label className={`radio-option ${config.voice.mode === 'deepgram' ? 'selected' : ''}`}>
               <input
                 type="radio"
@@ -398,6 +476,119 @@ export default function ConfigPanel({
               />
               🍎 Apple / Browser TTS
             </label>
+          </div>
+
+          {config.voice.mode === 'fish_audio' && (
+            <div style={{ marginTop: '12px' }}>
+              <div className="config-row">
+                <span className="config-label">Model</span>
+                <select
+                  className="config-select"
+                  value={config.voice.fish_audio_model || 's2.1-pro-free'}
+                  onChange={(e) => updateConfig('voice.fish_audio_model', e.target.value)}
+                >
+                  <option value="s2.1-pro-free">s2.1-pro-free (Free Tier — No Credit Needed)</option>
+                  <option value="s2.1-pro">s2.1-pro (Paid Credit Model)</option>
+                  <option value="s2.1">s2.1</option>
+                </select>
+              </div>
+
+              {/* Character Voice ID Status Card */}
+              <div
+                style={{
+                  marginTop: '12px',
+                  padding: '12px 14px',
+                  borderRadius: '10px',
+                  background: 'rgba(56, 189, 248, 0.08)',
+                  border: '1px solid rgba(56, 189, 248, 0.25)',
+                  fontSize: '12px',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <span style={{ fontWeight: 600, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span>{currentBuddyDef.emoji}</span>
+                    <span>{currentBuddyDef.name} Voice Model ID:</span>
+                  </span>
+                  {caps?.fish_audio_ids?.[currentBuddyType] ? (
+                    <span style={{ color: '#10b981', fontWeight: 600, fontSize: '11px' }}>
+                      ● Active in .env
+                    </span>
+                  ) : (
+                    <span style={{ color: '#f59e0b', fontWeight: 600, fontSize: '11px' }}>
+                      ○ Not set in .env
+                    </span>
+                  )}
+                </div>
+
+                <div style={{ color: 'var(--text-muted)', fontSize: '11px', lineHeight: '1.5' }}>
+                  Configure each character&apos;s Fish Audio ID in <code style={{ color: '#38bdf8', padding: '1px 4px', background: 'rgba(0,0,0,0.2)', borderRadius: '4px' }}>backend/.env</code>:
+                  <div style={{ background: 'rgba(0,0,0,0.3)', padding: '8px 10px', borderRadius: '6px', marginTop: '6px', fontFamily: 'monospace' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '2px 0' }}>
+                      <span>FISH_AUDIO_ID_KRISHNA=...</span>
+                      <span>{caps?.fish_audio_ids?.['krishna'] ? '✅ Active' : '⚪ Pending'}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '2px 0' }}>
+                      <span>FISH_AUDIO_ID_HAMSTER=...</span>
+                      <span>{caps?.fish_audio_ids?.['hamster'] ? '✅ Active' : '⚪ Pending'}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '2px 0' }}>
+                      <span>FISH_AUDIO_ID_PANDA=...</span>
+                      <span>{caps?.fish_audio_ids?.['panda'] ? '✅ Active' : '⚪ Pending'}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Microphone Transcription (STT) */}
+        <div style={{ marginTop: '16px' }}>
+          <div style={{ fontWeight: 600, fontSize: '12px', color: 'var(--text-muted)', marginBottom: '8px' }}>
+            🎙️ MICROPHONE TRANSCRIBE (STT)
+          </div>
+          <div className="radio-group" style={{ flexWrap: 'wrap' }}>
+            <label className={`radio-option ${(config.voice.stt_provider || 'apple') === 'apple' ? 'selected' : ''}`}>
+              <input
+                type="radio"
+                name="stt-provider"
+                value="apple"
+                checked={(config.voice.stt_provider || 'apple') === 'apple'}
+                onChange={() => updateConfig('voice.stt_provider', 'apple')}
+              />
+              🍎 Apple / Browser Speech
+            </label>
+            <label className={`radio-option ${config.voice.stt_provider === 'gemini' ? 'selected' : ''}`}>
+              <input
+                type="radio"
+                name="stt-provider"
+                value="gemini"
+                checked={config.voice.stt_provider === 'gemini'}
+                onChange={() => updateConfig('voice.stt_provider', 'gemini')}
+              />
+              ✨ Gemini Transcribe
+            </label>
+            <label className={`radio-option ${config.voice.stt_provider === 'deepgram' ? 'selected' : ''}`}>
+              <input
+                type="radio"
+                name="stt-provider"
+                value="deepgram"
+                checked={config.voice.stt_provider === 'deepgram'}
+                onChange={() => updateConfig('voice.stt_provider', 'deepgram')}
+              />
+              ☁️ Deepgram STT
+            </label>
+          </div>
+          <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '8px' }}>
+            {(config.voice.stt_provider || 'apple') === 'apple' && (
+              <span>🍎 Uses Apple / Browser Speech Recognition natively — free, zero API key required.</span>
+            )}
+            {config.voice.stt_provider === 'gemini' && (
+              <span>✨ Uses Gemini Flash for high-accuracy audio transcription (uses Gemini API key).</span>
+            )}
+            {config.voice.stt_provider === 'deepgram' && (
+              <span>☁️ Uses Deepgram Nova-2 cloud speech transcription.</span>
+            )}
           </div>
         </div>
       </div>
@@ -457,7 +648,7 @@ export default function ConfigPanel({
       <div className="config-section">
         <div className="config-section-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span>🔑 API Keys (LocalStorage)</span>
-          {(config.api_keys.gemini_key || config.api_keys.deepseek_key || config.api_keys.deepgram_key) && (
+          {(config.api_keys.gemini_key || config.api_keys.deepseek_key || config.api_keys.deepgram_key || config.api_keys.fish_audio_key) && (
             <button
               onClick={handleClearKeys}
               style={{
@@ -498,6 +689,13 @@ export default function ConfigPanel({
               toggle: 'deepgram' as const,
               serverFallback: caps?.server_has_deepgram,
             },
+            {
+              key: 'fish_audio_key' as const,
+              label: 'Fish Audio',
+              show: showKeys.fish_audio,
+              toggle: 'fish_audio' as const,
+              serverFallback: caps?.server_has_fish_audio,
+            },
           ].map(({ key, label, show, toggle, serverFallback }) => (
             <div className="config-row" key={key}>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -519,6 +717,8 @@ export default function ConfigPanel({
                 <button
                   className="api-key-toggle"
                   onClick={() => toggleKeyVisibility(toggle)}
+                  aria-label={show ? `Hide the ${label} key` : `Show the ${label} key`}
+                  aria-pressed={show}
                   title={show ? 'Hide key' : 'Show key'}
                 >
                   {show ? '🙈' : '👁️'}

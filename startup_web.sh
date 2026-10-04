@@ -67,7 +67,9 @@ fi
 # 3. Start Backend (FastAPI)
 echo -e "\n${BOLD}[3/4] Launching FastAPI Backend on port $BACKEND_PORT...${NC}"
 cd "$BACKEND_DIR"
-python3 -m uvicorn main:app --host 0.0.0.0 --port $BACKEND_PORT --reload &
+PYTHON_BIN="python3"
+if [ -x "$BACKEND_DIR/.venv/bin/python" ]; then PYTHON_BIN="$BACKEND_DIR/.venv/bin/python"; fi
+$PYTHON_BIN -m uvicorn main:app --host 0.0.0.0 --port $BACKEND_PORT --reload &
 BACKEND_PID=$!
 
 # Trap Ctrl+C (SIGINT) and SIGTERM to kill background children cleanly

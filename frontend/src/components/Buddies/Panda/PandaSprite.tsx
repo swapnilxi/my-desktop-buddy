@@ -160,7 +160,7 @@ export default function PandaSprite({
           {/* Bamboo Stalk */}
           <div
             className="panda-bamboo-container"
-            onClick={onFeed}
+            onClick={(e) => { e.stopPropagation(); onFeed?.(); }}
             title="Click to feed Bambu fresh bamboo! 🎋"
           >
             <div className="bamboo-stalk">

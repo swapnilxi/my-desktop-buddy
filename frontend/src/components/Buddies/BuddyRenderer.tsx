@@ -4,15 +4,22 @@ import React from 'react';
 import type { BuddyMood, BuddyType, BuddySpriteProps } from './types';
 import HamsterSprite from './Hamster/HamsterSprite';
 import PandaSprite from './Panda/PandaSprite';
+import KrishnaSprite from './Krishna/KrishnaSprite';
+import type { KrishnaState } from './Krishna/KrishnaSprite';
 import { getBuddyDefinition } from './registry';
 
 export interface BuddyRendererProps extends BuddySpriteProps {
   type?: BuddyType | string;
+  /** Krishna only: a pinned state (undefined = react to mood). */
+  krishnaState?: KrishnaState;
 }
 
 export default function BuddyRenderer({
   type = 'hamster',
+  krishnaState,
   mood,
+  pose,
+  size,
   color,
   name,
   greeting,
@@ -26,8 +33,34 @@ export default function BuddyRenderer({
   const effectiveColor = color || buddyDef.defaultColor;
   const effectiveName = name || buddyDef.defaultName;
 
-  if (type === 'panda') {
+  if (type === 'krishna') {
     return (
+      <KrishnaSprite
+        state={krishnaState}
+        mood={mood}
+        pose={pose as any}
+        size={size}
+        color={effectiveColor}
+        name={effectiveName}
+        greeting={greeting}
+        isDragging={isDragging}
+        petStreak={petStreak}
+        onClick={onClick}
+        onRefreshGreeting={onRefreshGreeting}
+        onFeed={onFeed}
+      />
+    );
+  }
+
+  // HamsterSprite and PandaSprite are fixed-size SVG layouts, so scale the
+  // rendered box rather than plumbing a size through every internal rule.
+  const scaleWrap = (child: React.ReactNode) =>
+    size && size !== 'md'
+      ? <div className={`buddy-scale buddy-scale-${size}`}>{child}</div>
+      : <>{child}</>;
+
+  if (type === 'panda') {
+    return scaleWrap(
       <PandaSprite
         mood={mood}
         color={effectiveColor}
@@ -43,7 +76,7 @@ export default function BuddyRenderer({
   }
 
   // Default to Hamster
-  return (
+  return scaleWrap(
     <HamsterSprite
       mood={mood}
       color={effectiveColor}

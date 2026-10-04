@@ -8,7 +8,7 @@ Supports per-request client credentials (from LocalStorage) and server .env keys
 import os
 from typing import Optional
 
-from llm import LLMAdapter
+from llm import LLMAdapter, ToolTurn
 from config_manager import get_config
 
 FALLBACK_ORDER = ["gemini", "deepseek", "ollama"]
@@ -93,11 +93,13 @@ async def generate_with_fallback(
     order = [primary] + [p for p in FALLBACK_ORDER if p != primary]
 
     errors: list[str] = []
-    last_exc: Optional[Exception] = None
+    failures: list[Exception] = []
+    attempted: list[str] = []
 
     for provider in order:
         if not _provider_configured(provider, config, client_keys):
             continue
+        attempted.append(provider)
         try:
             adapter = _adapter_for(provider, client_keys, client_models)
             text = await adapter.generate(
@@ -108,16 +110,21 @@ async def generate_with_fallback(
             )
             return text, adapter
         except Exception as exc:
-            last_exc = exc
+            failures.append(exc)
             errors.append(f"{provider}: {exc}")
             continue
 
-    if last_exc is None:
-        raise ValueError(
-            "No LLM provider key is configured. You can paste your Gemini or DeepSeek API key in the Config tab (stored safely in your browser LocalStorage) or set it in the server .env file."
-        )
+    no_key_msg = (
+        "No LLM provider key is configured. You can paste your Gemini or DeepSeek API key in the Config tab "
+        "(stored safely in your browser LocalStorage) or set it in the server .env file."
+    )
+    if not failures:
+        raise ValueError(no_key_msg)
+    # Only the implicit local-Ollama fallback was tried: the real problem is the missing key.
+    if attempted == ["ollama"] and primary != "ollama":
+        raise ValueError(f"{no_key_msg} (Local Ollama isn't running either: {failures[0]})")
 
-    if _is_quota_error(last_exc):
+    if any(_is_quota_error(exc) for exc in failures):
         raise RuntimeError(
             f"All configured LLM providers hit their quota limits or failed. "
             f"Tried → {' | '.join(errors)}. "
@@ -125,3 +132,59 @@ async def generate_with_fallback(
         )
     raise RuntimeError(f"LLM error → {' | '.join(errors)}")
 
+
+
+async def generate_turn_with_fallback(
+    messages: list[dict],
+    system_prompt: str,
+    tools: list[dict],
+    temperature: float = 0.7,
+    max_tokens: Optional[int] = None,
+    client_provider: Optional[str] = None,
+    client_keys: Optional[dict] = None,
+    client_models: Optional[dict] = None,
+    tool_results: Optional[list[dict]] = None,
+) -> tuple[ToolTurn, LLMAdapter]:
+    """
+    Like generate_with_fallback, but gives the model access to tools.
+
+    Providers without tool support fall through to plain text via the base
+    class default, so the fallback chain behaves identically either way.
+    """
+    config = get_config()
+    primary = (client_provider or config.llm.provider).lower()
+    order = [primary] + [p for p in FALLBACK_ORDER if p != primary]
+
+    errors: list[str] = []
+    last_exc: Optional[Exception] = None
+
+    for provider in order:
+        if not _provider_configured(provider, config, client_keys):
+            continue
+        try:
+            adapter = _adapter_for(provider, client_keys, client_models)
+            turn = await adapter.generate_with_tools(
+                messages=messages,
+                system_prompt=system_prompt,
+                tools=tools,
+                temperature=temperature,
+                max_tokens=max_tokens,
+                tool_results=tool_results,
+            )
+            return turn, adapter
+        except Exception as exc:
+            last_exc = exc
+            errors.append(f"{provider}: {exc}")
+            continue
+
+    if last_exc is None:
+        raise ValueError(
+            "No LLM provider key is configured. Add your Gemini or DeepSeek API key in "
+            "the Config tab (stored in your browser) or set it in the server .env file."
+        )
+    if _is_quota_error(last_exc):
+        raise RuntimeError(
+            f"All configured LLM providers hit their quota limits or failed. "
+            f"Tried -> {' | '.join(errors)}."
+        )
+    raise RuntimeError(f"LLM error -> {' | '.join(errors)}")

@@ -1,0 +1,1567 @@
+/* ══════════════════════════════════════════════════════════════════════
+   LITTLE KRISHNA — DESKTOP BUDDY STYLING (STYLIZED SVG/CSS HYBRID)
+   Color Palette:
+   - Skin: #6BA7FF
+   - Hair: #1E3A8A
+   - Shadow: #0F1B3D
+   - Dhoti: #FFC83D
+   - Accent (Gold/Jewelry): #FF8A00
+   - Feather Green: #16A34A / #4ADE80
+   - Feather Blue: #0EA5E9 / #38BDF8
+   - Tilak: #F8F9FF
+   - Background: #0F1B3D
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* Layout lives on .krishnaContainer only: a shared `:root, .krishnaContainer` rule made the
+   whole <html> element a centered flex column (body shrank to content width, pointer cursor
+   and no text selection app-wide). :root keeps just the shared material variables below. */
+.krishnaContainer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  user-select: none;
+  cursor: pointer;
+  transform-origin: bottom center;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: visible !important;
+  isolation: isolate;
+}
+
+:root,
+.krishnaContainer {
+  /* ── GLOBAL 3D LIGHTING & MATERIAL COHESION SYSTEM ── */
+  --skin-base: #6BA7FF;
+  --skin-light: #84B5FA;
+  --skin-highlight: #A9CCFF;
+  --skin-shadow: #4E82D1;
+  --skin-contact: #315EA8;
+
+  --gold-base: #F5A900;
+  --gold-light: #FFD45A;
+  --gold-highlight: #FFF0A3;
+  --gold-shadow: #B86A00;
+
+  --hair-shadow: #040A25;
+  --hair-base: #0D1B49;
+  --hair-mid: #22377C;
+  --hair-highlight: #0B94B4;
+
+  --key-light-angle: 40deg;
+}
+
+.krishnaContainer:hover {
+  transform: scale(1.03) rotate(2deg);
+}
+
+/* Sizing Modes */
+.sizeSm {
+  width: 140px;
+  height: 200px;
+  padding-top: 30px;
+  --k-scale: 0.85;
+}
+
+.sizeMd {
+  width: 270px;
+  height: 350px;
+  padding-top: 55px;
+  --k-scale: 1.45;
+}
+
+.sizeLg {
+  width: 480px;
+  height: 600px;
+  padding-top: 100px;
+  --k-scale: 2.6;
+}
+
+/* Base Character Wrapper */
+.krishna {
+  position: relative;
+  width: 230px;
+  height: 290px;
+  transform: scale(var(--k-scale, 1.45));
+  transform-origin: center bottom;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: visible !important;
+  z-index: 2;
+}
+
+.krishnaSvg {
+  width: 100%;
+  height: 100%;
+  overflow: visible !important;
+  filter: drop-shadow(0 8px 16px rgba(15, 27, 61, 0.35)) drop-shadow(0 0 16px rgba(255, 212, 90, 0.22));
+  transition: filter 0.3s ease;
+}
+
+.krishnaContainer:hover .krishnaSvg {
+  filter: drop-shadow(0 10px 20px rgba(15, 27, 61, 0.42)) drop-shadow(0 0 20px rgba(255, 212, 90, 0.32));
+}
+
+/* ── Soft Contact Shadow (only a faint diffuse glow under the feet) ── */
+.groundShadow {
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 14px;
+  background: radial-gradient(ellipse at center, rgba(15, 27, 61, 0.22) 0%, rgba(15, 27, 61, 0) 70%);
+  border-radius: 50%;
+  filter: blur(3px);
+  z-index: 1;
+  animation: shadowPulse 3s ease-in-out infinite;
+  opacity: 0.85;
+}
+
+/* ── Floating Speech Bubble (Desktop Buddy mode) ────────────────── */
+.greetingBubble {
+  position: absolute;
+  top: -48px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(12, 20, 39, 0.92);
+  border: 1.5px solid #F59E0B;
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.35), 0 8px 24px rgba(0, 0, 0, 0.6);
+  border-radius: 20px;
+  padding: 8px 20px;
+  max-width: 320px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  z-index: 40;
+  pointer-events: auto;
+  cursor: pointer;
+  animation: bubbleFloat 3s ease-in-out infinite;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.greetingBubble::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px 6px 0;
+  border-style: solid;
+  border-color: #F59E0B transparent transparent;
+  display: block;
+  width: 0;
+}
+
+.greetingText {
+  font-size: 13px;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: 0.3px;
+}
+
+/* ── Restrained Divine Aura ─────────────────────────────────────── */
+.divineAura {
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 190px;
+  height: 190px;
+  background: radial-gradient(circle, rgba(255, 225, 128, 0.12) 0%, rgba(82, 159, 255, 0.08) 42%, transparent 70%);
+  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
+  animation: auraGlow 4s ease-in-out infinite alternate;
+}
+
+/* ── 1. FEET & ANKLES ───────────────────────────────────────────── */
+.feetLayer {
+  position: absolute;
+  bottom: 6px;
+  width: 80px;
+  height: 20px;
+  display: flex;
+  justify-content: space-between;
+  z-index: 2;
+}
+
+.foot {
+  position: relative;
+  width: 28px;
+  height: 14px;
+  background: radial-gradient(circle at 40% 30%, #8ec0ff 0%, #6BA7FF 60%, #4075c7 100%);
+  border-radius: 12px 14px 10px 10px;
+  box-shadow: 0 3px 6px rgba(15, 27, 61, 0.4), inset 0 -2px 3px rgba(15, 27, 61, 0.35);
+}
+
+.footLeft {
+  transform: rotate(-6deg);
+}
+
+.footRight {
+  transform: rotate(6deg);
+}
+
+.anklet {
+  position: absolute;
+  top: -2px;
+  left: 3px;
+  width: 22px;
+  height: 6px;
+  border: 1.5px solid #FF8A00;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #FFC83D 0%, #FF8A00 100%);
+  box-shadow: 0 0 5px rgba(255, 138, 0, 0.6);
+}
+
+.ankletBell {
+  position: absolute;
+  bottom: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  background: #FFC83D;
+  border-radius: 50%;
+  box-shadow: 0 0 3px #FF8A00;
+}
+
+/* ── 2. DHOTI (LOWER BODY CLOTH) ────────────────────────────────── */
+.dhoti {
+  position: absolute;
+  bottom: 14px;
+  width: 92px;
+  height: 52px;
+  background: radial-gradient(ellipse at 35% 30%, #FFE07D 0%, #FFC83D 55%, #D49312 100%);
+  border-radius: 26px 26px 36px 36px;
+  box-shadow: 0 6px 14px rgba(15, 27, 61, 0.45), inset 0 -4px 6px rgba(15, 27, 61, 0.3);
+  z-index: 3;
+  overflow: hidden;
+  border: 1px solid rgba(255, 138, 0, 0.35);
+}
+
+.dhotiPleatLeft {
+  position: absolute;
+  top: 4px;
+  left: 10px;
+  width: 32px;
+  height: 44px;
+  border-right: 1.5px dashed #FF8A00;
+  border-bottom: 2px solid #D49312;
+  border-radius: 0 0 16px 8px;
+  transform: rotate(10deg);
+  opacity: 0.85;
+}
+
+.dhotiPleatRight {
+  position: absolute;
+  top: 4px;
+  right: 10px;
+  width: 32px;
+  height: 44px;
+  border-left: 1.5px dashed #FF8A00;
+  border-bottom: 2px solid #D49312;
+  border-radius: 0 0 8px 16px;
+  transform: rotate(-10deg);
+  opacity: 0.85;
+}
+
+.dhotiKnot {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 18px;
+  background: radial-gradient(circle at 40% 35%, #FFE07D 0%, #FF8A00 70%, #B85900 100%);
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(15, 27, 61, 0.5), inset 0 1px 2px #FFF2D1;
+  z-index: 4;
+}
+
+.dhotiSash {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 30px;
+  background: linear-gradient(180deg, #FF8A00 0%, #FFC83D 80%, #D49312 100%);
+  border-radius: 4px 4px 10px 10px;
+  border: 0.5px solid #B85900;
+  box-shadow: 0 2px 4px rgba(15, 27, 61, 0.3);
+  z-index: 3;
+}
+
+/* ── 3. TORSO & CHEST ───────────────────────────────────────────── */
+.torso {
+  position: absolute;
+  bottom: 48px;
+  width: 74px;
+  height: 48px;
+  background: radial-gradient(circle at 40% 30%, #9BC4FF 0%, #6BA7FF 50%, #4679C6 100%);
+  border-radius: 20px 20px 14px 14px;
+  box-shadow: 0 4px 10px rgba(15, 27, 61, 0.35), inset 0 2px 4px rgba(255, 255, 255, 0.4);
+  z-index: 4;
+}
+
+/* ── 4. ARMS & BANGLES ──────────────────────────────────────────── */
+.armLeft {
+  position: absolute;
+  bottom: 52px;
+  left: 20px;
+  width: 44px;
+  height: 20px;
+  background: radial-gradient(circle at 35% 35%, #9BC4FF 0%, #6BA7FF 60%, #3D6EB8 100%);
+  border-radius: 12px;
+  transform: rotate(26deg);
+  box-shadow: 0 3px 8px rgba(15, 27, 61, 0.4), inset 0 1px 3px rgba(255, 255, 255, 0.4);
+  z-index: 5;
+  transform-origin: left center;
+}
+
+.armRight {
+  position: absolute;
+  bottom: 50px;
+  right: 22px;
+  width: 46px;
+  height: 20px;
+  background: radial-gradient(circle at 35% 35%, #9BC4FF 0%, #6BA7FF 60%, #3D6EB8 100%);
+  border-radius: 12px;
+  transform: rotate(-24deg);
+  box-shadow: 0 3px 8px rgba(15, 27, 61, 0.4), inset 0 1px 3px rgba(255, 255, 255, 0.4);
+  z-index: 6;
+  transform-origin: right center;
+}
+
+.bangles {
+  position: absolute;
+  top: 3px;
+  right: 6px;
+  display: flex;
+  gap: 2px;
+}
+
+.bangle {
+  width: 4px;
+  height: 14px;
+  background: linear-gradient(180deg, #FFE07D 0%, #FF8A00 100%);
+  border-radius: 2px;
+  box-shadow: 0 0 3px rgba(255, 138, 0, 0.6);
+}
+
+/* ── 5. JEWELRY & NECKLACE ──────────────────────────────────────── */
+.necklaceLayer {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 52px;
+  height: 32px;
+  z-index: 7;
+}
+
+.necklaceStrand1 {
+  position: absolute;
+  top: 0px;
+  left: 6px;
+  width: 40px;
+  height: 18px;
+  border-bottom: 2px solid #FF8A00;
+  border-radius: 0 0 20px 20px;
+  box-shadow: 0 1px 3px rgba(255, 138, 0, 0.4);
+}
+
+.necklaceStrand2 {
+  position: absolute;
+  top: 4px;
+  left: 10px;
+  width: 32px;
+  height: 18px;
+  border-bottom: 2px solid #FFC83D;
+  border-radius: 0 0 16px 16px;
+}
+
+.necklaceStrand3 {
+  position: absolute;
+  top: 8px;
+  left: 14px;
+  width: 24px;
+  height: 16px;
+  border-bottom: 2px solid #FF8A00;
+  border-radius: 0 0 12px 12px;
+}
+
+.pendant {
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 10px;
+  background: radial-gradient(circle at 35% 35%, #FFF2D1 0%, #FFC83D 45%, #FF8A00 100%);
+  border-radius: 50%;
+  border: 1px solid #B85900;
+  box-shadow: 0 0 6px rgba(255, 138, 0, 0.8);
+}
+
+/* ── 6. HEAD & FACE ─────────────────────────────────────────────── */
+/* =========================================================
+   KRISHNA — HEAD SHAPE V2
+   Stronger child-like head volume
+   ========================================================= */
+
+.head {
+  position: absolute;
+
+  width: 112px;
+  height: 104px;
+
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+
+  border-radius: 50% 50% 48% 48% / 48% 48% 52% 52%;
+
+  /* One continuous blue facial surface */
+  background:
+    /* soft forehead light */
+    radial-gradient(ellipse 55% 42% at 38% 23%,
+      rgba(255, 255, 255, 0.24) 0%,
+      rgba(255, 255, 255, 0.10) 32%,
+      transparent 70%),
+
+    /* subtle cheek warmth integrated into the face */
+    radial-gradient(ellipse 30% 23% at 23% 66%,
+      rgba(255, 145, 165, 0.16) 0%,
+      rgba(255, 145, 165, 0.07) 42%,
+      transparent 75%),
+
+    radial-gradient(ellipse 30% 23% at 77% 66%,
+      rgba(255, 145, 165, 0.16) 0%,
+      rgba(255, 145, 165, 0.07) 42%,
+      transparent 75%),
+
+    /* main skin volume */
+    radial-gradient(ellipse 90% 88% at 48% 42%,
+      #9bc8ff 0%,
+      #72adf5 46%,
+      #5790dc 72%,
+      #3e70bd 100%);
+
+  /* soft dimensional edge */
+  box-shadow:
+    0 7px 15px rgba(20, 50, 110, 0.28),
+    inset 6px 5px 10px rgba(255, 255, 255, 0.15),
+    inset -8px -10px 16px rgba(25, 65, 135, 0.16);
+
+  overflow: hidden;
+  z-index: 10;
+}
+
+/* Remove the old separate oval cheeks */
+.cheekLeft {
+  display: none;
+}
+
+
+/* =========================================================
+   FULLER BABY CHEEKS
+   ========================================================= */
+
+/* .cheekLeft {
+  left: 2px;
+}
+
+.cheekRight {
+  right: 2px;
+} */
+/* ── 7. FACE DETAILS ────────────────────────────────────────────── */
+/* Eyebrows */
+.eyebrows {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 68px;
+  display: flex;
+  justify-content: space-between;
+  z-index: 12;
+}
+
+.eyebrow {
+  width: 22px;
+  height: 8px;
+  border-top: 3.5px solid #1E3A8A;
+  border-radius: 12px 12px 0 0;
+  transition: transform 0.2s ease;
+}
+
+.eyebrowLeft {
+  transform: rotate(4deg);
+}
+
+.eyebrowRight {
+  transform: rotate(-4deg);
+}
+
+/* Eyes */
+.eyes {
+  position: absolute;
+  top: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70px;
+  display: flex;
+  justify-content: space-between;
+  z-index: 12;
+}
+
+.eye {
+  position: relative;
+  width: 28px;
+  height: 30px;
+  background: #FFFFFF;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow:
+    inset 0 2px 6px rgba(15, 27, 61, 0.18),
+    0 3px 6px rgba(15, 27, 61, 0.20);
+  border-top: 2.5px solid #1E3A8A;
+  border-bottom: 1px solid rgba(15, 27, 61, 0.10);
+}
+
+.iris {
+  transition: transform 0.2s ease;
+}
+
+.pupil {
+  width: 9px;
+  height: 9px;
+  background: #0F1B3D;
+  border-radius: 50%;
+  position: relative;
+
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.08);
+}
+
+
+/* Glossy Eye Sparkle Highlights */
+.sparklePrimary {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 6px;
+  height: 6px;
+  background: #FFFFFF;
+  border-radius: 50%;
+  box-shadow: 0 0 3px rgba(255, 255, 255, 0.9);
+}
+
+.sparkleSecondary {
+  position: absolute;
+  bottom: 2px;
+  left: 2px;
+  width: 2.5px;
+  height: 2.5px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 50%;
+}
+
+/* Tilak (Forehead U-shape Mark & Bindi) */
+.tilak {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 18px;
+  z-index: 13;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tilakU {
+  width: 10px;
+  height: 13px;
+  border-left: 2px solid #F8F9FF;
+  border-right: 2px solid #F8F9FF;
+  border-bottom: 2px solid #F8F9FF;
+  border-radius: 0 0 6px 6px;
+  box-shadow: 0 0 4px rgba(248, 249, 255, 0.8);
+}
+
+.tilakDot {
+  width: 3.5px;
+  height: 3.5px;
+  background: #FF3B30;
+  border-radius: 50%;
+  margin-top: 1.5px;
+  box-shadow: 0 0 3px #FF8A00;
+}
+
+/* Nose */
+.nose {
+  position: absolute;
+  top: 52px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 7px;
+  height: 5px;
+  background: radial-gradient(circle at 40% 30%, #88B9FF 0%, #548CD9 100%);
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(15, 27, 61, 0.25);
+  z-index: 12;
+}
+
+
+/* ── 8. EARS & GOLD HOOP EARRINGS ───────────────────────────────── */
+.earLeft {
+  position: absolute;
+  top: 36px;
+  left: -9px;
+  width: 16px;
+  height: 20px;
+  background: radial-gradient(circle at 30% 35%, #8ec0ff 0%, #6BA7FF 70%, #3D6EB8 100%);
+  border-radius: 12px 6px 8px 12px;
+  box-shadow: -2px 2px 4px rgba(15, 27, 61, 0.3);
+  z-index: 9;
+}
+
+.earRight {
+  position: absolute;
+  top: 36px;
+  right: -9px;
+  width: 16px;
+  height: 20px;
+  background: radial-gradient(circle at 70% 35%, #8ec0ff 0%, #6BA7FF 70%, #3D6EB8 100%);
+  border-radius: 6px 12px 12px 8px;
+  box-shadow: 2px 2px 4px rgba(15, 27, 61, 0.3);
+  z-index: 9;
+}
+
+.earringLeft {
+  position: absolute;
+  bottom: -4px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #FF8A00;
+  border-radius: 50%;
+  box-shadow: 0 0 5px rgba(255, 138, 0, 0.6);
+  background: transparent;
+}
+
+.earringRight {
+  position: absolute;
+  bottom: -4px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #FF8A00;
+  border-radius: 50%;
+  box-shadow: 0 0 5px rgba(255, 138, 0, 0.6);
+  background: transparent;
+}
+
+/* ── 9. VOLUMINOUS CURLY HAIR & BUN (TOPKNOT) ───────────────────── */
+.hairLayer {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 116px;
+  height: 80px;
+  z-index: 9;
+  pointer-events: none;
+}
+
+.hairCurl {
+  position: absolute;
+  background: radial-gradient(circle at 35% 30%, #3256B8 0%, #1E3A8A 65%, #0F1B3D 100%);
+  border-radius: 50%;
+  box-shadow: 0 3px 8px rgba(15, 27, 61, 0.6), inset 0 2px 3px rgba(255, 255, 255, 0.2);
+}
+
+.curl1 {
+  top: 6px;
+  left: 0px;
+  width: 28px;
+  height: 28px;
+}
+
+.curl2 {
+  top: -2px;
+  left: 16px;
+  width: 32px;
+  height: 32px;
+}
+
+.curl3 {
+  top: -6px;
+  left: 40px;
+  width: 36px;
+  height: 36px;
+}
+
+.curl4 {
+  top: -2px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+}
+
+.curl5 {
+  top: 6px;
+  right: 0px;
+  width: 28px;
+  height: 28px;
+}
+
+.curl6 {
+  top: 22px;
+  left: -6px;
+  width: 24px;
+  height: 26px;
+}
+
+.curl7 {
+  top: 22px;
+  right: -6px;
+  width: 24px;
+  height: 26px;
+}
+
+/* Topknot Bun */
+.topknot {
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 44px;
+  height: 38px;
+  background: radial-gradient(circle at 40% 30%, #3B64D4 0%, #1E3A8A 60%, #0F1B3D 100%);
+  border-radius: 50% 50% 45% 45%;
+  box-shadow: 0 4px 10px rgba(15, 27, 61, 0.6), inset 0 2px 4px rgba(255, 255, 255, 0.25);
+  z-index: 14;
+}
+
+.topknotBand {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 7px;
+  border: 1.5px solid #FF8A00;
+  background: linear-gradient(90deg, #FFC83D 0%, #FF8A00 100%);
+  border-radius: 4px;
+  box-shadow: 0 0 6px rgba(255, 138, 0, 0.6);
+}
+
+/* ── 10. GOLD CROWN & HEADBAND ──────────────────────────────────── */
+.crownHeadband {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 82px;
+  height: 12px;
+  border-top: 3px solid #FF8A00;
+  border-radius: 50% 50% 0 0;
+  z-index: 15;
+  box-shadow: 0 -1px 6px rgba(255, 138, 0, 0.7);
+}
+
+.crownPeak {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 12px;
+  background: linear-gradient(135deg, #FFE07D 0%, #FF8A00 100%);
+  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+  filter: drop-shadow(0 0 4px rgba(255, 138, 0, 0.8));
+}
+
+.crownGem {
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  background: #FF3B30;
+  border-radius: 50%;
+  box-shadow: 0 0 3px #FFFFFF;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   ANIMATION KEYFRAMES, TRANSFORM ORIGINS & MOOD / STATE SYSTEM
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── 0. EXPLICIT TRANSFORM ORIGINS FOR LAYERED ANIMATION ────────── */
+#headGroup, #krishnaHairGroup {
+  transform-origin: 190px 180px;
+}
+
+#peacockFeather {
+  transform-origin: 168px 44px;
+  transform-box: view-box;
+}
+
+.featherSvgAnim {
+  filter: drop-shadow(0 2px 6px rgba(4, 120, 87, 0.45)) drop-shadow(0 1px 2px rgba(15, 27, 61, 0.4));
+  transform-origin: 168px 44px;
+}
+
+#canonicalChakraArms,
+#crossedArms {
+  transform-origin: 190px 190px;
+}
+
+#dhoti,
+#waistSashTail {
+  transform-origin: 190px 260px;
+}
+
+.chakraDisc {
+  transform-origin: 91px 56px;
+  transform-box: view-box;
+}
+
+#feet {
+  transform-origin: 190px 388px;
+}
+
+/* ── 1. IDLE STATE (DEFAULT BREATHING & SWAY) ──────────────────── */
+.krishnaIdle {
+  animation: krishnaIdleBreathing 4.5s ease-in-out infinite;
+}
+
+.krishnaIdle #headGroup, #krishnaHairGroup {
+  animation: idleHeadTilt 7.5s ease-in-out infinite;
+}
+
+.krishnaIdle .featherSvgAnim {
+  animation: featherSwayAnim 6s ease-in-out infinite alternate;
+}
+
+.krishnaIdle .chakraDisc {
+  animation: spinChakra 12s linear infinite;
+}
+
+/* ── 2. PROTECTOR STATE (CANONICAL CHAKRA POSE) ────────────────── */
+.krishnaProtector {
+  animation: protectorPulse 3s ease-in-out infinite alternate;
+}
+
+.krishnaProtector #headGroup, #krishnaHairGroup {
+  animation: idleHeadTilt 7.5s ease-in-out infinite;
+}
+
+.krishnaProtector .featherSvgAnim {
+  animation: featherSwayAnim 6s ease-in-out infinite alternate;
+}
+
+.krishnaContainer[data-state='protector'] .divineAura {
+  opacity: 0.95;
+  animation: protectorAuraGlow 3s ease-in-out infinite alternate;
+}
+
+.krishnaProtector .chakraDisc {
+  animation: spinChakra 6.5s linear infinite;
+}
+
+.krishnaContainer[data-pose='chakra'] .chakraDisc {
+  animation: spinChakra 12s linear infinite;
+}
+
+.krishnaContainer[data-pose='chakra'][data-state='protector'] .chakraDisc {
+  animation-duration: 6.5s;
+}
+
+/* ── 3. THINKING STATE (HEAD TILT & EYE SHIFT) ─────────────────── */
+.krishnaThinking #headGroup, #krishnaHairGroup {
+  transform: rotate(-6deg) translateY(-2px);
+  transition: transform 0.4s ease;
+}
+
+.krishnaThinking .iris {
+  transform: translate(2px, -2px);
+  transition: transform 0.4s ease;
+}
+
+/* ── 4. HAPPY STATE (PLAYFUL BOUNCE & SPARKLES) ────────────────── */
+.krishnaHappy {
+  animation: happyBounce 0.75s ease-in-out infinite alternate;
+}
+
+.krishnaHappy #headGroup, #krishnaHairGroup {
+  animation: happyHeadNod 0.75s ease-in-out infinite alternate;
+}
+
+
+.krishnaHappy .cheekLeft,
+.krishnaHappy .cheekRight {
+  filter: blur(0.5px);
+  background: radial-gradient(circle, rgba(255, 75, 120, 0.75) 0%, rgba(255, 107, 107, 0) 75%);
+}
+
+/* ── 5. MOTIVATION STATE (ENCOURAGING NOD & WARM GLOW) ─────────── */
+.krishnaMotivation {
+  animation: motivationFloat 4s ease-in-out infinite;
+}
+
+.krishnaMotivation #headGroup, #krishnaHairGroup {
+  animation: motivationNod 2.2s ease-in-out infinite;
+}
+
+.krishnaContainer[data-state='motivation'] .divineAura {
+  opacity: 0.85;
+  background: radial-gradient(circle, rgba(255, 225, 128, 0.22) 0%, rgba(82, 159, 255, 0.12) 55%, transparent 75%);
+}
+
+/* ── 6. RELAX STATE (DEEP BREATHING & FLUTE PREPARATION) ────────── */
+.krishnaRelax {
+  animation: relaxDeepBreathing 8s ease-in-out infinite;
+}
+
+.krishnaRelax #headGroup, #krishnaHairGroup {
+  animation: relaxHeadSway 8s ease-in-out infinite;
+}
+
+.krishnaRelax .featherSvgAnim {
+  animation: featherSwayAnim 8s ease-in-out infinite alternate;
+}
+
+/* ── 7. GREETING STATE (WAVING GESTURE) ────────────────────────── */
+.krishnaGreeting #raisedArm {
+  animation: waveArm 1s ease-in-out infinite alternate;
+}
+
+/* ── 8. CLICKED STATE (QUICK FEEDBACK GLOW - NO MOVEMENT) ───────────── */
+.krishnaClicked {
+  filter: drop-shadow(0 0 16px rgba(255, 215, 0, 0.65));
+}
+
+/* ── EXPRESSIVE EYEBROWS & FACIAL DYNAMICS ───────────────────────── */
+.eyebrowLeft,
+.eyebrowRight {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.krishnaThinking .eyebrowLeft {
+  transform: translateY(1.5px) rotate(3deg);
+}
+
+.krishnaThinking .eyebrowRight {
+  transform: translateY(-2.5px) rotate(-4deg);
+}
+
+.krishnaHappy .eyebrowLeft,
+.krishnaHappy .eyebrowRight {
+  transform: translateY(-2px);
+}
+
+.krishnaMotivation .eyebrowLeft,
+.krishnaMotivation .eyebrowRight {
+  transform: translateY(-1.5px);
+}
+
+.krishnaClicked .eyebrowLeft,
+.krishnaClicked .eyebrowRight {
+  transform: translateY(-3px) scale(1.05);
+}
+
+/* ── LOCALIZED BLINK ANIMATION ──────────────────────────────────── */
+.eyelidUpper {
+  transform-origin: 22px 0px;
+  transform: scaleY(0);
+  transition: transform 0.08s ease-in-out;
+}
+
+.eyelidUpper.blinkActive {
+  transform: scaleY(1);
+}
+
+/* ── THOUGHT BUBBLE (EXTERNAL HTML/CSS BUBBLE) ─────────────────── */
+.thoughtBubble {
+  position: absolute;
+  top: -54px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.96);
+  color: #1E100A;
+  border: 2px solid #82B8FF;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25), 0 0 12px rgba(130, 184, 255, 0.4);
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  z-index: 45;
+  animation: bubbleFloat 3s ease-in-out infinite;
+}
+
+.thoughtBubble::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 30%;
+  width: 10px;
+  height: 10px;
+  background: #FFFFFF;
+  border-right: 2px solid #82B8FF;
+  border-bottom: 2px solid #82B8FF;
+  border-radius: 50%;
+}
+
+/* ── DEV TOOLBAR / DEBUG CONTROL ────────────────────────────────── */
+.debugToolbar {
+  position: absolute;
+  top: -95px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  background: rgba(15, 27, 61, 0.92);
+  border: 1px solid rgba(255, 200, 61, 0.5);
+  border-radius: 10px;
+  padding: 4px;
+  z-index: 100;
+  max-width: 320px;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.debugBtn {
+  background: rgba(255, 255, 255, 0.12);
+  border: none;
+  color: #E2EFFF;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.debugBtn:hover,
+.debugBtnActive {
+  background: #FFC83D;
+  color: #0F1B3D;
+}
+
+/* ── KEYFRAME DEFINITIONS ───────────────────────────────────────── */
+@keyframes krishnaIdleBreathing {
+
+  0%,
+  100% {
+    transform: translateY(0px) scale(var(--k-scale, 1.45));
+  }
+
+  50% {
+    transform: translateY(-4px) scale(var(--k-scale, 1.45));
+  }
+}
+
+@keyframes idleHeadTilt {
+
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  50% {
+    transform: rotate(1.8deg) translateY(-1px);
+  }
+}
+
+@keyframes protectorPulse {
+  0% {
+    transform: translateY(0px) scale(var(--k-scale, 1.45));
+  }
+
+  100% {
+    transform: translateY(-3px) scale(var(--k-scale, 1.45));
+  }
+}
+
+@keyframes protectorAuraGlow {
+  0% {
+    opacity: 0.6;
+    transform: translateX(-50%) scale(0.98);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.08);
+  }
+}
+
+@keyframes happyBounce {
+  0% {
+    transform: translateY(0px) scale(var(--k-scale, 1.45));
+  }
+
+  100% {
+    transform: translateY(-10px) scale(var(--k-scale, 1.45));
+  }
+}
+
+@keyframes happyHeadNod {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(-3deg) translateY(-2px);
+  }
+}
+
+@keyframes motivationFloat {
+
+  0%,
+  100% {
+    transform: translateY(0px) scale(var(--k-scale, 1.45));
+  }
+
+  50% {
+    transform: translateY(-5px) scale(var(--k-scale, 1.45));
+  }
+}
+
+@keyframes motivationNod {
+
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  50% {
+    transform: rotate(2.5deg) translateY(1px);
+  }
+}
+
+@keyframes relaxDeepBreathing {
+
+  0%,
+  100% {
+    transform: translateY(0px) scale(var(--k-scale, 1.45));
+  }
+
+  50% {
+    transform: translateY(-6px) scale(var(--k-scale, 1.45));
+  }
+}
+
+@keyframes relaxHeadSway {
+
+  0%,
+  100% {
+    transform: rotate(-1.5deg);
+  }
+
+  50% {
+    transform: rotate(2deg);
+  }
+}
+
+@keyframes clickAck {
+  0% {
+    transform: scale(var(--k-scale, 1.45));
+  }
+
+  50% {
+    transform: scale(calc(var(--k-scale, 1.45) * 1.08)) translateY(-6px);
+  }
+
+  100% {
+    transform: scale(var(--k-scale, 1.45));
+  }
+}
+
+@keyframes spinChakra {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes waveArm {
+  0% {
+    transform: rotate(-15deg);
+  }
+
+  100% {
+    transform: rotate(-45deg) translateY(-3px);
+  }
+}
+
+@keyframes shadowPulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+
+  50% {
+    transform: scale(0.88);
+    opacity: 0.35;
+  }
+}
+
+@keyframes auraGlow {
+  0% {
+    transform: translateX(-50%) scale(0.95);
+    opacity: 0.6;
+  }
+
+  100% {
+    transform: translateX(-50%) scale(1.1);
+    opacity: 1;
+  }
+}
+
+@keyframes bubbleFloat {
+
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0px);
+  }
+
+  50% {
+    transform: translateX(-50%) translateY(-3px);
+  }
+}
+
+@keyframes featherSwayAnim {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  50% {
+    transform: rotate(2.2deg) translateY(-0.5px);
+  }
+
+  100% {
+    transform: rotate(-1.5deg) translateY(0.5px);
+  }
+}
+
+/* ── 9. ACCESSIBILITY & REDUCED MOTION SUPPORT ────────────────── */
+@media (prefers-reduced-motion: reduce) {
+
+  .krishna,
+  .krishnaIdle,
+  .krishnaProtector,
+  .krishnaHappy,
+  .krishnaMotivation,
+  .krishnaRelax,
+  .krishnaGreeting,
+  .krishnaClicked,
+  .featherSvgAnim,
+  .chakraDisc,
+  .groundShadow,
+  .divineAura,
+  .greetingBubble,
+  .thoughtBubble,
+  .fluteIcon {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+.fluteIcon {
+  position: absolute;
+  right: -30px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2.2rem;
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.fluteIcon:hover {
+  transform: translateY(-50%) scale(1.15) rotate(5deg);
+}
+
+/* ── PIXAR EXPRESSIVE MOUTH & SPEAKING SUPPORT ────────────────── */
+.pixarMouth {
+  transform-origin: 0px 0px;
+  transition: transform 0.18s ease-out;
+}
+
+.mouthCavity {
+  opacity: 0.8;
+  transform-origin: 0 0;
+  transform: scale(0.7, 0.25);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.mouthSpeaking .mouthCavity {
+  opacity: 1;
+  animation: pixarSpeechCavity 0.32s ease-in-out infinite alternate;
+}
+
+.mouthSpeaking .smileLine {
+  animation: pixarSpeechSeam 0.32s ease-in-out infinite alternate;
+}
+
+@keyframes pixarSpeechCavity {
+  0% {
+    transform: scale(0.7, 0.2);
+    opacity: 0.2;
+  }
+
+  100% {
+    transform: scale(1.05, 1.25);
+    opacity: 1;
+  }
+}
+
+@keyframes pixarSpeechSeam {
+  0% {
+    transform: scaleY(0.7);
+  }
+
+  100% {
+    transform: scaleY(1.2);
+  }
+}
+
+.krishnaHappy .pixarMouth {
+  transform: scale(1.06, 1.15);
+}
+
+/* ── PURE CSS 3D MOUTH IMPLEMENTATION ────────────────── */
+.mouthContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.mouthSkinHighlight {
+  position: absolute;
+  top: 1.5px;
+  width: 12px;
+  height: 2.5px;
+  background: radial-gradient(ellipse at center, rgba(235, 245, 255, 0.45) 0%, rgba(235, 245, 255, 0) 70%);
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.mouthShadow {
+  position: absolute;
+  bottom: 2px;
+  width: 22px;
+  height: 4.5px;
+  background: radial-gradient(ellipse at center, rgba(30, 58, 138, 0.28) 0%, rgba(30, 58, 138, 0) 70%);
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.mouthGroup {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1;
+  width: 24px;
+  height: 10px;
+}
+
+/* ── ELEGANT CLEAN SMILING OUTLINE ONLY ────────────────── */
+.mouthSeam {
+  position: relative;
+  top: 1.0px;
+  width: 22px;
+  height: 4.5px;
+  border-bottom: 2.2px solid #5A1022;
+  border-radius: 0 0 16px 16px;
+  z-index: 2;
+  box-shadow: 0 0.8px 1px rgba(74, 11, 26, 0.3);
+}
+
+/* Soft upturned smile corners */
+.mouthSeam::before, .mouthSeam::after {
+  content: "";
+  position: absolute;
+  top: -1.0px;
+  width: 4.8px;
+  height: 3.0px;
+  border-bottom: 1.8px solid #5A1022;
+}
+
+.mouthSeam::before {
+  left: -2.4px;
+  border-radius: 0 0 0 5px;
+  transform: rotate(-38deg);
+}
+
+.mouthSeam::after {
+  right: -2.4px;
+  border-radius: 0 0 5px 0;
+  transform: rotate(38deg);
+}
+
+.lipHighlight {
+  margin-top: 1.0px;
+  width: 4.8px;
+  height: 1.1px;
+  background: rgba(255, 255, 255, 0.88);
+  border-radius: 50%;
+  box-shadow: 0 0 2px rgba(255, 255, 255, 0.9);
+}
+
+.lipHighlight {
+  margin-top: 1.0px;
+  width: 3.6px;
+  height: 1.1px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 50%;
+  box-shadow: 0 0 1.8px rgba(255, 255, 255, 0.9);
+}
+
+/* ── SPEAKING ANIMATION & ORAL CAVITY ────────────────── */
+.speakingCavity {
+  position: absolute;
+  top: 2.2px;
+  width: 12px;
+  height: 0px;
+  background: #3D1022;
+  border-radius: 0 0 7px 7px;
+  opacity: 0;
+  overflow: hidden;
+  z-index: 1;
+  transform-origin: top center;
+  transition: height 0.15s ease, opacity 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.teethBar {
+  width: 9px;
+  height: 1.3px;
+  background: #FFFFFF;
+  opacity: 0.92;
+  border-radius: 0 0 2px 2px;
+}
+
+.tongue {
+  width: 8px;
+  height: 2.4px;
+  background: #E27488;
+  border-radius: 4px 4px 0 0;
+  opacity: 0.88;
+}
+
+/* Active Speaking State Styles & Keyframes */
+.mouthSpeaking .speakingCavity {
+  opacity: 1;
+  animation: speakingCavityAnim 0.32s ease-in-out infinite alternate;
+}
+
+.mouthSpeaking .lowerLip {
+  animation: lowerLipSpeakingAnim 0.32s ease-in-out infinite alternate;
+}
+
+.mouthSpeaking .upperLip {
+  animation: upperLipSpeakingAnim 0.32s ease-in-out infinite alternate;
+}
+
+.mouthSpeaking .mouthSeam {
+  animation: mouthSeamSpeakingAnim 0.32s ease-in-out infinite alternate;
+}
+
+@keyframes speakingCavityAnim {
+  0% {
+    height: 1px;
+    transform: scaleY(0.3);
+    opacity: 0.3;
+  }
+  35% {
+    height: 5px;
+    transform: scaleY(1);
+    opacity: 1;
+  }
+  70% {
+    height: 2.5px;
+    transform: scaleY(0.6);
+    opacity: 0.7;
+  }
+  100% {
+    height: 5.5px;
+    transform: scaleY(1.15);
+    opacity: 1;
+  }
+}
+
+@keyframes lowerLipSpeakingAnim {
+  0% {
+    transform: translateY(0px);
+  }
+  35% {
+    transform: translateY(3.8px);
+  }
+  70% {
+    transform: translateY(1.8px);
+  }
+  100% {
+    transform: translateY(4.2px);
+  }
+}
+
+@keyframes upperLipSpeakingAnim {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-0.8px);
+  }
+  100% {
+    transform: translateY(-0.4px);
+  }
+}
+
+@keyframes mouthSeamSpeakingAnim {
+  0% {
+    opacity: 1;
+    border-bottom-width: 1.2px;
+  }
+  50% {
+    opacity: 0.3;
+    border-bottom-width: 0.4px;
+  }
+  100% {
+    opacity: 0.7;
+    border-bottom-width: 0.8px;
+  }
+}
+
+/* ── 15. ROYAL GHUNGROO PAYAL (ANKLETS) ── */
+.ankletLayer {
+  filter: drop-shadow(0 2px 5px rgba(15, 27, 61, 0.45));
+}

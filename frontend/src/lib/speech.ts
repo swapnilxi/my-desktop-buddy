@@ -30,21 +30,28 @@ function cleanForSpeech(text: string): string {
 export interface SpeakOptions {
   rate?: number;
   pitch?: number;
+  buddyType?: string;
   onStart?: () => void;
   onEnd?: () => void;
 }
 
 /** Fetch TTS audio from the backend. Returns null on failure. */
-async function fetchBackendTts(text: string): Promise<Blob | null> {
+async function fetchBackendTts(text: string, buddyType?: string): Promise<Blob | null> {
   try {
     const clientHeaders = getClientAuthHeaders();
+    if (buddyType) {
+      clientHeaders['X-Buddy-Type'] = buddyType;
+    }
     const resp = await fetch(`${API_BASE}/voice/speak`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         ...clientHeaders,
       },
-      body: JSON.stringify({ text }),
+      body: JSON.stringify({
+        text,
+        character: buddyType,
+      }),
     });
     if (!resp.ok) return null;
     const blob = await resp.blob();
@@ -117,7 +124,7 @@ export async function speak(text: string, options: SpeakOptions = {}): Promise<v
   stopSpeaking();
   options.onStart?.();
 
-  const blob = await fetchBackendTts(cleaned);
+  const blob = await fetchBackendTts(cleaned, options.buddyType);
   if (blob && !muted) {
     try {
       const audio = new Audio(URL.createObjectURL(blob));

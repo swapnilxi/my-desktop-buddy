@@ -1,8 +1,9 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { transcribeAudio } from '@/lib/api';
+import { transcribeAudio, getClientSavedConfig } from '@/lib/api';
 import { stopSpeaking } from '@/lib/speech';
+import { createBrowserSpeechRecognition, isSpeechRecognitionSupported } from '@/lib/speechRecognition';
 
 interface UseVoiceRecorderOptions {
     /** Called with the transcript once Deepgram STT returns. */
@@ -41,6 +42,11 @@ export function useVoiceRecorder(options: UseVoiceRecorderOptions): VoiceRecorde
     const optionsRef = useRef(options);
     optionsRef.current = options;
 
+    const recognitionRef = useRef<any>(null);
+    // Set when the user deliberately stops, so the recognizer's trailing
+    // 'aborted' error does not get mistaken for a failure worth falling back on.
+    const userStoppedRef = useRef(false);
+
     const cleanupStream = useCallback(() => {
         streamRef.current?.getTracks().forEach((t) => t.stop());
         streamRef.current = null;
@@ -48,11 +54,78 @@ export function useVoiceRecorder(options: UseVoiceRecorderOptions): VoiceRecorde
     }, []);
 
     const stop = useCallback(() => {
+        userStoppedRef.current = true;
+        if (recognitionRef.current) {
+            try {
+                recognitionRef.current.stop();
+            } catch { }
+            recognitionRef.current = null;
+        }
         mediaRecorderRef.current?.stop();
     }, []);
 
     const start = useCallback(async () => {
         setError(null);
+        userStoppedRef.current = false;
+        const saved = getClientSavedConfig();
+        const sttPref = saved?.voice?.stt_provider || 'apple';
+
+        // 1. Try Apple / Browser Speech Recognition first if preferred.
+        //    Skipped inside Electron: its Chromium ships no Google speech key,
+        //    so recognition reliably fails with 'network' and every mic tap
+        //    would pay that failed round trip before falling back.
+        const inElectron = typeof window !== 'undefined' && !!window.hamsterDesk?.isElectron;
+        if (sttPref === 'apple' && !inElectron && isSpeechRecognitionSupported()) {
+            let receivedResult = false;
+            const rec = createBrowserSpeechRecognition({
+                onStart: () => {
+                    setIsRecording(true);
+                    optionsRef.current.onRecordingStart?.();
+                },
+                onResult: (transcript) => {
+                    receivedResult = true;
+                    setIsRecording(false);
+                    setIsTranscribing(false);
+                    optionsRef.current.onTranscribed(transcript);
+                    optionsRef.current.onDone?.();
+                },
+                onError: (err) => {
+                    // 'aborted' / 'no-speech' are normal ends, not failures — and a
+                    // user-initiated stop must never re-open the mic.
+                    const benign = err === 'aborted' || err === 'no-speech';
+                    if (receivedResult || userStoppedRef.current || benign) {
+                        setIsRecording(false);
+                        if (benign && !receivedResult && !userStoppedRef.current) {
+                            setError("Didn't catch that — try speaking a bit longer!");
+                        }
+                        optionsRef.current.onDone?.(benign ? 'no-speech' : err);
+                        return;
+                    }
+                    // Genuine failure (commonly 'network' inside Electron):
+                    // fall back to MediaRecorder + backend transcription.
+                    console.warn('[Speech Recognition unavailable, using MediaRecorder]', err);
+                    startMediaRecorder();
+                },
+                onEnd: () => {
+                    setIsRecording(false);
+                    recognitionRef.current = null;
+                },
+            });
+
+            if (rec) {
+                if (recognitionRef.current) {
+                    try { recognitionRef.current.stop(); } catch { }
+                }
+                recognitionRef.current = rec;
+                return;
+            }
+        }
+
+        // 2. Otherwise use MediaRecorder + backend transcription (Gemini / Deepgram)
+        await startMediaRecorder();
+    }, [cleanupStream]);
+
+    const startMediaRecorder = async () => {
         let stream: MediaStream;
         try {
             stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -67,7 +140,7 @@ export function useVoiceRecorder(options: UseVoiceRecorderOptions): VoiceRecorde
             } else {
                 setError('Could not access the microphone.');
             }
-            optionsRef.current.onDone?.(error ?? 'microphone');
+            optionsRef.current.onDone?.('microphone');
             return;
         }
 
@@ -111,7 +184,7 @@ export function useVoiceRecorder(options: UseVoiceRecorderOptions): VoiceRecorde
         recorder.start();
         setIsRecording(true);
         optionsRef.current.onRecordingStart?.();
-    }, [cleanupStream]);
+    };
 
     const toggle = useCallback(() => {
         if (isRecording) {

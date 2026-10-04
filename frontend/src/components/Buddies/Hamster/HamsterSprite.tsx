@@ -259,7 +259,7 @@ export default function HamsterSprite({
           {heldItem !== 'none' && (
             <div className="hamster-held-object-container">
               {heldItem === 'seed' && (
-                <div className="hamster-seed" onClick={onFeed} title="Yummy sunflower seed!">
+                <div className="hamster-seed" onClick={(e) => { e.stopPropagation(); onFeed?.(); }} title="Yummy sunflower seed!">
                   <span className="seed-sheen" />
                   <span className="seed-stripe stripe-center" />
                 </div>
