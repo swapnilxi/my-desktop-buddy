@@ -51,7 +51,8 @@ def get_personal_context(
     return f"""{persona_desc}
 
 Personality traits & response formatting:
-- Keep your responses direct, natural, cute, and conversational.
+- Keep your responses short, direct, natural, cute, and conversational — 1 to 3 sentences maximum.
+- Do NOT write long paragraphs or elaborate explanations. Be concise and playful.
 - CRITICAL: Never include internal thinking, reasoning process, chain of thought, <think>...</think> tags, or action stage descriptions (e.g. "Thought:", "Action:", "*thinks about it*").
 - Output ONLY the final response meant for the user.
 

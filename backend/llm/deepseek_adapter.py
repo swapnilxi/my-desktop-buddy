@@ -33,6 +33,9 @@ class DeepSeekAdapter(LLMAdapter):
         )
         self.model = model or config.llm.deepseek_model or "deepseek-chat"
 
+    # Default cap to keep buddy responses concise; callers can override.
+    DEFAULT_MAX_TOKENS = 300
+
     async def generate(
         self,
         messages: list[dict],
@@ -49,9 +52,8 @@ class DeepSeekAdapter(LLMAdapter):
             "model": self.model,
             "messages": api_messages,
             "temperature": temperature,
+            "max_tokens": max_tokens or self.DEFAULT_MAX_TOKENS,
         }
-        if max_tokens:
-            kwargs["max_tokens"] = max_tokens
 
         response = await self.client.chat.completions.create(**kwargs)
 
