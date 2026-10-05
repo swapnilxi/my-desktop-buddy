@@ -3,7 +3,7 @@ import json
 import threading
 from datetime import date, datetime, timedelta
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from config_manager import CONFIG_DIR
 
@@ -21,10 +21,17 @@ def _load() -> Dict:
     return {"sessions": [], "weekly_summaries": {}}
 
 
+def _json_default(value):
+    """numpy scalars (np.bool_, np.int64 …) from the analysis -> plain Python values."""
+    if hasattr(value, "item"):
+        return value.item()
+    raise TypeError(f"Object of type {type(value).__name__} is not JSON serializable")
+
+
 def _save(data: Dict) -> None:
     CONFIG_DIR.mkdir(parents=True, exist_ok=True)
     tmp = STORE_FILE.with_suffix(".tmp")
-    tmp.write_text(json.dumps(data))
+    tmp.write_text(json.dumps(data, default=_json_default))
     tmp.replace(STORE_FILE)
 
 
@@ -52,8 +59,24 @@ def reset() -> None:
         _save({"sessions": [], "weekly_summaries": {}})
 
 
-def completed_days(sessions: List[Dict]) -> List[int]:
-    return sorted({s["day"] for s in sessions if s.get("day")})
+def session_lesson_id(s: Dict) -> Optional[str]:
+    """Lesson a session belongs to. Older sessions only stored a day number (seed day ids are dN)."""
+    return s.get("lesson_id") or (f"d{s['day']}" if s.get("day") else None)
+
+
+def session_kind(s: Dict) -> Optional[str]:
+    return s.get("lesson_kind") or ("day" if s.get("day") else None)
+
+
+def session_week(s: Dict) -> Optional[int]:
+    if s.get("week"):
+        return s["week"]
+    return min(4, (s["day"] - 1) // 7 + 1) if s.get("day") else None  # pre-program-store sessions
+
+
+def completed_day_ids(sessions: List[Dict]) -> set:
+    """Program days with at least one recorded session (sub-lessons don't complete a day)."""
+    return {session_lesson_id(s) for s in sessions if session_kind(s) == "day"}
 
 
 def streak(sessions: List[Dict]) -> int:
