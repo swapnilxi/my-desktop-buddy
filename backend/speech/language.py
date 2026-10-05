@@ -39,8 +39,11 @@ REWRITES = [
 ]
 
 
-def _rewrite(excerpt: str) -> str:
+def _rewrite(excerpt: str, preferred: Optional[List[List[str]]] = None) -> str:
     out = excerpt
+    # The program's own replacements first, e.g. ["I think", "My view is"].
+    for src, dst in preferred or []:
+        out = re.sub(rf"^\s*{re.escape(src)}(?: that)?\b,?\s*", f"{dst}: ", out, flags=re.I)
     for pat, rep in REWRITES:
         out = re.sub(pat, rep, out, flags=re.I)
     out = re.sub(r"\s{2,}", " ", out).strip(" ,")
@@ -69,7 +72,19 @@ def _sentence_sentiment(tokens: List[str]) -> float:
     return (pos - neg) / (pos + neg + 3.0) * 1.8 if (pos or neg) else 0.0
 
 
-def analyze(transcript: str, speech_span_sec: Optional[float]) -> Dict:
+def _ends_clause(tok) -> bool:
+    return tok is None or tok.is_punct or tok.lower_ == "na"
+
+
+def analyze(transcript: str, speech_span_sec: Optional[float], targets: Optional[Dict] = None) -> Dict:
+    targets = targets or {}
+    # Program-specific fillers, e.g. Indian English "basically, only, itself, na, so so, very very".
+    flagged = {w.strip().lower() for w in targets.get("filler_words") or [] if w.strip()}
+    doubles = {w.split()[0] for w in flagged if len(w.split()) == 2 and w.split()[0] == w.split()[1]}
+    special = {"na", "only", "itself", "you know", "like", "right", "sort of"} | {f"{d} {d}" for d in doubles}
+    plain_extra = sorted((flagged - special) - FILLER_SINGLE, key=len, reverse=True)
+    run_on_words = int(targets.get("run_on_words") or 35)
+
     doc = _nlp()(transcript)
     sents = [s for s in doc.sents if any(t.is_alpha for t in s)]
     words = [t for t in doc if t.is_alpha or t.like_num or "'" in t.text]
@@ -78,11 +93,24 @@ def analyze(transcript: str, speech_span_sec: Optional[float]) -> Dict:
     # ── Fillers ──────────────────────────────────────────────
     fillers: List[Dict] = []
     toks = list(doc)
+    skip = set()
     for i, t in enumerate(toks):
+        if i in skip:
+            continue
         low = t.lower_
         prev = toks[i - 1] if i > 0 else None
         nxt = toks[i + 1] if i + 1 < len(toks) else None
-        if low in FILLER_SINGLE:
+        if low in doubles and nxt is not None and nxt.lower_ == low:
+            fillers.append({"word": f"{low} {low}", "sentence": t.sent.text.strip()})  # "very very"
+            skip.add(i + 1)
+        elif low == "na" and "na" in flagged and _ends_clause(nxt):
+            fillers.append({"word": "na", "sentence": t.sent.text.strip()})  # "…only na."
+        elif low == "only" and "only" in flagged and _ends_clause(nxt):
+            fillers.append({"word": "only", "sentence": t.sent.text.strip()})  # "growing fast only."
+        elif (low == "itself" and "itself" in flagged and prev is not None and prev.pos_ in ("NOUN", "PROPN")
+              and nxt is not None and nxt.pos_ in ("AUX", "VERB")):
+            fillers.append({"word": "itself", "sentence": t.sent.text.strip()})  # "the product itself is"
+        elif low in FILLER_SINGLE:
             fillers.append({"word": low, "sentence": t.sent.text.strip()})
         elif low == "like" and (
             (prev is not None and prev.text == ",") or (nxt is not None and nxt.text == ",")
@@ -102,6 +130,10 @@ def analyze(transcript: str, speech_span_sec: Optional[float]) -> Dict:
             fillers.append({"word": "you know", "sentence": t.sent.text.strip()})
         elif low == "sort" and nxt is not None and nxt.lower_ == "of":
             fillers.append({"word": "sort of", "sentence": t.sent.text.strip()})
+    for phrase in plain_extra:  # any other configured filler words / phrases
+        for s in sents:
+            for _ in re.finditer(rf"\b{re.escape(phrase)}\b", s.text.lower()):
+                fillers.append({"word": phrase, "sentence": s.text.strip()})
     filler_counts: Dict[str, int] = {}
     for f in fillers:
         filler_counts[f["word"]] = filler_counts.get(f["word"], 0) + 1
@@ -120,7 +152,7 @@ def analyze(transcript: str, speech_span_sec: Optional[float]) -> Dict:
         excerpt = " ".join(excerpt_words[:6])
         truncated = len(excerpt_words) > 6
         said = excerpt.rstrip(".,;:?!") + ("…" if truncated else "")
-        better = _rewrite(excerpt.rstrip(".,;:?!"))
+        better = _rewrite(excerpt.rstrip(".,;:?!"), targets.get("hedge_replacements"))
         if not better or better.lower() == excerpt.lower():
             better = f"State it directly — drop “{m.group(0)}”"
         else:
@@ -134,7 +166,7 @@ def analyze(transcript: str, speech_span_sec: Optional[float]) -> Dict:
     run_ons: List[Dict] = []
     for s in sents:
         n = sum(1 for t in s if t.is_alpha)
-        if n > 35:
+        if n > run_on_words:
             run_ons.append({"words": n, "sentence": s.text.strip()})
 
     n_sents = max(1, len(sents))

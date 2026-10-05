@@ -1,28 +1,90 @@
 'use client';
 
 import { useState } from 'react';
-import type { SpeechSession, WeeklySummary } from '@/lib/speechTraining';
+import type { BenchmarkComparison, SpeechSession, Thresholds, WeeklySummary } from '@/lib/speechTraining';
 
 const fmt = (v: number | null | undefined, d = 0) => (v == null ? '—' : v.toFixed(d));
+const rng = (r: [number, number]) => `${r[0]}–${r[1]}`;
+
+// Sessions recorded before personal targets existed were scored against these.
+const LEGACY: Pick<Thresholds, 'f0_range' | 'wpm_range' | 'filler_pct_max' | 'hedge_pct_max' | 'passive_pct_max' | 'hnr_min_db' | 'jitter_max_pct' | 'shimmer_max_db'> = {
+  f0_range: [85, 180], wpm_range: [130, 160], filler_pct_max: 2, hedge_pct_max: 5, passive_pct_max: 30,
+  hnr_min_db: 20, jitter_max_pct: 1, shimmer_max_db: 3,
+};
 
 interface Row { label: string; value: string; target: string; ok: boolean | null }
 
 function benchmarkRows(s: SpeechSession): Row[] {
   const a = s.acoustic, l = s.language;
-  const in01 = (v: number | null, lo: number, hi: number) => (v == null ? null : v >= lo && v <= hi);
-  return [
-    { label: 'Pitch (F0)', value: `${fmt(a.f0_mean_hz)} Hz`, target: '85–180 Hz', ok: in01(a.f0_mean_hz, 85, 180) },
+  const t = { ...LEGACY, ...(s.thresholds ?? {}) } as Thresholds;
+  const in01 = (v: number | null | undefined, lo: number, hi: number) => (v == null ? null : v >= lo && v <= hi);
+  const f0 = a.f0_median_hz ?? a.f0_mean_hz;
+  const tonal = a.tonal;
+  const avg = l.avg_sentence_words;
+  const rows: Row[] = [
+    { label: 'Speaking pitch (F0)', value: `${fmt(f0)} Hz`, target: `${rng(t.f0_range)} Hz`, ok: in01(f0, t.f0_range[0], t.f0_range[1]) },
     { label: 'Pitch variation', value: `${fmt(a.pitch_variation_st, 1)} st`, target: 'Moderate (2–5)', ok: in01(a.pitch_variation_st, 2, 5) },
-    { label: 'HNR', value: `${fmt(a.hnr_db, 1)} dB`, target: '> 20 dB', ok: a.hnr_db == null ? null : a.hnr_db > 20 },
-    { label: 'Jitter', value: `${fmt(a.jitter_pct, 2)}%`, target: '< 1%', ok: a.jitter_pct == null ? null : a.jitter_pct < 1 },
-    { label: 'Shimmer', value: `${fmt(a.shimmer_db, 2)} dB`, target: '< 3 dB', ok: a.shimmer_db == null ? null : a.shimmer_db < 3 },
+    { label: 'HNR', value: `${fmt(a.hnr_db, 1)} dB`, target: `> ${t.hnr_min_db} dB`, ok: a.hnr_db == null ? null : a.hnr_db > t.hnr_min_db },
+    { label: 'Jitter', value: `${fmt(a.jitter_pct, 2)}%`, target: `< ${t.jitter_max_pct}%`, ok: a.jitter_pct == null ? null : a.jitter_pct < t.jitter_max_pct },
+    { label: 'Shimmer', value: `${fmt(a.shimmer_db, 2)} dB`, target: `< ${t.shimmer_max_db} dB`, ok: a.shimmer_db == null ? null : a.shimmer_db < t.shimmer_max_db },
     { label: 'Chest resonance', value: s.chest?.label ?? '—', target: 'High', ok: s.chest ? s.chest.label === 'high' : null },
     { label: 'Upspeak', value: String(a.upspeak.length), target: '0', ok: a.upspeak.length === 0 },
-    { label: 'Pace', value: `${fmt(l.wpm)} WPM`, target: '130–160', ok: in01(l.wpm, 130, 160) },
-    { label: 'Filler words', value: `${fmt(l.fillers.pct, 1)}%`, target: '< 2%', ok: l.fillers.pct == null ? null : l.fillers.pct < 2 },
-    { label: 'Hedging', value: `${fmt(l.hedge_pct, 0)}% of sentences`, target: '< 5%', ok: l.hedge_pct == null ? null : l.hedge_pct < 5 },
-    { label: 'Active voice', value: `${fmt(l.passive_pct == null ? null : 100 - l.passive_pct)}%`, target: '> 70%', ok: l.passive_pct == null ? null : 100 - l.passive_pct > 70 },
+    { label: 'Pace', value: `${fmt(l.wpm)} WPM`, target: `${rng(t.wpm_range)} WPM`, ok: in01(l.wpm, t.wpm_range[0], t.wpm_range[1]) },
   ];
+  if (t.pauses_per_min && tonal?.pauses) {
+    const ppm = tonal.pauses.deliberate_per_min;
+    rows.push({ label: 'Deliberate pauses', value: `${fmt(ppm, 1)} / min`, target: `${rng(t.pauses_per_min)} / min`, ok: ppm == null ? null : ppm >= t.pauses_per_min[0] });
+  }
+  if (t.avg_sentence_words_max && avg != null) {
+    rows.push({ label: 'Average sentence', value: `${fmt(avg)} words`, target: `< ${t.avg_sentence_words_max} words`, ok: avg <= t.avg_sentence_words_max });
+  }
+  rows.push(
+    { label: 'Filler words', value: `${fmt(l.fillers.pct, 1)}%`, target: `< ${t.filler_pct_max}%`, ok: l.fillers.pct == null ? null : l.fillers.pct < Math.max(t.filler_pct_max, 0.01) },
+    { label: 'Hedging', value: `${fmt(l.hedge_pct, 0)}% of sentences`, target: t.hedge_pct_max === 0 ? 'Zero' : `< ${t.hedge_pct_max}%`,
+      ok: l.hedge_pct == null ? null : t.hedge_pct_max === 0 ? l.hedge_pct === 0 : l.hedge_pct < t.hedge_pct_max },
+    { label: 'Active voice', value: `${fmt(l.passive_pct == null ? null : 100 - l.passive_pct)}%`, target: `> ${100 - t.passive_pct_max}%`,
+      ok: l.passive_pct == null ? null : l.passive_pct < t.passive_pct_max },
+  );
+  return rows;
+}
+
+function BenchmarkCard({ c }: { c: BenchmarkComparison }) {
+  if (c.missing || !c.scores || !c.metrics) {
+    return (
+      <div className="st-card">
+        <h4>📊 Benchmark vs Day {c.day ?? '?'}</h4>
+        <p className="st-muted">Record Day {c.day} ({c.title}) to unlock this comparison.</p>
+      </div>
+    );
+  }
+  const delta = (n: number) => <span className={`st-delta ${n > 0 ? 'good' : n < 0 ? 'low' : ''}`}>{n > 0 ? '+' : ''}{n}</span>;
+  return (
+    <div className="st-card">
+      <h4>📊 Benchmark vs Day {c.day} — {c.title}</h4>
+      <div className="st-bench-scores">
+        <span>Presence {delta(c.scores.presence)}</span>
+        <span>Confidence {delta(c.scores.confidence)}</span>
+        <span>Clarity {delta(c.scores.clarity)}</span>
+        <span>Authority {delta(c.scores.authority)}</span>
+      </div>
+      <table className="st-table">
+        <tbody>
+          {c.metrics.filter((m) => m.before != null && m.after != null).map((m) => {
+            const before = m.before as number, after = m.after as number;
+            const improved = m.better === 'lower' ? after < before : m.better === 'higher' ? after > before
+              : m.range ? Math.abs(after - (m.range[0] + m.range[1]) / 2) < Math.abs(before - (m.range[0] + m.range[1]) / 2) : null;
+            return (
+              <tr key={m.label}>
+                <td>{m.label}</td>
+                <td className="st-muted">{before.toFixed(m.unit === '/min' ? 1 : 0)}{m.unit}</td>
+                <td className={after === before || improved == null ? '' : improved ? 'ok' : 'bad'}>{after.toFixed(m.unit === '/min' ? 1 : 0)}{m.unit}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
 const scoreClass = (n: number) => (n >= 80 ? 'good' : n >= 60 ? 'ok' : 'low');
@@ -87,6 +149,54 @@ export default function FeedbackCard({ session, weekly }: { session: SpeechSessi
 
       {weekly && <WeeklySummaryCard summary={weekly} />}
 
+      {s.benchmark_comparisons?.map((c) => <BenchmarkCard key={c.lesson_id} c={c} />)}
+
+      {s.extras?.pressure && (
+        <div className="st-card st-question">
+          <div className="st-label">Pressure drill</div>
+          <p>“{s.extras.pressure.question}”</p>
+        </div>
+      )}
+
+      {s.tonal_moves && s.tonal_moves.length > 0 && (
+        <div className="st-card">
+          <h4>🎼 Tonal signature</h4>
+          <p className="st-muted">The five moves of a calm, deep, certain executive voice.</p>
+          <ul className="st-moves">
+            {s.tonal_moves.map((m) => (
+              <li key={m.key} className={m.ok == null ? 'na' : m.ok ? 'ok' : 'bad'}>
+                <span className="st-move-icon" aria-hidden="true">{m.ok == null ? '–' : m.ok ? '✓' : '✗'}</span>
+                <span className="st-move-body">
+                  <strong>{m.move}</strong>
+                  <span>{m.value}</span>
+                  <span className="st-muted">Target: {m.target}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {s.targets && s.targets.length > 0 && (
+        <div className="st-card">
+          <h4>Pitch training targets</h4>
+          <table className="st-table st-targets">
+            <thead>
+              <tr><th>Parameter</th><th>Now</th><th>Target</th></tr>
+            </thead>
+            <tbody>
+              {s.targets.map((r) => (
+                <tr key={r.param}>
+                  <td>{r.param}</td>
+                  <td className={r.ok == null ? '' : r.ok ? 'ok' : 'bad'}>{r.ok == null ? '' : r.ok ? '✓ ' : '✗ '}{r.current}</td>
+                  <td className="st-muted">{r.target}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
       <div className="st-card">
         <h4>Tone</h4>
         <div className="st-pill info">{s.sentiment.label}</div>
@@ -133,7 +243,7 @@ export default function FeedbackCard({ session, weekly }: { session: SpeechSessi
       )}
 
       <div className="st-card">
-        <h4>Ideal executive voice</h4>
+        <h4>Your targets</h4>
         <table className="st-table">
           <tbody>
             {rows.map((r) => (

@@ -657,6 +657,8 @@ export default function Home() {
               isPinned={isPinned}
               onTogglePin={togglePin}
               size="sm"
+              modeCurrent="pet"
+              onModeChange={setWindowMode}
             />
           </div>
         </div>
@@ -766,10 +768,6 @@ export default function Home() {
             <span aria-hidden="true">{isFlutePlaying ? '🎶' : '🪈'}</span>
           </button>
 
-          <span className="floating-divider" aria-hidden="true" />
-
-          {/* Every mode reachable from here, including the dashboard */}
-          <ModeSwitcher current="pet" onChange={setWindowMode} compactLabels />
         </div>
       </div>
     );
@@ -937,14 +935,11 @@ export default function Home() {
               isPinned={isPinned}
               onTogglePin={togglePin}
               size="sm"
+              modeCurrent="compact"
+              onModeChange={setWindowMode}
             />
           </div>
         </header>
-
-        {/* Mode switcher: a real segmented control, present in every mode */}
-        <div className="mode-switcher-bar">
-          <ModeSwitcher current="compact" onChange={setWindowMode} />
-        </div>
 
         {/* Buddy — collapsible, so the tabs below get usable height */}
         <div className={`hamster-section ${mascotCollapsed ? 'is-collapsed' : ''}`}>
@@ -1191,6 +1186,8 @@ export default function Home() {
               onHide={handleHide}
               onQuit={requestQuit}
               showMaximize
+              modeCurrent="fullscreen"
+              onModeChange={setWindowMode}
             />
           </div>
         </header>

@@ -119,6 +119,15 @@ interface WindowControlsProps {
   /** Offered only by the dashboard, which is the mode meant to fill the screen. */
   showMaximize?: boolean;
   size?: 'sm' | 'md';
+  /**
+   * Render the mode switcher inline with the window buttons.
+   *
+   * Switching views is a window control like any other, so it belongs in the
+   * same cluster as minimize/maximize rather than in a bar of its own that
+   * each mode placed somewhere different.
+   */
+  modeCurrent?: WindowMode;
+  onModeChange?: (mode: WindowMode) => void;
 }
 
 /**
@@ -137,12 +146,23 @@ export function WindowControls({
   onTogglePin,
   showMaximize = false,
   size = 'md',
+  modeCurrent,
+  onModeChange,
 }: WindowControlsProps) {
   const electron = useIsElectron();
   const cls = size === 'sm' ? 'chrome-btn chrome-btn-sm' : 'chrome-btn';
 
   return (
     <div className="window-chrome-controls">
+      {modeCurrent && onModeChange && (
+        <>
+          <div className="chrome-mode-switcher">
+            <ModeSwitcher current={modeCurrent} onChange={onModeChange} compactLabels />
+          </div>
+          <span className="chrome-divider" aria-hidden="true" />
+        </>
+      )}
+
       {onTogglePin && electron && (
         <button
           type="button"

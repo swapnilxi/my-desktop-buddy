@@ -17,6 +17,10 @@ const METRICS: Metric[] = [
   { label: 'HNR', unit: ' dB', get: (s) => s.acoustic.hnr_db, target: [20, 40] },
   { label: 'Pace', unit: ' WPM', get: (s) => s.language.wpm, target: [130, 160] },
   { label: 'Filler words', unit: '', get: (s) => s.language.fillers.count, lowerIsBetter: true },
+  // Tonal signature (sessions recorded before these existed simply have no point)
+  { label: 'Pitch vs Day 1', unit: '%', get: (s) => s.extras?.pitch_change_pct ?? null, target: [-15, -10], lowerIsBetter: true },
+  { label: 'Firm landings', unit: '%', get: (s) => s.acoustic.tonal?.landing_pct ?? null, target: [85, 100] },
+  { label: 'Deliberate pauses', unit: '/min', get: (s) => s.acoustic.tonal?.pauses?.deliberate_per_min ?? null, target: [1.5, 6] },
 ];
 
 function TrendChart({ metric, sessions }: { metric: Metric; sessions: SpeechSession[] }) {
