@@ -102,8 +102,7 @@ class DeepSeekAdapter(LLMAdapter):
             "messages": api_messages,
             "temperature": temperature,
         }
-        if max_tokens:
-            kwargs["max_tokens"] = max_tokens
+        kwargs["max_tokens"] = max_tokens or self.DEFAULT_MAX_TOKENS
         if tools:
             kwargs["tools"] = [{"type": "function", "function": t} for t in tools]
 
