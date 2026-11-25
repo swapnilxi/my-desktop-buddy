@@ -302,7 +302,7 @@ export function LittleKrishna2({
           {/* SUDARSHANA CHAKRA ON RAISED RIGHT INDEX FINGER (Chakra Pose) */}
           {normalizedPose === 'chakra' && (
             <>
-              <KrishnaChakra cx={44.2} cy={187.5} scaleX={0.76} scaleY={0.37} />
+              <KrishnaChakra cx={37.9} cy={194.9} scaleX={0.76} scaleY={0.37} />
               <KrishnaArms
                 pose={normalizedPose}
                 renderSide="characterRight"
