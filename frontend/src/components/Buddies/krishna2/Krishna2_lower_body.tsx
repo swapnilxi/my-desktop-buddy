@@ -9,32 +9,32 @@ export const KrishnaLowerBody: React.FC<Krishna2LowerBodyProps> = () => {
   return (
     <g id="k2_lower_body_group">
       <defs>
-        {/* 3D Volumetric Leg Cylinder Shader (Matching 3D Torso Skin Tone in Base PNG) */}
+        {/* 3D Volumetric Leg Cylinder Shader (Matched to krishna2_base.png Torso Skin) */}
         <linearGradient id="k2_SkinLegLeft" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#2F66CA" />
-          <stop offset="18%" stopColor="#5B9AFA" />
-          <stop offset="42%" stopColor="#A4CDFF" />
-          <stop offset="68%" stopColor="#63A1F9" />
-          <stop offset="90%" stopColor="#3B74DB" />
+          <stop offset="0%" stopColor="#2A5BC0" />
+          <stop offset="22%" stopColor="#5897F7" />
+          <stop offset="46%" stopColor="#92C1FF" />
+          <stop offset="72%" stopColor="#5B9AF9" />
+          <stop offset="92%" stopColor="#356CD4" />
           <stop offset="100%" stopColor="#204DA8" />
         </linearGradient>
 
         <linearGradient id="k2_SkinLegRight" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#2555B5" />
-          <stop offset="20%" stopColor="#4F8FF5" />
-          <stop offset="48%" stopColor="#96C5FF" />
-          <stop offset="72%" stopColor="#5595F7" />
-          <stop offset="92%" stopColor="#2B60C4" />
+          <stop offset="0%" stopColor="#2251B2" />
+          <stop offset="24%" stopColor="#4F8FF5" />
+          <stop offset="48%" stopColor="#8BBCFF" />
+          <stop offset="74%" stopColor="#5393F6" />
+          <stop offset="92%" stopColor="#2C62C6" />
           <stop offset="100%" stopColor="#1B4296" />
         </linearGradient>
 
-        {/* 3D Foot Instep Dome Shader (Matching Torso Skin Tone) */}
+        {/* 3D Foot Instep Dome Shader (Matched to Torso Skin Tone) */}
         <radialGradient id="k2_SkinFoot" cx="38%" cy="26%" r="72%">
-          <stop offset="0%" stopColor="#B3D4FF" />
-          <stop offset="24%" stopColor="#82B6FA" />
-          <stop offset="55%" stopColor="#5595F7" />
-          <stop offset="82%" stopColor="#336CCE" />
-          <stop offset="100%" stopColor="#1C479E" />
+          <stop offset="0%" stopColor="#A2CBFF" />
+          <stop offset="26%" stopColor="#77B0FB" />
+          <stop offset="56%" stopColor="#5494F6" />
+          <stop offset="84%" stopColor="#336CCE" />
+          <stop offset="100%" stopColor="#1E49A2" />
         </radialGradient>
 
         {/* Bright Glowing Saffron Waistband Shader (Matching Bright Saffron Drape) */}
@@ -97,19 +97,17 @@ export const KrishnaLowerBody: React.FC<Krishna2LowerBodyProps> = () => {
       {/* ── 2. ADORABLE CHUBBY BABY LEGS (MATCHING TORSO THICKNESS & COLOR) ── */}
       <g id="k2_legs" filter="url(#kSoftShadow)">
         {/* Left Leg Pillar (Plump 36px pillar centered at X=142) */}
-        <path d="M 142 492 C 137 520, 137 546, 142 566" fill="none" stroke="url(#k2_SkinLegLeft)" strokeWidth="36" strokeLinecap="round" />
-        {/* Left Leg 3D Key-Light Specular Highlight Arc */}
-        <path d="M 139 494 C 135 520, 135 546, 139 564" fill="none" stroke="#E2EFFF" strokeWidth="6.0" strokeLinecap="round" opacity="0.55" />
-        <path d="M 139 496 C 135 520, 135 546, 139 562" fill="none" stroke="#FFFFFF" strokeWidth="2.2" strokeLinecap="round" opacity="0.4" />
+        <path d="M 142 492 C 138 520, 138 544, 142 564" fill="none" stroke="url(#k2_SkinLegLeft)" strokeWidth="36" strokeLinecap="round" />
+        {/* Left Leg Soft Volumetric Key-Light Sheen */}
+        <path d="M 139 496 C 136 520, 136 544, 139 560" fill="none" stroke="#B6D8FF" strokeWidth="10.0" strokeLinecap="round" opacity="0.28" />
 
         {/* Right Leg Pillar (Plump 36px pillar centered at X=238) */}
-        <path d="M 238 492 C 243 520, 243 546, 238 566" fill="none" stroke="url(#k2_SkinLegRight)" strokeWidth="36" strokeLinecap="round" />
-        {/* Right Leg 3D Specular Highlight Arc */}
-        <path d="M 236 494 C 240 520, 240 546, 236 564" fill="none" stroke="#E2EFFF" strokeWidth="6.0" strokeLinecap="round" opacity="0.55" />
-        <path d="M 236 496 C 240 520, 240 546, 236 562" fill="none" stroke="#FFFFFF" strokeWidth="2.2" strokeLinecap="round" opacity="0.4" />
+        <path d="M 238 492 C 242 520, 242 544, 238 564" fill="none" stroke="url(#k2_SkinLegRight)" strokeWidth="36" strokeLinecap="round" />
+        {/* Right Leg Soft Volumetric Key-Light Sheen */}
+        <path d="M 235 496 C 238 520, 238 544, 235 560" fill="none" stroke="#B6D8FF" strokeWidth="10.0" strokeLinecap="round" opacity="0.24" />
 
         {/* Ambient Inseam Shadow between legs */}
-        <ellipse cx="190" cy="510" rx="22" ry="28" fill="#142B66" opacity="0.28" />
+        <ellipse cx="190" cy="510" rx="22" ry="28" fill="#142B66" opacity="0.24" />
       </g>
 
       {/* ── 3. ADORABLE CHUBBY LOTUS FEET (CHARAN KAMAL — SCALED TO MATCH TORSO & LEGS) ── */}
@@ -219,12 +217,12 @@ export const KrishnaLowerBody: React.FC<Krishna2LowerBodyProps> = () => {
       <g id="k2_royalAnklets" className={styles.ankletLayer}>
         {/* Left Anklet */}
         <g id="k2_leftAnklet">
-          <ellipse cx="142" cy="558" rx="22" ry="7.5" fill="#0A1630" opacity="0.5" />
+          <ellipse cx="142" cy="557" rx="17" ry="4.5" fill="#152E6B" opacity="0.26" />
           <path
-            d="M 121 553 C 127 558, 157 558, 163 553 C 163 562, 157 566, 142 566 C 127 566, 121 562, 121 553 Z"
+            d="M 123 552 C 129 557, 155 557, 161 552 C 161 561, 155 565, 142 565 C 129 565, 123 561, 123 552 Z"
             fill="url(#kPayalGold)"
             stroke="#78350F"
-            strokeWidth="0.9"
+            strokeWidth="0.7"
           />
           <path d="M 123 555 C 129 560, 155 560, 161 555" fill="none" stroke="#FFFDF0" strokeWidth="1.3" strokeLinecap="round" opacity="0.92" />
           {/* Upper Pearls */}
@@ -252,12 +250,12 @@ export const KrishnaLowerBody: React.FC<Krishna2LowerBodyProps> = () => {
 
         {/* Right Anklet */}
         <g id="k2_rightAnklet">
-          <ellipse cx="238" cy="558" rx="22" ry="7.5" fill="#0A1630" opacity="0.5" />
+          <ellipse cx="238" cy="557" rx="17" ry="4.5" fill="#152E6B" opacity="0.26" />
           <path
-            d="M 217 553 C 223 558, 253 558, 259 553 C 259 562, 253 566, 238 566 C 223 566, 217 562, 217 553 Z"
+            d="M 219 552 C 225 557, 251 557, 257 552 C 257 561, 251 565, 238 565 C 225 565, 219 561, 219 552 Z"
             fill="url(#kPayalGold)"
             stroke="#78350F"
-            strokeWidth="0.9"
+            strokeWidth="0.7"
           />
           <path d="M 219 555 C 225 560, 251 560, 257 555" fill="none" stroke="#FFFDF0" strokeWidth="1.3" strokeLinecap="round" opacity="0.92" />
           {/* Upper Pearls */}
@@ -436,120 +434,138 @@ export const KrishnaLowerBody: React.FC<Krishna2LowerBodyProps> = () => {
           <path d="M 188 396 C 187 426, 187 458, 189 486" fill="none" stroke="#FFFFFF" strokeWidth="2.0" strokeLinecap="round" opacity="0.9" />
         </g>
 
-        {/* ── Lower Ankle Cuff Gold Piping ── */}
+        {/* ── Lower Ankle Cuff Gold Piping & Zari Border ── */}
         <g id="k2_dhotiHemAccents">
-          <path d="M 114 526 C 124 536, 140 536, 154 536 C 166 536, 174 530, 178 518" fill="none" stroke="#FFD95A" strokeWidth="2.4" strokeLinecap="round" opacity="0.9" />
-          <path d="M 202 518 C 206 530, 214 536, 226 536 C 240 536, 256 536, 266 526" fill="none" stroke="#FFD95A" strokeWidth="2.4" strokeLinecap="round" opacity="0.9" />
+          <path d="M 114 522 C 124 532, 140 532, 154 532 C 166 532, 174 526, 178 514" fill="none" stroke="#F59E0B" strokeWidth="4.2" strokeLinecap="round" opacity="0.85" />
+          <path d="M 114 526 C 124 536, 140 536, 154 536 C 166 536, 174 530, 178 518" fill="none" stroke="#FFE580" strokeWidth="2.2" strokeLinecap="round" opacity="0.95" />
+          <path d="M 202 514 C 206 526, 214 532, 226 532 C 240 532, 256 532, 266 522" fill="none" stroke="#F59E0B" strokeWidth="4.2" strokeLinecap="round" opacity="0.85" />
+          <path d="M 202 518 C 206 530, 214 536, 226 536 C 240 536, 256 536, 266 526" fill="none" stroke="#FFE580" strokeWidth="2.2" strokeLinecap="round" opacity="0.95" />
         </g>
 
-        {/* ── Flowing Saffron Silk Side Drape (Patka/Sash on Right Hip) ── */}
+        {/* ── Flowing Saffron Silk Side Drape (Patka/Sash emerging cleanly under right waist belt) ── */}
         <g id="k2_orangeSash">
           <path
-            d="M 238 382
-               C 238 440, 240 492, 242 536
-               C 248 546, 276 546, 278 536
-               C 276 490, 272 440, 270 382 Z"
+            d="M 236 394
+               C 237 444, 240 492, 242 536
+               C 248 546, 272 546, 275 536
+               C 273 490, 269 442, 266 394 Z"
             fill="#B93D00"
-            opacity="0.38"
+            opacity="0.34"
           />
           {/* Outer Main Drape */}
           <path
-            d="M 256 380
-               C 256 440, 259 492, 262 536
-               C 266 544, 277 542, 278 534
-               C 276 486, 272 440, 270 380 Z"
+            d="M 251 394
+               C 253 444, 256 492, 260 536
+               C 264 544, 274 542, 275 534
+               C 273 486, 269 442, 265 394 Z"
             fill="url(#kDhotiOrangeSash1)"
             stroke="#B93D00"
-            strokeWidth="0.8"
+            strokeWidth="0.6"
           />
-          <path d="M 264 384 C 264 442, 267 494, 269 534" fill="none" stroke="#FFA834" strokeWidth="2.4" strokeLinecap="round" opacity="0.9" />
+          <path d="M 259 398 C 261 446, 264 494, 267 534" fill="none" stroke="#FFB04D" strokeWidth="2.2" strokeLinecap="round" opacity="0.88" />
           {/* Inner Drape */}
           <path
-            d="M 242 382
-               C 241 442, 243 496, 245 538
-               C 249 546, 260 544, 260 536
-               C 258 488, 255 444, 254 382 Z"
+            d="M 239 395
+               C 240 446, 242 496, 245 538
+               C 249 546, 259 544, 259 536
+               C 257 488, 254 446, 251 395 Z"
             fill="url(#kDhotiOrangeSash2)"
             stroke="#B93D00"
-            strokeWidth="0.8"
+            strokeWidth="0.6"
           />
-          <path d="M 252 386 C 251 444, 252 498, 254 536" fill="none" stroke="#FF8500" strokeWidth="2.2" strokeLinecap="round" opacity="0.95" />
+          <path d="M 248 398 C 248 446, 250 498, 252 536" fill="none" stroke="#FF8500" strokeWidth="2.0" strokeLinecap="round" opacity="0.92" />
+          {/* Delicate Gold Zari Border Trim at Sash Hem */}
+          <path d="M 246 533 C 250 537, 256 537, 259 533" fill="none" stroke="#FFD95A" strokeWidth="1.8" strokeLinecap="round" opacity="0.92" />
+          <path d="M 260 532 C 265 536, 271 536, 274 531" fill="none" stroke="#FFD95A" strokeWidth="1.8" strokeLinecap="round" opacity="0.92" />
         </g>
 
-        {/* ── 6. BRIGHT SAFFRON WAISTBAND BELT (MATCHING BRIGHT SAFFRON DRAPE) ── */}
+        {/* ── 6. BRIGHT SAFFRON WAISTBAND BELT (TAILORED TO TORSO WAIST & CONVEX BELLY) ── */}
         <g id="k2_brightSaffronBeltGroup">
-          {/* 3D Volumetric Bright Saffron Waistband Sash Band wrapping hips */}
+          {/* Subtle Belly Contact Shadow along top edge on blue torso */}
           <path
-            d="M 104 382
-               C 142 370, 238 370, 276 382
-               C 278 406, 238 416, 190 416
-               C 142 416, 102 406, 104 382 Z"
+            d="M 115 373 C 146 384, 234 384, 265 373"
+            fill="none"
+            stroke="#1D4494"
+            strokeWidth="3.5"
+            strokeLinecap="round"
+            opacity="0.22"
+          />
+
+          {/* 3D Volumetric Bright Saffron Waistband Sash wrapping snug waist X=114..266 */}
+          <path
+            d="M 114 374
+               C 146 385, 234 385, 266 374
+               C 268 398, 234 412, 190 412
+               C 146 412, 112 398, 114 374 Z"
             fill="url(#k2_BrightSaffronBelt)"
             stroke="#A33200"
-            strokeWidth="0.9"
+            strokeWidth="0.7"
           />
 
           {/* Soft Satin Light Volume / Sheen on Belly */}
           <path
-            d="M 108 384
-               C 144 374, 236 374, 272 384
-               C 252 396, 222 404, 190 404
-               C 158 404, 128 396, 108 384 Z"
+            d="M 118 377
+               C 148 387, 232 387, 262 377
+               C 246 394, 220 401, 190 401
+               C 160 401, 134 394, 118 377 Z"
             fill="url(#k2_SaffronBeltSheen)"
           />
 
-          {/* Middle Silk Fold / Pleat Crease */}
+          {/* Middle Silk Fold / Pleat Crease following belly contour */}
           <path
-            d="M 108 395 C 146 387, 234 387, 272 395"
+            d="M 116 388 C 148 398, 232 398, 264 388"
             fill="none"
-            stroke="#FFB04D"
-            strokeWidth="1.6"
+            stroke="#FFB55A"
+            strokeWidth="1.5"
             strokeLinecap="round"
-            opacity="0.8"
+            opacity="0.82"
           />
           <path
-            d="M 108 397 C 146 389, 234 389, 272 397"
+            d="M 116 390.5 C 148 400.5, 232 400.5, 264 390.5"
             fill="none"
             stroke="#BD3800"
-            strokeWidth="1.2"
+            strokeWidth="1.1"
             strokeLinecap="round"
             opacity="0.45"
           />
 
           {/* Saffron Belt Top Rolled Edge Highlight */}
           <path
-            d="M 104 382 C 142 370, 238 370, 276 382"
+            d="M 114 374 C 146 385, 234 385, 266 374"
             fill="none"
             stroke="url(#k2_SaffronTopRim)"
-            strokeWidth="3.2"
+            strokeWidth="2.8"
             strokeLinecap="round"
           />
-          {/* Specular Glint along Top Edge */}
+          {/* Specular Glint along Top Front Rim */}
           <path
-            d="M 145 376 C 172 372, 208 372, 235 376"
+            d="M 150 381.5 C 174 385, 206 385, 230 381.5"
             fill="none"
             stroke="#FFF7E6"
-            strokeWidth="1.5"
+            strokeWidth="1.4"
             strokeLinecap="round"
-            opacity="0.95"
+            opacity="0.88"
           />
 
-          {/* Saffron Belt Bottom Edge Deep Piping */}
+          {/* Saffron Belt Bottom Gold-Piped Rim */}
           <path
-            d="M 104 406 C 142 416, 238 416, 276 406"
+            d="M 114 398 C 146 412, 234 412, 266 398"
             fill="none"
             stroke="url(#k2_SaffronBottomRim)"
-            strokeWidth="2.6"
+            strokeWidth="2.4"
             strokeLinecap="round"
           />
 
-          {/* Center Silk Knot Tuck Accent */}
-          <g id="k2_beltCenterKnot" transform="translate(190, 408)">
-            <ellipse cx="0" cy="0" rx="6.5" ry="3.8" fill="url(#k2_BrightSaffronBelt)" stroke="#A33200" strokeWidth="0.7" />
-            <ellipse cx="0" cy="-0.6" rx="4.0" ry="1.8" fill="#FFE099" opacity="0.75" />
-            {/* Small Hanging Silk Tassel Tail */}
-            <path d="M -3 2 C -2 8, -1 13, 0 16 C 1 13, 2 8, 3 2 Z" fill="url(#k2_BrightSaffronBelt)" stroke="#A33200" strokeWidth="0.6" />
-            <path d="M 0 3 L 0 14" fill="none" stroke="#FFE099" strokeWidth="0.9" opacity="0.8" />
+          {/* Center Silk Knot & Twin Golden-Tipped Tassels */}
+          <g id="k2_beltCenterKnot" transform="translate(190, 405)">
+            <ellipse cx="0" cy="0" rx="7.2" ry="4.2" fill="url(#k2_BrightSaffronBelt)" stroke="#A33200" strokeWidth="0.7" />
+            <ellipse cx="0" cy="-0.8" rx="4.4" ry="1.9" fill="#FFE099" opacity="0.78" />
+            <circle cx="0" cy="0" r="2.1" fill="url(#kJewelGoldGrad)" stroke="#92400E" strokeWidth="0.45" />
+            {/* Small Hanging Silk Tassel Tails */}
+            <path d="M -3.2 2.5 C -4.2 8, -4.5 13, -3.5 16.5 C -2.2 13, -1.5 8, -1.2 2.5 Z" fill="url(#k2_BrightSaffronBelt)" stroke="#A33200" strokeWidth="0.5" />
+            <path d="M 1.2 2.5 C 1.5 8, 2.2 13, 3.5 16.5 C 4.5 13, 4.2 8, 3.2 2.5 Z" fill="url(#k2_BrightSaffronBelt)" stroke="#A33200" strokeWidth="0.5" />
+            <circle cx="-3.5" cy="16.8" r="1.2" fill="#FFD45A" />
+            <circle cx="3.5" cy="16.8" r="1.2" fill="#FFD45A" />
           </g>
         </g>
       </g>

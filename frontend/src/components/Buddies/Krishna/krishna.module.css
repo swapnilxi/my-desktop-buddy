@@ -149,6 +149,26 @@
   top: -95px;
 }
 
+/* Scoped adjustments for Krishna 2 so bubble never clips or touches peacock feather */
+.krishnaContainer[data-buddy='krishna2'] .greetingBubble,
+.krishnaContainer[data-buddy='krishna2'] .thoughtBubble {
+  max-width: 310px;
+  white-space: normal;
+  text-align: center;
+  line-height: 1.3;
+  padding: 7px 16px;
+}
+
+.krishnaContainer[data-buddy='krishna2'].sizeMd .greetingBubble,
+.krishnaContainer[data-buddy='krishna2'].sizeMd .thoughtBubble {
+  top: -102px;
+}
+
+.krishnaContainer[data-buddy='krishna2'].sizeLg .greetingBubble,
+.krishnaContainer[data-buddy='krishna2'].sizeLg .thoughtBubble {
+  top: -115px;
+}
+
 .greetingBubble::after {
   content: '';
   position: absolute;

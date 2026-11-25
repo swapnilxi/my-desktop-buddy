@@ -405,7 +405,7 @@ export default function Home() {
           <BuddyRenderer
             type={buddyType}
             mood={hamsterMood}
-            pose={buddyType === 'krishna' ? krishnaPose : undefined}
+            pose={(buddyType === 'krishna' || buddyType === 'krishna2') ? krishnaPose : undefined}
             color={hamsterColor}
             name={hamsterName}
             greeting={hamsterGreeting}
@@ -553,6 +553,7 @@ export default function Home() {
             <BuddyRenderer
               type={buddyType}
               mood={hamsterMood}
+              pose={buddyType === 'krishna2' ? krishnaPose : undefined}
               color={hamsterColor}
               name={hamsterName}
               greeting={hamsterGreeting}
@@ -666,7 +667,7 @@ export default function Home() {
           <BuddyRenderer
             type={buddyType}
             mood={hamsterMood}
-            pose={buddyType === 'krishna' ? krishnaPose : undefined}
+            pose={(buddyType === 'krishna' || buddyType === 'krishna2') ? krishnaPose : undefined}
             color={hamsterColor}
             name={hamsterName}
             greeting={hamsterGreeting}

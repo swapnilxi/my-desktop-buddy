@@ -7,6 +7,7 @@ import { KrishnaDefs } from '../Krishna/KrishnaDefs';
 import { KrishnaLowerBody } from './Krishna2_lower_body';
 import { Krishna2Eyes } from './Krishna2Eyes';
 import { KrishnaArms } from './krishna2_arms';
+import { KrishnaChakra } from './krishna_chakra';
 import krishna2BaseImg from './krishna2_base.png';
 
 export type Krishna2Pose = 'crossHands' | 'chakra' | 'standing';
@@ -59,17 +60,25 @@ export function LittleKrishna2({
   onRefreshGreeting,
   onFeed,
 }: Krishna2Props) {
+  const normalizedPose: Krishna2Pose =
+    (pose as string) === 'crossed' ? 'crossHands' : ((pose as Krishna2Pose) || 'chakra');
+
   const deriveDefaultState = (): Krishna2State => {
     if (stateProp) return stateProp;
     if (mood === 'speaking' || isSpeaking) return 'speaking';
     if (mood === 'happy' || mood === 'excited') return 'happy';
     if (mood === 'thinking') return 'thinking';
     if (mood === 'waving' || mood === 'wave') return 'greeting';
-    if (pose === 'crossHands' || (pose as string) === 'crossed') return 'idle';
+    if (normalizedPose === 'crossHands') return 'idle';
     return 'protector';
   };
 
   const [activeState, setActiveState] = useState<Krishna2State>(deriveDefaultState());
+  const isSpeakingActive =
+    activeState === 'speaking' ||
+    mood === 'speaking' ||
+    isSpeaking ||
+    (!!greeting && activeState === 'greeting');
   const [isBlinking, setIsBlinking] = useState(false);
   const autoReturnTimer = useRef<NodeJS.Timeout | null>(null);
 
@@ -100,7 +109,25 @@ export function LittleKrishna2({
     } else {
       setActiveState(deriveDefaultState());
     }
-  }, [stateProp, mood, pose]);
+  }, [stateProp, mood, pose, isSpeaking]);
+
+  // Periodic micro-action timer for life-like idle behaviors
+  useEffect(() => {
+    let microTimer: NodeJS.Timeout;
+    const scheduleMicroAction = () => {
+      const delay = Math.random() * 240000 + 60000;
+      microTimer = setTimeout(() => {
+        if (!stateProp && (activeState === 'idle' || activeState === 'protector')) {
+          const microActions: Krishna2State[] = ['happy', 'motivation', 'greeting'];
+          const randomAction = microActions[Math.floor(Math.random() * microActions.length)];
+          triggerTemporaryState(randomAction, 3000);
+        }
+        scheduleMicroAction();
+      }, delay);
+    };
+    scheduleMicroAction();
+    return () => clearTimeout(microTimer);
+  }, [stateProp, activeState, normalizedPose]);
 
   const changeState = (newState: Krishna2State) => {
     setActiveState(newState);
@@ -192,7 +219,8 @@ export function LittleKrishna2({
   return (
     <div
       className={`${styles.krishnaContainer} ${getSizeClass()} ${className}`}
-      data-pose={pose}
+      data-buddy="krishna2"
+      data-pose={normalizedPose}
       data-state={activeState}
       data-mood={mood}
       onClick={handleSingleClick}
@@ -245,7 +273,7 @@ export function LittleKrishna2({
       {/* ════════════════ LITTLE KRISHNA 2 — BASE PNG + VECTOR LOWER BODY ════════════════ */}
       <div className={`${styles.krishna} ${getStateClass()}`}>
         <svg
-          viewBox="0 -95 380 710"
+          viewBox="0 -105 380 715"
           className={styles.krishnaSvg}
           style={{ width: '100%', height: '100%', overflow: 'visible' }}
         >
@@ -262,14 +290,27 @@ export function LittleKrishna2({
             preserveAspectRatio="xMidYMid meet"
           />
 
-          {/* VECTOR SVG ARMS & HANDS */}
-          <KrishnaArms pose={pose} />
-
           {/* ANIMATABLE 3D EXPRESSIVE EYES, EYEBROWS & MOUTH */}
-          <Krishna2Eyes isBlinking={isBlinking} state={activeState} />
+          <Krishna2Eyes isBlinking={isBlinking} isSpeaking={isSpeakingActive} state={activeState} />
 
-          {/* VECTOR SVG LOWER BODY */}
-          <KrishnaLowerBody pose={pose} />
+          {/* VECTOR SVG LOWER BODY (Legs, Feet, Anklets, Dhoti, Saffron Belt) */}
+          <KrishnaLowerBody pose={normalizedPose} />
+
+          {/* VECTOR SVG ARMS & HANDS (Rendered over lower body belt/dhoti for natural overlap) */}
+          <KrishnaArms pose={normalizedPose} />
+
+          {/* SUDARSHANA CHAKRA ON RAISED RIGHT INDEX FINGER (Chakra Pose) */}
+          {normalizedPose === 'chakra' && (
+            <>
+              <KrishnaChakra cx={44.2} cy={187.5} scaleX={0.76} scaleY={0.37} />
+              <KrishnaArms
+                pose={normalizedPose}
+                renderSide="characterRight"
+                renderLayer="forearmAndHand"
+                renderHandPart="chakraIndexTip"
+              />
+            </>
+          )}
         </svg>
       </div>
     </div>
@@ -285,6 +326,7 @@ export default function Krishna2Sprite(
       size={props.size || 'md'}
       state={props.state}
       mood={props.mood}
+      isSpeaking={props.mood === 'speaking'}
       pose={(props.pose as Krishna2Pose) || 'chakra'}
       name={props.name}
       greeting={props.greeting}

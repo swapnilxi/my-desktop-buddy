@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './krishna.module.css';
+import styles from '../Krishna/krishna.module.css';
 
 /**
  * Sudarshana Chakra Constants & Default Configuration
@@ -43,6 +43,7 @@ export interface ChakraDiscProps {
   cy?: number;
   angles?: readonly number[];
   className?: string;
+  style?: React.CSSProperties;
 }
 
 export interface KrishnaChakraProps {
@@ -142,8 +143,12 @@ export const ChakraDisc: React.FC<ChakraDiscProps> = ({
   cy = CHAKRA_CENTER.y,
   angles = CHAKRA_SPOKE_ANGLES,
   className = styles.chakraDisc,
+  style,
 }) => (
-  <g className={className}>
+  <g
+    className={className}
+    style={{ transformOrigin: `${cx}px ${cy}px`, transformBox: 'view-box', ...style }}
+  >
     <ChakraRims cx={cx} cy={cy} />
     <ChakraHub cx={cx} cy={cy} />
     <ChakraSpokes cx={cx} cy={cy} angles={angles} />

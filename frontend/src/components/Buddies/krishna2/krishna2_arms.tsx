@@ -7,31 +7,31 @@ export const u = (val: number) => val;
 
 export const ARM_SPEC = {
   // Shared arm anchor positions relative to character center (X=190)
-  // PNG shoulders visible at roughly 22-28% down PNG → SVG Y coordinates
-  shoulderPivotOffset: 75,
-  shoulderPivotY: 65,
-  
-  // Upper Arm (Humerus extension from PNG torso stub)
+  // Calibrated to exact krishna2_base.png hollow shoulder sockets: (89, 310) & (291, 310)
+  shoulderPivotOffset: 101,
+  shoulderPivotY: 310,
+
+  // Upper Arm (Humerus extension emerging seamlessly from PNG shoulder socket)
   upper: {
-    len: 70, topW: 38, maxW: 38, botW: 30, ov: 5, depth: 28
+    len: 56, topW: 44, maxW: 44, botW: 31, ov: 6, depth: 28
   },
   elbow: {
-    blendW: 30
+    blendW: 31
   },
   forearm: {
-    len: 75, topW: 30, maxW: 30, botW: 24, ov: 5, depth: 26
+    len: 58, topW: 31, maxW: 31, botW: 22, ov: 6, depth: 24
   },
   wrist: {
     width: 22
   },
   hand: {
-    palm: { w: 30, h: 32, wristW: 22, heelW: 26, transitionL: 8, d: 20 },
-    knuckle: { w: 28, h: 12, d: 18 },
-    thumb: { l: 18, base: 9, tip: 6 },
-    index: { l: 20, base: 8, tip: 5 },
-    middle: { l: 22, base: 8, tip: 5 },
-    ring: { l: 19, base: 7.5, tip: 5 },
-    little: { l: 16, base: 7, tip: 4.5 }
+    palm: { w: 28, h: 28, wristW: 22, heelW: 24, transitionL: 8, d: 20 },
+    knuckle: { w: 26, h: 11, d: 18 },
+    thumb: { l: 17, base: 8.5, tip: 5.5 },
+    index: { l: 19, base: 7.5, tip: 4.8 },
+    middle: { l: 21, base: 7.5, tip: 4.8 },
+    ring: { l: 18, base: 7, tip: 4.6 },
+    little: { l: 15, base: 6.5, tip: 4.3 }
   }
 };
 
@@ -41,11 +41,11 @@ export const ParametricUpperArm = ({ isFlipped = false }: { isFlipped?: boolean 
   const t = topW / 2;
   const m = maxW / 2;
   const b = botW / 2;
-  
-  // Shoulder cap extends well above pivot to anchor inside PNG torso shoulder socket
-  const capH = 35;
-  const axillaOverlap = 8;
-  
+
+  // Shoulder cap extends smoothly into the PNG shoulder deltoid socket
+  const capH = 22;
+  const axillaOverlap = 6;
+
   // Upper arm path ending with continuous anatomical elbow taper
   const path = `
     M ${-t} 0 
@@ -56,27 +56,56 @@ export const ParametricUpperArm = ({ isFlipped = false }: { isFlipped?: boolean 
     C ${t} ${-capH * 0.8}, ${t * 0.5} ${-capH}, 0 ${-capH}
     C ${-t * 0.8} ${-capH}, ${-t - axillaOverlap} ${-capH * 0.5}, ${-t} 0 
     Z`;
-    
-  // Directional 3D volumetric lighting: soft highlight on light side, gentle shadow on underside
-  const hl = `M ${-m * 0.2} 5 C ${-m * 0.15} ${len * 0.35}, ${-b * 0.15} ${len * 0.75}, ${-b * 0.1} ${len + ov * 0.5}`;
-  const softShadow = `M ${m * 0.7} 15 C ${m * 0.7} ${len * 0.4}, ${b * 0.7} ${len * 0.8}, ${b * 0.6} ${len + ov * 0.5}`;
-  
+
+  // Directional 3D volumetric lighting matching krishna2_base.png
+  const hl = `M ${-m * 0.28} 4 C ${-m * 0.22} ${len * 0.35}, ${-b * 0.18} ${len * 0.75}, ${-b * 0.12} ${len + ov * 0.4}`;
+  const softShadow = `M ${m * 0.68} 10 C ${m * 0.68} ${len * 0.4}, ${b * 0.68} ${len * 0.8}, ${b * 0.58} ${len + ov * 0.4}`;
+
   const transform = isFlipped ? 'scale(-1, 1)' : '';
 
   return (
     <g className="parametric-upper-arm">
-      {/* Continuous Toddler Skin Fill blending into torso stub */}
-      <path d={path} fill="url(#kSkinBody)" transform={transform} />
-      <path d={path} fill="url(#kArmSkinGrad)" transform={transform} />
+      {/* Continuous Toddler Skin Fill blending into PNG shoulder stub */}
+      <path d={path} fill="url(#k2_ArmSkinBase)" transform={transform} />
+      <path d={path} fill="url(#k2_ArmSkinGrad)" transform={transform} />
 
       {/* Shoulder Cap Smooth Overlap Blend into Torso Socket */}
-      <circle cx={0} cy={0} r={t} fill="url(#kSkinBody)" transform={transform} />
-      <circle cx={0} cy={0} r={t} fill="url(#kArmSkinGrad)" transform={transform} />
+      <circle cx={0} cy={0} r={t} fill="url(#k2_ArmSkinBase)" transform={transform} />
+      <circle cx={0} cy={0} r={t} fill="url(#k2_ArmSkinGrad)" transform={transform} />
 
-      {/* Volumetric Longitudinal Highlight */}
-      <path d={hl} fill="none" stroke="#A9CCFF" strokeWidth={u(4.8)} strokeLinecap="round" opacity="0.28" transform={transform} />
+      {/* Soft Volumetric Longitudinal Highlight */}
+      <path d={hl} fill="none" stroke="#B6D8FF" strokeWidth={u(5.0)} strokeLinecap="round" opacity="0.28" transform={transform} />
       {/* Soft Medial Underside Shading */}
-      <path d={softShadow} fill="none" stroke="#4E82D1" strokeWidth={u(3.0)} strokeLinecap="round" opacity="0.18" transform={transform} />
+      <path d={softShadow} fill="none" stroke="#2554B0" strokeWidth={u(3.2)} strokeLinecap="round" opacity="0.22" transform={transform} />
+
+      {/* ── Refined Gold Upper Armlet (Keyur / Bajuband) matching Necklace ── */}
+      <g className="upper-armlet" transform={transform}>
+        <path
+          d={`M ${-m * 0.88} ${len * 0.36} C ${-m * 0.45} ${len * 0.44}, ${m * 0.45} ${len * 0.44}, ${m * 0.88} ${len * 0.36}`}
+          fill="none"
+          stroke="#1D4494"
+          strokeWidth={u(3.0)}
+          opacity="0.24"
+        />
+        <path
+          d={`M ${-m * 0.86} ${len * 0.34} C ${-m * 0.45} ${len * 0.42}, ${m * 0.45} ${len * 0.42}, ${m * 0.86} ${len * 0.34}`}
+          fill="none"
+          stroke="url(#kJewelGoldGrad)"
+          strokeWidth={u(4.4)}
+          strokeLinecap="round"
+        />
+        <path
+          d={`M ${-m * 0.68} ${len * 0.335} C ${-m * 0.35} ${len * 0.41}, ${m * 0.35} ${len * 0.41}, ${m * 0.68} ${len * 0.335}`}
+          fill="none"
+          stroke="url(#kJewelGoldLight)"
+          strokeWidth={u(1.3)}
+          strokeLinecap="round"
+          opacity="0.95"
+        />
+        <circle cx={0} cy={len * 0.38} r={u(2.8)} fill="url(#kJewelGoldGrad)" stroke="#92400E" strokeWidth={u(0.4)} />
+        <circle cx={0} cy={len * 0.38} r={u(1.8)} fill="url(#kJewelRuby)" stroke="url(#kJewelGoldGrad)" strokeWidth={u(0.5)} />
+        <circle cx={-u(0.5)} cy={len * 0.37} r={u(0.55)} fill="#FFFFFF" opacity="0.9" />
+      </g>
     </g>
   );
 };
@@ -86,8 +115,8 @@ export const ParametricForearm = () => {
   const t = topW / 2;
   const m = maxW / 2;
   const b = botW / 2;
-  
-  // Forearm path starting at -ov (-u(7)) with continuous anatomical taper through elbow pivot
+
+  // Forearm path starting at -ov with continuous anatomical taper through elbow pivot
   const path = `
     M 0 ${-ov}
     C ${-t * 0.5} ${-ov}, ${-t} ${-ov * 0.6}, ${-t} 0 
@@ -96,37 +125,37 @@ export const ParametricForearm = () => {
     C ${b} ${len * 0.75}, ${m} ${len * 0.35}, ${t} 0 
     C ${t} ${-ov * 0.6}, ${t * 0.5} ${-ov}, 0 ${-ov} 
     Z`;
-    
+
   // Highlight flowing from top overlap through forearm
-  const hl = `M ${-t * 0.15} ${-ov * 0.5} C 0 ${len * 0.3}, 0 ${len * 0.7}, 0 ${len - 3}`;
-  const softShadow = `M ${m * 0.7} ${-ov * 0.5} C ${m * 0.7} ${len * 0.4}, ${b * 0.7} ${len * 0.8}, ${b * 0.6} ${len - 5}`;
+  const hl = `M ${-t * 0.15} ${-ov * 0.4} C 0 ${len * 0.3}, 0 ${len * 0.7}, 0 ${len - 3}`;
+  const softShadow = `M ${m * 0.68} ${-ov * 0.4} C ${m * 0.68} ${len * 0.4}, ${b * 0.68} ${len * 0.8}, ${b * 0.58} ${len - 4}`;
 
   return (
     <g className="parametric-forearm">
       {/* Continuous Toddler Skin Fill */}
-      <path d={path} fill="url(#kSkinBody)" />
-      <path d={path} fill="url(#kArmSkinGrad)" />
+      <path d={path} fill="url(#k2_ArmSkinBase)" />
+      <path d={path} fill="url(#k2_ArmSkinGrad)" />
 
       {/* Forearm Top Circular Overlap into Elbow Joint with smooth radial skin gradient blending */}
-      <circle cx={0} cy={0} r={t} fill="url(#kElbowJointSkinGrad)" />
-      <circle cx={0} cy={0} r={t} fill="url(#kArmSkinGrad)" />
+      <circle cx={0} cy={0} r={t} fill="url(#k2_ElbowJointSkinGrad)" />
+      <circle cx={0} cy={0} r={t} fill="url(#k2_ArmSkinGrad)" />
 
       {/* Seamless Highlight flowing along arm vector */}
-      <path d={hl} fill="none" stroke="#A9CCFF" strokeWidth={u(4.2)} strokeLinecap="round" opacity="0.28" />
+      <path d={hl} fill="none" stroke="#B6D8FF" strokeWidth={u(4.2)} strokeLinecap="round" opacity="0.28" />
       {/* Soft Underside Shadow */}
-      <path d={softShadow} fill="none" stroke="#4E82D1" strokeWidth={u(2.6)} strokeLinecap="round" opacity="0.18" />
+      <path d={softShadow} fill="none" stroke="#2554B0" strokeWidth={u(2.6)} strokeLinecap="round" opacity="0.22" />
 
       {/* Seamless Forearm-to-Wrist Highlight Transition */}
-      <ellipse cx={0} cy={len - u(1)} rx={b * 0.75} ry={u(2.5)} fill="#A9CCFF" opacity="0.2" />
+      <ellipse cx={0} cy={len - u(1)} rx={b * 0.75} ry={u(2.2)} fill="#B6D8FF" opacity="0.2" />
 
       {/* ── Subtle Forearm Vertical Vaishnav Motif ── */}
-      <g className="forearm-vaishnav-mark" transform={`translate(0, ${len - u(16)})`}>
+      <g className="forearm-vaishnav-mark" transform={`translate(0, ${len - u(15)})`}>
         <path
-          d={`M ${-u(1.1)} ${-u(6)} L ${-u(1.1)} ${u(4)} C ${-u(1.1)} ${u(6.5)}, ${u(1.1)} ${u(6.5)}, ${u(1.1)} ${u(4)} L ${u(1.1)} ${-u(6)} Z`}
+          d={`M ${-u(1.0)} ${-u(5)} L ${-u(1.0)} ${u(3.5)} C ${-u(1.0)} ${u(5.8)}, ${u(1.0)} ${u(5.8)}, ${u(1.0)} ${u(3.5)} L ${u(1.0)} ${-u(5)} Z`}
           fill="url(#kVaishnavIvory)"
-          opacity="0.85"
+          opacity="0.82"
         />
-        <circle cx={0} cy={u(1.5)} r={u(0.85)} fill="#FFD45A" />
+        <circle cx={0} cy={u(1.2)} r={u(0.8)} fill="#FFD45A" />
       </g>
     </g>
   );
@@ -153,8 +182,8 @@ export const ParametricDigit = ({
   return (
     <g className="parametric-digit" transform={transform}>
       {/* Continuous Base Skin */}
-      <path d={path} fill="url(#kSkinBody)" />
-      {/* Longitudinal Finger Volume Shading (A9CCFF -> 84B5FA -> 6BA7FF -> 4E82D1) */}
+      <path d={path} fill="url(#k2_ArmSkinBase)" />
+      {/* Longitudinal Finger Volume Shading */}
       <path d={path} fill="url(#kFingerLongitudinal)" />
       {/* Subtle Inner/Palm-Side Finger Pad Warmth */}
       <path d={path} fill="url(#kFingerPadPinkWarmth)" />
@@ -163,17 +192,17 @@ export const ParametricDigit = ({
       <path
         d={`M 0 0 C 0.8 ${len*0.4}, 0.8 ${len*0.8}, 0 ${len - u(3)}`}
         fill="none"
-        stroke="#A9CCFF"
-        strokeWidth={u(2.4)}
+        stroke="#B6D8FF"
+        strokeWidth={u(2.2)}
         strokeLinecap="round"
-        opacity="0.32"
+        opacity="0.3"
       />
       {/* Soft Shadow Side */}
       <path
         d={`M ${b*0.6} ${len*0.2} C ${b*0.6} ${len*0.5}, ${t*0.7} ${len*0.8}, ${t*0.6} ${len - u(2)}`}
         fill="none"
-        stroke="#4E82D1"
-        strokeWidth={u(1.8)}
+        stroke="#2554B0"
+        strokeWidth={u(1.7)}
         strokeLinecap="round"
         opacity="0.22"
       />
@@ -289,13 +318,13 @@ export const ParametricHand = ({
 
   // 5. Thumb & Digits placement in invariant anatomical order:
   // LITTLE (-X) -> RING -> MIDDLE -> INDEX -> THUMB (+X / hair side)
-  const litX = -u(16);
-  const rngX = -u(6);
-  const midX = u(4);
-  const idxX = u(15);
+  const litX = -u(10.5);
+  const rngX = -u(3.5);
+  const midX = u(3.5);
+  const idxX = u(10.5);
 
   // Thumb positioned on +X Thenar base (pointing gracefully inward towards hair/index)
-  const thumbTransform = `translate(${pW * 1.05}, ${h * 0.55}) rotate(${-42 - f.thumb})`;
+  const thumbTransform = `translate(${pW * 0.92}, ${h * 0.52}) rotate(${-40 - f.thumb})`;
 
   const showThumb = handLayer === 'all' || handLayer === 'thumbOnly';
   const showMainHand = handLayer === 'all' || handLayer === 'withoutThumb';
@@ -337,14 +366,14 @@ export const ParametricHand = ({
       {showMainHand && (
         <>
           <g className="palm-volume">
-            {/* Seamless Wrist Transition Highlight (narrow soft A9CCFF, fading into 6BA7FF) */}
-            <ellipse cx={0} cy={-u(3)} rx={w * 0.7} ry={u(2.5)} fill="#A9CCFF" opacity="0.2" />
+            {/* Seamless Wrist Transition Highlight */}
+            <ellipse cx={0} cy={-u(3)} rx={w * 0.7} ry={u(2.5)} fill="#B6D8FF" opacity="0.2" />
 
             {/* Continuous Base Skin */}
-            <path d={palmPath} fill="url(#kSkinBody)" />
-            <path d={knucklePath} fill="url(#kSkinBody)" />
-            <path d={thenarPath} fill="url(#kSkinBody)" />
-            <path d={hypothenarPath} fill="url(#kSkinBody)" />
+            <path d={palmPath} fill="url(#k2_ArmSkinBase)" />
+            <path d={knucklePath} fill="url(#k2_ArmSkinBase)" />
+            <path d={thenarPath} fill="url(#k2_ArmSkinBase)" />
+            <path d={hypothenarPath} fill="url(#k2_ArmSkinBase)" />
 
             {/* 3D Volumetric Soft Shading (No harsh crease strokes on back of hand) */}
             <path d={palmPath} fill="url(#kPalmCentralGlow)" />
@@ -354,42 +383,42 @@ export const ParametricHand = ({
             <path d={palmPath} fill="url(#kPalmCentralPinkGlow)" />
             <path d={thenarPath} fill="url(#kThenarPinkWarmth)" />
             {/* Subtle Contact Shadow in Interdigital Clefts */}
-            <circle cx={(litX + rngX) / 2} cy={h - u(4)} r={u(1.5)} fill="#315EA8" opacity="0.15" />
-            <circle cx={(rngX + midX) / 2} cy={h - u(2)} r={u(1.5)} fill="#315EA8" opacity="0.15" />
-            <circle cx={(midX + idxX) / 2} cy={h - u(2)} r={u(1.5)} fill="#315EA8" opacity="0.15" />
+            <circle cx={(litX + rngX) / 2} cy={h - u(4)} r={u(1.4)} fill="#2554B0" opacity="0.16" />
+            <circle cx={(rngX + midX) / 2} cy={h - u(2)} r={u(1.4)} fill="#2554B0" opacity="0.16" />
+            <circle cx={(midX + idxX) / 2} cy={h - u(2)} r={u(1.4)} fill="#2554B0" opacity="0.16" />
           </g>
 
-          {/* ── WHITE VAISHNAV-INSPIRED CHAKRA DECORATION ON BACK OF HAND (DOMINANT & CRISP) ── */}
-          <g className="back-hand-vaishnav-chakra" transform={`translate(${midX / 2}, ${h * 0.48})`}>
+          {/* ── WHITE VAISHNAV-INSPIRED CHAKRA DECORATION ON BACK OF HAND (CRISP & PROPORTIONATE) ── */}
+          <g className="back-hand-vaishnav-chakra" transform={`translate(0, ${h * 0.48}) scale(0.66)`}>
             {/* Soft Skin Contact Shadow for 3D Relief */}
-            <circle cx={0} cy={u(0.6)} r={u(13.5)} fill="#315EA8" opacity="0.22" />
-            
+            <circle cx={0} cy={u(0.6)} r={u(13.0)} fill="#2554B0" opacity="0.20" />
+
             {/* Soft Base Glow Disc */}
-            <circle cx={0} cy={0} r={u(13.5)} fill="#F8F9FF" opacity="0.12" />
+            <circle cx={0} cy={0} r={u(13.0)} fill="#F8F9FF" opacity="0.12" />
 
             {/* Outer Primary Pure White Chakra Ring */}
-            <circle cx={0} cy={0} r={u(13.0)} fill="none" stroke="#FFFFFF" strokeWidth={u(2.0)} opacity="0.98" />
-            <circle cx={0} cy={0} r={u(10.8)} fill="none" stroke="#F8F9FF" strokeWidth={u(1.2)} strokeDasharray={`${u(2.2)}, ${u(1.6)}`} opacity="0.95" />
+            <circle cx={0} cy={0} r={u(12.6)} fill="none" stroke="#FFFFFF" strokeWidth={u(2.0)} opacity="0.96" />
+            <circle cx={0} cy={0} r={u(10.2)} fill="none" stroke="#F8F9FF" strokeWidth={u(1.2)} strokeDasharray={`${u(2.2)}, ${u(1.6)}`} opacity="0.92" />
 
             {/* 8-Point Radial Chakra Rays / Starburst Petals */}
-            <g fill="none" stroke="#FFFFFF" strokeWidth={u(1.4)} strokeLinecap="round" opacity="0.98">
-              <line x1={0} y1={-u(13.0)} x2={0} y2={-u(6.0)} />
-              <line x1={0} y1={u(6.0)} x2={0} y2={u(13.0)} />
-              <line x1={-u(13.0)} y1={0} x2={-u(6.0)} y2={0} />
-              <line x1={u(6.0)} y1={0} x2={u(13.0)} y2={0} />
-              <line x1={-u(9.2)} y1={-u(9.2)} x2={-u(4.2)} y2={-u(4.2)} />
-              <line x1={u(4.2)} y1={u(4.2)} x2={u(9.2)} y2={u(9.2)} />
-              <line x1={-u(9.2)} y1={u(9.2)} x2={-u(4.2)} y2={-u(4.2)} />
-              <line x1={u(4.2)} y1={-u(4.2)} x2={u(9.2)} y2={-u(9.2)} />
+            <g fill="none" stroke="#FFFFFF" strokeWidth={u(1.4)} strokeLinecap="round" opacity="0.96">
+              <line x1={0} y1={-u(12.6)} x2={0} y2={-u(5.8)} />
+              <line x1={0} y1={u(5.8)} x2={0} y2={u(12.6)} />
+              <line x1={-u(12.6)} y1={0} x2={-u(5.8)} y2={0} />
+              <line x1={u(5.8)} y1={0} x2={u(12.6)} y2={0} />
+              <line x1={-u(8.9)} y1={-u(8.9)} x2={-u(4.1)} y2={-u(4.1)} />
+              <line x1={u(4.1)} y1={u(4.1)} x2={u(8.9)} y2={u(8.9)} />
+              <line x1={-u(8.9)} y1={u(8.9)} x2={-u(4.1)} y2={u(4.1)} />
+              <line x1={u(4.1)} y1={-u(4.1)} x2={u(8.9)} y2={-u(8.9)} />
             </g>
 
             {/* Inner Petaled Hub Ring */}
-            <circle cx={0} cy={0} r={u(5.2)} fill="#F8F9FF" stroke="#FFFFFF" strokeWidth={u(0.8)} opacity="0.98" />
-            <circle cx={0} cy={0} r={u(3.0)} fill="#FFFFFF" />
+            <circle cx={0} cy={0} r={u(5.0)} fill="#F8F9FF" stroke="#FFFFFF" strokeWidth={u(0.8)} opacity="0.96" />
+            <circle cx={0} cy={0} r={u(2.8)} fill="#FFFFFF" />
 
             {/* Central Vertical Vaishnav U-Bindu Teardrop Motif */}
             <path
-              d={`M ${-u(1.4)} ${-u(4.5)} L ${-u(1.4)} ${u(1.0)} C ${-u(1.4)} ${u(3.2)}, ${u(1.4)} ${u(3.2)}, ${u(1.4)} ${u(1.0)} L ${u(1.4)} ${-u(4.5)} Z`}
+              d={`M ${-u(1.3)} ${-u(4.3)} L ${-u(1.3)} ${u(0.9)} C ${-u(1.3)} ${u(3.0)}, ${u(1.3)} ${u(3.0)}, ${u(1.3)} ${u(0.9)} L ${u(1.3)} ${-u(4.3)} Z`}
               fill="#FFFFFF"
               opacity="1.0"
             />
@@ -403,35 +432,35 @@ export const ParametricHand = ({
             <g className="wrist-bangles">
               {/* Ambient skin contact shadow under bangle */}
               <path
-                d={`M ${-w * 0.95} ${-u(5)} C ${-w * 0.45} ${-u(2)}, ${w * 0.45} ${-u(2)}, ${w * 0.95} ${-u(5)}`}
+                d={`M ${-w * 0.95} ${-u(4.5)} C ${-w * 0.45} ${-u(1.5)}, ${w * 0.45} ${-u(1.5)}, ${w * 0.95} ${-u(4.5)}`}
                 fill="none"
-                stroke="#315EA8"
-                strokeWidth={u(3.0)}
+                stroke="#1D4494"
+                strokeWidth={u(2.8)}
                 opacity="0.22"
               />
               {/* Primary Prominent 3D Gold Bangle Band */}
               <path
-                d={`M ${-w * 0.92} ${-u(5.5)} C ${-w * 0.45} ${-u(2.5)}, ${w * 0.45} ${-u(2.5)}, ${w * 0.92} ${-u(5.5)}`}
+                d={`M ${-w * 0.92} ${-u(5.0)} C ${-w * 0.45} ${-u(2.0)}, ${w * 0.45} ${-u(2.0)}, ${w * 0.92} ${-u(5.0)}`}
                 fill="none"
                 stroke="url(#kJewelGoldGrad)"
-                strokeWidth={u(4.0)}
+                strokeWidth={u(3.8)}
                 strokeLinecap="round"
               />
               {/* Primary Bangle Light Specular Sheen */}
               <path
-                d={`M ${-w * 0.7} ${-u(5.8)} C ${-w * 0.3} ${-u(2.8)}, ${w * 0.3} ${-u(2.8)}, ${w * 0.7} ${-u(5.8)}`}
+                d={`M ${-w * 0.7} ${-u(5.3)} C ${-w * 0.3} ${-u(2.3)}, ${w * 0.3} ${-u(2.3)}, ${w * 0.7} ${-u(5.3)}`}
                 fill="none"
                 stroke="#FFF0A3"
-                strokeWidth={u(1.2)}
+                strokeWidth={u(1.1)}
                 opacity="0.95"
               />
               {/* Secondary Beaded Gold Bangle */}
               <path
-                d={`M ${-w * 0.88} ${-u(1.5)} C ${-w * 0.4} ${u(1.2)}, ${w * 0.4} ${u(1.2)}, ${w * 0.88} ${-u(1.5)}`}
+                d={`M ${-w * 0.88} ${-u(1.2)} C ${-w * 0.4} ${u(1.3)}, ${w * 0.4} ${u(1.3)}, ${w * 0.88} ${-u(1.2)}`}
                 fill="none"
                 stroke="url(#kJewelGoldGrad)"
-                strokeWidth={u(2.4)}
-                strokeDasharray={`${u(1.5)}, ${u(1.5)}`}
+                strokeWidth={u(2.2)}
+                strokeDasharray={`${u(1.4)}, ${u(1.4)}`}
                 strokeLinecap="round"
               />
             </g>
@@ -439,25 +468,25 @@ export const ParametricHand = ({
             {/* 2. Traditional Hand Chain (Hathphool) anchored to Wrist & Middle Finger */}
             <g className="hand-chain">
               {/* Central Wrist Anchor Bead */}
-              <circle cx={0} cy={-u(2.5)} r={u(1.5)} fill="url(#kJewelGoldGrad)" stroke="#B86A00" strokeWidth={u(0.4)} />
-              
+              <circle cx={0} cy={-u(2.2)} r={u(1.4)} fill="url(#kJewelGoldGrad)" stroke="#B86A00" strokeWidth={u(0.4)} />
+
               {/* Delicate Beaded Chain running down back of hand to chakra medallion */}
               <path
-                d={`M 0 ${-u(2.5)} Q ${midX * 0.5} ${h * 0.28}, ${midX / 2} ${h * 0.48 - u(9.5)}`}
-                fill="none"
-                stroke="url(#kJewelGoldGrad)"
-                strokeWidth={u(1.3)}
-                strokeDasharray={`${u(1.2)}, ${u(1.2)}`}
-                strokeLinecap="round"
-              />
-              
-              {/* Chain Continuation from chakra medallion to Middle Finger Root */}
-              <path
-                d={`M ${midX / 2} ${h * 0.48 + u(9.5)} L ${midX} ${h - u(2)}`}
+                d={`M 0 ${-u(2.2)} L 0 ${h * 0.48 - u(8.2)}`}
                 fill="none"
                 stroke="url(#kJewelGoldGrad)"
                 strokeWidth={u(1.2)}
                 strokeDasharray={`${u(1.1)}, ${u(1.1)}`}
+                strokeLinecap="round"
+              />
+
+              {/* Chain Continuation from chakra medallion to Middle Finger Root */}
+              <path
+                d={`M 0 ${h * 0.48 + u(8.2)} L ${midX} ${h - u(2)}`}
+                fill="none"
+                stroke="url(#kJewelGoldGrad)"
+                strokeWidth={u(1.1)}
+                strokeDasharray={`${u(1.0)}, ${u(1.0)}`}
                 strokeLinecap="round"
               />
             </g>
@@ -494,22 +523,21 @@ export type ArmPoseConfig = {
 
 export const POSE_CONFIGS: Record<KrishnaPose, ArmPoseConfig> = {
   standing: {
-    // Natural relaxed hang: arms splay ~12° outward from body, slight elbow bend for life
-    right: { shoulder: -12, elbow: 8,  wrist: 0, fingers: { thumb: 0, index: 8, middle: 10, ring: 12, little: 14 } },
-    left:  { shoulder:  12, elbow: -8, wrist: 0, fingers: { thumb: 0, index: 8, middle: 10, ring: 12, little: 14 } },
+    // Natural relaxed hang beside puffy golden dhoti (viewer's left & right)
+    right: { shoulder: 12, elbow: -8, wrist: -2, fingers: { thumb: 0, index: 6, middle: 8, ring: 10, little: 12 } },
+    left:  { shoulder: -12, elbow: 8, wrist: 2, fingers: { thumb: 0, index: 6, middle: 8, ring: 10, little: 12 } },
   },
   chakra: {
-    // Character's right arm: raised to hold Sudarshana Chakra at chest-to-head height
-    // shoulder=-95° → arm extends upper-left toward ear area
-    // elbow=+45° → forearm folds in to bring hand forward at comfortable height
-    right: { shoulder: -95, elbow: 45, wrist: 8, fingers: { thumb: 24, index: -4, middle: 68, ring: 76, little: 84 } },
-    // Character's left arm: gentle relaxed hang
-    left:  { shoulder:  15, elbow: -10, wrist: 0, fingers: { thumb: 0, index: 8, middle: 10, ring: 12, little: 14 } },
+    // Character's right arm (viewer's left): raised outward-up to spin Sudarshana Chakra at cheek/temple height
+    // shoulder=+112° swings upper arm cleanly out to viewer's left; elbow=+62° raises forearm straight up
+    right: { shoulder: 112, elbow: 62, wrist: 6, fingers: { thumb: 22, index: -4, middle: 68, ring: 76, little: 84 } },
+    // Character's left arm (viewer's right): rests gently at hip/dhoti waist
+    left:  { shoulder: -22, elbow: 46, wrist: 12, fingers: { thumb: 16, index: 16, middle: 24, ring: 30, little: 36 } },
   },
   crossHands: {
-    // Both arms fold inward across the belly
-    right: { shoulder: -30, elbow:  75, wrist: -12, fingers: { thumb: 10, index: 15, middle: 20, ring: 25, little: 30 } },
-    left:  { shoulder:  30, elbow: -75, wrist:  12, fingers: { thumb: 10, index: 15, middle: 20, ring: 25, little: 30 } },
+    // Both arms fold gently inward across tummy / upper saffron belt
+    right: { shoulder: 14, elbow: -88, wrist: -12, fingers: { thumb: 10, index: 14, middle: 18, ring: 22, little: 26 } },
+    left:  { shoulder: -14, elbow: 88, wrist: 12, fingers: { thumb: 10, index: 14, middle: 18, ring: 22, little: 26 } },
   },
 };
 
@@ -523,12 +551,13 @@ export const KrishnaArms = ({
   renderLayer = 'all',
   renderHandPart = 'all',
 }: {
-  pose?: KrishnaPose;
+  pose?: KrishnaPose | string;
   renderSide?: KrishnaArmsRenderSide;
   renderLayer?: KrishnaArmsRenderLayer;
   renderHandPart?: KrishnaArmsRenderPart;
 }) => {
-  const config = POSE_CONFIGS[pose] || POSE_CONFIGS.chakra;
+  const normalizedPose: KrishnaPose = pose === 'crossed' ? 'crossHands' : ((pose as KrishnaPose) || 'chakra');
+  const config = POSE_CONFIGS[normalizedPose] || POSE_CONFIGS.chakra;
   const rightTotalAngle = config.right.shoulder + config.right.elbow + config.right.wrist;
   const leftTotalAngle = config.left.shoulder + config.left.elbow + config.left.wrist;
 
@@ -540,22 +569,35 @@ export const KrishnaArms = ({
 
   return (
     <g id={`armRoots-${renderLayer}-${renderHandPart}`}>
-      {/* Embedded Master Skin Shaders ensuring continuous material across arm, wrist, and hand */}
+      {/* Embedded Master Skin Shaders ensuring continuous material matching krishna2_base.png */}
       <defs>
-        <linearGradient id="kArmSkinGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#A9CCFF" stopOpacity="0.32" />
-          <stop offset="25%" stopColor="#84B5FA" stopOpacity="0.15" />
-          <stop offset="60%" stopColor="#6BA7FF" stopOpacity="0" />
-          <stop offset="88%" stopColor="#4E82D1" stopOpacity="0.25" />
-          <stop offset="100%" stopColor="#315EA8" stopOpacity="0.3" />
+        <radialGradient id="k2_ArmSkinBase" cx="38%" cy="28%" r="72%">
+          <stop offset="0%" stopColor="#97C6FF" />
+          <stop offset="30%" stopColor="#6EA9FF" />
+          <stop offset="68%" stopColor="#4887EA" />
+          <stop offset="100%" stopColor="#2654B0" />
+        </radialGradient>
+
+        <radialGradient id="k2_ShoulderSocketFill" cx="42%" cy="32%" r="65%">
+          <stop offset="0%" stopColor="#85BAFD" />
+          <stop offset="45%" stopColor="#5C9BF9" />
+          <stop offset="82%" stopColor="#3B77DC" />
+          <stop offset="100%" stopColor="#2756B5" />
+        </radialGradient>
+
+        <linearGradient id="k2_ArmSkinGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#B6D8FF" stopOpacity="0.28" />
+          <stop offset="28%" stopColor="#86B8FD" stopOpacity="0.14" />
+          <stop offset="62%" stopColor="#5C9BF9" stopOpacity="0" />
+          <stop offset="88%" stopColor="#3873D6" stopOpacity="0.28" />
+          <stop offset="100%" stopColor="#214DA6" stopOpacity="0.34" />
         </linearGradient>
 
-        {/* ── Specialized Curved 3D Elbow Gradient Shaders ── */}
-        <radialGradient id="kElbowJointSkinGrad" cx="40%" cy="38%" r="62%">
-          <stop offset="0%" stopColor="#84B5FA" />
-          <stop offset="55%" stopColor="#6BA7FF" />
-          <stop offset="85%" stopColor="#5593F0" />
-          <stop offset="100%" stopColor="#4E82D1" stopOpacity="0.85" />
+        <radialGradient id="k2_ElbowJointSkinGrad" cx="40%" cy="38%" r="62%">
+          <stop offset="0%" stopColor="#86B8FD" />
+          <stop offset="55%" stopColor="#5C9BF9" />
+          <stop offset="85%" stopColor="#437EE0" />
+          <stop offset="100%" stopColor="#2D60C2" stopOpacity="0.9" />
         </radialGradient>
 
         <radialGradient id="kElbowOuterHighlight" cx="35%" cy="35%" r="65%">
@@ -663,6 +705,17 @@ export const KrishnaArms = ({
       {/* KRISHNA'S ANATOMICAL RIGHT ARM (Viewer's Left side) */}
       {(renderSide === 'all' || renderSide === 'characterRight') && (
       <g id={`leftChestArmRoot-${renderLayer}-${renderHandPart}`} className="arm-character-right">
+        {/* Seamless Deltoid Socket Plug sealing krishna2_base.png hollow cutout */}
+        {showUpperArm && (
+          <ellipse
+            cx={190 - ARM_SPEC.shoulderPivotOffset}
+            cy={ARM_SPEC.shoulderPivotY + 1}
+            rx={26}
+            ry={18}
+            transform={`rotate(26 ${190 - ARM_SPEC.shoulderPivotOffset} ${ARM_SPEC.shoulderPivotY + 1})`}
+            fill="url(#k2_ShoulderSocketFill)"
+          />
+        )}
         <g
           id={`leftShoulderPivot-${renderLayer}-${renderHandPart}`}
           transform={`translate(${190 - ARM_SPEC.shoulderPivotOffset}, ${ARM_SPEC.shoulderPivotY}) rotate(${config.right.shoulder})`}
@@ -676,15 +729,15 @@ export const KrishnaArms = ({
               {showUpperArm && showForearm && (
                 <g className="elbow-joint-blend">
                   {/* Radial Skin Gradient Joint Base */}
-                  <circle cx={0} cy={0} r={ARM_SPEC.elbow.blendW / 2} fill="url(#kElbowJointSkinGrad)" />
+                  <circle cx={0} cy={0} r={ARM_SPEC.elbow.blendW / 2} fill="url(#k2_ElbowJointSkinGrad)" />
                   {/* Directional Specular Arm Gradient Overlay */}
-                  <circle cx={0} cy={0} r={ARM_SPEC.elbow.blendW / 2} fill="url(#kArmSkinGrad)" />
+                  <circle cx={0} cy={0} r={ARM_SPEC.elbow.blendW / 2} fill="url(#k2_ArmSkinGrad)" />
                   {/* Elongated Convex Outer Bend Highlight following joint curve */}
                   <ellipse cx={-u(4)} cy={0} rx={(ARM_SPEC.elbow.blendW / 2) * 0.75} ry={u(4.5)} fill="url(#kElbowOuterHighlight)" />
                   {/* Soft Inner Concave Shadow following bend curve */}
                   <ellipse cx={u(5)} cy={0} rx={(ARM_SPEC.elbow.blendW / 2) * 0.6} ry={u(3.8)} fill="url(#kElbowInnerShadow)" />
                   {/* Continuous Skin Sheen Overlay along elbow vector */}
-                  <path d={`M ${-u(12)} ${-u(6)} C ${-u(15)} 0, ${-u(12)} ${u(6)}, ${-u(6)} ${u(6)}`} fill="none" stroke="#A9CCFF" strokeWidth={u(3.2)} strokeLinecap="round" opacity="0.32" />
+                  <path d={`M ${-u(12)} ${-u(6)} C ${-u(15)} 0, ${-u(12)} ${u(6)}, ${-u(6)} ${u(6)}`} fill="none" stroke="#B6D8FF" strokeWidth={u(3.2)} strokeLinecap="round" opacity="0.28" />
                 </g>
               )}
 
@@ -697,8 +750,8 @@ export const KrishnaArms = ({
                   {/* Seamless Anatomical Wrist Capsule Blend */}
                   {showForearm && (
                     <g className="wrist-joint-blend">
-                      <ellipse cx={0} cy={0} rx={ARM_SPEC.wrist.width / 2} ry={u(3.5)} fill="url(#kSkinBody)" />
-                      <ellipse cx={0} cy={0} rx={(ARM_SPEC.wrist.width / 2) * 0.75} ry={u(2.2)} fill="#A9CCFF" opacity="0.18" />
+                      <ellipse cx={0} cy={0} rx={ARM_SPEC.wrist.width / 2} ry={u(3.5)} fill="url(#k2_ArmSkinBase)" />
+                      <ellipse cx={0} cy={0} rx={(ARM_SPEC.wrist.width / 2) * 0.75} ry={u(2.2)} fill="#B6D8FF" opacity="0.18" />
                     </g>
                   )}
 
@@ -721,6 +774,17 @@ export const KrishnaArms = ({
       {/* KRISHNA'S ANATOMICAL LEFT ARM (Viewer's Right side) */}
       {(renderSide === 'all' || renderSide === 'characterLeft') && (
       <g id={`rightChestArmRoot-${renderLayer}-${renderHandPart}`} className="arm-character-left">
+        {/* Seamless Deltoid Socket Plug sealing krishna2_base.png hollow cutout */}
+        {showUpperArm && (
+          <ellipse
+            cx={190 + ARM_SPEC.shoulderPivotOffset}
+            cy={ARM_SPEC.shoulderPivotY + 1}
+            rx={26}
+            ry={18}
+            transform={`rotate(-26 ${190 + ARM_SPEC.shoulderPivotOffset} ${ARM_SPEC.shoulderPivotY + 1})`}
+            fill="url(#k2_ShoulderSocketFill)"
+          />
+        )}
         <g
           id={`rightShoulderPivot-${renderLayer}-${renderHandPart}`}
           transform={`translate(${190 + ARM_SPEC.shoulderPivotOffset}, ${ARM_SPEC.shoulderPivotY}) rotate(${config.left.shoulder})`}
@@ -734,15 +798,15 @@ export const KrishnaArms = ({
               {showUpperArm && showForearm && (
                 <g className="elbow-joint-blend">
                   {/* Radial Skin Gradient Joint Base */}
-                  <circle cx={0} cy={0} r={ARM_SPEC.elbow.blendW / 2} fill="url(#kElbowJointSkinGrad)" />
+                  <circle cx={0} cy={0} r={ARM_SPEC.elbow.blendW / 2} fill="url(#k2_ElbowJointSkinGrad)" />
                   {/* Directional Specular Arm Gradient Overlay */}
-                  <circle cx={0} cy={0} r={ARM_SPEC.elbow.blendW / 2} fill="url(#kArmSkinGrad)" />
+                  <circle cx={0} cy={0} r={ARM_SPEC.elbow.blendW / 2} fill="url(#k2_ArmSkinGrad)" />
                   {/* Elongated Convex Outer Bend Highlight following joint curve */}
                   <ellipse cx={u(4)} cy={0} rx={(ARM_SPEC.elbow.blendW / 2) * 0.75} ry={u(4.5)} fill="url(#kElbowOuterHighlight)" />
                   {/* Soft Inner Concave Shadow following bend curve */}
                   <ellipse cx={-u(5)} cy={0} rx={(ARM_SPEC.elbow.blendW / 2) * 0.6} ry={u(3.8)} fill="url(#kElbowInnerShadow)" />
                   {/* Continuous Skin Sheen Overlay along elbow vector */}
-                  <path d={`M ${u(12)} ${-u(6)} C ${u(15)} 0, ${u(12)} ${u(6)}, ${u(6)} ${u(6)}`} fill="none" stroke="#A9CCFF" strokeWidth={u(3.2)} strokeLinecap="round" opacity="0.32" />
+                  <path d={`M ${u(12)} ${-u(6)} C ${u(15)} 0, ${u(12)} ${u(6)}, ${u(6)} ${u(6)}`} fill="none" stroke="#B6D8FF" strokeWidth={u(3.2)} strokeLinecap="round" opacity="0.28" />
                 </g>
               )}
 
@@ -755,8 +819,8 @@ export const KrishnaArms = ({
                   {/* Seamless Anatomical Wrist Capsule Blend */}
                   {showForearm && (
                     <g className="wrist-joint-blend">
-                      <ellipse cx={0} cy={0} rx={ARM_SPEC.wrist.width / 2} ry={u(3.5)} fill="url(#kSkinBody)" />
-                      <ellipse cx={0} cy={0} rx={(ARM_SPEC.wrist.width / 2) * 0.75} ry={u(2.2)} fill="#A9CCFF" opacity="0.18" />
+                      <ellipse cx={0} cy={0} rx={ARM_SPEC.wrist.width / 2} ry={u(3.5)} fill="url(#k2_ArmSkinBase)" />
+                      <ellipse cx={0} cy={0} rx={(ARM_SPEC.wrist.width / 2) * 0.75} ry={u(2.2)} fill="#B6D8FF" opacity="0.18" />
                     </g>
                   )}
 
